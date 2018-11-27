@@ -1,0 +1,80 @@
+.js-widget-overlay {
+  z-index: 10002;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  opacity: 0.2;
+  background-color: #000;
+}
+.js-widget-window {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  z-index: 10003;
+  background: #fff;
+
+  top: 20%;
+
+  width: 800px;
+  padding: 20px 40px;
+  padding-top: 123px;
+  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+.js-widget-dialog {
+  width: 376px;
+  font-size: 12px;
+}
+.js-widget-icons {
+  width: 210px;
+  height: 170px;
+  margin-right: 55px;
+  margin-left: 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.js-widget-display {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.js-widget-image {
+  width: 120px;
+  height: 101px;
+}
+.js-widget-download {
+  width: 210px;
+  display: flex;
+  justify-content: space-between;
+  height: 42px;
+}
+.js-widget-ios {
+  width: 85px;
+  height: 28px;
+  margin-top: -1px;
+}
+.js-widget-android {
+  width: 95px;
+  height: 27px;
+}
+.js-widget-lowrow {
+  width: 100%;
+  margin-top: 106px;
+  margin-bottom: 34px;
+  display: flex;
+  justify-content: center;
+}
+.js-widget-getstream {
+  width: 181px;
+  height: 28px;
+  font-size: 12px;
+  font-weight: 400;
+  background: #ff2d55;
+  color: white;
+  border-radius: 4px;
+}
