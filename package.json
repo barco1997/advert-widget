@@ -11,11 +11,15 @@
     "babel-loader": "^8.0.0-beta.0",
     "copy-webpack-plugin": "^4.2.0",
     "css-loader": "^0.28.7",
-    "file-loader": "^1.1.6",
+    "file-loader": "^1.1.11",
     "html-loader": "^0.5.1",
     "style-loader": "^0.19.0",
     "svg-inline-loader": "^0.8.0",
+    "ttf-loader": "^1.0.2",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.4"
+  },
+  "dependencies": {
+    "font-awesome": "^4.7.0"
   }
 }

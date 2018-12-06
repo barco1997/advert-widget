@@ -28,6 +28,10 @@
   width: 376px;
   font-size: 12px;
 }
+.js-widget-dialog:h2 {
+  font-size: 26px;
+  font-weight: bold;
+}
 .js-widget-icons {
   width: 210px;
   height: 170px;
