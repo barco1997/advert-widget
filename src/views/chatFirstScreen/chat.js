@@ -1,11 +1,10 @@
-import html from "./message.html";
-import "./message.css";
-import { startChat } from "../chatFirstScreen/chat";
+import html from "./chat.html";
+import "./chat.css";
 
 let elements = [];
 let body;
 
-export function popup(text) {
+export function startChat() {
   // convert plain HTML string into DOM elements
 
   let popupWindow = document.createElement("div");
@@ -15,15 +14,8 @@ export function popup(text) {
   // append elements to body
   body = document.getElementsByTagName("body")[0];
   popupWindow
-    .getElementsByClassName("js-widget-overlay")[0]
+    .getElementsByClassName("js-chat-overlay")[0]
     .addEventListener("click", close);
-
-  popupWindow.getElementsByClassName(
-    "js-widget-getstream"
-  )[0].onclick = function() {
-    close();
-    startChat();
-  };
   while (popupWindow.children.length > 0) {
     elements.push(popupWindow.children[0]);
 

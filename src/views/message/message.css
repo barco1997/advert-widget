@@ -16,11 +16,11 @@
   z-index: 10003;
   background: #fff;
 
-  top: 20%;
+  top: 15%;
 
-  width: 800px;
-  padding: 20px 40px;
-  padding-top: 123px;
+  width: 760px;
+  padding: 20px 60px;
+  padding-top: 60px;
   box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
   border-radius: 6px;
 }
@@ -34,7 +34,7 @@
 }
 .js-widget-icons {
   width: 210px;
-  height: 170px;
+
   margin-right: 55px;
   margin-left: 55px;
   display: flex;
@@ -48,9 +48,12 @@
   justify-content: center;
 }
 .js-widget-image {
-  width: 120px;
-  height: 101px;
+  width: 214px;
+  height: 337px;
+  margin-left: 20px;
+  margin-top: -10px;
 }
+
 .js-widget-download {
   width: 210px;
   display: flex;
@@ -60,25 +63,28 @@
 .js-widget-ios {
   width: 85px;
   height: 28px;
-  margin-top: -1px;
+  margin-top: -36px;
 }
 .js-widget-android {
   width: 95px;
   height: 27px;
+  margin-top: -35px;
 }
 .js-widget-lowrow {
   width: 100%;
-  margin-top: 106px;
+  margin-top: 101px;
   margin-bottom: 34px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 .js-widget-getstream {
-  width: 181px;
-  height: 28px;
+  width: 258px;
+  height: 44px;
   font-size: 12px;
   font-weight: 400;
   background: #ff2d55;
   color: white;
-  border-radius: 4px;
+  border-radius: 32px;
+  border-style: none;
+  box-shadow: 0px 4px 15px rgba(255, 45, 85, 0.8);
 }
