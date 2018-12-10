@@ -20,6 +20,9 @@
     "webpack-dev-server": "^2.9.4"
   },
   "dependencies": {
-    "font-awesome": "^4.7.0"
+    "base64-inline-loader": "^1.1.1",
+    "font-awesome": "^4.7.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
   }
 }

@@ -3,6 +3,7 @@ const webpack = require("webpack");
 var copyWebpackPlugin = require("copy-webpack-plugin");
 const bundleOutputDir = "./dist";
 var SRC = path.resolve(__dirname, "./src/main.js");
+const DIR_NAME = path.join(__dirname, "..");
 
 module.exports = env => {
   const isDevBuild = !(env && env.prod);
@@ -53,17 +54,8 @@ module.exports = env => {
             }
           },
           {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-              {
-                loader: "file-loader",
-                options: {}
-              }
-            ]
-          },
-          {
-            test: /\.svg$/,
-            loader: "svg-inline-loader"
+            test: /\.(jpe?g|png|ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+            use: "base64-inline-loader?name=[name].[ext]"
           }
         ]
       }

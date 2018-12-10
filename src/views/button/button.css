@@ -13,6 +13,7 @@
   height: 56px;
   align-items: center;
   transition: width 100ms linear;
+  font-family: "Mont";
 }
 
 .js-button-dialog:focus {

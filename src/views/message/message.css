@@ -27,10 +27,15 @@
 .js-widget-dialog {
   width: 376px;
   font-size: 12px;
+  margin-top: 10px;
 }
-.js-widget-dialog:h2 {
+.js-widget-dialog > h2 {
   font-size: 26px;
   font-weight: bold;
+  margin: 0px;
+}
+.js-widget-dialog > span {
+  opacity: 0.5;
 }
 .js-widget-icons {
   width: 210px;
@@ -46,6 +51,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  font-family: "Mont";
 }
 .js-widget-image {
   width: 214px;
@@ -81,7 +87,8 @@
   width: 258px;
   height: 44px;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 600;
+
   background: #ff2d55;
   color: white;
   border-radius: 32px;

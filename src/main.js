@@ -1,6 +1,6 @@
 import { ping } from "./services";
 import { show } from "./views/button/button";
-
+import "./fonts/Mont.css";
 const supportedAPI = ["init", "message", "color"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
 
 /**
