@@ -1,7 +1,8 @@
 import { ping } from "./services";
 import { show } from "./views/button/button";
+import { react } from "./views/react";
 import "./fonts/Mont.css";
-const supportedAPI = ["init", "message", "color"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
+const supportedAPI = ["init", "message", "color", "react"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
 
 /**
     The main entry of the application
@@ -48,6 +49,9 @@ function apiHandler(api, params) {
   switch (api) {
     // TODO: add API implementation
     case "message":
+      break;
+    case "react":
+      react(params);
       break;
     case "color":
       show(params);

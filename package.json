@@ -5,10 +5,17 @@
     "build-release": "./node_modules/.bin/webpack --config webpack.config.js --env.prod",
     "start": "./node_modules/.bin/webpack-dev-server --open"
   },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.32",
-    "@babel/preset-env": "^7.0.0-beta.32",
-    "babel-loader": "^8.0.0-beta.0",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
     "copy-webpack-plugin": "^4.2.0",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.11",
@@ -23,6 +30,7 @@
     "base64-inline-loader": "^1.1.1",
     "font-awesome": "^4.7.0",
     "react": "^16.6.3",
-    "react-dom": "^16.6.3"
+    "react-dom": "^16.6.3",
+    "styled-components": "^4.1.2"
   }
 }

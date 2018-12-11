@@ -35,22 +35,10 @@ module.exports = env => {
             ]
           },
           {
-            test: /\.js$/i,
+            test: /\.js$/,
             exclude: /node_modules/,
             use: {
-              loader: "babel-loader",
-              options: {
-                presets: [
-                  [
-                    "@babel/env",
-                    {
-                      targets: {
-                        browsers: ["ie 6", "safari 7"]
-                      }
-                    }
-                  ]
-                ]
-              }
+              loader: "babel-loader"
             }
           },
           {
