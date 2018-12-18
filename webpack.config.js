@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+const dotenv = require("dotenv");
+
 var copyWebpackPlugin = require("copy-webpack-plugin");
 const bundleOutputDir = "./dist";
 var SRC = path.resolve(__dirname, "./src/main.js");
@@ -7,10 +9,17 @@ const DIR_NAME = path.join(__dirname, "..");
 
 module.exports = env => {
   const isDevBuild = !(env && env.prod);
+  const result = dotenv.config();
 
+  if (result.error) {
+    throw result.error;
+  }
+
+  console.log(result.parsed);
   return [
     {
       entry: SRC,
+
       output: {
         filename: "widget.js",
         path: path.resolve(bundleOutputDir)

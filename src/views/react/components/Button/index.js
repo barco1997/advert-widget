@@ -8,8 +8,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import logo from "./image.png";
+import Message from "../Message/index";
+import { Chat } from "../Chat";
 
 const ButtonWrapper = styled.button`
+  text-decoration: none;
+
+  -webkit-font-smoothing: antialiased;
+  -webkit-touch-callout: none;
+  user-select: none;
+  cursor: pointer;
+  outline: 0;
+
   position: fixed;
   z-index: 10001;
   background: #fff;
@@ -25,7 +35,10 @@ const ButtonWrapper = styled.button`
   width: ${props => (props.toggle ? "278px" : "56px")};
   height: 56px;
   align-items: center;
-  transition: width 100ms linear;
+
+  transition: ${props =>
+    props.toggle ? "width 120ms linear" : "width 180ms linear"};
+
   font-family: "Mont";
   &:focus {
     outline: 0;
@@ -53,7 +66,9 @@ const ButtonWrapper = styled.button`
   }
   & > .js-button-text {
     display: flex;
-    transition: opacity 1s ease-in;
+    transition: ${props =>
+      props.toggle ? "opacity 1s ease-in" : "opacity 100ms linear"};
+
     opacity: ${props => (props.toggle ? "1" : "0")};
     height: ${props => (props.toggle ? "42px" : "0px")};
     overflow: hidden;
@@ -68,36 +83,57 @@ export class Button extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      toggle: false
+      toggle: false,
+      displayMessage: false,
+      displayChat: false
     };
     this.handleClick = this.handleClick.bind(this);
+    this.destroyMessage = this.destroyMessage.bind(this);
+    this.destroyChat = this.destroyChat.bind(this);
+    this.showChat = this.showChat.bind(this);
   }
 
   handleClick() {
     if (this.state.toggle) {
+      this.setState({ displayMessage: true, toggle: false });
     } else {
       this.setState({ toggle: true });
     }
   }
+  destroyMessage() {
+    this.setState({ displayMessage: false });
+  }
+  destroyChat() {
+    this.setState({ displayChat: false });
+  }
+  showChat() {
+    this.setState({ displayChat: true, displayMessage: false });
+  }
   render() {
     const isOpen = this.state.toggle;
     return (
-      <ButtonWrapper
-        color={this.props.color}
-        toggle={isOpen}
-        onClick={() => this.handleClick()}
-      >
-        <div className="js-button-image-wrapper">
-          <img src={logo} className="js-button-image" />
-        </div>
-        <div className="js-button-text">
-          <div className="js-button-header">Запросить трансляцию</div>
-          <div className="js-button-info">
-            Уточните все интересующие вас вопросы на онлайн трансляции с нашим
-            сотрудником
+      <React.Fragment>
+        <ButtonWrapper
+          color={this.props.color}
+          toggle={isOpen}
+          onClick={() => this.handleClick()}
+        >
+          <div className="js-button-image-wrapper">
+            <img src={logo} className="js-button-image" />
           </div>
-        </div>
-      </ButtonWrapper>
+          <div className="js-button-text">
+            <div className="js-button-header">Запросить трансляцию</div>
+            <div className="js-button-info">
+              Уточните все интересующие вас вопросы на онлайн трансляции с нашим
+              сотрудником
+            </div>
+          </div>
+        </ButtonWrapper>
+        {this.state.displayMessage && (
+          <Message destroy={this.destroyMessage} showChat={this.showChat} />
+        )}
+        {this.state.displayChat && <Chat destroy={this.destroyChat} />}
+      </React.Fragment>
     );
   }
 }

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import html from "./index.html";
 import App from "./components/App";
+
 let elements = [];
 let body;
 
