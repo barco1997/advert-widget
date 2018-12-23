@@ -14,10 +14,6 @@ const Response = ({ title, description, date, icon }) => {
     min-height: 41px;
     overflow: hidden;
     flex-wrap: wrap;
-
-    &:hover {
-      cursor: pointer;
-    }
   `;
 
   const Icon = styled.div`

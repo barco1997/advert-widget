@@ -158,19 +158,18 @@ export class Chat extends React.Component {
   }
 
   handleSubmit(event) {
-    const messages = this.state.messages;
     const value = this.state.value;
 
     if (!this.state.startedFlag) {
       this.setState({
-        messages: [...this.state.messages, value],
+        messages: [...this.state.messages, { text: value, time: new Date() }],
         value: "",
         awaitingConnection: true,
         startedFlag: true
       });
     } else {
       this.setState({
-        messages: [...this.state.messages, value],
+        messages: [...this.state.messages, { text: value, time: new Date() }],
         value: ""
       });
     }

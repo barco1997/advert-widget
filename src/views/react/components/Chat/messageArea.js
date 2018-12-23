@@ -89,7 +89,7 @@ export class MessageArea extends React.Component {
         }}
       >
         {this.state.messages.map(message => (
-          <Response title={message} description="Вы" date={new Date()} />
+          <Response title={message.text} description="Вы" date={message.time} />
         ))}
         {this.state.awaitingConnection && (
           <div>
