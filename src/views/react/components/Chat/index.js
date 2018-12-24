@@ -5,7 +5,10 @@
  */
 
 import React from "react";
-
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import PropTypes from "prop-types";
+import * as portsActions from "../../actions/portsActions";
 import styled from "styled-components";
 import empty from "./empty.png";
 import ScrollArea from "react-scrollbar";

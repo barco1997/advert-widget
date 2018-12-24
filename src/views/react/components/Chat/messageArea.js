@@ -3,6 +3,9 @@ import React from "react";
 import styled from "styled-components";
 import Response from "../Response";
 import awaitingBox from "./awaiting.svg";
+
+const uuidv1 = require("uuid/v1");
+
 const MessageContainer = styled.div`
   overflow: auto;
   width: 100%;
@@ -89,7 +92,12 @@ export class MessageArea extends React.Component {
         }}
       >
         {this.state.messages.map(message => (
-          <Response title={message.text} description="Вы" date={message.time} />
+          <Response
+            key={uuidv1()}
+            title={message.text}
+            description="Вы"
+            date={message.time}
+          />
         ))}
         {this.state.awaitingConnection && (
           <div>

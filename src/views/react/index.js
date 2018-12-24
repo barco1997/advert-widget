@@ -2,10 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import html from "./index.html";
 import App from "./components/App";
-
+import configureStore from "./store/configureStore";
+import { Provider } from "react-redux";
 let elements = [];
 let body;
-
+const store = configureStore();
 export function react(color) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
@@ -15,9 +16,11 @@ export function react(color) {
     body.appendChild(temporary.children[0]);
   }
   ReactDOM.render(
-    <React.Fragment>
-      <App color={color} />
-    </React.Fragment>,
+    <Provider store={store}>
+      <React.Fragment>
+        <App color={color} />
+      </React.Fragment>
+    </Provider>,
     document.getElementById("root")
   );
 }
