@@ -95,8 +95,9 @@ export class MessageArea extends React.Component {
           <Response
             key={uuidv1()}
             title={message.text}
-            description="Вы"
+            description={message.user || "Вы"}
             date={message.time}
+            icon={message.photo}
           />
         ))}
         {this.state.awaitingConnection && (

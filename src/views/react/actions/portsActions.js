@@ -10,9 +10,6 @@ export function receivePorts(json) {
 
 export function fetchPorts() {
   return dispatch => {
-    return axios
-      .get(url())
-      .then(response => response.json())
-      .then(json => dispatch(receivePorts(json)));
+    return axios.get(url()).then(response => dispatch(receivePorts(response)));
   };
 }

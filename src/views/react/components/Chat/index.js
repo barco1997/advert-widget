@@ -12,10 +12,14 @@ import * as portsActions from "../../actions/portsActions";
 import styled from "styled-components";
 import empty from "./empty.png";
 import ScrollArea from "react-scrollbar";
+import axios from "axios";
+import ls from "local-storage";
 //import Response from "../Response";
 
 import { MessageArea } from "./messageArea";
-
+const io = require("socket.io-client");
+const storedToken = ls.get("token");
+const storedId = ls.get("userId");
 const CloseButton = styled.span`
   position: absolute;
   right: 14px;
@@ -148,12 +152,47 @@ export class Chat extends React.Component {
     this.state = {
       value: "",
       messages: [],
+      incomingMessage: false,
       awaitingConnection: false,
       startedFlag: false
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  componentWillMount() {
+    if (storedToken) {
+      this.socket = io("https://api.eyezon.app/", {
+        query: "token=" + storedToken,
+        transports: ["websocket"],
+        upgrade: false
+      });
+
+      this.socket.on("connect", () => {
+        console.log("socket got connected");
+      });
+      this.socket.on("newMessage", data => {
+        if (data.userId !== storedId) {
+          console.log("u got a reply again", data);
+          this.setState({
+            messages: [
+              ...this.state.messages,
+              {
+                text: data.message,
+                time: new Date(),
+                photo: data.user.photo,
+                user: data.user.firstName.concat(" ", data.user.lastName)
+              }
+            ],
+            awaitingConnection: false
+          });
+        }
+      });
+      this.socket.open();
+    }
+  }
+  componentWillUnmount() {
+    this.socket.close();
   }
 
   handleChange(event) {
@@ -162,14 +201,64 @@ export class Chat extends React.Component {
 
   handleSubmit(event) {
     const value = this.state.value;
-
+    const teamMembers = [
+      "vk_101332283",
+      "gp_111698140632755629998",
+      "vk_91340492",
+      "tg_334034851",
+      "fb_10155674980409457",
+      "fb_10215886346647183",
+      "fb_884165718423540",
+      "vk_104732776",
+      "fb_1732134973521323"
+    ];
     if (!this.state.startedFlag) {
       this.setState({
         messages: [...this.state.messages, { text: value, time: new Date() }],
         value: "",
-        awaitingConnection: true,
-        startedFlag: true
+        awaitingConnection: true
       });
+      axios
+        .get("https://api.eyezon.app/ports")
+        .then(function(response) {
+          console.log(response);
+          const members = response.data.ports.filter(port =>
+            teamMembers.some(elem => elem === port.user.userId)
+          );
+          console.log(members);
+          console.log(value);
+          members.map(member => {
+            if (!member.isDiscussionInProgress) {
+              axios
+                .post(
+                  `https://api.eyezon.app/ports/requestStream/${member._id}`,
+                  {
+                    message: value
+                  }
+                )
+                .then(function(response) {
+                  console.log(response);
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
+            } else {
+              axios
+                .put(`https://api.eyezon.app/messages/${member._id}`, {
+                  message: value
+                })
+                .then(function(response) {
+                  console.log(response);
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
+            }
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     } else {
       this.setState({
         messages: [...this.state.messages, { text: value, time: new Date() }],

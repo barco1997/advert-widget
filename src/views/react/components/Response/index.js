@@ -19,11 +19,12 @@ const Response = ({ title, description, date, icon }) => {
   const Icon = styled.div`
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+
     margin-right: 20px;
     background: white;
 
     & > img {
+      border-radius: 50%;
       width: 100%;
       height: 100%;
     }
