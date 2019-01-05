@@ -200,7 +200,11 @@ export class Message extends React.Component {
           {
             userId: uniqueId,
             nickName: "myapiBt",
-            password: uniquePassword
+            password: uniquePassword,
+            lastName: "Button",
+            firstName: "User",
+            photo:
+              "https://firebasestorage.googleapis.com/v0/b/eyezon-192313.appspot.com/o/photos%2Fbasic_user_photo.jpg?alt=media"
           },
           {
             auth: {
