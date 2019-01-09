@@ -10,7 +10,13 @@ import styled from "styled-components";
 import logo from "./image.png";
 import Message from "../Message/index";
 import { Chat } from "../Chat";
-
+import ls from "local-storage";
+import axios from "axios";
+const reqId = ls.get("conversationId");
+const storedToken = ls.get("token");
+if (storedToken) {
+  axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+}
 const ButtonWrapper = styled.button`
   text-decoration: none;
 
@@ -85,21 +91,73 @@ export class Button extends React.Component {
     this.state = {
       toggle: false,
       displayMessage: false,
-      displayChat: false
+      displayChat: false,
+      initializeChat: ls.get("token") ? true : false
     };
     this.handleClick = this.handleClick.bind(this);
     this.destroyMessage = this.destroyMessage.bind(this);
     this.destroyChat = this.destroyChat.bind(this);
     this.showChat = this.showChat.bind(this);
+    this.showChatHere = this.showChatHere.bind(this);
+    this.showMessageHere = this.showMessageHere.bind(this);
   }
 
   handleClick() {
+    let self = this;
+    //let showM = this.showMessageHere();
+    //let showCH = this.showChatHere();
     if (this.state.toggle) {
-      this.setState({ displayMessage: true, toggle: false });
+      if (!reqId) {
+        if (storedToken) {
+          axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+          axios
+            .get("https://api.eyezon.app/messages/dialogs/")
+            .then(function(response) {
+              console.log(response);
+              if (response.data.count > 0) {
+                console.log("token, no conversation id, dialogs");
+                self.showChatHere();
+              } else {
+                console.log("token, no conversation id, no dialogs");
+                self.showMessageHere();
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        } else {
+          console.log("no token, no conversation id");
+          self.showMessageHere();
+        }
+      } else {
+        axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+        axios
+          .get("https://api.eyezon.app/messages/dialogs/")
+          .then(function(response) {
+            console.log(response);
+
+            if (response.data.count > 0) {
+              console.log("conversation id, dialogs");
+              self.showChatHere();
+            } else {
+              console.log("conversation id, no dialogs");
+              self.showMessageHere();
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
     } else {
-      this.setState({ toggle: true });
+      console.log("toggle");
+      this.setState({
+        displayMessage: false,
+        displayChat: false,
+        toggle: true
+      });
     }
   }
+
   destroyMessage() {
     this.setState({ displayMessage: false });
   }
@@ -107,8 +165,28 @@ export class Button extends React.Component {
     this.setState({ displayChat: false });
   }
   showChat() {
-    this.setState({ displayChat: true, displayMessage: false });
+    this.setState({
+      displayChat: true,
+      displayMessage: false,
+      initializeChat: true
+    });
   }
+
+  showMessageHere() {
+    this.setState({
+      displayMessage: true,
+      displayChat: false,
+      toggle: false
+    });
+  }
+  showChatHere() {
+    this.setState({
+      displayChat: true,
+      displayMessage: false,
+      toggle: false
+    });
+  }
+
   render() {
     const isOpen = this.state.toggle;
     return (
@@ -132,7 +210,12 @@ export class Button extends React.Component {
         {this.state.displayMessage && (
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
         )}
-        {this.state.displayChat && <Chat destroy={this.destroyChat} />}
+        {this.state.initializeChat && (
+          <Chat
+            destroy={this.destroyChat}
+            displayChat={this.state.displayChat}
+          />
+        )}
       </React.Fragment>
     );
   }

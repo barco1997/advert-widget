@@ -20,6 +20,7 @@ import { MessageArea } from "./messageArea";
 const io = require("socket.io-client");
 const storedToken = ls.get("token");
 const storedId = ls.get("userId");
+const conversationId = ls.get("conversationId");
 const CloseButton = styled.span`
   position: absolute;
   right: 14px;
@@ -49,7 +50,7 @@ const CloseButton = styled.span`
 
 const ChatWrapper = styled.div`
   width: 100%;
-  display: flex;
+  display: ${props => (props.displayFlag ? "flex" : "none")};
   justify-content: center;
   font-family: "Mont";
 
@@ -154,13 +155,47 @@ export class Chat extends React.Component {
       messages: [],
       incomingMessage: false,
       awaitingConnection: false,
-      startedFlag: false
+      startedFlag: false,
+      displayFlag: this.props.displayChat,
+      firstTimeFlag: true
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.loadInitialMessages = this.loadInitialMessages.bind(this);
   }
   componentWillMount() {
+    let self = this;
+    if (conversationId) {
+      if (this.state.firstTimeFlag) {
+        axios
+          .get(`https://api.eyezon.app/messages/get/${conversationId}/`)
+          .then(function(response) {
+            console.log(response);
+            const users = response.data.users;
+            const messages = response.data.messages;
+            const editedMessages = messages.map(message => ({
+              text: message.message,
+              time: message.time,
+              photo: users.filter(user => user.userId === message.userId)[0]
+                .photo,
+              user: users
+                .filter(user => user.userId === message.userId)[0]
+                .firstName.concat(
+                  " ",
+                  users.filter(user => user.userId === message.userId)[0]
+                    .lastName
+                )
+            }));
+            console.log(editedMessages.length);
+
+            self.loadInitialMessages(editedMessages);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
+    }
     if (storedToken) {
       this.socket = io("https://api.eyezon.app/", {
         query: "token=" + storedToken,
@@ -173,6 +208,9 @@ export class Chat extends React.Component {
       });
       this.socket.on("newMessage", data => {
         if (data.userId !== storedId) {
+          if (!ls.get("conversationId")) {
+            ls.set("conversationId", data.requestId);
+          }
           console.log("u got a reply again", data);
           this.setState({
             messages: [
@@ -184,7 +222,8 @@ export class Chat extends React.Component {
                 user: data.user.firstName.concat(" ", data.user.lastName)
               }
             ],
-            awaitingConnection: false
+            awaitingConnection: false,
+            startedFlag: true
           });
         }
       });
@@ -198,21 +237,34 @@ export class Chat extends React.Component {
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      displayFlag: nextProps.displayChat
+    });
+  }
+
+  loadInitialMessages(msgs) {
+    this.setState({
+      messages: msgs,
+      firstTimeFlag: false
+    });
+  }
 
   handleSubmit(event) {
-    const value = this.state.value;
-    const teamMembers = [
-      "vk_101332283",
-      "gp_111698140632755629998",
-      "vk_91340492",
-      "tg_334034851",
-      "fb_10155674980409457",
-      "fb_10215886346647183",
-      "fb_884165718423540",
-      "vk_104732776",
-      "fb_1732134973521323"
-    ];
     if (!this.state.startedFlag) {
+      const value = this.state.value;
+      const teamMembers = [
+        "vk_101332283",
+        "gp_111698140632755629998",
+        "vk_91340492",
+        "tg_334034851",
+        "fb_10155674980409457",
+        "fb_10215886346647183",
+        "fb_884165718423540",
+        "vk_104732776",
+        "fb_1732134973521323"
+      ];
+
       this.setState({
         messages: [...this.state.messages, { text: value, time: new Date() }],
         value: "",
@@ -223,11 +275,33 @@ export class Chat extends React.Component {
         .then(function(response) {
           console.log(response);
           const members = response.data.ports.filter(port =>
-            teamMembers.some(elem => elem === port.user.userId)
+            teamMembers.some(
+              elem => elem === port.user.userId && !port.isDiscussionInProgress
+            )
           );
           console.log(members);
           console.log(value);
-          members.map(member => {
+          //here the temporary code starts
+          if (members.length > 0) {
+            axios
+              .post(
+                `https://api.eyezon.app/ports/requestStream/${members[0]._id}`,
+                {
+                  message: value
+                }
+              )
+              .then(function(response) {
+                console.log(response);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          }
+
+          //end of temporary code
+
+          //use this in future:
+          /*members.map(member => {
             if (!member.isDiscussionInProgress) {
               axios
                 .post(
@@ -254,18 +328,12 @@ export class Chat extends React.Component {
                   console.log(error);
                 });
             }
-          });
+          });*/
         })
         .catch(function(error) {
           console.log(error);
         });
-    } else {
-      this.setState({
-        messages: [...this.state.messages, { text: value, time: new Date() }],
-        value: ""
-      });
     }
-
     event.preventDefault();
   }
 
@@ -274,7 +342,7 @@ export class Chat extends React.Component {
 
     return (
       <React.Fragment>
-        <ChatWrapper>
+        <ChatWrapper displayFlag={this.state.displayFlag}>
           <div
             className="js-chat-overlay"
             onClick={() => {
@@ -288,7 +356,7 @@ export class Chat extends React.Component {
               }}
             />
             <div className="js-chat-message-container">
-              {this.state.messages.length == 0 ? (
+              {!this.state.messages || this.state.messages.length == 0 ? (
                 <div className="js-chat-message-placeholder">
                   <div>Не стесняйтесь, спросите!</div>
                   <div>Наши сотрудники ответят на все ваши вопросы</div>
