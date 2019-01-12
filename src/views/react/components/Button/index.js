@@ -17,6 +17,7 @@ const storedToken = ls.get("token");
 if (storedToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
 }
+
 const ButtonWrapper = styled.button`
   text-decoration: none;
 
@@ -49,27 +50,7 @@ const ButtonWrapper = styled.button`
   &:focus {
     outline: 0;
   }
-  & > .js-button-image {
-    width: 40px;
-    height: 40px;
-  }
-  & > .js-button-image-wrapper {
-    width: 42px;
-    height: 51px;
-    border-radius: 28px;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  & > .js-button-header {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  & > .js-button-info {
-    font-size: 8px;
-    opacity: 0.5;
-  }
   & > .js-button-text {
     display: flex;
     transition: ${props =>

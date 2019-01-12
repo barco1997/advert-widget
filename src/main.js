@@ -1,8 +1,7 @@
-import { ping } from "./services";
-import { show } from "./views/button/button";
+import "./views/global/style.css";
 import { react } from "./views/react";
 import "./fonts/Mont.css";
-const supportedAPI = ["init", "message", "color", "react"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
+const supportedAPI = ["init", "message", "react"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
 
 /**
     The main entry of the application
@@ -53,9 +52,7 @@ function apiHandler(api, params) {
     case "react":
       react(params);
       break;
-    case "color":
-      show(params);
-      break;
+
     default:
       console.warn(`No handler defined for ${api}`);
   }
