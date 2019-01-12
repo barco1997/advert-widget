@@ -111,7 +111,7 @@ export class Button extends React.Component {
         if (storedToken) {
           axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
           axios
-            .get("https://api.eyezon.app/messages/dialogs/")
+            .get("https://api.eyezon.app/messages/dialogs?type=joiner")
             .then(function(response) {
               console.log(response);
               if (response.data.count > 0) {
@@ -132,7 +132,7 @@ export class Button extends React.Component {
       } else {
         axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
         axios
-          .get("https://api.eyezon.app/messages/dialogs/")
+          .get("https://api.eyezon.app/messages/dialogs?type=joiner")
           .then(function(response) {
             console.log(response);
 

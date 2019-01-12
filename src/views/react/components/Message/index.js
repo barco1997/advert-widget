@@ -13,113 +13,97 @@ import iphone from "./Iphone_8.png";
 import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
+
+const JsWidgetImage = styled.img`
+  width: 214px;
+  height: 337px;
+  margin-left: 20px;
+  margin-top: -10px;
+`;
+const JsWidgetDownload = styled.div`
+  width: 210px;
+  display: flex;
+  justify-content: space-between;
+  height: 42px;
+`;
+const JsWidgetIos = styled.img`
+  width: 85px;
+  height: 28px;
+  margin-top: -36px;
+`;
+const JsWidgetAndroid = styled.img`
+  width: 95px;
+  height: 27px;
+  margin-top: -35px;
+`;
+const JsWidgetLowrow = styled.div`
+  width: 100%;
+  margin-top: 101px;
+  margin-bottom: 34px;
+  display: flex;
+  justify-content: flex-start;
+`;
+
+const JsWidgetOverlay = styled.div`
+  z-index: 10002;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  opacity: 0.2;
+  background-color: #000;
+`;
+
+const JsWidgetWindow = styled.div`
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+
+  z-index: 10003;
+  background: #fff;
+  max-height: 620px;
+  top: 15%;
+
+  width: 840px;
+  padding: 20px 60px;
+  padding-top: 60px;
+  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+`;
+const JsWidgetDialogue = styled.div`
+  width: 376px;
+  font-size: 12px;
+  margin-top: 10px;
+  color: black;
+`;
+
+const JsWidgetDialogueH2 = styled.h2`
+  font-size: 26px;
+  font-weight: bold;
+  margin: 0px;
+`;
+
+const JsWidgetDialogueSpan = styled.span`
+  opacity: 0.5;
+`;
+
+const JsWidgetIcons = styled.div`
+  width: 210px;
+
+  margin-right: 55px;
+  margin-left: 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const MessageWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   font-family: "Mont";
-
-  & > .js-widget-image {
-    width: 214px;
-    height: 337px;
-    margin-left: 20px;
-    margin-top: -10px;
-  }
-
-  & > .js-widget-download {
-    width: 210px;
-    display: flex;
-    justify-content: space-between;
-    height: 42px;
-  }
-  & > .js-widget-ios {
-    width: 85px;
-    height: 28px;
-    margin-top: -36px;
-  }
-  & > .js-widget-android {
-    width: 95px;
-    height: 27px;
-    margin-top: -35px;
-  }
-  & > .js-widget-lowrow {
-    width: 100%;
-    margin-top: 101px;
-    margin-bottom: 34px;
-    display: flex;
-    justify-content: flex-start;
-  }
-  & > .js-widget-getstream {
-    text-decoration: none;
-    border-width: 0px;
-    -webkit-font-smoothing: antialiased;
-    -webkit-touch-callout: none;
-    user-select: none;
-    cursor: pointer;
-    outline: 0;
-    width: 258px;
-    height: 44px;
-    font-size: 12px;
-    font-weight: 600;
-
-    background: #ff2d55;
-    color: white;
-    border-radius: 32px;
-    border-style: none;
-    box-shadow: 0px 4px 15px rgba(255, 45, 85, 0.8);
-
-    transition: box-shadow 300ms ease-in-out;
-  }
-
-  & > .js-widget-overlay {
-    z-index: 10002;
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    opacity: 0.2;
-    background-color: #000;
-  }
-  & > .js-widget-window {
-    position: fixed;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    z-index: 10003;
-    background: #fff;
-
-    top: 15%;
-
-    width: 760px;
-    padding: 20px 60px;
-    padding-top: 60px;
-    box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
-    border-radius: 6px;
-  }
-  & > .js-widget-dialog {
-    width: 376px;
-    font-size: 12px;
-    margin-top: 10px;
-  }
-  & > .js-widget-dialog > h2 {
-    font-size: 26px;
-    font-weight: bold;
-    margin: 0px;
-  }
-  & > .js-widget-dialog > span {
-    opacity: 0.5;
-  }
-  & > .js-widget-icons {
-    width: 210px;
-
-    margin-right: 55px;
-    margin-left: 55px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
 `;
 
 const GetStream = styled.button`
@@ -229,38 +213,37 @@ export class Message extends React.Component {
     return (
       <React.Fragment>
         <MessageWrapper>
-          <div
-            className="js-widget-overlay"
+          <JsWidgetOverlay
             onClick={() => {
               this.props.destroy();
             }}
           />
-          <div className="js-widget-window">
+          <JsWidgetWindow>
             <CloseButton
               onClick={() => {
                 this.props.destroy();
               }}
             />
-            <div className="js-widget-dialog">
-              <h2>Что такое eyezon?</h2>
-              <span>
+            <JsWidgetDialogue>
+              <JsWidgetDialogueH2>Что такое eyezon?</JsWidgetDialogueH2>
+              <JsWidgetDialogueSpan>
                 Это инструмент для видео-трансляций нового поколения, напрямую
                 соединяющий вас с тем, кто может показать интересующий вас
                 видео-обзор.
-              </span>
+              </JsWidgetDialogueSpan>
               <br />
               <br />
               <br />
 
-              <h2>Как он работает?</h2>
-              <span>
+              <JsWidgetDialogueH2>Как он работает?</JsWidgetDialogueH2>
+              <JsWidgetDialogueSpan>
                 Используя искусственный интеллект, система анализирует все фото
                 и короткие видео в приложении и, сопоставляя эти результаты с
                 поисковым запросом, выдает в качестве результата только те
                 изобажнеия, которые ему релевантны. Остается отправить запрос и
                 ждать, когда автор сможет прислать видео-ответ на него.
-              </span>
-              <div className="js-widget-lowrow">
+              </JsWidgetDialogueSpan>
+              <JsWidgetLowrow>
                 <GetStream
                   onClick={e => {
                     e.preventDefault;
@@ -269,17 +252,17 @@ export class Message extends React.Component {
                 >
                   Запросить трансляцию
                 </GetStream>
-              </div>
-            </div>
-            <div className="js-widget-icons">
-              <img src={iphone} className="js-widget-image" />
+              </JsWidgetLowrow>
+            </JsWidgetDialogue>
+            <JsWidgetIcons>
+              <JsWidgetImage src={iphone} />
 
-              <div className="js-widget-download">
-                <img src={android} className="js-widget-android" />
-                <img src={ios} className="js-widget-ios" />
-              </div>
-            </div>
-          </div>
+              <JsWidgetDownload>
+                <JsWidgetAndroid src={android} />
+                <JsWidgetIos src={ios} />
+              </JsWidgetDownload>
+            </JsWidgetIcons>
+          </JsWidgetWindow>
         </MessageWrapper>
       </React.Fragment>
     );

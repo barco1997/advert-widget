@@ -5,13 +5,12 @@
  */
 
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+
 import PropTypes from "prop-types";
-import * as portsActions from "../../actions/portsActions";
+
 import styled from "styled-components";
 import empty from "./empty.png";
-import ScrollArea from "react-scrollbar";
+
 import axios from "axios";
 import ls from "local-storage";
 //import Response from "../Response";
@@ -49,6 +48,7 @@ const CloseButton = styled.span`
 `;
 
 const ChatWrapper = styled.div`
+  color: black;
   width: 100%;
   display: ${props => (props.displayFlag ? "flex" : "none")};
   justify-content: center;
@@ -109,8 +109,9 @@ const ChatWrapper = styled.div`
   }
 `;
 
-const InputField = styled.input`
+const InputFieldA = styled.input`
   height: 28px;
+  color: black;
   width: 100%;
   background: #f5f5f5;
   border: 0.5px solid #e5e5e5;
@@ -251,7 +252,7 @@ export class Chat extends React.Component {
   }
 
   handleSubmit(event) {
-    if (!this.state.startedFlag) {
+    if (!this.state.startedFlag && !this.state.awaitingConnection) {
       const value = this.state.value;
       const teamMembers = [
         "vk_101332283",
@@ -292,6 +293,7 @@ export class Chat extends React.Component {
               )
               .then(function(response) {
                 console.log(response);
+                ls.set("portId", members[0]._id);
               })
               .catch(function(error) {
                 console.log(error);
@@ -329,6 +331,35 @@ export class Chat extends React.Component {
                 });
             }
           });*/
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    } else if (!this.state.awaitingConnection) {
+      const port = ls.get("portId");
+      const value = this.state.value;
+      const teamMembers = [
+        "vk_101332283",
+        "gp_111698140632755629998",
+        "vk_91340492",
+        "tg_334034851",
+        "fb_10155674980409457",
+        "fb_10215886346647183",
+        "fb_884165718423540",
+        "vk_104732776",
+        "fb_1732134973521323"
+      ];
+
+      this.setState({
+        messages: [...this.state.messages, { text: value, time: new Date() }],
+        value: ""
+      });
+      axios
+        .put(`https://api.eyezon.app/messages/${port}`, {
+          message: value
+        })
+        .then(function(response) {
+          console.log(response);
         })
         .catch(function(error) {
           console.log(error);
@@ -371,12 +402,11 @@ export class Chat extends React.Component {
               <form onSubmit={this.handleSubmit}>
                 <div style={{ flexDirection: "column" }}>
                   <label>
-                    <InputField
+                    <InputFieldA
                       type="text"
                       value={this.state.value}
                       onChange={this.handleChange}
                       placeholder="Задайте вопрос"
-                      style={{ width: "100%" }}
                     />
                   </label>
                   <SendRequest type="submit" value="Submit">
