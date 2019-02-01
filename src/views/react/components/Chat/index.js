@@ -13,17 +13,33 @@ import empty from "./empty.png";
 
 import axios from "axios";
 import ls from "local-storage";
+import "./dash.all.min.js";
 //import Response from "../Response";
-
+import poster from "./poster.svg";
 import { MessageArea } from "./messageArea";
 const io = require("socket.io-client");
 const storedToken = ls.get("token");
 const storedId = ls.get("userId");
 const conversationId = ls.get("conversationId");
+
+const VideoWrapper = styled.div`
+  width: 318px;
+  height: 553px;
+  margin-left: 50px;
+  border-radius: 10px;
+  overflow: hidden;
+`;
+const WindowWrapper = styled.div`
+  display: flex;
+  z-index: 10003;
+  position: fixed;
+  top: 15%;
+`;
+
 const CloseButton = styled.span`
-  position: absolute;
-  right: 14px;
-  top: 14px;
+  position: relative;
+  left: 475px;
+  top: -26px;
   width: 14px;
   height: 14px;
   opacity: 0.3;
@@ -66,15 +82,11 @@ const ChatWrapper = styled.div`
   }
 
   & > .js-chat-window {
-    position: fixed;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
 
-    z-index: 10003;
     background: #fff;
-
-    top: 15%;
 
     width: 462px;
     height: 473px;
@@ -158,7 +170,8 @@ export class Chat extends React.Component {
       awaitingConnection: false,
       startedFlag: false,
       displayFlag: this.props.displayChat,
-      firstTimeFlag: true
+      firstTimeFlag: true,
+      streamFlag: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -213,6 +226,23 @@ export class Chat extends React.Component {
             ls.set("conversationId", data.requestId);
           }
           console.log("u got a reply again", data);
+          if (
+            data.attachments.length > 0 &&
+            data.attachments[0].type === "video"
+          ) {
+            this.setState({
+              streamFlag: true
+            });
+            let live = this.refs.live;
+            live.setAttribute("crossorigin", "anonymous");
+            let player = dashjs.MediaPlayer().create();
+            player.initialize(live, null, true);
+            player.setFastSwitchEnabled(true);
+            player.attachSource(data.attachments[0].src);
+            /*player.attachSource(
+              `rtmp://176.9.29.30:1935/live/${data.attachments[0]._id}`
+            );*/
+          }
           this.setState({
             messages: [
               ...this.state.messages,
@@ -380,42 +410,49 @@ export class Chat extends React.Component {
               this.props.destroy();
             }}
           />
-          <div className="js-chat-window">
-            <CloseButton
-              onClick={() => {
-                this.props.destroy();
-              }}
-            />
-            <div className="js-chat-message-container">
-              {!this.state.messages || this.state.messages.length == 0 ? (
-                <div className="js-chat-message-placeholder">
-                  <div>Не стесняйтесь, спросите!</div>
-                  <div>Наши сотрудники ответят на все ваши вопросы</div>
-                  <img src={empty} className="js-chat-empty" />
-                </div>
-              ) : (
-                <MessageArea
-                  messages={this.state.messages}
-                  awaitingConnection={this.state.awaitingConnection}
-                />
-              )}
-              <form onSubmit={this.handleSubmit}>
-                <div style={{ flexDirection: "column" }}>
-                  <label>
-                    <InputFieldA
-                      type="text"
-                      value={this.state.value}
-                      onChange={this.handleChange}
-                      placeholder="Задайте вопрос"
-                    />
-                  </label>
-                  <SendRequest type="submit" value="Submit">
-                    Отправить
-                  </SendRequest>
-                </div>
-              </form>
+          <WindowWrapper>
+            <div className="js-chat-window">
+              <CloseButton
+                onClick={() => {
+                  this.props.destroy();
+                }}
+              />
+              <div className="js-chat-message-container">
+                {!this.state.messages || this.state.messages.length == 0 ? (
+                  <div className="js-chat-message-placeholder">
+                    <div>Не стесняйтесь, спросите!</div>
+                    <div>Наши сотрудники ответят на все ваши вопросы</div>
+                    <img src={empty} className="js-chat-empty" />
+                  </div>
+                ) : (
+                  <MessageArea
+                    messages={this.state.messages}
+                    awaitingConnection={this.state.awaitingConnection}
+                  />
+                )}
+                <form onSubmit={this.handleSubmit}>
+                  <div style={{ flexDirection: "column" }}>
+                    <label>
+                      <InputFieldA
+                        type="text"
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        placeholder="Задайте вопрос"
+                      />
+                    </label>
+                    <SendRequest type="submit" value="Submit">
+                      Отправить
+                    </SendRequest>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
+            {this.state.streamFlag && (
+              <VideoWrapper>
+                <video id="live" ref="live" controls />
+              </VideoWrapper>
+            )}
+          </WindowWrapper>
         </ChatWrapper>
       </React.Fragment>
     );

@@ -1,3 +1,8 @@
+video {
+  width: 318px;
+  height: 553px;
+}
+
 .js-button-dialog {
   position: fixed;
   z-index: 10001;
@@ -60,20 +65,16 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  opacity: 0.2;
+  opacity: 0.4;
   background-color: #000;
 }
 
 .js-chat-window {
-  position: fixed;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
 
-  z-index: 10003;
   background: #fff;
-
-  top: 15%;
 
   width: 462px;
   height: 473px;
@@ -120,7 +121,7 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  opacity: 0.2;
+  opacity: 0.4;
   background-color: #000;
 }
 .js-widget-window {
