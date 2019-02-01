@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import Response from "../Response";
 import awaitingBox from "./awaiting.svg";
+import StreamButton from "./StreamButton"
 
 const uuidv1 = require("uuid/v1");
 
@@ -50,7 +51,8 @@ export class MessageArea extends React.Component {
     super(props);
     this.state = {
       messages: this.props.messages || [],
-      awaitingConnection: this.props.awaitingConnection
+      awaitingConnection: this.props.awaitingConnection,
+      streamIsWatching: false
     };
 
     this.setItems = this.setItems.bind(this);
@@ -82,6 +84,12 @@ export class MessageArea extends React.Component {
     this.scrollToBottom();
   }
 
+  streamHandler() {
+    this.setState({
+      streamIsWatching: true
+    });
+  }
+
   render() {
     //const isOpen = this.state.toggle;
 
@@ -91,14 +99,22 @@ export class MessageArea extends React.Component {
           this.messageList = c;
         }}
       >
+        <StreamButton 
+          link = 'link'
+          isWatching = {this.state.streamIsWatching}
+          streamHandler = {() => {this.streamHandler()}}
+        />
         {this.state.messages.map(message => (
-          <Response
-            key={uuidv1()}
-            title={message.text}
-            description={message.user || "Вы"}
-            date={message.time}
-            icon={message.photo}
-          />
+
+            // Add message type checker
+
+            <Response
+              key={uuidv1()}
+              title={message.text}
+              description={message.user || "Вы"}
+              date={message.time}
+              icon={message.photo}
+            />
         ))}
         {this.state.awaitingConnection && (
           <div>
