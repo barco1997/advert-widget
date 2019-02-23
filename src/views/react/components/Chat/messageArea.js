@@ -98,6 +98,12 @@ export class MessageArea extends React.Component {
             description={message.user || "Вы"}
             date={message.time}
             icon={message.photo}
+            flv={message.flv}
+            functionA={message.flv ? this.props.setFlv : null}
+            src={message.src}
+            type={message.type}
+            handlePhoto={this.props.handlePhoto}
+            handleVideo={this.props.handleVideo}
           />
         ))}
         {this.state.awaitingConnection && (
