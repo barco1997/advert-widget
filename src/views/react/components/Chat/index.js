@@ -428,6 +428,7 @@ export class Chat extends React.Component {
       });
       this.socket.on("portOnline", data => {
         console.log("port on data:", data);
+        this.notifyMe("Stream started at Eyezon button");
         this.socket.emit("joinRoom", ls.get("conversationId"));
         // console.log("first success", res);
         //this.socket.emit("port", {
@@ -445,6 +446,7 @@ export class Chat extends React.Component {
       });
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
+        this.notifyMe("Stream ended at Eyezon button");
         this.socket.emit("port", {
           event: "leaveRoom",
           room: ls.get("conversationId")
