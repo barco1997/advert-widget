@@ -63,6 +63,7 @@ const WindowWrapper = styled.div`
   display: flex;
   z-index: 10003;
   position: fixed;
+
   top: 15%;
 `;
 
@@ -299,7 +300,36 @@ export class Chat extends React.Component {
     this.handleStreamClick = this.handleStreamClick.bind(this);
     this.handlePhoto = this.handlePhoto.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
+    this.notifyMe = this.notifyMe.bind(this);
   }
+
+  notifyMe(message) {
+    // Проверка поддержки браузером уведомлений
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    }
+
+    // Проверка разрешения на отправку уведомлений
+    else if (Notification.permission === "granted") {
+      // Если разрешено, то создаем уведомление
+      var notification = new Notification(message);
+    }
+
+    // В противном случае, запрашиваем разрешение
+    else if (Notification.permission !== "denied") {
+      Notification.requestPermission(function(permission) {
+        // Если пользователь разрешил, то создаем уведомление
+        if (permission === "granted") {
+          var notification = new Notification(message);
+        }
+      });
+    }
+
+    // В конечном счете, если пользователь отказался от получения
+    // уведомлений, то стоит уважать его выбор и не беспокоить его
+    // по этому поводу.
+  }
+
   componentWillMount() {
     let self = this;
 
@@ -329,6 +359,7 @@ export class Chat extends React.Component {
             ls.set("conversationId", data.requestId);
           }
           console.log("u got a reply again", data);
+          this.notifyMe("New message at Eyezon button");
           let type;
           let source;
           if (
