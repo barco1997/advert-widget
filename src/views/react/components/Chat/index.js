@@ -313,9 +313,16 @@ export class Chat extends React.Component {
       this.socket.on("connect", () => {
         console.log("socket got connected");
       });
+      this.socket.on("disconnect", () => {
+        console.log("socket got disconnected");
+        this.socket.reconnect();
+      });
       //this.socket.on("port", data => {
       // console.log("port data:", data);
       //});
+      this.socket.on("reconnect_attempt", () => {
+        this.socket.io.opts.transports = ["polling", "websocket"];
+      });
       this.socket.on("newMessage", data => {
         if (data.userId !== storedId) {
           if (!ls.get("conversationId")) {
@@ -390,13 +397,12 @@ export class Chat extends React.Component {
       });
       this.socket.on("portOnline", data => {
         console.log("port on data:", data);
-        this.socket.emit("joinRoom", ls.get("conversationId")).then(res => {
-          console.log("first success", res);
-          this.socket.emit("port", {
-            event: "joinRoom",
-            room: ls.get("conversationId")
-          });
-        });
+        this.socket.emit("joinRoom", ls.get("conversationId"));
+        // console.log("first success", res);
+        //this.socket.emit("port", {
+        //  event: "joinRoom",
+        // room: ls.get("conversationId")
+        //  });
 
         /*let obj = {
           event: "comment",
