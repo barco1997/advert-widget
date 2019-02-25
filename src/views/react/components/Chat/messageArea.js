@@ -50,13 +50,44 @@ export class MessageArea extends React.Component {
     super(props);
     this.state = {
       messages: this.props.messages || [],
-      awaitingConnection: this.props.awaitingConnection
+      awaitingConnection: this.props.awaitingConnection,
+      streamVideoSrc: null,
+      streamIndexVal: []
     };
 
     this.setItems = this.setItems.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.strSrc !== null) {
+      console.log("one step further", nextProps.strSrc);
+      const index = nextProps.messages
+        .slice()
+        .reverse()
+        .findIndex(a => a.type === "stream");
+      const count = nextProps.messages.length - 1;
+      const finalIndex = index >= 0 ? count - index : index;
+      console.log(finalIndex);
+      const frog = [
+        ...this.state.streamIndexVal,
+        { index: finalIndex, src: nextProps.strSrc }
+      ];
+      this.setState({
+        streamVideoSrc: nextProps.strSrc,
+        streamIndexVal: [
+          ...this.state.streamIndexVal,
+          { index: finalIndex, src: nextProps.strSrc }
+        ]
+      });
+
+      console.log("Stream Index Value", frog);
+      console.log("True?", frog.some(elem => elem.index === finalIndex));
+      console.log(
+        "Src:",
+        frog.filter(elem => elem.index === finalIndex)[0].src
+      );
+      nextProps.handleStreamToVideo();
+    }
     this.setItems(nextProps);
   }
 
@@ -91,7 +122,7 @@ export class MessageArea extends React.Component {
           this.messageList = c;
         }}
       >
-        {this.state.messages.map(message => (
+        {this.state.messages.map((message, index) => (
           <Response
             key={uuidv1()}
             title={message.text}
@@ -100,7 +131,14 @@ export class MessageArea extends React.Component {
             icon={message.photo}
             flv={message.flv}
             functionA={message.flv ? this.props.setFlv : null}
-            src={message.src}
+            src={
+              message.flv &&
+              this.state.streamIndexVal.some(elem => elem.index === index)
+                ? this.state.streamIndexVal.filter(
+                    elem => elem.index === index
+                  )[0].src
+                : message.src
+            }
             type={message.type}
             handlePhoto={this.props.handlePhoto}
             handleVideo={this.props.handleVideo}

@@ -17,6 +17,7 @@ import ls from "local-storage";
 import ReactPlayer from "react-player";
 //import Response from "../Response";
 import poster from "./poster.svg";
+import favicon from "./favicon.png";
 import { MessageArea } from "./messageArea";
 
 function load(url) {
@@ -291,7 +292,8 @@ export class Chat extends React.Component {
       streamLink: "",
       videoElement: this.refs.live,
       photoSrc: null,
-      videoSrc: null
+      videoSrc: null,
+      streamToVideoSrc: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -300,11 +302,16 @@ export class Chat extends React.Component {
     this.handleStreamClick = this.handleStreamClick.bind(this);
     this.handlePhoto = this.handlePhoto.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
+    this.handleStreamToVideo = this.handleStreamToVideo.bind(this);
+
     this.notifyMe = this.notifyMe.bind(this);
   }
 
   notifyMe(message) {
     // Проверка поддержки браузером уведомлений
+    let options = {
+      icon: favicon
+    };
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
     }
@@ -312,7 +319,7 @@ export class Chat extends React.Component {
     // Проверка разрешения на отправку уведомлений
     else if (Notification.permission === "granted") {
       // Если разрешено, то создаем уведомление
-      var notification = new Notification(message);
+      var notification = new Notification(message, options);
     }
 
     // В противном случае, запрашиваем разрешение
@@ -320,7 +327,7 @@ export class Chat extends React.Component {
       Notification.requestPermission(function(permission) {
         // Если пользователь разрешил, то создаем уведомление
         if (permission === "granted") {
-          var notification = new Notification(message);
+          var notification = new Notification(message, options);
         }
       });
     }
@@ -345,13 +352,14 @@ export class Chat extends React.Component {
       });
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
-        this.socket.reconnect();
+        this.socket.open();
       });
       //this.socket.on("port", data => {
       // console.log("port data:", data);
       //});
-      this.socket.on("reconnect_attempt", () => {
-        this.socket.io.opts.transports = ["polling", "websocket"];
+      this.socket.on("messageUpdated", data => {
+        console.log("message got updated", data.message.attachments[0].src);
+        this.setState({ streamToVideoSrc: data.message.attachments[0].src });
       });
       this.socket.on("newMessage", data => {
         if (data.userId !== storedId) {
@@ -402,6 +410,7 @@ export class Chat extends React.Component {
               `http://176.9.29.30:1935/live/${data._id}/index.mpd`
             );*/
             type = "stream";
+            ls.set("streamDamnId", data._id);
           }
           this.setState({
             messages: [
@@ -429,7 +438,7 @@ export class Chat extends React.Component {
       this.socket.on("portOnline", data => {
         console.log("port on data:", data);
         this.notifyMe("Stream started at Eyezon button");
-        this.socket.emit("joinRoom", ls.get("conversationId"));
+        this.socket.emit("joinRoom", ls.get("streamDamnId"));
         // console.log("first success", res);
         //this.socket.emit("port", {
         //  event: "joinRoom",
@@ -447,10 +456,11 @@ export class Chat extends React.Component {
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
         this.notifyMe("Stream ended at Eyezon button");
-        this.socket.emit("port", {
+        let objlv = {
           event: "leaveRoom",
-          room: ls.get("conversationId")
-        });
+          room: ls.get("streamDamnId")
+        };
+        this.socket.emit("port", JSON.stringify(objlv));
       });
 
       this.socket.on("port", data => {
@@ -465,36 +475,45 @@ export class Chat extends React.Component {
           .then(function(response) {
             const users = response.data.users;
             const messages = response.data.messages;
-            console.log(messages);
-            const editedMessages = messages.map(message => ({
-              text: message.message,
-              time: message.time,
-              photo: users.filter(user => user.userId === message.userId)[0]
-                .photo,
-              user: users
-                .filter(user => user.userId === message.userId)[0]
-                .firstName.concat(
-                  " ",
-                  users.filter(user => user.userId === message.userId)[0]
-                    .lastName
-                ),
-              type:
-                message.attachments.length > 0
-                  ? message.attachments[0].type
-                  : "message",
-              src:
-                message.attachments.length > 0
-                  ? message.attachments[0].src
-                  : null,
-              flv:
-                message.attachments.length > 0 &&
-                message.attachments[0].type === "stream"
-                  ? `https://static.eyezon.app/live/${message._id}.flv`
-                  : ""
-            }));
-            console.log("That is - ", editedMessages);
+            const buttonUserId = ls.get("userId");
+            if (
+              users.filter(
+                user => user.userId === buttonUserId && user.type === "joiner"
+              ).length === 0
+            ) {
+              self.loadInitialMessages([]);
+            } else {
+              console.log(messages);
+              const editedMessages = messages.map(message => ({
+                text: message.message,
+                time: message.time,
+                photo: users.filter(user => user.userId === message.userId)[0]
+                  .photo,
+                user: users
+                  .filter(user => user.userId === message.userId)[0]
+                  .firstName.concat(
+                    " ",
+                    users.filter(user => user.userId === message.userId)[0]
+                      .lastName
+                  ),
+                type:
+                  message.attachments.length > 0
+                    ? message.attachments[0].type
+                    : "message",
+                src:
+                  message.attachments.length > 0
+                    ? message.attachments[0].src
+                    : null,
+                flv:
+                  message.attachments.length > 0 &&
+                  message.attachments[0].type === "stream"
+                    ? `https://static.eyezon.app/live/${message._id}.flv`
+                    : ""
+              }));
+              console.log("Users - ", users);
 
-            self.loadInitialMessages(editedMessages);
+              self.loadInitialMessages(editedMessages);
+            }
           })
           .catch(function(error) {
             console.log(error);
@@ -528,6 +547,12 @@ export class Chat extends React.Component {
       flvPlayer.load();
       flvPlayer.play();
     }
+    console.log("first success");
+    let obj = {
+      event: "joinRoom",
+      room: ls.get("streamDamnId")
+    };
+    this.socket.emit("port", JSON.stringify(obj));
   }
 
   handlePhoto(src) {
@@ -543,6 +568,12 @@ export class Chat extends React.Component {
       videoSrc: src,
       photoSrc: null,
       streamFlag: false
+    });
+  }
+
+  handleStreamToVideo() {
+    this.setState({
+      streamToVideoSrc: null
     });
   }
 
@@ -570,6 +601,7 @@ export class Chat extends React.Component {
   }
 
   handleSubmit(event) {
+    let self = this;
     if (!this.state.startedFlag && !this.state.awaitingConnection) {
       const value = this.state.value;
       const teamMembers = [
@@ -689,6 +721,13 @@ export class Chat extends React.Component {
         })
         .then(function(response) {
           console.log(response);
+          let obj = {
+            event: "comment",
+            room: ls.get("streamDamnId"),
+            text: "Hello"
+          };
+          console.log(obj);
+          self.socket.emit("port", JSON.stringify(obj));
         })
         .catch(function(error) {
           console.log(error);
@@ -741,6 +780,8 @@ export class Chat extends React.Component {
                     setFlv={this.handleStreamClick}
                     handlePhoto={this.handlePhoto}
                     handleVideo={this.handleVideo}
+                    handleStreamToVideo={this.handleStreamToVideo}
+                    strSrc={this.state.streamToVideoSrc}
                   />
                 )}
                 <form onSubmit={this.handleSubmit}>
