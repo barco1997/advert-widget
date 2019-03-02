@@ -50,7 +50,12 @@ function apiHandler(api, params) {
     case "message":
       break;
     case "react":
-      react(params);
+      let target;
+      if (params.button === false) {
+        target = document.getElementById("eyezonButton");
+      }
+
+      react(params, target);
       break;
 
     default:

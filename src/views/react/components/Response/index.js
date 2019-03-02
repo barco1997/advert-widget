@@ -263,7 +263,10 @@ export class Response extends React.Component {
               <ImageA src={this.state.src} onClick={() => this.handleClick()} />
             )}
             {this.state.typeVar === "video" && this.state.src && (
-              <VideoA src={this.state.src} onClick={() => this.handleClick()} />
+              <ImageA
+                src={this.props.thumb}
+                onClick={() => this.handleClick()}
+              />
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (

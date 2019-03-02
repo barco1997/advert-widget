@@ -18,8 +18,9 @@ import ReactPlayer from "react-player";
 //import Response from "../Response";
 import poster from "./poster.svg";
 import favicon from "./favicon.png";
+import arrow from "./arrow1.svg";
 import { MessageArea } from "./messageArea";
-
+let currentUrl = window.location.href;
 function load(url) {
   return new Promise(function(resolve, reject) {
     var script = document.createElement("script");
@@ -243,6 +244,27 @@ const Image = styled.div`
   border-radius: 10px;
 `;
 
+const NotificationMessageWrapper = styled.div`
+  position: absolute;
+  left: 0px;
+  top: 28px;
+  z-index: 20000;
+  display: ${props => (props.toggle ? "flex" : "none")};
+  flex-direction: column;
+`;
+const NotificationMessageArrow = styled.img`
+  margin-left: 80px;
+`;
+const NotificationMessageText = styled.span`
+  font-family: "Caveat";
+  font-weight: bold;
+  font-size: 35px;
+  margin-left: 70px;
+  width: 360px;
+  margin-top: -60px;
+  color: white;
+`;
+
 const SendRequest = styled.button`
   width: 181px;
   height: 28px;
@@ -293,7 +315,8 @@ export class Chat extends React.Component {
       videoElement: this.refs.live,
       photoSrc: null,
       videoSrc: null,
-      streamToVideoSrc: null
+      streamToVideo: null,
+      notificationMessageToggle: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -305,12 +328,14 @@ export class Chat extends React.Component {
     this.handleStreamToVideo = this.handleStreamToVideo.bind(this);
 
     this.notifyMe = this.notifyMe.bind(this);
+    this.notificationPermission = this.notificationPermission.bind(this);
   }
 
-  notifyMe(message) {
+  notifyMe(message, href) {
     // Проверка поддержки браузером уведомлений
     let options = {
-      icon: favicon
+      icon: favicon,
+      data: href
     };
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
@@ -320,6 +345,11 @@ export class Chat extends React.Component {
     else if (Notification.permission === "granted") {
       // Если разрешено, то создаем уведомление
       var notification = new Notification(message, options);
+      /*notification.onclick = function(event) {
+        event.preventDefault(); //prevent the browser from focusing the Notification's tab, while it stays also open
+        var new_window = window.open("", "_blank"); //open empty window(tab)
+        new_window.location = event.target.data; //set url of newly created window(tab) and focus
+      };*/
     }
 
     // В противном случае, запрашиваем разрешение
@@ -328,6 +358,11 @@ export class Chat extends React.Component {
         // Если пользователь разрешил, то создаем уведомление
         if (permission === "granted") {
           var notification = new Notification(message, options);
+          /*notification.onclick = function(event) {
+            event.preventDefault(); //prevent the browser from focusing the Notification's tab, while it stays also open
+            var new_window = window.open("", "_blank"); //open empty window(tab)
+            new_window.location = event.target.data; //set url of newly created window(tab) and focus
+          };*/
         }
       });
     }
@@ -335,6 +370,26 @@ export class Chat extends React.Component {
     // В конечном счете, если пользователь отказался от получения
     // уведомлений, то стоит уважать его выбор и не беспокоить его
     // по этому поводу.
+  }
+  notificationPermission() {
+    let self = this;
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    }
+    // В противном случае, запрашиваем разрешение
+    else if (Notification.permission === "default") {
+      self.setState({
+        notificationMessageToggle: true
+      });
+      Notification.requestPermission(function(permission) {
+        if (permission === "granted") {
+          ls.set("notificationPermission", true);
+        }
+        self.setState({
+          notificationMessageToggle: false
+        });
+      });
+    }
   }
 
   componentWillMount() {
@@ -352,14 +407,13 @@ export class Chat extends React.Component {
       });
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
-        this.socket.open();
       });
       //this.socket.on("port", data => {
       // console.log("port data:", data);
       //});
       this.socket.on("messageUpdated", data => {
-        console.log("message got updated", data.message.attachments[0].src);
-        this.setState({ streamToVideoSrc: data.message.attachments[0].src });
+        console.log("message got updated", data.message.attachments[0]);
+        this.setState({ streamToVideo: data.message.attachments[0] });
       });
       this.socket.on("newMessage", data => {
         if (data.userId !== storedId) {
@@ -367,9 +421,10 @@ export class Chat extends React.Component {
             ls.set("conversationId", data.requestId);
           }
           console.log("u got a reply again", data);
-          this.notifyMe("New message at Eyezon button");
+          this.notifyMe("New message at Eyezon button", currentUrl);
           let type;
           let source;
+          let thumbnail;
           if (
             data.attachments.length > 0 &&
             data.attachments[0].type === "audio"
@@ -384,6 +439,7 @@ export class Chat extends React.Component {
           ) {
             type = "video";
             source = data.attachments[0].src;
+            thumbnail = data.attachments[0].thumbnail;
           }
 
           if (
@@ -427,7 +483,8 @@ export class Chat extends React.Component {
                     ? `https://static.eyezon.app/live/${data._id}.flv`
                     : null,
 
-                src: source
+                src: source,
+                thumb: thumbnail
               }
             ],
             awaitingConnection: false,
@@ -437,8 +494,9 @@ export class Chat extends React.Component {
       });
       this.socket.on("portOnline", data => {
         console.log("port on data:", data);
-        this.notifyMe("Stream started at Eyezon button");
+        this.notifyMe("Stream started at Eyezon button", currentUrl);
         this.socket.emit("joinRoom", ls.get("streamDamnId"));
+
         // console.log("first success", res);
         //this.socket.emit("port", {
         //  event: "joinRoom",
@@ -455,7 +513,8 @@ export class Chat extends React.Component {
       });
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
-        this.notifyMe("Stream ended at Eyezon button");
+        this.notifyMe("Stream ended at Eyezon button", currentUrl);
+        ls.set("streamInProgress", false);
         let objlv = {
           event: "leaveRoom",
           room: ls.get("streamDamnId")
@@ -465,6 +524,20 @@ export class Chat extends React.Component {
 
       this.socket.on("port", data => {
         console.log("what data:", data);
+        if (data.event === "comment") {
+          this.setState({
+            messages: [
+              ...this.state.messages,
+              {
+                text: data.text,
+                time: new Date(),
+                photo: data.user.photo,
+                user: data.user.firstName.concat(" ", data.user.lastName),
+                type: null
+              }
+            ]
+          });
+        }
       });
       this.socket.open();
     }
@@ -504,6 +577,11 @@ export class Chat extends React.Component {
                   message.attachments.length > 0
                     ? message.attachments[0].src
                     : null,
+                thumb:
+                  message.attachments.length > 0 &&
+                  message.attachments[0].type === "video"
+                    ? message.attachments[0].thumbnail
+                    : null,
                 flv:
                   message.attachments.length > 0 &&
                   message.attachments[0].type === "stream"
@@ -530,6 +608,7 @@ export class Chat extends React.Component {
   }
 
   handleStreamClick(url) {
+    ls.set("streamInProgress", true);
     console.log(url);
     let self = this;
     this.setState({
@@ -573,7 +652,7 @@ export class Chat extends React.Component {
 
   handleStreamToVideo() {
     this.setState({
-      streamToVideoSrc: null
+      streamToVideo: null
     });
   }
 
@@ -581,6 +660,9 @@ export class Chat extends React.Component {
     this.setState({
       displayFlag: nextProps.displayChat
     });
+    if (nextProps.displayChat) {
+      this.notificationPermission();
+    }
   }
 
   loadInitialMessages(msgs) {
@@ -604,7 +686,7 @@ export class Chat extends React.Component {
     let self = this;
     if (!this.state.startedFlag && !this.state.awaitingConnection) {
       const value = this.state.value;
-      const teamMembers = [
+      /*const teamMembers = [
         "vk_101332283",
         "vk_91340492",
 
@@ -616,7 +698,7 @@ export class Chat extends React.Component {
         "vk_104732776",
         "fb_1732134973521323",
         "gp_111698140632755629998"
-      ];
+      ];*/
 
       this.setState({
         messages: [...this.state.messages, { text: value, time: new Date() }],
@@ -627,30 +709,33 @@ export class Chat extends React.Component {
         .get("https://api.eyezon.app/ports")
         .then(function(response) {
           console.log(response);
-          const members = response.data.ports.filter(port =>
-            teamMembers.some(
-              elem => elem === port.user.userId && !port.isDiscussionInProgress
-            )
-          );
-          console.log(members);
+          //const members = response.data.ports.filter(port =>
+          // teamMembers.some(
+          //  elem => elem === port.user.userId && !port.isDiscussionInProgress
+          // )
+          //);
+          //console.log(members);
           console.log(value);
           //here the temporary code starts
-          if (members.length > 0) {
-            axios
-              .post(
-                `https://api.eyezon.app/ports/requestStream/${members[0]._id}`,
-                {
-                  message: value
-                }
-              )
-              .then(function(response) {
-                console.log(response);
-                ls.set("portId", members[0]._id);
-              })
-              .catch(function(error) {
-                console.log(error);
-              });
-          }
+          //if (members.length > 0) {
+          //self.notificationPermission();
+          axios
+            .post(
+              `https://api.eyezon.app/ports/requestBusinessStream/${
+                self.props.businessId
+              }` /*members[0]._id*/,
+              {
+                message: value
+              }
+            )
+            .then(function(response) {
+              console.log(response);
+              //ls.set("conversationId", members[0]._id);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+          //}
 
           //end of temporary code
 
@@ -688,7 +773,7 @@ export class Chat extends React.Component {
           console.log(error);
         });
     } else if (!this.state.awaitingConnection) {
-      const port = ls.get("portId");
+      const port = ls.get("conversationId");
       const value = this.state.value;
       /*const teamMembers = [
         "vk_101332283",
@@ -714,24 +799,26 @@ export class Chat extends React.Component {
         messages: [...this.state.messages, { text: value, time: new Date() }],
         value: ""
       });
-
-      axios
-        .put(`https://api.eyezon.app/messages/${port}`, {
-          message: value
-        })
-        .then(function(response) {
-          console.log(response);
-          let obj = {
-            event: "comment",
-            room: ls.get("streamDamnId"),
-            text: "Hello"
-          };
-          console.log(obj);
-          self.socket.emit("port", JSON.stringify(obj));
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+      if (ls.get("streamInProgress")) {
+        let obj = {
+          event: "comment",
+          room: ls.get("streamDamnId"),
+          text: value
+        };
+        console.log(obj);
+        self.socket.emit("port", JSON.stringify(obj));
+      } else {
+        axios
+          .put(`https://api.eyezon.app/messages/${port}`, {
+            message: value
+          })
+          .then(function(response) {
+            console.log(response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
     }
     event.preventDefault();
   }
@@ -742,6 +829,14 @@ export class Chat extends React.Component {
     return (
       <React.Fragment>
         <ChatWrapper displayFlag={this.state.displayFlag}>
+          <NotificationMessageWrapper
+            toggle={this.state.notificationMessageToggle}
+          >
+            <NotificationMessageArrow src={arrow} />
+            <NotificationMessageText>
+              Включи уведомления, если хочешь получить ответ
+            </NotificationMessageText>
+          </NotificationMessageWrapper>
           <div
             className="js-chat-overlay"
             onClick={() => {
@@ -752,6 +847,7 @@ export class Chat extends React.Component {
               this.refs.live.pause();
             }}
           />
+
           <WindowWrapper>
             <div className="js-chat-window">
               <CloseWrapperA>
@@ -781,7 +877,7 @@ export class Chat extends React.Component {
                     handlePhoto={this.handlePhoto}
                     handleVideo={this.handleVideo}
                     handleStreamToVideo={this.handleStreamToVideo}
-                    strSrc={this.state.streamToVideoSrc}
+                    strVideo={this.state.streamToVideo}
                   />
                 )}
                 <form onSubmit={this.handleSubmit}>

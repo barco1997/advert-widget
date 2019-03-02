@@ -6,7 +6,7 @@ import App from "./components/App";
 let elements = [];
 let body;
 
-export function react(color) {
+export function react(params, target) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
   body = document.getElementsByTagName("body")[0];
@@ -16,7 +16,12 @@ export function react(color) {
   }
   ReactDOM.render(
     <React.Fragment>
-      <App color={color} />
+      <App
+        color={params.color}
+        button={params.button}
+        target={target}
+        businessId={params.businessId}
+      />
     </React.Fragment>,
     document.getElementById("root")
   );

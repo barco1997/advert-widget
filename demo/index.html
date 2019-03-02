@@ -13,6 +13,7 @@
       blandit. Libero nec eu dolor eget volutpat. Magna nulla neque. Fames
       tempus lorem duis orci ipsum.
     </p>
+    <button id="eyezonButton">DO IT</button>
     <script>
       (function(w, d, s, o, f, js, fjs) {
         w["JS-Widget"] = o;
@@ -28,7 +29,11 @@
         fjs.parentNode.insertBefore(js, fjs);
       })(window, document, "script", "mw", "./widget.js");
       mw("init", { someConfiguration: 42 });
-      mw("react", "white");
+      mw("react", {
+        color: "white",
+        button: false,
+        businessId: "5c743f5a5595656861ed4123"
+      });
     </script>
   </body>
 </html>

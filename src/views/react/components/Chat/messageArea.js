@@ -51,7 +51,7 @@ export class MessageArea extends React.Component {
     this.state = {
       messages: this.props.messages || [],
       awaitingConnection: this.props.awaitingConnection,
-      streamVideoSrc: null,
+
       streamIndexVal: []
     };
 
@@ -59,8 +59,8 @@ export class MessageArea extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.strSrc !== null) {
-      console.log("one step further", nextProps.strSrc);
+    if (nextProps.strVideo !== null) {
+      console.log("one step further", nextProps.strVideo.src);
       const index = nextProps.messages
         .slice()
         .reverse()
@@ -70,13 +70,20 @@ export class MessageArea extends React.Component {
       console.log(finalIndex);
       const frog = [
         ...this.state.streamIndexVal,
-        { index: finalIndex, src: nextProps.strSrc }
+        {
+          index: finalIndex,
+          src: nextProps.strVideo.src,
+          thumb: nextProps.strVideo.thumbnail
+        }
       ];
       this.setState({
-        streamVideoSrc: nextProps.strSrc,
         streamIndexVal: [
           ...this.state.streamIndexVal,
-          { index: finalIndex, src: nextProps.strSrc }
+          {
+            index: finalIndex,
+            src: nextProps.strVideo.src,
+            thumb: nextProps.strVideo.thumbnail
+          }
         ]
       });
 
@@ -138,6 +145,14 @@ export class MessageArea extends React.Component {
                     elem => elem.index === index
                   )[0].src
                 : message.src
+            }
+            thumb={
+              message.flv &&
+              this.state.streamIndexVal.some(elem => elem.index === index)
+                ? this.state.streamIndexVal.filter(
+                    elem => elem.index === index
+                  )[0].thumb
+                : message.thumb
             }
             type={message.type}
             handlePhoto={this.props.handlePhoto}
