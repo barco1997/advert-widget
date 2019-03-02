@@ -407,6 +407,7 @@ export class Chat extends React.Component {
       });
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
+        this.socket.open();
       });
       //this.socket.on("port", data => {
       // console.log("port data:", data);
