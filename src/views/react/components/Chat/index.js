@@ -18,7 +18,7 @@ import ReactPlayer from "react-player";
 //import Response from "../Response";
 import poster from "./poster.svg";
 import favicon from "./favicon.png";
-import arrow from "./arrow1.svg";
+import arrow from "./arrow2.svg";
 import { MessageArea } from "./messageArea";
 let currentUrl = window.location.href;
 function load(url) {
@@ -247,21 +247,23 @@ const Image = styled.div`
 const NotificationMessageWrapper = styled.div`
   position: absolute;
   left: 0px;
-  top: 28px;
+  top: 135px;
   z-index: 20000;
   display: ${props => (props.toggle ? "flex" : "none")};
   flex-direction: column;
 `;
 const NotificationMessageArrow = styled.img`
-  margin-left: 80px;
+  margin-left: 150px;
+  width: 220px;
+  height: 270px;
 `;
 const NotificationMessageText = styled.span`
   font-family: "Caveat";
   font-weight: bold;
   font-size: 35px;
-  margin-left: 70px;
+  margin-left: 75px;
   width: 360px;
-  margin-top: -60px;
+  margin-top: 25px;
   color: white;
 `;
 
