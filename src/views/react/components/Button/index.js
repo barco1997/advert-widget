@@ -40,12 +40,12 @@ const ButtonWrapper = styled.button`
   border-radius: 28px;
   display: flex;
   width: ${props => (props.toggle ? "278px" : "56px")};
+
   height: 56px;
   align-items: center;
 
   transition: ${props =>
     props.toggle ? "width 120ms linear" : "width 180ms linear"};
-
   font-family: "Mont";
   &:focus {
     outline: 0;
@@ -76,6 +76,8 @@ export class Button extends React.Component {
       initializeChat: ls.get("token") ? true : false
     };
     this.handleClick = this.handleClick.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.destroyMessage = this.destroyMessage.bind(this);
     this.destroyChat = this.destroyChat.bind(this);
     this.showChat = this.showChat.bind(this);
@@ -138,6 +140,16 @@ export class Button extends React.Component {
       });
     }
   }
+  handleMouseLeave() {
+    this.setState({
+      toggle: false
+    });
+  }
+  handleMouseEnter() {
+    this.setState({
+      toggle: true
+    });
+  }
 
   destroyMessage() {
     this.setState({ displayMessage: false });
@@ -176,6 +188,8 @@ export class Button extends React.Component {
           color={this.props.color}
           toggle={isOpen}
           onClick={() => this.handleClick()}
+          onMouseEnter={() => this.handleMouseEnter()}
+          onMouseLeave={() => this.handleMouseLeave()}
         >
           <div className="js-button-image-wrapper">
             <img src={logo} className="js-button-image" />
