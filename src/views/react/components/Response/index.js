@@ -213,7 +213,7 @@ export class Response extends React.Component {
             )}
             {this.state.typeVar === "video" && this.state.src && (
               <VideoA src={this.props.thumb} onClick={() => this.handleClick()}>
-                <PlayIcon src={this.state.playIcon ? playV : pauseV} />{" "}
+                {" "}
               </VideoA>
             )}
 
@@ -236,5 +236,6 @@ export class Response extends React.Component {
     );
   }
 }
+/*<PlayIcon src={this.state.playIcon ? playV : pauseV} />*/
 
 export default Response;

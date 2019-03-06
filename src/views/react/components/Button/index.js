@@ -93,6 +93,7 @@ export class Button extends React.Component {
               console.log(response);
               if (response.data.count > 0) {
                 console.log("token, no conversation id, dialogs");
+                ls.set("conversationId", response.data.dialogs[0].port._id);
                 self.showChatHere();
               } else {
                 console.log("token, no conversation id, no dialogs");
@@ -118,6 +119,7 @@ export class Button extends React.Component {
               self.showChatHere();
             } else {
               console.log("conversation id, no dialogs");
+              ls.set("conversationId", "");
               self.showMessageHere();
             }
           })
@@ -134,11 +136,13 @@ export class Button extends React.Component {
       });
     }
   }
+
   handleMouseLeave() {
     this.setState({
       toggle: false
     });
   }
+
   handleMouseEnter() {
     this.setState({
       toggle: true

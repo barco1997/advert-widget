@@ -503,65 +503,77 @@ export class Chat extends React.Component {
       });
       this.socket.open();
     }
-    if (conversationId) {
-      if (this.state.firstTimeFlag) {
-        axios
-          .get(`https://api.eyezon.app/messages/get/${conversationId}/`)
-          .then(function(response) {
-            const users = response.data.users;
-            const messages = response.data.messages;
-            const buttonUserId = ls.get("userId");
-            if (
-              users.filter(
-                user => user.userId === buttonUserId && user.type === "joiner"
-              ).length === 0
-            ) {
-              self.loadInitialMessages([]);
-            } else {
-              console.log(messages);
-              const editedMessages = messages.map(message => ({
-                text: message.message,
-                time: message.time,
-                photo: users.filter(user => user.userId === message.userId)[0]
-                  .photo,
-                user: users
-                  .filter(user => user.userId === message.userId)[0]
-                  .firstName.concat(
-                    " ",
-                    users.filter(user => user.userId === message.userId)[0]
-                      .lastName
-                  ),
-                type:
-                  message.attachments.length > 0
-                    ? message.attachments[0].type
-                    : "message",
-                src:
-                  message.attachments.length > 0
-                    ? message.attachments[0].src
-                    : null,
-                thumb:
-                  message.attachments.length > 0 &&
-                  message.attachments[0].type === "video"
-                    ? message.attachments[0].thumbnail
-                    : null,
-                flv:
-                  message.attachments.length > 0 &&
-                  message.attachments[0].type === "stream"
-                    ? `https://static.eyezon.app/live/${message._id}.flv`
-                    : "",
-                id: message._id
-              }));
-              console.log("Users - ", users);
+  }
 
-              self.loadInitialMessages(editedMessages);
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+  componentWillUpdate(nextProps) {
+    let self = this;
+    if (
+      nextProps.displayChat &&
+      nextProps.displayChat !== this.props.displayChat
+    ) {
+      if (ls.get("conversationId")) {
+        if (this.state.firstTimeFlag) {
+          axios
+            .get(
+              `https://api.eyezon.app/messages/get/${ls.get("conversationId")}/`
+            )
+            .then(function(response) {
+              const users = response.data.users;
+              const messages = response.data.messages;
+              const buttonUserId = ls.get("userId");
+              if (
+                users.filter(
+                  user => user.userId === buttonUserId && user.type === "joiner"
+                ).length === 0
+              ) {
+                self.loadInitialMessages([]);
+              } else {
+                console.log(messages);
+                const editedMessages = messages.map(message => ({
+                  text: message.message,
+                  time: message.time,
+                  photo: users.filter(user => user.userId === message.userId)[0]
+                    .photo,
+                  user: users
+                    .filter(user => user.userId === message.userId)[0]
+                    .firstName.concat(
+                      " ",
+                      users.filter(user => user.userId === message.userId)[0]
+                        .lastName
+                    ),
+                  type:
+                    message.attachments.length > 0
+                      ? message.attachments[0].type
+                      : "message",
+                  src:
+                    message.attachments.length > 0
+                      ? message.attachments[0].src
+                      : null,
+                  thumb:
+                    message.attachments.length > 0 &&
+                    message.attachments[0].type === "video"
+                      ? message.attachments[0].thumbnail
+                      : null,
+                  flv:
+                    message.attachments.length > 0 &&
+                    message.attachments[0].type === "stream"
+                      ? `https://static.eyezon.app/live/${message._id}.flv`
+                      : "",
+                  id: message._id
+                }));
+                console.log("Users - ", users);
+
+                self.loadInitialMessages(editedMessages);
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }
       }
     }
   }
+
   componentWillUnmount() {
     this.socket.close();
   }
