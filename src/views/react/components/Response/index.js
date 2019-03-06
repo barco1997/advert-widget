@@ -2,6 +2,8 @@ import styled from "styled-components";
 import React from "react";
 import { format } from "date-fns";
 import logo from "./logo.png";
+import playV from "./playIcon.svg";
+import pauseV from "./pauseIcon.svg";
 import LiveButton from "../LiveButton/index";
 import ReactAudioPlayer from "react-audio-player";
 
@@ -58,11 +60,25 @@ const ImageA = styled.img`
   width: 270px;
   cursor: pointer;
 `;
-const VideoA = styled.video`
+const VideoA = styled.div`
   height: 143px;
-  border-radius: 10px;
-  object-fit: cover;
   width: 270px;
+  cursor: pointer;
+  border-radius: 10px;
+  background: url(${props => props.src});
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PlayIcon = styled.img`
+  height: 40px;
+  width: 40px;
+
+  object-fit: cover;
+
   cursor: pointer;
 `;
 
@@ -84,111 +100,22 @@ const Date = styled.time`
   margin-right: 0px;
   font-size: 12px;
 `;
-/*const Response = ({
-  title,
-  description,
-  date,
-  icon,
-  flv,
-  functionA,
-  src,
-  type,
-  handlePhoto,
-  handleVideo
-}) => {
-  
-  const handleClick = () => {
-    if (type === "photo" && src) {
-      handlePhoto(src);
-    } else if (type === "video" && src) {
-      handleVideo(src);
-    } else if (type === "stream" && src) {
-      handleVideo(src);
-    }
-  };
-
-  let typeVar = type;
-  if (typeVar === "stream" && src) {
-    typeVar = "video";
-  }
-  
-
-  return (
-    <div style={{ display: "block" }}>
-      <Item>
-        <Icon>
-          <img src={icon || logo} alt="item type" />
-        </Icon>
-        <ItemStart>
-          {description && flv && !src && (
-            <SummaryTop>{description} начал прямую трансляцию</SummaryTop>
-          )}
-          {description && typeVar === "audio" && (
-            <SummaryTop>{description} поделился аудио</SummaryTop>
-          )}
-          {description && !flv && typeVar === "video" && (
-            <SummaryTop>{description} поделился видео</SummaryTop>
-          )}
-          {description && flv && typeVar === "video" && (
-            <SummaryTop>{description} провел прямую трансляцию</SummaryTop>
-          )}
-          {description && typeVar === "photo" && (
-            <SummaryTop>{description} поделился фото</SummaryTop>
-          )}
-          {!flv && <Title>{title}</Title>}
-          {flv && !src && (
-            <LiveButton flv={flv} setFlv={functionA}>
-              Смотреть
-            </LiveButton>
-          )}
-          {typeVar === "photo" && src && (
-            <ImageA src={src} onClick={() => handleClick()} />
-          )}
-          {typeVar === "video" && src && (
-            <VideoA src={src} onClick={() => handleClick()} />
-          )}
-
-          {typeVar === "audio" && src && (
-            <ReactAudioPlayer src={src} controls style={{ width: "270px" }} />
-          )}
-          {description && !flv && !src && <Summary>{description}</Summary>}
-        </ItemStart>
-        <ItemEnd>
-          <Date>{format(date, "h:m")}</Date>
-        </ItemEnd>
-      </Item>
-    </div>
-  );
-};
-
-export default Response;*/
 
 export class Response extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       typeVar: this.props.type,
-      src: this.props.src
+      src: this.props.src,
+      playIcon: false
     };
 
     this.setItems = this.setItems.bind(this);
     this.setSrc = this.setSrc.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.played = this.played.bind(this);
+    this.paused = this.paused.bind(this);
   }
-
-  /*componentWillReceiveProps(nextProps) {
-    const source = this.state.src;
-    console.log(source);
-    console.log("got here");
-    if (nextProps.flv && nextProps.src === null) {
-      this.setSrc(source);
-    } else {
-      this.setSrc(nextProps.src);
-    }
-  }
-  componentDidUpdate(prevProps) {
-    console.log("got to update");
-  }*/
 
   componentWillMount() {
     if (this.state.typeVar === "stream" && this.props.src) {
@@ -198,12 +125,23 @@ export class Response extends React.Component {
   }
 
   handleClick() {
+    let self = this;
     if (this.props.type === "photo" && this.state.src) {
       this.props.handlePhoto(this.state.src);
     } else if (this.props.type === "video" && this.state.src) {
-      this.props.handleVideo(this.state.src);
+      const ifPlayed = this.state.playIcon;
+      console.log(ifPlayed);
+
+      this.props.handleVideo(this.state.src, this.props.id);
+      /*self.setState({
+        playIcon: !ifPlayed
+      });*/
     } else if (this.props.type === "stream" && this.state.src) {
-      this.props.handleVideo(this.state.src);
+      const ifPlayed = this.state.playIcon;
+      this.props.handleVideo(this.state.src, this.props.id);
+      /*self.setState({
+        playIcon: !ifPlayed
+      });*/
     }
   }
 
@@ -217,6 +155,17 @@ export class Response extends React.Component {
   setSrc(props) {
     this.setState({
       src: props
+    });
+  }
+
+  played() {
+    this.setState({
+      playIcon: false
+    });
+  }
+  paused() {
+    this.setState({
+      playIcon: true
     });
   }
 
@@ -263,10 +212,9 @@ export class Response extends React.Component {
               <ImageA src={this.state.src} onClick={() => this.handleClick()} />
             )}
             {this.state.typeVar === "video" && this.state.src && (
-              <ImageA
-                src={this.props.thumb}
-                onClick={() => this.handleClick()}
-              />
+              <VideoA src={this.props.thumb} onClick={() => this.handleClick()}>
+                <PlayIcon src={this.state.playIcon ? playV : pauseV} />{" "}
+              </VideoA>
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (

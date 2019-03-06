@@ -1,9 +1,3 @@
-/**
- *
- * SendButton
- *
- */
-
 import React from "react";
 
 import PropTypes from "prop-types";
@@ -15,11 +9,11 @@ import axios from "axios";
 import ls from "local-storage";
 
 import ReactPlayer from "react-player";
-//import Response from "../Response";
 import poster from "./poster.svg";
 import favicon from "./favicon.png";
 import arrow from "./arrow2.svg";
 import { MessageArea } from "./messageArea";
+const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 function load(url) {
   return new Promise(function(resolve, reject) {
@@ -314,11 +308,12 @@ export class Chat extends React.Component {
       firstTimeFlag: true,
       streamFlag: false,
       streamLink: "",
-      videoElement: this.refs.live,
+      videoElement: this.live,
       photoSrc: null,
       videoSrc: null,
       streamToVideo: null,
-      notificationMessageToggle: false
+      notificationMessageToggle: false,
+      videoManipulateId: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -342,44 +337,35 @@ export class Chat extends React.Component {
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
     }
-
     // Проверка разрешения на отправку уведомлений
     else if (Notification.permission === "granted") {
       // Если разрешено, то создаем уведомление
       var notification = new Notification(message, options);
-      /*notification.onclick = function(event) {
-        event.preventDefault(); //prevent the browser from focusing the Notification's tab, while it stays also open
+      notification.onclick = function(event) {
         var new_window = window.open("", "_blank"); //open empty window(tab)
-        new_window.location = event.target.data; //set url of newly created window(tab) and focus
-      };*/
+        new_window.location.href = event.target.data; //set url of newly created window(tab) and focus
+      };
     }
-
     // В противном случае, запрашиваем разрешение
     else if (Notification.permission !== "denied") {
       Notification.requestPermission(function(permission) {
         // Если пользователь разрешил, то создаем уведомление
         if (permission === "granted") {
           var notification = new Notification(message, options);
-          /*notification.onclick = function(event) {
-            event.preventDefault(); //prevent the browser from focusing the Notification's tab, while it stays also open
+          notification.onclick = function(event) {
             var new_window = window.open("", "_blank"); //open empty window(tab)
-            new_window.location = event.target.data; //set url of newly created window(tab) and focus
-          };*/
+            new_window.location.href = event.target.data; //set url of newly created window(tab) and focus
+          };
         }
       });
     }
-
-    // В конечном счете, если пользователь отказался от получения
-    // уведомлений, то стоит уважать его выбор и не беспокоить его
-    // по этому поводу.
   }
+
   notificationPermission() {
     let self = this;
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
-    }
-    // В противном случае, запрашиваем разрешение
-    else if (Notification.permission === "default") {
+    } else if (Notification.permission === "default") {
       self.setState({
         notificationMessageToggle: true
       });
@@ -403,7 +389,6 @@ export class Chat extends React.Component {
         transports: ["websocket"],
         upgrade: false
       });
-
       this.socket.on("connect", () => {
         console.log("socket got connected");
       });
@@ -411,9 +396,6 @@ export class Chat extends React.Component {
         console.log("socket got disconnected");
         this.socket.open();
       });
-      //this.socket.on("port", data => {
-      // console.log("port data:", data);
-      //});
       this.socket.on("messageUpdated", data => {
         console.log("message got updated", data.message.attachments[0]);
         this.setState({ streamToVideo: data.message.attachments[0] });
@@ -457,17 +439,6 @@ export class Chat extends React.Component {
             data.attachments.length > 0 &&
             data.attachments[0].type === "stream"
           ) {
-            //let live = this.refs.live;
-            //let player = dashjs.MediaPlayer().create();
-            //const url = `http://176.9.29.30:1935/live/${data._id}/index.mpd`;
-            //player.initialize(live, url, true);
-            /*player.setFastSwitchEnabled(true);*/
-            /*this.setState({
-              streamLink: `http://176.9.29.30:8000/live/${data._id}.flv`
-            });*/
-            /*player.attachSource(
-              `http://176.9.29.30:1935/live/${data._id}/index.mpd`
-            );*/
             type = "stream";
             ls.set("streamDamnId", data._id);
           }
@@ -487,7 +458,8 @@ export class Chat extends React.Component {
                     : null,
 
                 src: source,
-                thumb: thumbnail
+                thumb: thumbnail,
+                id: data._id
               }
             ],
             awaitingConnection: false,
@@ -499,20 +471,6 @@ export class Chat extends React.Component {
         console.log("port on data:", data);
         this.notifyMe("Stream started at Eyezon button", currentUrl);
         this.socket.emit("joinRoom", ls.get("streamDamnId"));
-
-        // console.log("first success", res);
-        //this.socket.emit("port", {
-        //  event: "joinRoom",
-        // room: ls.get("conversationId")
-        //  });
-
-        /*let obj = {
-          event: "comment",
-          room: ls.get("conversationId"),
-          text: "Hello"
-        };
-        console.log(obj);
-        this.socket.emit("port", obj);*/
       });
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
@@ -536,7 +494,8 @@ export class Chat extends React.Component {
                 time: new Date(),
                 photo: data.user.photo,
                 user: data.user.firstName.concat(" ", data.user.lastName),
-                type: null
+                type: null,
+                id: uuidv1()
               }
             ]
           });
@@ -589,7 +548,8 @@ export class Chat extends React.Component {
                   message.attachments.length > 0 &&
                   message.attachments[0].type === "stream"
                     ? `https://static.eyezon.app/live/${message._id}.flv`
-                    : ""
+                    : "",
+                id: message._id
               }));
               console.log("Users - ", users);
 
@@ -620,7 +580,7 @@ export class Chat extends React.Component {
       photoSrc: null
     });
     if (flvjs.isSupported()) {
-      let videoElement = this.refs.live;
+      let videoElement = this.live;
       let flvPlayer = flvjs.createPlayer({
         type: "flv",
         url: url
@@ -645,11 +605,12 @@ export class Chat extends React.Component {
     });
   }
 
-  handleVideo(src) {
+  handleVideo(src, videoManipulateId) {
     this.setState({
       videoSrc: src,
       photoSrc: null,
-      streamFlag: false
+      streamFlag: false,
+      videoManipulateId: videoManipulateId
     });
   }
 
@@ -689,22 +650,11 @@ export class Chat extends React.Component {
     let self = this;
     if (!this.state.startedFlag && !this.state.awaitingConnection) {
       const value = this.state.value;
-      /*const teamMembers = [
-        "vk_101332283",
-        "vk_91340492",
-
-        "tg_334034851",
-        "tg_74994056",
-        "fb_10155674980409457",
-        "fb_10215886346647183",
-        "fb_884165718423540",
-        "vk_104732776",
-        "fb_1732134973521323",
-        "gp_111698140632755629998"
-      ];*/
-
       this.setState({
-        messages: [...this.state.messages, { text: value, time: new Date() }],
+        messages: [
+          ...this.state.messages,
+          { text: value, time: new Date(), id: uuidv1() }
+        ],
         value: "",
         awaitingConnection: true
       });
@@ -712,16 +662,7 @@ export class Chat extends React.Component {
         .get("https://api.eyezon.app/ports")
         .then(function(response) {
           console.log(response);
-          //const members = response.data.ports.filter(port =>
-          // teamMembers.some(
-          //  elem => elem === port.user.userId && !port.isDiscussionInProgress
-          // )
-          //);
-          //console.log(members);
           console.log(value);
-          //here the temporary code starts
-          //if (members.length > 0) {
-          //self.notificationPermission();
           axios
             .post(
               `https://api.eyezon.app/ports/requestBusinessStream/${
@@ -741,36 +682,6 @@ export class Chat extends React.Component {
           //}
 
           //end of temporary code
-
-          //use this in future:
-          /*members.map(member => {
-            if (!member.isDiscussionInProgress) {
-              axios
-                .post(
-                  `https://api.eyezon.app/ports/requestStream/${member._id}`,
-                  {
-                    message: value
-                  }
-                )
-                .then(function(response) {
-                  console.log(response);
-                })
-                .catch(function(error) {
-                  console.log(error);
-                });
-            } else {
-              axios
-                .put(`https://api.eyezon.app/messages/${member._id}`, {
-                  message: value
-                })
-                .then(function(response) {
-                  console.log(response);
-                })
-                .catch(function(error) {
-                  console.log(error);
-                });
-            }
-          });*/
         })
         .catch(function(error) {
           console.log(error);
@@ -778,28 +689,12 @@ export class Chat extends React.Component {
     } else if (!this.state.awaitingConnection) {
       const port = ls.get("conversationId");
       const value = this.state.value;
-      /*const teamMembers = [
-        "vk_101332283",
-        "gp_111698140632755629998",
-        "vk_91340492",
-        "tg_334034851",
-        "fb_10155674980409457",
-        "fb_10215886346647183",
-        "fb_884165718423540",
-        "vk_104732776",
-        "fb_1732134973521323"
-      ];
-      
-      <ReactPlayer
-                url={this.state.streamLink}
-                playing
-                height="553px"
-                width="318px"
-                id="live"
-                ref="live"
-              />*/
+
       this.setState({
-        messages: [...this.state.messages, { text: value, time: new Date() }],
+        messages: [
+          ...this.state.messages,
+          { text: value, time: new Date(), id: uuidv1() }
+        ],
         value: ""
       });
       if (ls.get("streamInProgress")) {
@@ -827,8 +722,6 @@ export class Chat extends React.Component {
   }
 
   render() {
-    //const isOpen = this.state.toggle;
-
     return (
       <React.Fragment>
         <ChatWrapper displayFlag={this.state.displayFlag}>
@@ -847,7 +740,7 @@ export class Chat extends React.Component {
               this.setState({
                 streamFlag: false
               });
-              this.refs.live.pause();
+              this.live.pause();
             }}
           />
 
@@ -860,7 +753,7 @@ export class Chat extends React.Component {
                     this.setState({
                       streamFlag: false
                     });
-                    this.refs.live.pause();
+                    this.live.pause();
                   }}
                 />
               </CloseWrapperA>
@@ -902,14 +795,20 @@ export class Chat extends React.Component {
             </div>
 
             <VideoWrapper visible={this.state.streamFlag}>
-              <video id="live" ref="live" controls />
+              <video
+                id="live"
+                ref={video => {
+                  this.live = video;
+                }}
+                controls
+              />
               <CloseWrapper>
                 <CloseButtonC
                   onClick={() => {
                     this.setState({
                       streamFlag: false
                     });
-                    this.refs.live.pause();
+                    this.live.pause();
                   }}
                 />
               </CloseWrapper>
@@ -928,6 +827,9 @@ export class Chat extends React.Component {
                     this.setState({
                       videoSrc: null
                     });
+                    if (this.state.paused) {
+                      this.state.paused();
+                    }
                   }}
                 />
               </CloseWrapper>

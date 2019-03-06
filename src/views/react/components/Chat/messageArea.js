@@ -54,7 +54,7 @@ export class MessageArea extends React.Component {
 
       streamIndexVal: []
     };
-
+    this.messageRef = [];
     this.setItems = this.setItems.bind(this);
   }
 
@@ -132,6 +132,9 @@ export class MessageArea extends React.Component {
         {this.state.messages.map((message, index) => (
           <Response
             key={uuidv1()}
+            ref={element => {
+              this.messageRef[message.id] = element;
+            }}
             title={message.text}
             description={message.user || "Вы"}
             date={message.time}
@@ -157,6 +160,7 @@ export class MessageArea extends React.Component {
             type={message.type}
             handlePhoto={this.props.handlePhoto}
             handleVideo={this.props.handleVideo}
+            id={message.id}
           />
         ))}
         {this.state.awaitingConnection && (

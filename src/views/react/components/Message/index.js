@@ -1,9 +1,3 @@
-/**
- *
- * SendButton
- *
- */
-
 import React from "react";
 
 import styled from "styled-components";
@@ -209,7 +203,6 @@ export class Message extends React.Component {
     }
   }
   render() {
-    //const isOpen = this.state.toggle;
     return (
       <React.Fragment>
         <MessageWrapper>
