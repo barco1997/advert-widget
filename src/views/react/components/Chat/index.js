@@ -149,7 +149,7 @@ const CloseWrapper = styled.div`
 `;
 const CloseWrapperA = styled.div`
   position: absolute;
-  left: 436px;
+  left: 513px;
   top: 13px;
 `;
 
