@@ -149,7 +149,7 @@ const CloseWrapper = styled.div`
 `;
 const CloseWrapperA = styled.div`
   position: absolute;
-  left: 513px;
+  right: 28px;
   top: 13px;
 `;
 
@@ -758,19 +758,18 @@ export class Chat extends React.Component {
 
           <WindowWrapper>
             <div className="js-chat-window">
-              <CloseWrapperA>
-                <CloseButtonC
-                  onClick={() => {
-                    this.props.destroy();
-                    this.setState({
-                      streamFlag: false
-                    });
-                    this.live.pause();
-                  }}
-                />
-              </CloseWrapperA>
-
               <div className="js-chat-message-container">
+                <CloseWrapperA>
+                  <CloseButtonC
+                    onClick={() => {
+                      this.props.destroy();
+                      this.setState({
+                        streamFlag: false
+                      });
+                      this.live.pause();
+                    }}
+                  />
+                </CloseWrapperA>
                 {!this.state.messages || this.state.messages.length == 0 ? (
                   <div className="js-chat-message-placeholder">
                     <div>Не стесняйтесь, спросите!</div>
