@@ -239,7 +239,7 @@ const Image = styled.div`
 `;
 
 const NotificationMessageWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   left: 0px;
   top: 135px;
   z-index: 20000;
@@ -280,6 +280,55 @@ const SendRequest = styled.button`
   padding-top: 3px;
   font-weight: normal;
   font-family: "Mont";
+`;
+
+const JsChatWindow = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  background: #fff;
+
+  width: 462px;
+  height: 473px;
+  padding: 40px 40px;
+
+  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+`;
+const JsChatOverlay = styled.div`
+  z-index: 10002;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  opacity: 0.4;
+  background-color: #000;
+`;
+const JsChatMessageContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+`;
+const JsChatMessagePlaceholder = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.5);
+  flex: 1;
+  & > :first-child {
+    margin-top: 80px;
+  }
+`;
+const JsChatEmpty = styled.img`
+  margin-top: 60px;
+  width: 176px;
+  height: 72px;
 `;
 
 /*function VideoShow(props) {
@@ -745,8 +794,7 @@ export class Chat extends React.Component {
               Включи уведомления, если хочешь получить ответ
             </NotificationMessageText>
           </NotificationMessageWrapper>
-          <div
-            className="js-chat-overlay"
+          <JsChatOverlay
             onClick={() => {
               this.props.destroy();
               this.setState({
@@ -757,8 +805,8 @@ export class Chat extends React.Component {
           />
 
           <WindowWrapper>
-            <div className="js-chat-window">
-              <div className="js-chat-message-container">
+            <JsChatWindow>
+              <JsChatMessageContainer>
                 <CloseWrapperA>
                   <CloseButtonC
                     onClick={() => {
@@ -771,11 +819,11 @@ export class Chat extends React.Component {
                   />
                 </CloseWrapperA>
                 {!this.state.messages || this.state.messages.length == 0 ? (
-                  <div className="js-chat-message-placeholder">
+                  <JsChatMessagePlaceholder>
                     <div>Не стесняйтесь, спросите!</div>
                     <div>Наши сотрудники ответят на все ваши вопросы</div>
-                    <img src={empty} className="js-chat-empty" />
-                  </div>
+                    <JsChatEmpty src={empty} />
+                  </JsChatMessagePlaceholder>
                 ) : (
                   <MessageArea
                     messages={this.state.messages}
@@ -802,8 +850,8 @@ export class Chat extends React.Component {
                     </SendRequest>
                   </div>
                 </form>
-              </div>
-            </div>
+              </JsChatMessageContainer>
+            </JsChatWindow>
 
             <VideoWrapper visible={this.state.streamFlag}>
               <video

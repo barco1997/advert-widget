@@ -7,6 +7,7 @@ import iphone from "./Iphone_8.png";
 import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
+import { media } from "../../../../utils/media";
 
 const JsWidgetImage = styled.img`
   width: 214px;
@@ -47,6 +48,9 @@ const JsWidgetOverlay = styled.div`
   right: 0px;
   opacity: 0.2;
   background-color: #000;
+  ${media.desktop`
+  display: none;
+  `};
 `;
 
 const JsWidgetWindow = styled.div`
@@ -64,12 +68,22 @@ const JsWidgetWindow = styled.div`
   padding-top: 60px;
   box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
   border-radius: 6px;
+  ${media.desktop`
+  max-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  top: 0%;
+  `};
 `;
 const JsWidgetDialogue = styled.div`
   width: 376px;
   font-size: 12px;
   margin-top: 10px;
   color: black;
+  ${media.desktop`
+  max-width: 320px;
+  padding: 0 15px;
+  `};
 `;
 
 const JsWidgetDialogueH2 = styled.h2`
@@ -80,6 +94,10 @@ const JsWidgetDialogueH2 = styled.h2`
 
 const JsWidgetDialogueSpan = styled.span`
   opacity: 0.5;
+  ${media.desktop`
+  max-width: 320px;
+  
+  `};
 `;
 
 const JsWidgetIcons = styled.div`
@@ -91,6 +109,9 @@ const JsWidgetIcons = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  ${media.desktop`
+  display: none;
+  `};
 `;
 
 const MessageWrapper = styled.div`

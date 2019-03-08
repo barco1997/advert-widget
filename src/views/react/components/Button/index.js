@@ -44,20 +44,42 @@ const ButtonWrapper = styled.button`
   &:focus {
     outline: 0;
   }
+`;
 
-  & > .js-button-text {
-    display: flex;
-    transition: ${props =>
-      props.toggle ? "opacity 1s ease-in" : "opacity 100ms linear"};
+const JsButtonImageWrapper = styled.div`
+  width: 42px;
+  height: 51px;
+  border-radius: 28px;
 
-    opacity: ${props => (props.toggle ? "1" : "0")};
-    height: ${props => (props.toggle ? "42px" : "0px")};
-    overflow: hidden;
-    flex-direction: column;
-    width: 200px;
-    margin-right: 14px;
-    margin-left: 8px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const JsButtonImage = styled.img`
+  width: 40px;
+  height: 40px;
+`;
+const JsButtonText = styled.div`
+  display: flex;
+  transition: ${props =>
+    props.toggle ? "opacity 1s ease-in" : "opacity 100ms linear"};
+
+  opacity: ${props => (props.toggle ? "1" : "0")};
+  height: ${props => (props.toggle ? "42px" : "0px")};
+  overflow: hidden;
+  flex-direction: column;
+  width: 200px;
+  margin-right: 14px;
+  margin-left: 8px;
+`;
+
+const JsButtonHeader = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+`;
+const JsButtonInfo = styled.div`
+  font-size: 8px;
+  opacity: 0.5;
 `;
 
 export class Button extends React.Component {
@@ -81,8 +103,6 @@ export class Button extends React.Component {
 
   handleClick() {
     let self = this;
-    //let showM = this.showMessageHere();
-    //let showCH = this.showChatHere();
     if (this.state.toggle) {
       if (!reqId) {
         if (storedToken) {
@@ -189,16 +209,16 @@ export class Button extends React.Component {
           onMouseEnter={() => this.handleMouseEnter()}
           onMouseLeave={() => this.handleMouseLeave()}
         >
-          <div className="js-button-image-wrapper">
-            <img src={logo} className="js-button-image" />
-          </div>
-          <div className="js-button-text">
-            <div className="js-button-header">Запросить трансляцию</div>
-            <div className="js-button-info">
+          <JsButtonImageWrapper>
+            <JsButtonImage src={logo} />
+          </JsButtonImageWrapper>
+          <JsButtonText toggle={isOpen}>
+            <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
+            <JsButtonInfo>
               Уточните все интересующие вас вопросы на онлайн трансляции с нашим
               сотрудником
-            </div>
-          </div>
+            </JsButtonInfo>
+          </JsButtonText>
         </ButtonWrapper>
         {this.state.displayMessage && (
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
