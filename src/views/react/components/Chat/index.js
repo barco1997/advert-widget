@@ -13,6 +13,7 @@ import poster from "./poster.svg";
 import favicon from "./favicon.png";
 import arrow from "./arrow2.svg";
 import { MessageArea } from "./messageArea";
+import { media } from "../../../../utils/media";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 function load(url) {
@@ -61,33 +62,11 @@ const WindowWrapper = styled.div`
   position: fixed;
 
   top: 15%;
-`;
-
-const CloseButton = styled.span`
-  position: relative;
-  left: 475px;
-  top: -26px;
-  width: 14px;
-  height: 14px;
-  opacity: 0.3;
-  &:hover {
-    opacity: 1;
-  }
-  &:before,
-  &:after {
-    position: absolute;
-    left: 7px;
-    content: " ";
-    height: 14px;
-    width: 3px;
-    background-color: #333;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
-  }
+  ${media.desktop`
+  top: 0%;
+  width: 100vw;
+  
+  `};
 `;
 
 const CloseButtonB = styled.span`
@@ -159,56 +138,6 @@ const ChatWrapper = styled.div`
   display: ${props => (props.displayFlag ? "flex" : "none")};
   justify-content: center;
   font-family: "Mont";
-
-  & > .js-chat-overlay {
-    z-index: 10002;
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    opacity: 0.2;
-    background-color: #000;
-  }
-
-  & > .js-chat-window {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-
-    background: #fff;
-
-    width: 462px;
-    height: 473px;
-    padding: 40px 40px;
-    padding-bottom: 20px;
-    box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
-    border-radius: 6px;
-  }
-  & > .js-chat-message-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    flex: 1;
-  }
-  & > .js-chat-message-placeholder {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    color: rgba(0, 0, 0, 0.5);
-    flex: 1;
-  }
-  & > .js-chat-message-placeholder:nth-child(1) {
-    margin-top: 80px;
-  }
-  & > .js-chat-empty {
-    margin-top: 60px;
-    width: 176px;
-    height: 72px;
-  }
 `;
 
 const InputFieldA = styled.input`
@@ -295,6 +224,13 @@ const JsChatWindow = styled.div`
 
   box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
   border-radius: 6px;
+  ${media.desktop`
+  height: 100vh;
+  padding: 0px 40px;
+  & > :first-child {
+    margin-top: 40px;
+  }
+  `};
 `;
 const JsChatOverlay = styled.div`
   z-index: 10002;
@@ -305,6 +241,9 @@ const JsChatOverlay = styled.div`
   right: 0px;
   opacity: 0.4;
   background-color: #000;
+  ${media.desktop`
+  display: none;
+  `};
 `;
 const JsChatMessageContainer = styled.div`
   width: 100%;
