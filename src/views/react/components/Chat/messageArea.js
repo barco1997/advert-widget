@@ -59,6 +59,7 @@ export class MessageArea extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let propsToCome = nextProps;
     if (nextProps.strVideo !== null) {
       console.log("one step further", nextProps.strVideo.src);
       const index = nextProps.messages
@@ -95,7 +96,14 @@ export class MessageArea extends React.Component {
       );
       nextProps.handleStreamToVideo();
     }
-    this.setItems(nextProps);
+    if (nextProps.manipulateVideoId) {
+      let indexOfCurrentVideo = nextProps.messages.findIndex(
+        message => message.id === nextProps.manipulateVideoId
+      );
+      propsToCome.messages[indexOfCurrentVideo].ifPauseIcon =
+        nextProps.ifPauseIcon;
+    }
+    this.setItems(propsToCome);
   }
 
   setItems(props) {
@@ -161,6 +169,7 @@ export class MessageArea extends React.Component {
             handlePhoto={this.props.handlePhoto}
             handleVideo={this.props.handleVideo}
             id={message.id}
+            ifPauseIcon={message.ifPauseIcon}
           />
         ))}
         {this.state.awaitingConnection && (

@@ -37,6 +37,12 @@ const JsWidgetLowrow = styled.div`
   margin-bottom: 34px;
   display: flex;
   justify-content: flex-start;
+  ${media.desktop`
+  margin-bottom: 50px;
+  margin-top: 0px;
+  flex: 1;
+  align-items: flex-end;
+  `};
 `;
 
 const JsWidgetOverlay = styled.div`
@@ -70,9 +76,10 @@ const JsWidgetWindow = styled.div`
   border-radius: 6px;
   ${media.desktop`
   max-height: 100vh;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   top: 0%;
+  padding: 0px 60px;
   `};
 `;
 const JsWidgetDialogue = styled.div`
@@ -81,8 +88,13 @@ const JsWidgetDialogue = styled.div`
   margin-top: 10px;
   color: black;
   ${media.desktop`
-  max-width: 320px;
+  width: 100vw;
+  height: 100vh;
   padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  
   `};
 `;
 
@@ -95,7 +107,7 @@ const JsWidgetDialogueH2 = styled.h2`
 const JsWidgetDialogueSpan = styled.span`
   opacity: 0.5;
   ${media.desktop`
-  max-width: 320px;
+  max-width: 100%;
   
   `};
 `;
@@ -111,6 +123,8 @@ const JsWidgetIcons = styled.div`
   justify-content: space-between;
   ${media.desktop`
   display: none;
+  margin-right: 0px;
+  margin-left: 0px;
   `};
 `;
 
@@ -141,6 +155,9 @@ const GetStream = styled.button`
   box-shadow: 0px 4px 15px rgba(255, 45, 85, 0.8);
 
   transition: box-shadow 300ms ease-in-out;
+  ${media.desktop`
+  width: 100%;
+  `};
 `;
 
 const CloseButton = styled.span`

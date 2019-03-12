@@ -6,6 +6,7 @@ import playV from "./playIcon.svg";
 import pauseV from "./pauseIcon.svg";
 import LiveButton from "../LiveButton/index";
 import ReactAudioPlayer from "react-audio-player";
+import { media } from "../../../../utils/media";
 
 const Item = styled.li`
   display: flex;
@@ -31,6 +32,11 @@ const Icon = styled.div`
     width: 100%;
     height: 100%;
   }
+  ${media.desktop`
+  width: 35px;
+  height: 35px;
+  margin-right: 15px;
+  `};
 `;
 
 const ItemStart = styled.div`
@@ -52,6 +58,9 @@ const Title = styled.h4`
   margin: 0;
   font-size: 16px;
   font-weight: bold;
+  ${media.desktop`
+  font-size: 14px;
+  `};
 `;
 const ImageA = styled.img`
   height: 143px;
@@ -59,6 +68,11 @@ const ImageA = styled.img`
   object-fit: cover;
   width: 270px;
   cursor: pointer;
+  ${media.desktop`
+  height: 130px;
+  
+  width: 175px;
+  `};
 `;
 const VideoA = styled.div`
   height: 143px;
@@ -71,6 +85,11 @@ const VideoA = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${media.desktop`
+  height: 130px;
+  
+  width: 175px;
+  `};
 `;
 
 const PlayIcon = styled.img`
@@ -93,6 +112,9 @@ const SummaryTop = styled.p`
   font-size: 12px;
   opacity: 0.5;
   margin-bottom: 6px;
+  ${media.desktop`
+  font-size: 10px;
+  `};
 `;
 
 const Date = styled.time`
@@ -107,14 +129,14 @@ export class Response extends React.Component {
     this.state = {
       typeVar: this.props.type,
       src: this.props.src,
-      playIcon: false
+      pauseIcon: this.props.ifPauseIcon ? true : false
     };
 
     this.setItems = this.setItems.bind(this);
     this.setSrc = this.setSrc.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.played = this.played.bind(this);
-    this.paused = this.paused.bind(this);
+    //this.played = this.played.bind(this);
+    //this.paused = this.paused.bind(this);
   }
 
   componentWillMount() {
@@ -129,15 +151,15 @@ export class Response extends React.Component {
     if (this.props.type === "photo" && this.state.src) {
       this.props.handlePhoto(this.state.src);
     } else if (this.props.type === "video" && this.state.src) {
-      const ifPlayed = this.state.playIcon;
-      console.log(ifPlayed);
+      //const ifPlayed = this.state.playIcon;
+      //console.log(ifPlayed);
 
       this.props.handleVideo(this.state.src, this.props.id);
       /*self.setState({
         playIcon: !ifPlayed
       });*/
     } else if (this.props.type === "stream" && this.state.src) {
-      const ifPlayed = this.state.playIcon;
+      //const ifPlayed = this.state.playIcon;
       this.props.handleVideo(this.state.src, this.props.id);
       /*self.setState({
         playIcon: !ifPlayed
@@ -158,7 +180,7 @@ export class Response extends React.Component {
     });
   }
 
-  played() {
+  /*played() {
     this.setState({
       playIcon: false
     });
@@ -167,7 +189,7 @@ export class Response extends React.Component {
     this.setState({
       playIcon: true
     });
-  }
+  }*/
 
   render() {
     return (
@@ -196,7 +218,7 @@ export class Response extends React.Component {
               this.props.flv &&
               this.state.typeVar === "video" && (
                 <SummaryTop>
-                  {this.props.description} провел прямую трансляцию
+                  {this.props.description} провел трансляцию
                 </SummaryTop>
               )}
             {this.props.description && this.state.typeVar === "photo" && (
@@ -213,7 +235,7 @@ export class Response extends React.Component {
             )}
             {this.state.typeVar === "video" && this.state.src && (
               <VideoA src={this.props.thumb} onClick={() => this.handleClick()}>
-                {" "}
+                <PlayIcon src={this.state.pauseIcon ? pauseV : playV} />
               </VideoA>
             )}
 

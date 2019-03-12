@@ -24,9 +24,9 @@ const ButtonWrapper = styled.button`
   position: fixed;
   z-index: 10001;
   background: #fff;
-  right: 10%;
+  right: 2%;
   bottom: 30px;
-  margin: 0 -80px 0 0;
+  margin: 0 0 0 0;
   overflow: hidden;
   background: ${props => (props.color ? props.color : "white")};
 

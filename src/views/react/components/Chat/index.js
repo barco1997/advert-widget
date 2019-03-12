@@ -47,6 +47,19 @@ const VideoWrapper = styled.div`
   border-radius: 10px;
   overflow: hidden;
   display: ${props => (props.visible ? "block" : "none")};
+  ${media.desktop`
+  top: 0%;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  border-radius: 0px;
+  margin-left: 0px;
+  & > video {
+    width: 100vw;
+  height: 100vh;
+  border-radius: 0px;
+  }
+  `};
 `;
 const PhotoWrapper = styled.div`
   width: 273px;
@@ -55,6 +68,19 @@ const PhotoWrapper = styled.div`
   border-radius: 10px;
   overflow: hidden;
   display: ${props => (props.visible ? "block" : "none")};
+  ${media.desktop`
+  top: 0%;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  border-radius: 0px;
+  margin-left: 0px;
+  & > div {
+    width: 100vw;
+  height: 100vh;
+  border-radius: 0px;
+  }
+  `};
 `;
 const WindowWrapper = styled.div`
   display: flex;
@@ -71,8 +97,8 @@ const WindowWrapper = styled.div`
 
 const CloseButtonB = styled.span`
   position: relative;
-  left: 246px;
-  top: 13px;
+  left: 0px;
+  top: 0px;
   width: 14px;
   height: 14px;
   opacity: 0.3;
@@ -126,10 +152,16 @@ const CloseWrapper = styled.div`
   right: 28px;
   top: 14px;
 `;
-const CloseWrapperA = styled.div`
+const CloseWrapperB = styled.div`
   position: absolute;
   right: 28px;
-  top: 13px;
+  top: 14px;
+`;
+const CloseWrapperA = styled.div`
+  position: absolute;
+  right: -5px;
+
+  top: -24px;
 `;
 
 const ChatWrapper = styled.div`
@@ -226,6 +258,7 @@ const JsChatWindow = styled.div`
   border-radius: 6px;
   ${media.desktop`
   height: 100vh;
+  width: 100%;
   padding: 0px 40px;
   & > :first-child {
     margin-top: 40px;
@@ -251,6 +284,10 @@ const JsChatMessageContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   flex: 1;
+  position: relative;
+  ${media.android`
+  max-width: 250px;
+  `};
 `;
 const JsChatMessagePlaceholder = styled.div`
   width: 100%;
@@ -301,7 +338,8 @@ export class Chat extends React.Component {
       videoSrc: null,
       streamToVideo: null,
       notificationMessageToggle: false,
-      videoManipulateId: null
+      videoManipulateId: null,
+      ifPauseIcon: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -606,11 +644,13 @@ export class Chat extends React.Component {
   }
 
   handleVideo(src, videoManipulateId) {
+    let ifPsI = this.state.ifPauseIcon;
     this.setState({
       videoSrc: src,
       photoSrc: null,
       streamFlag: false,
-      videoManipulateId: videoManipulateId
+      videoManipulateId: videoManipulateId,
+      ifPauseIcon: !ifPsI
     });
   }
 
@@ -746,17 +786,6 @@ export class Chat extends React.Component {
           <WindowWrapper>
             <JsChatWindow>
               <JsChatMessageContainer>
-                <CloseWrapperA>
-                  <CloseButtonC
-                    onClick={() => {
-                      this.props.destroy();
-                      this.setState({
-                        streamFlag: false
-                      });
-                      this.live.pause();
-                    }}
-                  />
-                </CloseWrapperA>
                 {!this.state.messages || this.state.messages.length == 0 ? (
                   <JsChatMessagePlaceholder>
                     <div>Не стесняйтесь, спросите!</div>
@@ -772,6 +801,8 @@ export class Chat extends React.Component {
                     handleVideo={this.handleVideo}
                     handleStreamToVideo={this.handleStreamToVideo}
                     strVideo={this.state.streamToVideo}
+                    manipulateVideoId={this.state.videoManipulateId}
+                    ifPauseIcon={this.state.ifPauseIcon}
                   />
                 )}
                 <form onSubmit={this.handleSubmit}>
@@ -789,6 +820,17 @@ export class Chat extends React.Component {
                     </SendRequest>
                   </div>
                 </form>
+                <CloseWrapperA visibleExtra={this.state.photoSrc}>
+                  <CloseButtonC
+                    onClick={() => {
+                      this.props.destroy();
+                      this.setState({
+                        streamFlag: false
+                      });
+                      this.live.pause();
+                    }}
+                  />
+                </CloseWrapperA>
               </JsChatMessageContainer>
             </JsChatWindow>
 
@@ -814,33 +856,43 @@ export class Chat extends React.Component {
             <VideoWrapper visible={this.state.videoSrc}>
               <ReactPlayer
                 url={this.state.videoSrc}
-                playing
-                width="273px"
-                height="473px"
+                playing={this.state.ifPauseIcon}
+                width="100%"
+                height="100%"
                 controls
+                onPause={() => {
+                  this.setState({
+                    ifPauseIcon: false
+                  });
+                }}
+                onPlay={() => {
+                  this.setState({
+                    ifPauseIcon: true
+                  });
+                }}
               />
               <CloseWrapper>
                 <CloseButtonC
                   onClick={() => {
                     this.setState({
-                      videoSrc: null
+                      videoSrc: null,
+                      ifPauseIcon: false
                     });
-                    if (this.state.paused) {
-                      this.state.paused();
-                    }
                   }}
                 />
               </CloseWrapper>
             </VideoWrapper>
             <PhotoWrapper visible={this.state.photoSrc}>
               <Image src={this.state.photoSrc}>
-                <CloseButtonB
-                  onClick={() => {
-                    this.setState({
-                      photoSrc: null
-                    });
-                  }}
-                />
+                <CloseWrapperB>
+                  <CloseButtonB
+                    onClick={() => {
+                      this.setState({
+                        photoSrc: null
+                      });
+                    }}
+                  />
+                </CloseWrapperB>
               </Image>
             </PhotoWrapper>
           </WindowWrapper>

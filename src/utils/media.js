@@ -1,9 +1,10 @@
-import { css } from 'styled-components';
+import { css } from "styled-components";
 
 const sizes = {
   desktop: 1024,
   tablet: 769,
   phone: 415,
+  android: 359
 };
 
 export const media = Object.keys(sizes).reduce((acc, label) => {
