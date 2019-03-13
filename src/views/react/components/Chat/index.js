@@ -41,8 +41,8 @@ const storedId = ls.get("userId");
 const conversationId = ls.get("conversationId");
 
 const VideoWrapper = styled.div`
-  width: 273px;
-  height: 473px;
+  width: 319px;
+  height: 553px;
   margin-left: 50px;
   border-radius: 10px;
   overflow: hidden;
@@ -62,8 +62,8 @@ const VideoWrapper = styled.div`
   `};
 `;
 const PhotoWrapper = styled.div`
-  width: 273px;
-  height: 473px;
+  width: 319px;
+  height: 553px;
   margin-left: 50px;
   border-radius: 10px;
   overflow: hidden;
@@ -86,12 +86,12 @@ const WindowWrapper = styled.div`
   display: flex;
   z-index: 10003;
   position: fixed;
-
+  height: 553px;
   top: 15%;
   ${media.desktop`
   top: 0%;
-  width: 100vw;
   
+  height: auto;
   `};
 `;
 
@@ -159,9 +159,13 @@ const CloseWrapperB = styled.div`
 `;
 const CloseWrapperA = styled.div`
   position: absolute;
-  right: -5px;
+  right: -7px;
 
-  top: -24px;
+  top: 14px;
+  ${media.desktop`
+  top: -14px;
+  right: 14px;
+  `};
 `;
 
 const ChatWrapper = styled.div`
@@ -192,11 +196,14 @@ const InputFieldA = styled.input`
 
 const Image = styled.div`
   background: url(${props => props.src});
-  width: 273px;
-  height: 473px;
+  width: 319px;
+  height: 553px;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 10px;
+  ${media.desktop`
+  border-radius: 0px;
+  `};
 `;
 
 const NotificationMessageWrapper = styled.div`
@@ -241,6 +248,11 @@ const SendRequest = styled.button`
   padding-top: 3px;
   font-weight: normal;
   font-family: "Mont";
+  ${media.desktop`
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  `};
 `;
 
 const JsChatWindow = styled.div`
@@ -250,17 +262,17 @@ const JsChatWindow = styled.div`
 
   background: #fff;
 
-  width: 462px;
-  height: 473px;
-  padding: 40px 40px;
+  width: 542px;
+  height: 553px;
 
   box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
   border-radius: 6px;
   ${media.desktop`
   height: 100vh;
-  width: 100%;
-  padding: 0px 40px;
+  width: 100vw;
+  border-radius: 0px;
   & > :first-child {
+    
     margin-top: 40px;
   }
   `};
@@ -279,14 +291,24 @@ const JsChatOverlay = styled.div`
   `};
 `;
 const JsChatMessageContainer = styled.div`
-  width: 100%;
+  width: 462px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  padding: 40px 0px;
+
+  margin: 0px 40px;
+
   flex: 1;
   position: relative;
+  ${media.desktop`
+  width: auto;
+  padding: 0px;
+  margin: 0px 15px;
+  margin-bottom: 30px;
+  `};
   ${media.android`
-  max-width: 250px;
+  max-width: 300px;
   `};
 `;
 const JsChatMessagePlaceholder = styled.div`

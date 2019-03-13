@@ -69,7 +69,7 @@ const JsWidgetWindow = styled.div`
   max-height: 620px;
   top: 15%;
 
-  width: 840px;
+  width: 740px;
   padding: 20px 60px;
   padding-top: 60px;
   box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
