@@ -177,20 +177,22 @@ const ChatWrapper = styled.div`
 `;
 
 const InputFieldA = styled.input`
-  height: 28px;
-  color: black;
-  width: 100%;
-  background: #f5f5f5;
-  border: 0.5px solid #e5e5e5;
-  box-sizing: border-box;
-  border-radius: 4px;
-  padding: 0px 10px;
-  font-family: "Mont";
-  font-weight: normal;
-  font-size: 11px;
-  outline: 0;
-  &::placeholder {
-    color: rgba(0, 0, 0, 0.2);
+  &&& {
+    height: 28px;
+    color: black;
+    width: 100%;
+    background: #f5f5f5;
+    border: 0.5px solid #e5e5e5;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 0px 10px;
+    font-family: "Mont";
+    font-weight: normal;
+    font-size: 11px;
+    outline: 0;
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.2);
+    }
   }
 `;
 
