@@ -632,10 +632,12 @@ export class Chat extends React.Component {
     this.setState({ value: event.target.value });
   }
 
-  handleStreamClick(url) {
+  handleStreamClick(id) {
     ls.set("streamInProgress", true);
-    console.log(url);
     let self = this;
+    let url = `https://static.eyezon.app/live/${id}.flv`;
+    console.log(url);
+
     this.setState({
       streamLink: url,
       streamFlag: true,

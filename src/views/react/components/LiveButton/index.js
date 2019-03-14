@@ -60,14 +60,13 @@ export class Button extends React.Component {
     super(props, context);
     this.state = {
       wasWatched: false,
-      flv: this.props.flv
+      id: this.props.id
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    console.log(this.state.flv);
-    this.props.setFlv(this.state.flv);
+    this.props.setFlv(this.state.id);
     this.setState({
       wasWatched: true
     });

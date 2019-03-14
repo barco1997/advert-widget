@@ -226,7 +226,7 @@ export class Response extends React.Component {
             )}
             {!this.props.flv && <Title>{this.props.title}</Title>}
             {this.props.flv && !this.state.src && (
-              <LiveButton flv={this.props.flv} setFlv={this.props.functionA}>
+              <LiveButton id={this.props.id} setFlv={this.props.functionA}>
                 Смотреть
               </LiveButton>
             )}
