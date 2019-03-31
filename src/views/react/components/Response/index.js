@@ -174,6 +174,22 @@ export class Response extends React.Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.ifPauseIcon) {
+      this.setState({
+        pauseIcon: true
+      });
+    } else if (this.props.ifPauseIcon && !nextProps.ifPauseIcon) {
+      this.setState({
+        pauseIcon: false
+      });
+    }
+    if (this.state.typeVar === "stream" && nextProps.src) {
+      console.log("got stream", nextProps.src);
+      this.setItems("video", nextProps.src);
+    }
+  }
+
   setSrc(props) {
     this.setState({
       src: props

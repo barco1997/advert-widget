@@ -51,11 +51,19 @@ function apiHandler(api, params) {
       break;
     case "react":
       let target;
+      let url = new URL(window.location.href);
+      let openChat = url.searchParams.get("open");
+      console.log("location: ", window.location.href);
+      console.log("chat open? ", openChat);
       if (params.button === false) {
         target = document.getElementById("eyezonButton");
       }
+      if (openChat) {
+        react(params, target, true);
+      } else {
+        react(params, target, false);
+      }
 
-      react(params, target);
       break;
 
     default:

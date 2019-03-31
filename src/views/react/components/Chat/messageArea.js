@@ -3,17 +3,17 @@ import React from "react";
 import styled from "styled-components";
 import Response from "../Response";
 import awaitingBox from "./awaiting.svg";
-
+import ChatProposition from "../ChatProposition";
 const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
-  overflow: auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 
   flex: 1;
+  overflow: auto;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -43,6 +43,14 @@ const AwaitingBoxImage = styled.img`
   position: absolute;
   left: 0px;
   top: 0px;
+`;
+
+const SelectChatsText = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  margin: 70px 30px;
 `;
 
 export class MessageArea extends React.Component {
@@ -97,6 +105,7 @@ export class MessageArea extends React.Component {
       nextProps.handleStreamToVideo();
     }
     if (nextProps.manipulateVideoId) {
+      console.log("Help me");
       let indexOfCurrentVideo = nextProps.messages.findIndex(
         message => message.id === nextProps.manipulateVideoId
       );
@@ -139,7 +148,7 @@ export class MessageArea extends React.Component {
       >
         {this.state.messages.map((message, index) => (
           <Response
-            key={uuidv1()}
+            key={message.id || uuidv1()}
             ref={element => {
               this.messageRef[message.id] = element;
             }}
@@ -172,21 +181,42 @@ export class MessageArea extends React.Component {
             ifPauseIcon={message.ifPauseIcon}
           />
         ))}
-        {this.state.awaitingConnection && (
-          <div>
-            <span style={{ fontSize: "12", opacity: "0.5" }}>
-              Идет подключение ...
-            </span>
-            <AwaitingBoxWrapper>
-              <AwaitingBoxImage src={awaitingBox} />
-              <div>
-                Пока кто-то из нашей команды готовиться ответить на ваше
-                сообщение, вы можете свернуть окно и продолжить пользоваться
-                сайтом, вам придет уведомление.
-              </div>
-            </AwaitingBoxWrapper>
-          </div>
+        {this.state.awaitingConnection &&
+          !(this.props.existingChats.length > 0) && (
+            <div>
+              <span style={{ fontSize: "12", opacity: "0.5" }}>
+                Идет подключение ...
+              </span>
+              <AwaitingBoxWrapper>
+                <AwaitingBoxImage src={awaitingBox} />
+                <div>
+                  Пока кто-то из нашей команды готовиться ответить на ваше
+                  сообщение, вы можете свернуть окно и продолжить пользоваться
+                  сайтом, вам придет уведомление.
+                </div>
+              </AwaitingBoxWrapper>
+            </div>
+          )}
+        {this.props.existingChats.length > 0 && (
+          <SelectChatsText>
+            {" "}
+            К сожалению, все специалисты заняты. Вы можете присоединиться к
+            другому запросу:{" "}
+          </SelectChatsText>
         )}
+        {this.props.existingChats.length > 0 &&
+          this.props.existingChats.map(chat => (
+            <div
+              key={chat.port.id}
+              onClick={() => this.props.handlePropositionClick(chat.port.id)}
+            >
+              <ChatProposition
+                title={chat.port.request}
+                description={chat.port.date}
+                messagesCount={chat.messages.count}
+              />
+            </div>
+          ))}
       </MessageContainer>
     );
   }

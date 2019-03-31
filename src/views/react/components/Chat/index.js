@@ -1,7 +1,5 @@
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import styled from "styled-components";
 import empty from "./empty.png";
 
@@ -9,11 +7,12 @@ import axios from "axios";
 import ls from "local-storage";
 
 import ReactPlayer from "react-player";
-import poster from "./poster.svg";
+
 import favicon from "./favicon.png";
 import arrow from "./arrow2.svg";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
+//require("./flv.min.js");
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 function load(url) {
@@ -28,7 +27,9 @@ function load(url) {
   });
 }
 
-load("https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js")
+load(
+  "https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"
+)
   .then(function() {
     console.log("Loaded!");
   })
@@ -36,9 +37,9 @@ load("https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js")
     console.error("Something went wrong!", err);
   });
 const io = require("socket.io-client");
-const storedToken = ls.get("token");
+//const storedToken = ls.get("token");
 const storedId = ls.get("userId");
-const conversationId = ls.get("conversationId");
+//const conversationId = ls.get("conversationId");
 
 const VideoWrapper = styled.div`
   width: 319px;
@@ -46,19 +47,37 @@ const VideoWrapper = styled.div`
   margin-left: 50px;
   border-radius: 10px;
   overflow: hidden;
+  & > video {
+    width: 100%;
+    height: 100%;
+  }
   display: ${props => (props.visible ? "block" : "none")};
   ${media.desktop`
   top: 0%;
   width: 100vw;
   height: 100vh;
+  
   position: fixed;
   border-radius: 0px;
   margin-left: 0px;
+  background: black;
   & > video {
-    width: 100vw;
-  height: 100vh;
+    
   border-radius: 0px;
   }
+  `};
+`;
+
+const ExtraVideoOverlay = styled.div`
+  display: ${props => (props.visible ? "block" : "none")};
+  ${media.desktop`
+  
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  position: absolute;
   `};
 `;
 const PhotoWrapper = styled.div`
@@ -357,13 +376,15 @@ export class Chat extends React.Component {
       firstTimeFlag: true,
       streamFlag: false,
       streamLink: "",
-      videoElement: this.live,
       photoSrc: null,
       videoSrc: null,
       streamToVideo: null,
       notificationMessageToggle: false,
       videoManipulateId: null,
-      ifPauseIcon: false
+      ifPauseIcon: false,
+      existingChats: [],
+      streamId: null,
+      lastValue: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -373,6 +394,7 @@ export class Chat extends React.Component {
     this.handlePhoto = this.handlePhoto.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleStreamToVideo = this.handleStreamToVideo.bind(this);
+    this.handlePropositionClick = this.handlePropositionClick.bind(this);
 
     this.notifyMe = this.notifyMe.bind(this);
     this.notificationPermission = this.notificationPermission.bind(this);
@@ -393,7 +415,12 @@ export class Chat extends React.Component {
       var notification = new Notification(message, options);
       notification.onclick = function(event) {
         var new_window = window.open("", "_blank"); //open empty window(tab)
-        new_window.location.href = event.target.data; //set url of newly created window(tab) and focus
+        if (event.target.data.includes("?open=true")) {
+          new_window.location.href = event.target.data;
+        } else {
+          new_window.location.href = event.target.data.concat("?open=true");
+        } //set url of newly created window(tab) and focus
+        notification.close();
       };
     }
     // В противном случае, запрашиваем разрешение
@@ -404,7 +431,13 @@ export class Chat extends React.Component {
           var notification = new Notification(message, options);
           notification.onclick = function(event) {
             var new_window = window.open("", "_blank"); //open empty window(tab)
-            new_window.location.href = event.target.data; //set url of newly created window(tab) and focus
+            if (event.target.data.includes("?open=true")) {
+              new_window.location.href = event.target.data;
+            } else {
+              new_window.location.href = event.target.data.concat("?open=true");
+            }
+            //set url of newly created window(tab) and focus
+            notification.close();
           };
         }
       });
@@ -506,6 +539,7 @@ export class Chat extends React.Component {
                   type === "stream"
                     ? `https://static.eyezon.app/live/${data._id}.flv`
                     : null,
+                streamId: type === "stream" ? data._id : null,
 
                 src: source,
                 thumb: thumbnail,
@@ -570,51 +604,51 @@ export class Chat extends React.Component {
             .then(function(response) {
               const users = response.data.users;
               const messages = response.data.messages;
-              const buttonUserId = ls.get("userId");
-              if (
+              //const buttonUserId = ls.get("userId");
+              /*if (
                 users.filter(
                   user => user.userId === buttonUserId && user.type === "joiner"
                 ).length === 0
               ) {
                 self.loadInitialMessages([]);
-              } else {
-                console.log(messages);
-                const editedMessages = messages.map(message => ({
-                  text: message.message,
-                  time: message.time,
-                  photo: users.filter(user => user.userId === message.userId)[0]
-                    .photo,
-                  user: users
-                    .filter(user => user.userId === message.userId)[0]
-                    .firstName.concat(
-                      " ",
-                      users.filter(user => user.userId === message.userId)[0]
-                        .lastName
-                    ),
-                  type:
-                    message.attachments.length > 0
-                      ? message.attachments[0].type
-                      : "message",
-                  src:
-                    message.attachments.length > 0
-                      ? message.attachments[0].src
-                      : null,
-                  thumb:
-                    message.attachments.length > 0 &&
-                    message.attachments[0].type === "video"
-                      ? message.attachments[0].thumbnail
-                      : null,
-                  flv:
-                    message.attachments.length > 0 &&
-                    message.attachments[0].type === "stream"
-                      ? `https://static.eyezon.app/live/${message._id}.flv`
-                      : "",
-                  id: message._id
-                }));
-                console.log("Users - ", users);
+              } else {*/
+              console.log(messages);
+              const editedMessages = messages.map(message => ({
+                text: message.message,
+                time: message.time,
+                photo: users.filter(user => user.userId === message.userId)[0]
+                  .photo,
+                user: users
+                  .filter(user => user.userId === message.userId)[0]
+                  .firstName.concat(
+                    " ",
+                    users.filter(user => user.userId === message.userId)[0]
+                      .lastName
+                  ),
+                type:
+                  message.attachments.length > 0
+                    ? message.attachments[0].type
+                    : "message",
+                src:
+                  message.attachments.length > 0
+                    ? message.attachments[0].src
+                    : null,
+                thumb:
+                  message.attachments.length > 0 &&
+                  message.attachments[0].type === "video"
+                    ? message.attachments[0].thumbnail
+                    : null,
+                flv:
+                  message.attachments.length > 0 &&
+                  message.attachments[0].type === "stream"
+                    ? `https://static.eyezon.app/live/${message._id}.flv`
+                    : "",
+                id: message._id
+              }));
+              console.log("Users - ", users);
 
-                self.loadInitialMessages(editedMessages);
-              }
+              self.loadInitialMessages(editedMessages);
+              //}
             })
             .catch(function(error) {
               console.log(error);
@@ -633,25 +667,46 @@ export class Chat extends React.Component {
   }
 
   handleStreamClick(id) {
-    ls.set("streamInProgress", true);
-    let self = this;
-    let url = `https://static.eyezon.app/live/${id}.flv`;
-    console.log(url);
-
+    this.loadedVideo.getInternalPlayer().pause();
     this.setState({
       streamLink: url,
       streamFlag: true,
       photoSrc: null
     });
+    ls.set("streamInProgress", true);
+    let self = this;
+    let url = `https://static.eyezon.app/live/${id}.flv`;
+    let stream = this.live;
+    console.log(
+      "THIS IS STREAM HLS LINK",
+      `https://static.eyezon.app/live/${id}/index.m3u8`
+    );
+
     if (flvjs.isSupported()) {
-      let videoElement = this.live;
       let flvPlayer = flvjs.createPlayer({
         type: "flv",
         url: url
       });
-      flvPlayer.attachMediaElement(videoElement);
+      flvPlayer.attachMediaElement(stream);
       flvPlayer.load();
       flvPlayer.play();
+    } else if (Hls.isSupported()) {
+      var hls = new Hls();
+      hls.loadSource(`https://static.eyezon.app/live/${id}/index.m3u8`);
+      hls.attachMedia(stream);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        if (stream.requestFullscreen) {
+          stream.requestFullscreen();
+        } else if (stream.mozRequestFullScreen) {
+          stream.mozRequestFullScreen();
+        } else if (stream.webkitRequestFullscreen) {
+          stream.webkitRequestFullscreen();
+        } else if (stream.msRequestFullscreen) {
+          stream.msRequestFullscreen();
+        }
+        stream.play();
+      });
+      /**/
     }
     console.log("first success");
     let obj = {
@@ -662,6 +717,8 @@ export class Chat extends React.Component {
   }
 
   handlePhoto(src) {
+    this.loadedVideo.getInternalPlayer().pause();
+    this.live.pause();
     this.setState({
       photoSrc: src,
       streamFlag: false,
@@ -670,6 +727,7 @@ export class Chat extends React.Component {
   }
 
   handleVideo(src, videoManipulateId) {
+    this.live.pause();
     let ifPsI = this.state.ifPauseIcon;
     this.setState({
       videoSrc: src,
@@ -678,12 +736,100 @@ export class Chat extends React.Component {
       videoManipulateId: videoManipulateId,
       ifPauseIcon: !ifPsI
     });
+    /*if (Hls.isSupported()) {
+      let video = this.loadedVideo.getInternalPlayer();
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.mozRequestFullScreen) {
+        
+        video.mozRequestFullScreen();
+      } else if (video.webkitRequestFullscreen) {
+        
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        
+        video.msRequestFullscreen();
+      }
+    }*/
   }
 
   handleStreamToVideo() {
     this.setState({
       streamToVideo: null
     });
+  }
+
+  handlePropositionClick(id) {
+    let self = this;
+    const chat = this.state.existingChats.find(chat => chat.port.id === id);
+    const users = chat.messages.users;
+    const messages = chat.messages.messages;
+    const editedMessages = messages.map(message => ({
+      text: message.message,
+      time: message.time,
+      photo: users.filter(user => user.userId === message.userId)[0].photo,
+      user: users
+        .filter(user => user.userId === message.userId)[0]
+        .firstName.concat(
+          " ",
+          users.filter(user => user.userId === message.userId)[0].lastName
+        ),
+      type:
+        message.attachments.length > 0
+          ? message.attachments[0].type
+          : "message",
+      src: message.attachments.length > 0 ? message.attachments[0].src : null,
+      thumb:
+        message.attachments.length > 0 &&
+        message.attachments[0].type === "video"
+          ? message.attachments[0].thumbnail
+          : null,
+      flv:
+        message.attachments.length > 0 &&
+        message.attachments[0].type === "stream"
+          ? `https://static.eyezon.app/live/${message._id}.flv`
+          : "",
+      id: message._id
+    }));
+    ls.set("conversationId", chat.port.id);
+    const value = this.state.lastValue;
+    axios
+      .get(`https://api.eyezon.app/ports/${chat.port.id}`)
+      .then(function(response) {
+        console.log(response);
+        if (response.data.port.isLive) {
+          let room = this.state.streamId;
+          const streamMessage = editedMessages.find(
+            message => message.type === "stream"
+          );
+          room = streamMessage.id;
+          let obj = {
+            event: "comment",
+            room: room,
+            text: value
+          };
+          console.log(obj);
+          self.socket.emit("port", JSON.stringify(obj));
+        } else {
+          axios
+            .put(`https://api.eyezon.app/messages/${chat.port.id}`, {
+              message: value
+            })
+            .then(function(response) {
+              console.log(response);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }
+        self.loadInitialMessages([
+          ...editedMessages,
+          { text: value, time: new Date(), id: uuidv1() }
+        ]);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -708,7 +854,9 @@ export class Chat extends React.Component {
     this.setState({
       messages: msgs,
       firstTimeFlag: false,
-      startedFlag: msgs.length > 1 ? true : false
+      startedFlag: msgs.length > 1 ? true : false,
+      existingChats: [],
+      awaitingConnection: false
     });
   }
 
@@ -722,31 +870,77 @@ export class Chat extends React.Component {
           { text: value, time: new Date(), id: uuidv1() }
         ],
         value: "",
-        awaitingConnection: true
+        awaitingConnection: true,
+        lastValue: value
       });
       axios
-        .get("https://api.eyezon.app/ports")
+        .get(`https://api.eyezon.app/ports?businessId=${self.props.businessId}`)
         .then(function(response) {
-          console.log(response);
-          console.log(value);
-          axios
-            .post(
-              `https://api.eyezon.app/ports/requestBusinessStream/${
-                self.props.businessId
-              }` /*members[0]._id*/,
-              {
-                message: value
-              }
-            )
-            .then(function(response) {
-              console.log(response);
-              //ls.set("conversationId", members[0]._id);
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-          //}
+          const freePorts = response.data.ports.filter(
+            port => !port.isDiscussionInProgress
+          );
+          console.log("The ports needed", freePorts);
 
+          console.log(value);
+          //
+          //
+          //
+          //
+          //
+          if (freePorts.length !== 0) {
+            axios
+              .post(
+                `https://api.eyezon.app/ports/requestBusinessStream/${
+                  self.props.businessId
+                }`,
+                {
+                  message: value,
+                  url: window.location.href
+                }
+              )
+              .then(function(response) {
+                console.log(
+                  "U sent the request - thats new response:",
+                  response
+                );
+
+                //ls.set("conversationId", members[0]._id);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          } else {
+            console.log("The ports with conversation", response.data.ports);
+            response.data.ports.map(port => {
+              axios
+                .get(`https://api.eyezon.app/messages/get/${port._id}/`)
+                .then(function(response) {
+                  //
+                  console.log("Mapping port to messages", response);
+                  self.setState({
+                    existingChats: [
+                      ...self.state.existingChats,
+                      {
+                        port: {
+                          id: port._id,
+                          date: port.waiters[0].date,
+                          request: port.waiters[0].message
+                        },
+                        messages: response.data
+                      }
+                    ]
+                  });
+
+                  //
+                });
+            });
+            /*self.setState({
+              existingChats: response.data.ports
+            });*/
+          }
+          //
+          //
+          //
           //end of temporary code
         })
         .catch(function(error) {
@@ -806,6 +1000,7 @@ export class Chat extends React.Component {
                 streamFlag: false
               });
               this.live.pause();
+              this.loadedVideo.getInternalPlayer().pause();
             }}
           />
 
@@ -829,6 +1024,8 @@ export class Chat extends React.Component {
                     strVideo={this.state.streamToVideo}
                     manipulateVideoId={this.state.videoManipulateId}
                     ifPauseIcon={this.state.ifPauseIcon}
+                    existingChats={this.state.existingChats}
+                    handlePropositionClick={this.handlePropositionClick}
                   />
                 )}
                 <form onSubmit={this.handleSubmit}>
@@ -854,6 +1051,7 @@ export class Chat extends React.Component {
                         streamFlag: false
                       });
                       this.live.pause();
+                      this.loadedVideo.getInternalPlayer().pause();
                     }}
                   />
                 </CloseWrapperA>
@@ -863,8 +1061,8 @@ export class Chat extends React.Component {
             <VideoWrapper visible={this.state.streamFlag}>
               <video
                 id="live"
-                ref={video => {
-                  this.live = video;
+                ref={stream => {
+                  this.live = stream;
                 }}
                 controls
               />
@@ -879,13 +1077,19 @@ export class Chat extends React.Component {
                 />
               </CloseWrapper>
             </VideoWrapper>
-            <VideoWrapper visible={this.state.videoSrc}>
+
+            <VideoWrapper
+              visible={this.state.videoSrc && !this.state.streamFlag}
+            >
               <ReactPlayer
                 url={this.state.videoSrc}
                 playing={this.state.ifPauseIcon}
                 width="100%"
                 height="100%"
                 controls
+                ref={video => {
+                  this.loadedVideo = video;
+                }}
                 onPause={() => {
                   this.setState({
                     ifPauseIcon: false
@@ -895,6 +1099,7 @@ export class Chat extends React.Component {
                   this.setState({
                     ifPauseIcon: true
                   });
+                  this.live.pause();
                 }}
               />
               <CloseWrapper>
@@ -904,6 +1109,7 @@ export class Chat extends React.Component {
                       videoSrc: null,
                       ifPauseIcon: false
                     });
+                    this.loadedVideo.getInternalPlayer().pause();
                   }}
                 />
               </CloseWrapper>

@@ -6,7 +6,7 @@ import App from "./components/App";
 let elements = [];
 let body;
 
-export function react(params, target) {
+export function react(params, target, ifOpened) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
   body = document.getElementsByTagName("body")[0];
@@ -21,6 +21,7 @@ export function react(params, target) {
         button={params.button}
         target={target}
         businessId={params.businessId}
+        ifOpened={ifOpened}
       />
     </React.Fragment>,
     document.getElementById("root")

@@ -6,6 +6,7 @@ import Message from "../Message/index";
 import { Chat } from "../Chat";
 import ls from "local-storage";
 import axios from "axios";
+import { CLIENT_ID, CLIENT_SECRET } from "./constants";
 const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
 if (storedToken) {
@@ -26,64 +27,123 @@ export class ButtonConnector extends React.Component {
     this.showChat = this.showChat.bind(this);
     this.showChatHere = this.showChatHere.bind(this);
     this.showMessageHere = this.showMessageHere.bind(this);
+    this.handleRegistration = this.handleRegistration.bind(this);
+  }
+
+  handleRegistration() {
+    let self = this;
+    const storedToken = ls.get("token");
+    if (storedToken) {
+      axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+      self.showChat();
+    } else {
+      const uuidv1 = require("uuid/v1");
+      const uuidv4 = require("uuid/v4");
+      const time = uuidv1();
+      const random = uuidv4();
+      const prefix = "bt_";
+      const uniquePassword = prefix.concat(time, random);
+      const uniqueId = uniquePassword.slice(0, 63);
+      ls.set("userId", uniqueId);
+      ls.set("uniquePassword", uniquePassword);
+      axios
+        .post(
+          "https://api.eyezon.app/register/basic",
+          {
+            userId: uniqueId,
+            nickName: "myapiBt",
+            password: uniquePassword,
+            lastName: "Button",
+            firstName: "User",
+            photo:
+              "https://firebasestorage.googleapis.com/v0/b/eyezon-192313.appspot.com/o/photos%2Fbasic_user_photo.jpg?alt=media"
+          },
+          {
+            auth: {
+              username: CLIENT_ID,
+              password: CLIENT_SECRET
+            }
+          }
+        )
+        .then(function(response) {
+          const token = response.data.access_token;
+          ls.set("token", token);
+          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+          self.showChat();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    }
   }
 
   handleClick() {
     let self = this;
-    //let showM = this.showMessageHere();
-    //let showCH = this.showChatHere();
-    if (this.state.toggle) {
-      if (!reqId) {
-        if (storedToken) {
-          axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
-          axios
-            .get("https://api.eyezon.app/messages/dialogs?type=joiner")
-            .then(function(response) {
-              console.log(response);
-              if (response.data.count > 0) {
-                console.log("token, no conversation id, dialogs");
-                ls.set("conversationId", response.data.dialogs[0].port._id);
-                self.showChatHere();
-              } else {
-                console.log("token, no conversation id, no dialogs");
-                self.showMessageHere();
-              }
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-        } else {
-          console.log("no token, no conversation id");
-          self.showMessageHere();
-        }
-      } else {
+    //if (this.state.toggle) {
+    if (!reqId) {
+      if (storedToken) {
         axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
         axios
           .get("https://api.eyezon.app/messages/dialogs?type=joiner")
           .then(function(response) {
             console.log(response);
-
             if (response.data.count > 0) {
-              console.log("conversation id, dialogs");
+              console.log("token, no conversation id, dialogs");
+              ls.set("conversationId", response.data.dialogs[0].port._id);
               self.showChatHere();
             } else {
-              console.log("conversation id, no dialogs");
-              ls.set("conversationId", "");
-              self.showMessageHere();
+              console.log("token, no conversation id, no dialogs");
+              self.handleRegistration();
             }
           })
           .catch(function(error) {
             console.log(error);
           });
+      } else {
+        console.log("no token, no conversation id");
+        self.handleRegistration();
       }
     } else {
-      console.log("toggle");
+      axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+      axios
+        .get("https://api.eyezon.app/messages/dialogs?type=joiner")
+        .then(function(response) {
+          console.log(response);
+
+          if (response.data.count > 0) {
+            console.log("conversation id, dialogs");
+            self.showChatHere();
+          } else {
+            console.log("conversation id, no dialogs");
+            axios
+              .get("https://api.eyezon.app/users/")
+              .then(function(response) {
+                console.log(response);
+                if (response.data.user.dialogsCount > 0) {
+                  console.log("got here");
+                  self.showChatHere();
+                } else {
+                  ls.set("conversationId", "");
+                  self.handleRegistration();
+                }
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    }
+    /* } else {
+     console.log("toggle");
       this.setState({
         displayMessage: false,
         displayChat: false,
         toggle: true
       });
-    }
+    }*/
   }
 
   destroyMessage() {
@@ -101,6 +161,10 @@ export class ButtonConnector extends React.Component {
   }
   componentWillMount() {
     this.props.target.onclick = () => this.handleClick();
+    console.log(this.props.ifOpened);
+    if (this.props.ifOpened) {
+      this.handleClick();
+    }
   }
 
   showMessageHere() {
