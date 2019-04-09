@@ -50,18 +50,25 @@ function apiHandler(api, params) {
     case "message":
       break;
     case "react":
-      let target;
+      let buttons;
       let url = new URL(window.location.href);
       let openChat = url.searchParams.get("open");
       console.log("location: ", window.location.href);
       console.log("chat open? ", openChat);
-      if (params.button === false) {
-        target = document.getElementById("eyezonButton");
+
+      if (params.targets.length > 0) {
+        buttons = params.targets.map(target => {
+          return {
+            id: target.buttonId,
+            target: document.getElementById(target.buttonId),
+            businessId: target.businessId
+          };
+        });
       }
       if (openChat) {
-        react(params, target, true);
+        react(params, true, buttons);
       } else {
-        react(params, target, false);
+        react(params, false, buttons);
       }
 
       break;

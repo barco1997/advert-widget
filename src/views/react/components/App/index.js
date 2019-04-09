@@ -4,19 +4,16 @@ import styled from "styled-components";
 import Button from "../Button";
 import ButtonConnector from "../ButtonConnector";
 
-const App = ({ color, button, target, businessId, ifOpened }) => {
+const App = ({ color, button, businessId, ifOpened, buttons }) => {
   return (
     <React.Fragment>
-      {button && (
-        <Button color={color} businessId={businessId} ifOpened={ifOpened} />
-      )}
-      {!button && (
-        <ButtonConnector
-          target={target}
-          businessId={businessId}
-          ifOpened={ifOpened}
-        />
-      )}
+      <Button
+        color={color}
+        businessId={businessId}
+        ifOpened={ifOpened}
+        button={button}
+        buttons={buttons}
+      />
     </React.Fragment>
   );
 };

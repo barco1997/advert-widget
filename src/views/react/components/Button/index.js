@@ -90,7 +90,8 @@ export class Button extends React.Component {
       toggle: false,
       displayMessage: false,
       displayChat: false,
-      initializeChat: ls.get("token") ? true : false
+      initializeChat: ls.get("token") ? true : false,
+      businessId: null
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
@@ -106,6 +107,7 @@ export class Button extends React.Component {
   handleRegistration() {
     let self = this;
     const storedToken = ls.get("token");
+    ls.set("conversationPermission", true);
     if (storedToken) {
       axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
       self.showChat();
@@ -119,6 +121,7 @@ export class Button extends React.Component {
       const uniqueId = uniquePassword.slice(0, 63);
       ls.set("userId", uniqueId);
       ls.set("uniquePassword", uniquePassword);
+
       axios
         .post(
           "https://api.eyezon.app/register/basic",
@@ -150,8 +153,11 @@ export class Button extends React.Component {
     }
   }
 
-  handleClick() {
+  handleClick(businessId) {
     let self = this;
+    self.setState({
+      businessId: businessId
+    });
     //if (this.state.toggle) {
     if (!reqId) {
       if (storedToken) {
@@ -162,7 +168,11 @@ export class Button extends React.Component {
             console.log(response);
             if (response.data.count > 0) {
               console.log("token, no conversation id, dialogs");
-              ls.set("conversationId", response.data.dialogs[0].port._id);
+              //let notifPerm = ls.get("conversationPermission");
+              if (ls.get("conversationPermission")) {
+                ls.set("conversationId", response.data.dialogs[0].port._id);
+              }
+
               self.showChatHere();
             } else {
               console.log("token, no conversation id, no dialogs");
@@ -221,6 +231,12 @@ export class Button extends React.Component {
 
   componentWillMount() {
     //
+    if (!this.props.button) {
+      this.props.buttons.map(
+        button =>
+          (button.target.onclick = () => this.handleClick(button.businessId))
+      );
+    }
     console.log(this.props.ifOpened);
     if (this.props.ifOpened) {
       this.handleClick();
@@ -272,24 +288,26 @@ export class Button extends React.Component {
     const isOpen = this.state.toggle;
     return (
       <React.Fragment>
-        <ButtonWrapper
-          color={this.props.color}
-          toggle={isOpen}
-          onClick={() => this.handleClick()}
-          onMouseEnter={() => this.handleMouseEnter()}
-          onMouseLeave={() => this.handleMouseLeave()}
-        >
-          <JsButtonImageWrapper>
-            <JsButtonImage src={logo} />
-          </JsButtonImageWrapper>
-          <JsButtonText toggle={isOpen}>
-            <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
-            <JsButtonInfo>
-              Уточните все интересующие вас вопросы на онлайн трансляции с нашим
-              сотрудником
-            </JsButtonInfo>
-          </JsButtonText>
-        </ButtonWrapper>
+        {this.props.button && (
+          <ButtonWrapper
+            color={this.props.color}
+            toggle={isOpen}
+            onClick={() => this.handleClick(this.props.businessId)}
+            onMouseEnter={() => this.handleMouseEnter()}
+            onMouseLeave={() => this.handleMouseLeave()}
+          >
+            <JsButtonImageWrapper>
+              <JsButtonImage src={logo} />
+            </JsButtonImageWrapper>
+            <JsButtonText toggle={isOpen}>
+              <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
+              <JsButtonInfo>
+                Уточните все интересующие вас вопросы на онлайн трансляции с
+                нашим сотрудником
+              </JsButtonInfo>
+            </JsButtonText>
+          </ButtonWrapper>
+        )}
         {this.state.displayMessage && (
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
         )}
@@ -297,7 +315,7 @@ export class Button extends React.Component {
           <Chat
             destroy={this.destroyChat}
             displayChat={this.state.displayChat}
-            businessId={this.props.businessId}
+            businessId={this.state.businessId}
           />
         )}
       </React.Fragment>

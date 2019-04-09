@@ -15,6 +15,7 @@ import { media } from "../../../../utils/media";
 //require("./flv.min.js");
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
+let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 function load(url) {
   return new Promise(function(resolve, reject) {
     var script = document.createElement("script");
@@ -489,7 +490,9 @@ export class Chat extends React.Component {
             ls.set("conversationId", data.requestId);
           }
           console.log("u got a reply again", data);
-          this.notifyMe("New message at Eyezon button", currentUrl);
+          if (!iOS) {
+            this.notifyMe("New message at Eyezon button", currentUrl);
+          }
           let type;
           let source;
           let thumbnail;
@@ -553,12 +556,16 @@ export class Chat extends React.Component {
       });
       this.socket.on("portOnline", data => {
         console.log("port on data:", data);
-        this.notifyMe("Stream started at Eyezon button", currentUrl);
+        if (!iOS) {
+          this.notifyMe("Stream started at Eyezon button", currentUrl);
+        }
         this.socket.emit("joinRoom", ls.get("streamDamnId"));
       });
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
-        this.notifyMe("Stream ended at Eyezon button", currentUrl);
+        if (!iOS) {
+          this.notifyMe("Stream ended at Eyezon button", currentUrl);
+        }
         ls.set("streamInProgress", false);
         let objlv = {
           event: "leaveRoom",
@@ -667,7 +674,9 @@ export class Chat extends React.Component {
   }
 
   handleStreamClick(id) {
-    this.loadedVideo.getInternalPlayer().pause();
+    if (this.loadedVideo.getInternalPlayer()) {
+      this.loadedVideo.getInternalPlayer().pause();
+    }
     this.setState({
       streamLink: url,
       streamFlag: true,
@@ -690,7 +699,7 @@ export class Chat extends React.Component {
       flvPlayer.attachMediaElement(stream);
       flvPlayer.load();
       flvPlayer.play();
-    } else if (Hls.isSupported()) {
+    } /*else if (Hls.isSupported()) {
       var hls = new Hls();
       hls.loadSource(`https://static.eyezon.app/live/${id}/index.m3u8`);
       hls.attachMedia(stream);
@@ -706,7 +715,12 @@ export class Chat extends React.Component {
         }
         stream.play();
       });
-      /**/
+      
+    }*/
+    if (iOS) {
+      alert(
+        "Извините, но на iOS стримы пока не поддерживаются,  дождитесь окончания трансляции и просмотрите запись, просим прощения за неудобства"
+      );
     }
     console.log("first success");
     let obj = {
@@ -717,8 +731,13 @@ export class Chat extends React.Component {
   }
 
   handlePhoto(src) {
-    this.loadedVideo.getInternalPlayer().pause();
-    this.live.pause();
+    if (this.loadedVideo.getInternalPlayer()) {
+      this.loadedVideo.getInternalPlayer().pause();
+    }
+    if (this.live) {
+      this.live.pause();
+    }
+
     this.setState({
       photoSrc: src,
       streamFlag: false,
@@ -727,7 +746,9 @@ export class Chat extends React.Component {
   }
 
   handleVideo(src, videoManipulateId) {
-    this.live.pause();
+    if (this.live) {
+      this.live.pause();
+    }
     let ifPsI = this.state.ifPauseIcon;
     this.setState({
       videoSrc: src,
@@ -814,6 +835,7 @@ export class Chat extends React.Component {
           axios
             .put(`https://api.eyezon.app/messages/${chat.port.id}`, {
               message: value
+              /*url: currentUrl*/
             })
             .then(function(response) {
               console.log(response);
@@ -894,8 +916,8 @@ export class Chat extends React.Component {
                   self.props.businessId
                 }`,
                 {
-                  message: value,
-                  url: window.location.href
+                  message: value
+                  /*url: currentUrl*/
                 }
               )
               .then(function(response) {
@@ -969,6 +991,7 @@ export class Chat extends React.Component {
         axios
           .put(`https://api.eyezon.app/messages/${port}`, {
             message: value
+            /*currentUrl*/
           })
           .then(function(response) {
             console.log(response);
@@ -999,8 +1022,12 @@ export class Chat extends React.Component {
               this.setState({
                 streamFlag: false
               });
-              this.live.pause();
-              this.loadedVideo.getInternalPlayer().pause();
+              if (this.live) {
+                this.live.pause();
+              }
+              if (this.loadedVideo.getInternalPlayer()) {
+                this.loadedVideo.getInternalPlayer().pause();
+              }
             }}
           />
 
@@ -1051,7 +1078,9 @@ export class Chat extends React.Component {
                         streamFlag: false
                       });
                       this.live.pause();
-                      this.loadedVideo.getInternalPlayer().pause();
+                      if (this.loadedVideo.getInternalPlayer()) {
+                        this.loadedVideo.getInternalPlayer().pause();
+                      }
                     }}
                   />
                 </CloseWrapperA>
@@ -1109,7 +1138,9 @@ export class Chat extends React.Component {
                       videoSrc: null,
                       ifPauseIcon: false
                     });
-                    this.loadedVideo.getInternalPlayer().pause();
+                    if (this.loadedVideo.getInternalPlayer()) {
+                      this.loadedVideo.getInternalPlayer().pause();
+                    }
                   }}
                 />
               </CloseWrapper>
