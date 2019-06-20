@@ -9,49 +9,57 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const ButtonWrapper = styled.div`
-  text-decoration: none;
-  background: ${props =>
-    props.watched ? "rgba(255, 45, 85, 0.5)" : "#ff2d55"};
-  border-radius: 100px;
-  font-size: 12px;
-  display: flex;
-  width: 128px;
-  height: 28px;
-  justify-content: center;
-  align-items: center;
-  font-family: "Mont";
-  color: white;
+  &&& {
+    text-decoration: none;
+    background: ${props =>
+      props.watched ? "rgba(255, 45, 85, 0.5)" : "#ff2d55"};
+    border-radius: 100px;
+    font-size: 12px;
+    display: flex;
+    width: 128px;
+    height: 28px;
+    justify-content: center;
+    align-items: center;
+    font-family: "Mont";
+    color: white;
+  }
 `;
 const Layer2 = styled.div`
-  border-radius: 100px;
+  &&& {
+    border-radius: 100px;
 
-  display: flex;
-  background: ${props => (props.watched ? "white" : "rgba(255, 45, 85, 0.2)")};
-  width: 160px;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    background: ${props =>
+      props.watched ? "white" : "rgba(255, 45, 85, 0.2)"};
+    width: 160px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const Layer3 = styled.button`
-  text-decoration: none;
+  &&& {
+    text-decoration: none;
 
-  -webkit-font-smoothing: antialiased;
-  -webkit-touch-callout: none;
-  user-select: none;
-  cursor: pointer;
+    -webkit-font-smoothing: antialiased;
+    -webkit-touch-callout: none;
+    user-select: none;
+    cursor: pointer;
 
-  outline: 0;
-
-  border-radius: 100px;
-  display: flex;
-  background: ${props => (props.watched ? "white" : "rgba(255, 45, 85, 0.05)")};
-  width: 158px;
-  height: 52px;
-  justify-content: center;
-  align-items: center;
-  &:focus {
     outline: 0;
+
+    border-radius: 100px;
+    display: flex;
+    background: ${props =>
+      props.watched ? "white" : "rgba(255, 45, 85, 0.05)"};
+    width: 158px;
+    height: 52px;
+    justify-content: center;
+    align-items: center;
+    &:focus {
+      outline: 0;
+    }
   }
 `;
 

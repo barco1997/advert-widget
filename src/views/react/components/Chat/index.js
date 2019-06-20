@@ -12,7 +12,16 @@ import favicon from "./favicon.png";
 import arrow from "./arrow2.svg";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
+import {
+  setConversationArray,
+  setConversationIdValue,
+  getLiveIdValue,
+  setLiveArray,
+  getSentHistory,
+  setSentHistory
+} from "../../constants";
 //require("./flv.min.js");
+let flvPlayer;
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -43,17 +52,18 @@ const storedId = ls.get("userId");
 //const conversationId = ls.get("conversationId");
 
 const VideoWrapper = styled.div`
-  width: 319px;
-  height: 553px;
-  margin-left: 50px;
-  border-radius: 10px;
-  overflow: hidden;
-  & > video {
-    width: 100%;
-    height: 100%;
-  }
-  display: ${props => (props.visible ? "block" : "none")};
-  ${media.desktop`
+  &&& {
+    width: 319px;
+    height: 553px;
+    margin-left: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    & > video {
+      width: 100%;
+      height: 100%;
+    }
+    display: ${props => (props.visible ? "block" : "none")};
+    ${media.desktop`
   top: 0%;
   width: 100vw;
   height: 100vh;
@@ -67,28 +77,18 @@ const VideoWrapper = styled.div`
   border-radius: 0px;
   }
   `};
+  }
 `;
 
-const ExtraVideoOverlay = styled.div`
-  display: ${props => (props.visible ? "block" : "none")};
-  ${media.desktop`
-  
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: black;
-  position: absolute;
-  `};
-`;
 const PhotoWrapper = styled.div`
-  width: 319px;
-  height: 553px;
-  margin-left: 50px;
-  border-radius: 10px;
-  overflow: hidden;
-  display: ${props => (props.visible ? "block" : "none")};
-  ${media.desktop`
+  &&& {
+    width: 319px;
+    height: 553px;
+    margin-left: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: ${props => (props.visible ? "block" : "none")};
+    ${media.desktop`
   top: 0%;
   width: 100vw;
   height: 100vh;
@@ -101,106 +101,130 @@ const PhotoWrapper = styled.div`
   border-radius: 0px;
   }
   `};
+  }
 `;
 const WindowWrapper = styled.div`
-  display: flex;
-  z-index: 10003;
-  position: fixed;
-  height: 553px;
-  top: 15%;
-  ${media.desktop`
-  top: 0%;
-  
-  height: auto;
+  &&& {
+    display: flex;
+    z-index: 10003;
+    position: fixed;
+    height: 553px;
+    max-width: 85%;
+    top: 50%;
+    margin-top: -276px;
+    bottom: 15%;
+    ${media.desktop`
+      top: 0%;
+      margin-top: 0px;
+      height: auto;
   `};
+    ${media.tablet`
+      
+      max-width: 100%;
+      
+  `};
+  }
 `;
 
 const CloseButtonB = styled.span`
-  position: relative;
-  left: 0px;
-  top: 0px;
-  width: 14px;
-  height: 14px;
-  opacity: 0.3;
-  &:hover {
-    opacity: 1;
-  }
-  &:before,
-  &:after {
-    position: absolute;
-    left: 7px;
-    content: " ";
+  &&& {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 14px;
     height: 14px;
-    width: 3px;
-    background-color: #333;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
+    opacity: 0.3;
+    &:hover {
+      opacity: 1;
+    }
+    &:before,
+    &:after {
+      position: absolute;
+      left: 7px;
+      content: " ";
+      height: 14px;
+      width: 3px;
+      background-color: #333;
+    }
+    &:before {
+      transform: rotate(45deg);
+    }
+    &:after {
+      transform: rotate(-45deg);
+    }
   }
 `;
 const CloseButtonC = styled.span`
-  position: relative;
-  left: 0px;
-  top: 0px;
-  width: 14px;
-  height: 14px;
-  opacity: 0.3;
-  &:hover {
-    opacity: 1;
-  }
-  &:before,
-  &:after {
-    position: absolute;
-    left: 7px;
-    content: " ";
+  &&& {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 14px;
     height: 14px;
-    width: 3px;
-    background-color: #333;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
+    opacity: 0.3;
+    &:hover {
+      opacity: 1;
+    }
+    &:before,
+    &:after {
+      position: absolute;
+      left: 7px;
+      content: " ";
+      height: 14px;
+      width: 3px;
+      background-color: #333;
+    }
+    &:before {
+      transform: rotate(45deg);
+    }
+    &:after {
+      transform: rotate(-45deg);
+    }
   }
 `;
 const CloseWrapper = styled.div`
-  position: absolute;
-  right: 28px;
-  top: 14px;
+  &&& {
+    position: absolute;
+    right: 28px;
+    top: 14px;
+  }
 `;
 const CloseWrapperB = styled.div`
-  position: absolute;
-  right: 28px;
-  top: 14px;
+  &&& {
+    position: absolute;
+    right: 28px;
+    top: 14px;
+  }
 `;
 const CloseWrapperA = styled.div`
-  position: absolute;
-  right: -7px;
+  &&& {
+    position: absolute;
+    right: -7px;
 
-  top: 14px;
-  ${media.desktop`
+    top: 14px;
+    ${media.desktop`
   top: -14px;
   right: 14px;
   `};
+  }
 `;
 
 const ChatWrapper = styled.div`
-  color: black;
-  width: 100%;
-  display: ${props => (props.displayFlag ? "flex" : "none")};
-  justify-content: center;
-  font-family: "Mont";
+  &&& {
+    color: black;
+    width: 100%;
+    display: ${props => (props.displayFlag ? "flex" : "none")};
+    justify-content: center;
+    font-family: "Mont";
+  }
 `;
 
 const InputFieldA = styled.input`
   &&& {
-    height: 28px;
+    height: 42px;
     color: black;
     width: 100%;
+    max-width: 100%;
     background: #f5f5f5;
     border: 0.5px solid #e5e5e5;
     box-sizing: border-box;
@@ -208,7 +232,7 @@ const InputFieldA = styled.input`
     padding: 0px 10px;
     font-family: "Mont";
     font-weight: normal;
-    font-size: 11px;
+    font-size: 14px;
     outline: 0;
     &::placeholder {
       color: rgba(0, 0, 0, 0.2);
@@ -217,79 +241,90 @@ const InputFieldA = styled.input`
 `;
 
 const Image = styled.div`
-  background: url(${props => props.src});
-  width: 319px;
-  height: 553px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 10px;
-  ${media.desktop`
+  &&& {
+    background: url(${props => props.src});
+    width: 319px;
+    height: 553px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    ${media.desktop`
   border-radius: 0px;
   `};
+  }
 `;
 
 const NotificationMessageWrapper = styled.div`
-  position: fixed;
-  left: 0px;
-  top: 135px;
-  z-index: 20000;
-  display: ${props => (props.toggle ? "flex" : "none")};
-  flex-direction: column;
+  &&& {
+    position: fixed;
+    left: 0px;
+    top: 135px;
+    z-index: 20000;
+    display: ${props => (props.toggle ? "flex" : "none")};
+    flex-direction: column;
+  }
 `;
 const NotificationMessageArrow = styled.img`
-  margin-left: 150px;
-  width: 220px;
-  height: 270px;
+  &&& {
+    margin-left: 150px;
+    width: 220px;
+    height: 270px;
+  }
 `;
 const NotificationMessageText = styled.span`
-  font-family: "Caveat";
-  font-weight: bold;
-  font-size: 35px;
-  margin-left: 75px;
-  width: 360px;
-  margin-top: 25px;
-  color: white;
+  &&& {
+    font-family: "Caveat";
+    font-weight: bold;
+    font-size: 35px;
+    margin-left: 75px;
+    width: 360px;
+    margin-top: 25px;
+    color: white;
+  }
 `;
 
 const SendRequest = styled.button`
-  width: 181px;
-  height: 28px;
-  background: #ff2d55;
-  border-radius: 100px;
-  margin-top: 15px;
-  text-decoration: none;
-  border-width: 0px;
+  &&& {
+    width: 181px;
+    height: 28px;
+    background: #ff2d55;
+    border-radius: 100px;
+    margin-top: 15px;
+    text-decoration: none;
+    border-width: 0px;
 
-  -webkit-font-smoothing: antialiased;
-  -webkit-touch-callout: none;
-  user-select: none;
-  cursor: pointer;
-  outline: 0;
-  color: white;
-  font-size: 11px;
-  padding-top: 3px;
-  font-weight: normal;
-  font-family: "Mont";
-  ${media.desktop`
+    -webkit-font-smoothing: antialiased;
+    -webkit-touch-callout: none;
+    user-select: none;
+    cursor: pointer;
+    outline: 0;
+    color: white;
+    font-size: 11px;
+    padding-top: 3px;
+    font-weight: normal;
+    font-family: "Mont";
+    ${media.desktop`
   width: 100%;
   height: 40px;
   font-size: 14px;
   `};
+  }
 `;
 
 const JsChatWindow = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
+  &&& {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
 
-  background: #fff;
+    background: #fff;
 
-  width: 542px;
-  height: 553px;
+    width: 542px;
+    height: 553px;
 
-  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
-  border-radius: 6px;
-  ${media.desktop`
+    box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    ${media.desktop`
   height: 100vh;
   width: 100vw;
   border-radius: 0px;
@@ -298,57 +333,74 @@ const JsChatWindow = styled.div`
     margin-top: 40px;
   }
   `};
+  }
 `;
 const JsChatOverlay = styled.div`
-  z-index: 10002;
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  opacity: 0.4;
-  background-color: #000;
-  ${media.desktop`
+  &&& {
+    z-index: 10002;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    opacity: 0.4;
+    background-color: #000;
+    ${media.desktop`
   display: none;
   `};
+  }
 `;
 const JsChatMessageContainer = styled.div`
-  width: 462px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 40px 0px;
+  &&& {
+    width: 462px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 40px 0px;
 
-  margin: 0px 40px;
+    margin: 0px 40px;
 
-  flex: 1;
-  position: relative;
-  ${media.desktop`
+    flex: 1;
+    position: relative;
+    ${media.desktop`
   width: auto;
   padding: 0px;
   margin: 0px 15px;
-  margin-bottom: 30px;
+  margin-bottom: 80px;
   `};
-  ${media.android`
+    ${media.android`
   max-width: 300px;
   `};
+  }
 `;
 const JsChatMessagePlaceholder = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  color: rgba(0, 0, 0, 0.5);
-  flex: 1;
-  & > :first-child {
-    margin-top: 80px;
+  &&& {
+    width: 100%;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.5);
+    flex: 1;
+    & > :first-child {
+      margin-top: 80px;
+    }
   }
 `;
 const JsChatEmpty = styled.img`
-  margin-top: 60px;
-  width: 176px;
-  height: 72px;
+  &&& {
+    margin-top: 60px;
+    width: 176px;
+    height: 72px;
+  }
+`;
+
+const SizedForm = styled.form`
+  &&& {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
 
 /*function VideoShow(props) {
@@ -385,7 +437,10 @@ export class Chat extends React.Component {
       ifPauseIcon: false,
       existingChats: [],
       streamId: null,
-      lastValue: ""
+      lastValue: "",
+      flvPlayer: null,
+      transactionLimit: 50,
+      sentHistory: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -401,7 +456,7 @@ export class Chat extends React.Component {
     this.notificationPermission = this.notificationPermission.bind(this);
   }
 
-  notifyMe(message, href) {
+  notifyMe(message, href, businessId) {
     // Проверка поддержки браузером уведомлений
     let options = {
       icon: favicon,
@@ -417,9 +472,19 @@ export class Chat extends React.Component {
       notification.onclick = function(event) {
         var new_window = window.open("", "_blank"); //open empty window(tab)
         if (event.target.data.includes("?open=true")) {
-          new_window.location.href = event.target.data;
+          let str = event.target.data;
+          str = str.substring(0, str.indexOf("?open"));
+          console.log("string: ", str);
+          new_window.location.href = str.concat(
+            "?open=true&businessId=",
+            businessId
+          );
         } else {
-          new_window.location.href = event.target.data.concat("?open=true");
+          console.log("target");
+          new_window.location.href = event.target.data.concat(
+            "?open=true&businessId=",
+            businessId
+          );
         } //set url of newly created window(tab) and focus
         notification.close();
       };
@@ -435,7 +500,10 @@ export class Chat extends React.Component {
             if (event.target.data.includes("?open=true")) {
               new_window.location.href = event.target.data;
             } else {
-              new_window.location.href = event.target.data.concat("?open=true");
+              new_window.location.href = event.target.data.concat(
+                "?open=true&businessId=",
+                this.props.businessId
+              );
             }
             //set url of newly created window(tab) and focus
             notification.close();
@@ -485,13 +553,30 @@ export class Chat extends React.Component {
         this.setState({ streamToVideo: data.message.attachments[0] });
       });
       this.socket.on("newMessage", data => {
+        /**feature */
+        let notificationCount = ls.get("notificationCount");
+        if (notificationCount) {
+          notificationCount++;
+        } else {
+          notificationCount = 1;
+        }
+        ls.set("notificationCount", notificationCount);
+        //() => self.props.setNotificationStatus(true);
+        self.props.incrementNotifications();
+        /********* */
         if (data.userId !== storedId) {
           if (!ls.get("conversationId")) {
             ls.set("conversationId", data.requestId);
+            setConversationArray(self.props.businessId, data.requestId);
           }
           console.log("u got a reply again", data);
+          console.log("props: ", self.props);
           if (!iOS) {
-            this.notifyMe("New message at Eyezon button", currentUrl);
+            this.notifyMe(
+              "New message at Eyezon button",
+              currentUrl,
+              self.props.businessId
+            );
           }
           let type;
           let source;
@@ -527,7 +612,9 @@ export class Chat extends React.Component {
           ) {
             type = "stream";
             ls.set("streamDamnId", data._id);
+            setLiveArray(self.props.businessId, data._id);
           }
+          setSentHistory(self.props.businessId, "", false);
           this.setState({
             messages: [
               ...this.state.messages,
@@ -550,26 +637,38 @@ export class Chat extends React.Component {
               }
             ],
             awaitingConnection: false,
-            startedFlag: true
+            startedFlag: true,
+            sentHistory: { message: "", status: false }
           });
         }
       });
       this.socket.on("portOnline", data => {
         console.log("port on data:", data);
         if (!iOS) {
-          this.notifyMe("Stream started at Eyezon button", currentUrl);
+          this.notifyMe(
+            "Stream started at Eyezon button",
+            currentUrl,
+            self.props.businessId
+          );
         }
-        this.socket.emit("joinRoom", ls.get("streamDamnId"));
+        /*this.socket.emit(
+          "joinRoom",
+          getLiveIdValue(self.props.businessId) /*ls.get("streamDamnId")*/
+        /*);*/
       });
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
         if (!iOS) {
-          this.notifyMe("Stream ended at Eyezon button", currentUrl);
+          this.notifyMe(
+            "Stream ended at Eyezon button",
+            currentUrl,
+            self.props.businessId
+          );
         }
         ls.set("streamInProgress", false);
         let objlv = {
           event: "leaveRoom",
-          room: ls.get("streamDamnId")
+          room: /*ls.get("streamDamnId")*/ getLiveIdValue(self.props.businessId)
         };
         this.socket.emit("port", JSON.stringify(objlv));
       });
@@ -594,6 +693,17 @@ export class Chat extends React.Component {
       });
       this.socket.open();
     }
+    axios
+      .get(`https://api.eyezon.app/market/transactions`)
+      .then(function(response) {
+        console.log(response.data.transactions.totalAmount);
+        self.setState({
+          transactionLimit: response.data.transactions.totalAmount
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   componentWillUpdate(nextProps) {
@@ -611,6 +721,49 @@ export class Chat extends React.Component {
             .then(function(response) {
               const users = response.data.users;
               const messages = response.data.messages;
+              const owner = users.find(user => user.type === "owner");
+              console.log("businessId: ", self.props.businessId);
+              if (owner.businessId === self.props.businessId) {
+                console.log(messages);
+                const editedMessages = messages.map(message => ({
+                  text: message.message,
+                  time: message.time,
+                  photo: users.filter(user => user.userId === message.userId)[0]
+                    .photo,
+                  user: users
+                    .filter(user => user.userId === message.userId)[0]
+                    .firstName.concat(
+                      " ",
+                      users.filter(user => user.userId === message.userId)[0]
+                        .lastName
+                    ),
+                  type:
+                    message.attachments.length > 0
+                      ? message.attachments[0].type
+                      : "message",
+                  src:
+                    message.attachments.length > 0
+                      ? message.attachments[0].src
+                      : null,
+                  thumb:
+                    message.attachments.length > 0 &&
+                    message.attachments[0].type === "video"
+                      ? message.attachments[0].thumbnail
+                      : null,
+                  flv:
+                    message.attachments.length > 0 &&
+                    message.attachments[0].type === "stream"
+                      ? `https://static.eyezon.app/live/${message._id}.flv`
+                      : "",
+                  id: message._id
+                }));
+                console.log("Users - ", users);
+
+                self.loadInitialMessages(editedMessages);
+              } /*else {
+                console.log("delete conversationId");
+                ls.delete("conversationId");
+              }
               //const buttonUserId = ls.get("userId");
               /*if (
                 users.filter(
@@ -619,53 +772,25 @@ export class Chat extends React.Component {
               ) {
                 self.loadInitialMessages([]);
               } else {*/
-              console.log(messages);
-              const editedMessages = messages.map(message => ({
-                text: message.message,
-                time: message.time,
-                photo: users.filter(user => user.userId === message.userId)[0]
-                  .photo,
-                user: users
-                  .filter(user => user.userId === message.userId)[0]
-                  .firstName.concat(
-                    " ",
-                    users.filter(user => user.userId === message.userId)[0]
-                      .lastName
-                  ),
-                type:
-                  message.attachments.length > 0
-                    ? message.attachments[0].type
-                    : "message",
-                src:
-                  message.attachments.length > 0
-                    ? message.attachments[0].src
-                    : null,
-                thumb:
-                  message.attachments.length > 0 &&
-                  message.attachments[0].type === "video"
-                    ? message.attachments[0].thumbnail
-                    : null,
-                flv:
-                  message.attachments.length > 0 &&
-                  message.attachments[0].type === "stream"
-                    ? `https://static.eyezon.app/live/${message._id}.flv`
-                    : "",
-                id: message._id
-              }));
-              console.log("Users - ", users);
 
-              self.loadInitialMessages(editedMessages);
               //}
             })
             .catch(function(error) {
               console.log(error);
             });
         }
+      } else {
+        const sh = getSentHistory(this.props.businessId);
+        console.log("SH: ", sh);
+        this.setState({
+          sentHistory: sh
+        });
       }
     }
   }
 
   componentWillUnmount() {
+    ls.set("streamInProgress", false);
     this.socket.close();
   }
 
@@ -683,6 +808,8 @@ export class Chat extends React.Component {
       photoSrc: null
     });
     ls.set("streamInProgress", true);
+    ls.set("streamDamnId", id);
+    setLiveArray(self.props.businessId, data.id);
     let self = this;
     let url = `https://static.eyezon.app/live/${id}.flv`;
     let stream = this.live;
@@ -692,7 +819,7 @@ export class Chat extends React.Component {
     );
 
     if (flvjs.isSupported()) {
-      let flvPlayer = flvjs.createPlayer({
+      flvPlayer = flvjs.createPlayer({
         type: "flv",
         url: url
       });
@@ -725,7 +852,7 @@ export class Chat extends React.Component {
     console.log("first success");
     let obj = {
       event: "joinRoom",
-      room: ls.get("streamDamnId")
+      room: /*ls.get("streamDamnId")*/ getLiveIdValue(self.props.businessId)
     };
     this.socket.emit("port", JSON.stringify(obj));
   }
@@ -813,6 +940,8 @@ export class Chat extends React.Component {
       id: message._id
     }));
     ls.set("conversationId", chat.port.id);
+    console.log("conv id: ", chat.port.id);
+    setConversationArray(self.props.businessId, chat.port.id);
     const value = this.state.lastValue;
     axios
       .get(`https://api.eyezon.app/ports/${chat.port.id}`)
@@ -834,8 +963,8 @@ export class Chat extends React.Component {
         } else {
           axios
             .put(`https://api.eyezon.app/messages/${chat.port.id}`, {
-              message: value
-              /*url: currentUrl*/
+              message: value,
+              url: currentUrl
             })
             .then(function(response) {
               console.log(response);
@@ -859,7 +988,9 @@ export class Chat extends React.Component {
       displayFlag: nextProps.displayChat
     });
     if (nextProps.displayChat) {
-      this.notificationPermission();
+      if (!iOS) {
+        this.notificationPermission();
+      }
     }
   }
 
@@ -873,13 +1004,20 @@ export class Chat extends React.Component {
       }
       return 0;
     });
+    const sh = getSentHistory(this.props.businessId);
+    console.log("the sentH value: ", sh);
+    const flag = msgs.length > 1;
     this.setState({
       messages: msgs,
       firstTimeFlag: false,
-      startedFlag: msgs.length > 1 ? true : false,
+      startedFlag: flag ? true : false,
       existingChats: [],
-      awaitingConnection: false
+      awaitingConnection: false,
+      sentHistory: flag ? { message: "", status: false } : sh
     });
+    if (flag) {
+      setSentHistory(this.props.businessId, "", false);
+    }
   }
 
   handleSubmit(event) {
@@ -893,8 +1031,17 @@ export class Chat extends React.Component {
         ],
         value: "",
         awaitingConnection: true,
-        lastValue: value
+        lastValue: value,
+        sentHistory: {
+          message: { text: value, time: new Date(), id: uuidv1() },
+          status: true
+        }
       });
+      setSentHistory(
+        self.props.businessId,
+        { text: value, time: new Date(), id: uuidv1() },
+        true
+      );
       axios
         .get(`https://api.eyezon.app/ports?businessId=${self.props.businessId}`)
         .then(function(response) {
@@ -982,7 +1129,9 @@ export class Chat extends React.Component {
       if (ls.get("streamInProgress")) {
         let obj = {
           event: "comment",
-          room: ls.get("streamDamnId"),
+          room: /*ls.get("streamDamnId")*/ getLiveIdValue(
+            self.props.businessId
+          ),
           text: value
         };
         console.log(obj);
@@ -990,8 +1139,8 @@ export class Chat extends React.Component {
       } else {
         axios
           .put(`https://api.eyezon.app/messages/${port}`, {
-            message: value
-            /*currentUrl*/
+            message: value,
+            url: currentUrl
           })
           .then(function(response) {
             console.log(response);
@@ -1034,10 +1183,15 @@ export class Chat extends React.Component {
           <WindowWrapper>
             <JsChatWindow>
               <JsChatMessageContainer>
-                {!this.state.messages || this.state.messages.length == 0 ? (
+                {(!this.state.messages || this.state.messages.length == 0) &&
+                (!this.state.sentHistory || !this.state.sentHistory.status) ? (
                   <JsChatMessagePlaceholder>
-                    <div>Не стесняйтесь, спросите!</div>
-                    <div>Наши сотрудники ответят на все ваши вопросы</div>
+                    <div>Не стесняйтесь, спросите! </div>
+                    <div style={{ textAlign: "center" }}>
+                      Наши сотрудники с радостью ответят на все ваши вопросы
+                      {/*Участники команд расскажут о проекте и ответят на все
+                      интересующие вопросы!*/}
+                    </div>
                     <JsChatEmpty src={empty} />
                   </JsChatMessagePlaceholder>
                 ) : (
@@ -1053,18 +1207,19 @@ export class Chat extends React.Component {
                     ifPauseIcon={this.state.ifPauseIcon}
                     existingChats={this.state.existingChats}
                     handlePropositionClick={this.handlePropositionClick}
+                    transactionLimit={this.state.transactionLimit}
+                    sentHistory={this.state.sentHistory}
                   />
                 )}
                 <form onSubmit={this.handleSubmit}>
                   <div style={{ flexDirection: "column" }}>
-                    <label>
-                      <InputFieldA
-                        type="text"
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        placeholder="Задайте вопрос"
-                      />
-                    </label>
+                    <InputFieldA
+                      type="text"
+                      value={this.state.value}
+                      onChange={this.handleChange}
+                      placeholder="Задайте вопрос"
+                    />
+
                     <SendRequest type="submit" value="Submit">
                       Отправить
                     </SendRequest>
@@ -1102,6 +1257,8 @@ export class Chat extends React.Component {
                       streamFlag: false
                     });
                     this.live.pause();
+                    flvPlayer.destroy();
+                    ls.set("streamInProgress", false);
                   }}
                 />
               </CloseWrapper>

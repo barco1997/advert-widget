@@ -7,50 +7,58 @@ import ChatProposition from "../ChatProposition";
 const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  &&& {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 
-  flex: 1;
-  overflow: auto;
-  ::-webkit-scrollbar {
-    display: none;
+    flex: 1;
+    overflow: auto;
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;
   }
-  -ms-overflow-style: none;
 `;
 
 const AwaitingBoxWrapper = styled.div`
-  width: 250px;
-  height: 80px;
-  position: relative;
-  & > div {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    opacity: 0.4;
-    font-size: 10px;
-    font-family: "Mont";
-    font-weight: normal;
-    padding: 20px;
-    padding-left: 30px;
+  &&& {
+    width: 250px;
+    height: 80px;
+    position: relative;
+    & > div {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      opacity: 0.4;
+      font-size: 10px;
+      font-family: "Mont";
+      font-weight: normal;
+      padding: 20px;
+      padding-left: 30px;
+    }
   }
 `;
 const AwaitingBoxImage = styled.img`
-  width: 300px;
+  &&& {
+    width: 300px;
 
-  object-fit: contain;
-  position: absolute;
-  left: 0px;
-  top: 0px;
+    object-fit: contain;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
 `;
 
 const SelectChatsText = styled.div`
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-  margin: 70px 30px;
+  &&& {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    margin: 70px 30px;
+  }
 `;
 
 export class MessageArea extends React.Component {
@@ -139,13 +147,23 @@ export class MessageArea extends React.Component {
 
   render() {
     //const isOpen = this.state.toggle;
-
+    console.log("what is going on bro", this.props.sentHistory);
     return (
       <MessageContainer
         ref={c => {
           this.messageList = c;
         }}
       >
+        {this.props.sentHistory.status && !(this.state.messages.length > 0) && (
+          <Response
+            title={this.props.sentHistory.message.text}
+            description={this.props.sentHistory.message.user || "Вы"}
+            date={this.props.sentHistory.message.time}
+            icon={this.props.sentHistory.message.photo}
+            type={this.props.sentHistory.message.type}
+            transactionLimit={this.props.transactionLimit}
+          />
+        )}
         {this.state.messages.map((message, index) => (
           <Response
             key={message.id || uuidv1()}
@@ -179,24 +197,26 @@ export class MessageArea extends React.Component {
             handleVideo={this.props.handleVideo}
             id={message.id}
             ifPauseIcon={message.ifPauseIcon}
+            transactionLimit={this.props.transactionLimit}
           />
         ))}
-        {this.state.awaitingConnection &&
-          !(this.props.existingChats.length > 0) && (
-            <div>
-              <span style={{ fontSize: "12", opacity: "0.5" }}>
-                Идет подключение ...
-              </span>
-              <AwaitingBoxWrapper>
-                <AwaitingBoxImage src={awaitingBox} />
-                <div>
-                  Пока кто-то из нашей команды готовиться ответить на ваше
-                  сообщение, вы можете свернуть окно и продолжить пользоваться
-                  сайтом, вам придет уведомление.
-                </div>
-              </AwaitingBoxWrapper>
-            </div>
-          )}
+        {((this.state.awaitingConnection &&
+          !(this.props.existingChats.length > 0)) ||
+          this.props.sentHistory.status) && (
+          <div>
+            <span style={{ fontSize: "12", opacity: "0.5" }}>
+              Идет подключение ...
+            </span>
+            <AwaitingBoxWrapper>
+              <AwaitingBoxImage src={awaitingBox} />
+              <div>
+                Пока кто-то из нашей команды готовиться ответить на ваше
+                сообщение, вы можете свернуть окно и продолжить пользоваться
+                сайтом, вам придет уведомление.
+              </div>
+            </AwaitingBoxWrapper>
+          </div>
+        )}
         {this.props.existingChats.length > 0 && (
           <SelectChatsText>
             {" "}

@@ -13,7 +13,16 @@
       blandit. Libero nec eu dolor eget volutpat. Magna nulla neque. Fames
       tempus lorem duis orci ipsum.
     </p>
-    <button id="eyezonButton">DO IT</button>
+    <a href="#" id="eyezonButton">DO IT</a>
+    <a href="#" id="eyezonButton2">DO IT</a>
+
+    <script>
+      let button1 = document.getElementById("eyezonButton");
+      const func = () => {
+        console.log("first onclick worked");
+      };
+      button1.onclick = func;
+    </script>
     <script>
       (function(w, d, s, o, f, js, fjs) {
         w["JS-Widget"] = o;
@@ -34,7 +43,8 @@
         button: false,
         businessId: "5c98cc20b5204069002374f9",
         targets: [
-          { businessId: "5c98cc20b5204069002374f9", buttonId: "eyezonButton" }
+          { businessId: "5c74052c1c9d440000002469", buttonId: "eyezonButton" },
+          { businessId: "5c98cc20b5204069002374f9", buttonId: "eyezonButton2" }
         ]
       });
     </script>

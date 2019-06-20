@@ -7,120 +7,238 @@ import pauseV from "./pauseIcon.svg";
 import LiveButton from "../LiveButton/index";
 import ReactAudioPlayer from "react-audio-player";
 import { media } from "../../../../utils/media";
+import iconClose from "./iconClose.png";
+import plus from "./plus.png";
+import minus from "./minus.png";
+import ControlButton from "./button";
+import axios from "axios";
 
 const Item = styled.li`
-  display: flex;
-  width: 100%;
-  margin: 5px 0;
-  padding: 10px 0px;
-  border-radius: 5px;
-  justify-content: flex-start;
-  min-height: 41px;
-  overflow: hidden;
-  flex-wrap: wrap;
+  &&& {
+    display: flex;
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px 0px;
+    border-radius: 5px;
+    justify-content: flex-start;
+    min-height: 41px;
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
 `;
 
 const Icon = styled.div`
-  width: 40px;
-  height: 40px;
+  &&& {
+    width: 40px;
+    height: 40px;
 
-  margin-right: 20px;
-  background: white;
+    margin-right: 20px;
+    background: white;
 
-  & > img {
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-  }
-  ${media.desktop`
+    & > img {
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+    }
+    ${media.desktop`
   width: 35px;
   height: 35px;
   margin-right: 15px;
   `};
+  }
 `;
 
 const ItemStart = styled.div`
-  display: flex;
-  flex: 2;
-  flex-direction: column;
-  justify-content: center;
+  &&& {
+    display: flex;
+    flex: 2;
+    flex-direction: column;
+    justify-content: center;
+  }
 `;
 
 const ItemEnd = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  &&& {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+  }
 `;
 
 const Title = styled.h4`
-  margin: 0;
-  font-size: 16px;
-  font-weight: bold;
-  ${media.desktop`
+  &&& {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    ${media.desktop`
   font-size: 14px;
   `};
+  }
 `;
 const ImageA = styled.img`
-  height: 143px;
-  border-radius: 10px;
-  object-fit: cover;
-  width: 270px;
-  cursor: pointer;
-  ${media.desktop`
+  &&& {
+    height: 143px;
+    border-radius: 10px;
+    object-fit: cover;
+    width: 270px;
+    cursor: pointer;
+    ${media.desktop`
   height: 130px;
   
   width: 175px;
   `};
+  }
 `;
 const VideoA = styled.div`
-  height: 143px;
-  width: 270px;
-  cursor: pointer;
-  border-radius: 10px;
-  background: url(${props => props.src});
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  ${media.desktop`
+  &&& {
+    height: 143px;
+    width: 270px;
+    cursor: pointer;
+    border-radius: 10px;
+    background: url(${props => props.src});
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ${media.desktop`
   height: 130px;
   
   width: 175px;
   `};
+  }
 `;
 
 const PlayIcon = styled.img`
-  height: 40px;
-  width: 40px;
+  &&& {
+    height: 40px;
+    width: 40px;
 
-  object-fit: cover;
+    object-fit: cover;
 
-  cursor: pointer;
+    cursor: pointer;
+  }
+`;
+
+const RepointsWindow = styled.div`
+  &&& {
+    z-index: 16000;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    display: flex;
+    color: white;
+    border-radius: 100px;
+
+    height: 28px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+
+    background: ${props => (props.color ? props.color : "white")};
+    width: ${props => (props.toggle ? "190px" : "28px")};
+    transition: ${props => (props.toggle ? "width 120ms linear" : "none")};
+
+    overflow: hidden;
+  }
+`;
+
+const ControlIcon = styled.img`
+  &&& {
+    height: 12px;
+    width: 12px;
+    object-fit: cover;
+    padding: 8px;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+    -webkit-touch-callout: none;
+    user-select: none;
+    cursor: pointer;
+    outline: 0;
+    &:focus {
+      outline: 0;
+    }
+  }
+`;
+
+const RepointsAmountWrapper = styled.div`
+  &&& {
+    margin-left: 8px;
+    height: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+
+const SignWrapper = styled.div`
+  &&& {
+    height: 28px;
+    width: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+`;
+
+const Minus = styled.img`
+  &&& {
+    height: 1.75px;
+    width: 11.8px;
+  }
+`;
+
+const Plus = styled.img`
+  &&& {
+    height: 11.8px;
+    width: 11.67px;
+  }
+`;
+
+const NumberWrapper = styled.div`
+  &&& {
+    width: 44px;
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
+    color: #666666;
+  }
 `;
 
 const Summary = styled.p`
-  margin: 0;
-  font-size: 12px;
-  opacity: 0.5;
-  margin-top: 6px;
+  &&& {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.5;
+    margin-top: 6px;
+  }
 `;
 const SummaryTop = styled.p`
-  margin: 0;
-  font-size: 12px;
-  opacity: 0.5;
-  margin-bottom: 6px;
-  ${media.desktop`
+  &&& {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.5;
+    margin-bottom: 6px;
+    ${media.desktop`
   font-size: 10px;
   `};
+  }
 `;
 
 const Date = styled.time`
-  opacity: 0.2;
-  margin-right: 0px;
-  font-size: 12px;
+  &&& {
+    opacity: 0.2;
+    margin-right: 0px;
+    font-size: 12px;
+  }
 `;
 
 export class Response extends React.Component {
@@ -129,14 +247,62 @@ export class Response extends React.Component {
     this.state = {
       typeVar: this.props.type,
       src: this.props.src,
-      pauseIcon: this.props.ifPauseIcon ? true : false
+      pauseIcon: this.props.ifPauseIcon ? true : false,
+      plusToggled: false,
+      repointLimit: 50,
+      repointValue: 1
     };
 
     this.setItems = this.setItems.bind(this);
     this.setSrc = this.setSrc.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handlePlus = this.handlePlus.bind(this);
+    this.handleMinus = this.handleMinus.bind(this);
+    this.handleSend = this.handleSend.bind(this);
     //this.played = this.played.bind(this);
     //this.paused = this.paused.bind(this);
+  }
+
+  handlePlus() {
+    const rep = this.state.repointValue + 1;
+    console.log("Plus: ", rep);
+    if (rep <= 10 && rep <= this.state.repointLimit) {
+      this.setState({
+        repointValue: rep
+      });
+    }
+  }
+
+  handleMinus() {
+    const rep = this.state.repointValue - 1;
+    if (rep > 0) {
+      this.setState({
+        repointValue: rep
+      });
+    } else if (rep === 0) {
+      this.setState({
+        plusToggled: false
+      });
+    }
+  }
+
+  handleSend() {
+    let self = this;
+    const val = this.state.repointValue;
+    if (val <= self.state.repointLimit) {
+      axios
+        .patch(`https://api.eyezon.app/messages/${this.props.id}/${val}`)
+        .then(function(response) {
+          self.setState({
+            repointLimit: self.state.repointLimit - val,
+            repointValue: 1
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    } else {
+    }
   }
 
   componentWillMount() {
@@ -144,6 +310,11 @@ export class Response extends React.Component {
       console.log("got stream", this.props.src);
       this.setItems("video", this.props.src);
     }
+  }
+  componentDidMount() {
+    this.setState({
+      repointLimit: this.props.transactionLimit
+    });
   }
 
   handleClick() {
@@ -243,25 +414,151 @@ export class Response extends React.Component {
             )}
             {!this.props.flv && <Title>{this.props.title}</Title>}
             {this.props.flv && !this.state.src && (
-              <LiveButton id={this.props.id} setFlv={this.props.functionA}>
-                Смотреть
-              </LiveButton>
+              <div style={{ position: "relative", marginBottom: "10px" }}>
+                <RepointsWindow toggle={this.state.plusToggled}>
+                  {!this.state.plusToggled && (
+                    <ControlIcon
+                      src={iconClose}
+                      onClick={() => {
+                        this.setState({ plusToggled: true });
+                      }}
+                    />
+                  )}
+                  {this.state.plusToggled && (
+                    <React.Fragment>
+                      <RepointsAmountWrapper>
+                        <SignWrapper onClick={this.handleMinus}>
+                          <Minus src={minus} />
+                        </SignWrapper>
+                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
+                        <SignWrapper onClick={this.handlePlus}>
+                          <Plus src={plus} />
+                        </SignWrapper>
+                      </RepointsAmountWrapper>
+                      <div style={{ marginRight: "3.8px" }}>
+                        <ControlButton action={this.handleSend}>
+                          SEND
+                        </ControlButton>
+                      </div>
+                    </React.Fragment>
+                  )}
+                </RepointsWindow>
+                <LiveButton id={this.props.id} setFlv={this.props.functionA}>
+                  Смотреть
+                </LiveButton>
+              </div>
             )}
             {this.state.typeVar === "photo" && this.state.src && (
-              <ImageA src={this.state.src} onClick={() => this.handleClick()} />
+              <div style={{ position: "relative", marginBottom: "10px" }}>
+                <RepointsWindow toggle={this.state.plusToggled}>
+                  {!this.state.plusToggled && (
+                    <ControlIcon
+                      src={iconClose}
+                      onClick={() => {
+                        this.setState({ plusToggled: true });
+                      }}
+                    />
+                  )}
+                  {this.state.plusToggled && (
+                    <React.Fragment>
+                      <RepointsAmountWrapper>
+                        <SignWrapper onClick={this.handleMinus}>
+                          <Minus src={minus} />
+                        </SignWrapper>
+                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
+                        <SignWrapper onClick={this.handlePlus}>
+                          <Plus src={plus} />
+                        </SignWrapper>
+                      </RepointsAmountWrapper>
+                      <div style={{ marginRight: "3.8px" }}>
+                        <ControlButton action={this.handleSend}>
+                          SEND
+                        </ControlButton>
+                      </div>
+                    </React.Fragment>
+                  )}
+                </RepointsWindow>
+                <ImageA
+                  src={this.state.src}
+                  onClick={() => this.handleClick()}
+                />
+              </div>
             )}
             {this.state.typeVar === "video" && this.state.src && (
-              <VideoA src={this.props.thumb} onClick={() => this.handleClick()}>
-                <PlayIcon src={this.state.pauseIcon ? pauseV : playV} />
-              </VideoA>
+              <div style={{ position: "relative", marginBottom: "10px" }}>
+                <RepointsWindow toggle={this.state.plusToggled}>
+                  {!this.state.plusToggled && (
+                    <ControlIcon
+                      src={iconClose}
+                      onClick={() => {
+                        this.setState({ plusToggled: true });
+                      }}
+                    />
+                  )}
+                  {this.state.plusToggled && (
+                    <React.Fragment>
+                      <RepointsAmountWrapper>
+                        <SignWrapper onClick={this.handleMinus}>
+                          <Minus src={minus} />
+                        </SignWrapper>
+                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
+                        <SignWrapper onClick={this.handlePlus}>
+                          <Plus src={plus} />
+                        </SignWrapper>
+                      </RepointsAmountWrapper>
+                      <div style={{ marginRight: "3.8px" }}>
+                        <ControlButton action={this.handleSend}>
+                          SEND
+                        </ControlButton>
+                      </div>
+                    </React.Fragment>
+                  )}
+                </RepointsWindow>
+                <VideoA
+                  src={this.props.thumb}
+                  onClick={() => this.handleClick()}
+                >
+                  <PlayIcon src={this.state.pauseIcon ? pauseV : playV} />
+                </VideoA>
+              </div>
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (
-              <ReactAudioPlayer
-                src={this.state.src}
-                controls
-                style={{ width: "270px" }}
-              />
+              <div style={{ position: "relative", marginBottom: "10px" }}>
+                <RepointsWindow toggle={this.state.plusToggled}>
+                  {!this.state.plusToggled && (
+                    <ControlIcon
+                      src={iconClose}
+                      onClick={() => {
+                        this.setState({ plusToggled: true });
+                      }}
+                    />
+                  )}
+                  {this.state.plusToggled && (
+                    <React.Fragment>
+                      <RepointsAmountWrapper>
+                        <SignWrapper onClick={this.handleMinus}>
+                          <Minus src={minus} />
+                        </SignWrapper>
+                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
+                        <SignWrapper onClick={this.handlePlus}>
+                          <Plus src={plus} />
+                        </SignWrapper>
+                      </RepointsAmountWrapper>
+                      <div style={{ marginRight: "3.8px" }}>
+                        <ControlButton action={this.handleSend}>
+                          SEND
+                        </ControlButton>
+                      </div>
+                    </React.Fragment>
+                  )}
+                </RepointsWindow>
+                <ReactAudioPlayer
+                  src={this.state.src}
+                  controls
+                  style={{ width: "270px", zIndex: "15000" }}
+                />
+              </div>
             )}
             {this.props.description && !this.props.flv && !this.state.src && (
               <Summary>{this.props.description}</Summary>

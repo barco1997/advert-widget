@@ -1,4 +1,4 @@
-import "./views/global/style.css";
+//import "./views/global/style.css";
 import { react } from "./views/react";
 import "./fonts/Mont.css";
 const supportedAPI = ["init", "message", "react"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
@@ -51,12 +51,13 @@ function apiHandler(api, params) {
       break;
     case "react":
       let buttons;
+      let updatedParams = params;
       let url = new URL(window.location.href);
       let openChat = url.searchParams.get("open");
       console.log("location: ", window.location.href);
       console.log("chat open? ", openChat);
 
-      if (params.targets.length > 0) {
+      if (params.targets && params.targets.length > 0) {
         buttons = params.targets.map(target => {
           return {
             id: target.buttonId,
@@ -66,9 +67,10 @@ function apiHandler(api, params) {
         });
       }
       if (openChat) {
-        react(params, true, buttons);
+        updatedParams.businessId = url.searchParams.get("businessId");
+        react(updatedParams, true, buttons);
       } else {
-        react(params, false, buttons);
+        react(updatedParams, false, buttons);
       }
 
       break;
