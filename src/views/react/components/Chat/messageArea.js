@@ -51,6 +51,12 @@ const AwaitingBoxImage = styled.img`
   }
 `;
 
+const NewTextWrap = styled.div`
+  &&& {
+    line-height: 1.2;
+  }
+`;
+
 const SelectChatsText = styled.div`
   &&& {
     display: flex;
@@ -209,11 +215,11 @@ export class MessageArea extends React.Component {
             </span>
             <AwaitingBoxWrapper>
               <AwaitingBoxImage src="https://witheyezon.com/eyezonsite/static/images/awaiting.svg" />
-              <div>
+              <NewTextWrap>
                 Пока кто-то из нашей команды готовиться ответить на ваше
                 сообщение, вы можете свернуть окно и продолжить пользоваться
                 сайтом, вам придет уведомление.
-              </div>
+              </NewTextWrap>
             </AwaitingBoxWrapper>
           </div>
         )}

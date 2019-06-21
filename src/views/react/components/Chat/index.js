@@ -38,7 +38,7 @@ function load(url) {
 }
 
 load(
-  "https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"
+  "https://witheyezon.com/eyezonsite/static/flv.min.js" /*"https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"*/
 )
   .then(function() {
     console.log("Loaded!");
@@ -807,10 +807,11 @@ export class Chat extends React.Component {
       streamFlag: true,
       photoSrc: null
     });
+    let self = this;
     ls.set("streamInProgress", true);
     ls.set("streamDamnId", id);
-    setLiveArray(self.props.businessId, data.id);
-    let self = this;
+    setLiveArray(self.props.businessId, id);
+
     let url = `https://static.eyezon.app/live/${id}.flv`;
     let stream = this.live;
     console.log(
