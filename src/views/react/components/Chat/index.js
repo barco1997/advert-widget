@@ -1,15 +1,15 @@
 import React from "react";
 
 import styled from "styled-components";
-import empty from "./empty.png";
+//import empty from "./empty.png";
 
 import axios from "axios";
 import ls from "local-storage";
 
 import ReactPlayer from "react-player";
 
-import favicon from "./favicon.png";
-import arrow from "./arrow2.svg";
+//import favicon from "./favicon.png";
+//import arrow from "./arrow2.svg";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
 import {
@@ -459,7 +459,7 @@ export class Chat extends React.Component {
   notifyMe(message, href, businessId) {
     // Проверка поддержки браузером уведомлений
     let options = {
-      icon: favicon,
+      icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
       data: href
     };
     if (!("Notification" in window)) {
@@ -1160,7 +1160,7 @@ export class Chat extends React.Component {
           <NotificationMessageWrapper
             toggle={this.state.notificationMessageToggle}
           >
-            <NotificationMessageArrow src={arrow} />
+            <NotificationMessageArrow src="https://witheyezon.com/eyezonsite/static/images/arrow2.svg" />
             <NotificationMessageText>
               Включи уведомления, если хочешь получить ответ
             </NotificationMessageText>
@@ -1192,7 +1192,7 @@ export class Chat extends React.Component {
                       {/*Участники команд расскажут о проекте и ответят на все
                       интересующие вопросы!*/}
                     </div>
-                    <JsChatEmpty src={empty} />
+                    <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                   </JsChatMessagePlaceholder>
                 ) : (
                   <MessageArea

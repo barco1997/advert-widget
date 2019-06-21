@@ -2,7 +2,7 @@ import React from "react";
 
 import styled from "styled-components";
 import Response from "../Response";
-import awaitingBox from "./awaiting.svg";
+//import awaitingBox from "./awaiting.svg";
 import ChatProposition from "../ChatProposition";
 const uuidv1 = require("uuid/v1");
 
@@ -208,7 +208,7 @@ export class MessageArea extends React.Component {
               Идет подключение ...
             </span>
             <AwaitingBoxWrapper>
-              <AwaitingBoxImage src={awaitingBox} />
+              <AwaitingBoxImage src="https://witheyezon.com/eyezonsite/static/images/awaiting.svg" />
               <div>
                 Пока кто-то из нашей команды готовиться ответить на ваше
                 сообщение, вы можете свернуть окно и продолжить пользоваться

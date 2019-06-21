@@ -39,10 +39,10 @@ const ControlButton = ({ children, action }) => (
   </Button>
 );
 
-ControlButton.propTypes = {
+/*ControlButton.propTypes = {
   color: PropTypes.string,
   children: PropTypes.node.isRequired,
   action: PropTypes.func
-};
+};*/
 
 export default ControlButton;

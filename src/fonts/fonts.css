@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "Mont";
+  src: local("Mont-Regular"),
+    url("https://witheyezon.com/eyezonsite/static/fonts/Mont-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Mont";
+  src: local("Mont-SemiBold"),
+    url("https://witheyezon.com/eyezonsite/static/fonts/Mont-SemiBold.ttf");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Mont";
+  src: local("Mont-Bold"),
+    url("https://witheyezon.com/eyezonsite/static/fonts/Mont-Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Caveat";
+  src: local("Caveat-Bold"),
+    url("https://witheyezon.com/eyezonsite/static/fonts/Caveat-Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}

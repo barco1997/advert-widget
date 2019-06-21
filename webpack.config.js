@@ -1,21 +1,21 @@
 const path = require("path");
 const webpack = require("webpack");
-const dotenv = require("dotenv");
+//const dotenv = require("dotenv");
 
 var copyWebpackPlugin = require("copy-webpack-plugin");
 const bundleOutputDir = "./dist";
 var SRC = path.resolve(__dirname, "./src/main.js");
-const DIR_NAME = path.join(__dirname, "..");
+//const DIR_NAME = path.join(__dirname, "..");
 
 module.exports = env => {
   const isDevBuild = !(env && env.prod);
-  const result = dotenv.config();
+  //const result = dotenv.config();
 
-  if (result.error) {
+  /*if (result.error) {
     throw result.error;
-  }
+  }*/
 
-  console.log(result.parsed);
+  //console.log(result.parsed);
   return [
     {
       entry: SRC,

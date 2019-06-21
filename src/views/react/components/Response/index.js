@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import React from "react";
 import { format } from "date-fns";
-import logo from "./logo.png";
-import playV from "./playIcon.svg";
-import pauseV from "./pauseIcon.svg";
+//import logo from "./logo.png";
+//import playV from "./playIcon.svg";
+//import pauseV from "./pauseIcon.svg";
 import LiveButton from "../LiveButton/index";
 import ReactAudioPlayer from "react-audio-player";
 import { media } from "../../../../utils/media";
-import iconClose from "./iconClose.png";
-import plus from "./plus.png";
-import minus from "./minus.png";
+//import iconClose from "./iconClose.png";
+//import plus from "./plus.png";
+//import minus from "./minus.png";
 import ControlButton from "./button";
 import axios from "axios";
 
@@ -384,7 +384,13 @@ export class Response extends React.Component {
       <div style={{ display: "block" }}>
         <Item>
           <Icon>
-            <img src={this.props.icon || logo} alt="item type" />
+            <img
+              src={
+                this.props.icon ||
+                "https://witheyezon.com/eyezonsite/static/images/logo.png"
+              }
+              alt="item type"
+            />
           </Icon>
           <ItemStart>
             {this.props.description && this.props.flv && !this.state.src && (
@@ -418,7 +424,9 @@ export class Response extends React.Component {
                 <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
-                      src={iconClose}
+                      src={
+                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
+                      }
                       onClick={() => {
                         this.setState({ plusToggled: true });
                       }}
@@ -428,11 +436,19 @@ export class Response extends React.Component {
                     <React.Fragment>
                       <RepointsAmountWrapper>
                         <SignWrapper onClick={this.handleMinus}>
-                          <Minus src={minus} />
+                          <Minus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
+                            }
+                          />
                         </SignWrapper>
                         <NumberWrapper>{this.state.repointValue}</NumberWrapper>
                         <SignWrapper onClick={this.handlePlus}>
-                          <Plus src={plus} />
+                          <Plus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
+                            }
+                          />
                         </SignWrapper>
                       </RepointsAmountWrapper>
                       <div style={{ marginRight: "3.8px" }}>
@@ -453,7 +469,9 @@ export class Response extends React.Component {
                 <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
-                      src={iconClose}
+                      src={
+                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
+                      }
                       onClick={() => {
                         this.setState({ plusToggled: true });
                       }}
@@ -463,11 +481,19 @@ export class Response extends React.Component {
                     <React.Fragment>
                       <RepointsAmountWrapper>
                         <SignWrapper onClick={this.handleMinus}>
-                          <Minus src={minus} />
+                          <Minus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
+                            }
+                          />
                         </SignWrapper>
                         <NumberWrapper>{this.state.repointValue}</NumberWrapper>
                         <SignWrapper onClick={this.handlePlus}>
-                          <Plus src={plus} />
+                          <Plus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
+                            }
+                          />
                         </SignWrapper>
                       </RepointsAmountWrapper>
                       <div style={{ marginRight: "3.8px" }}>
@@ -489,7 +515,9 @@ export class Response extends React.Component {
                 <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
-                      src={iconClose}
+                      src={
+                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
+                      }
                       onClick={() => {
                         this.setState({ plusToggled: true });
                       }}
@@ -499,11 +527,19 @@ export class Response extends React.Component {
                     <React.Fragment>
                       <RepointsAmountWrapper>
                         <SignWrapper onClick={this.handleMinus}>
-                          <Minus src={minus} />
+                          <Minus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
+                            }
+                          />
                         </SignWrapper>
                         <NumberWrapper>{this.state.repointValue}</NumberWrapper>
                         <SignWrapper onClick={this.handlePlus}>
-                          <Plus src={plus} />
+                          <Plus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
+                            }
+                          />
                         </SignWrapper>
                       </RepointsAmountWrapper>
                       <div style={{ marginRight: "3.8px" }}>
@@ -518,7 +554,13 @@ export class Response extends React.Component {
                   src={this.props.thumb}
                   onClick={() => this.handleClick()}
                 >
-                  <PlayIcon src={this.state.pauseIcon ? pauseV : playV} />
+                  <PlayIcon
+                    src={
+                      this.state.pauseIcon
+                        ? "https://witheyezon.com/eyezonsite/static/images/pauseIcon.svg"
+                        : "https://witheyezon.com/eyezonsite/static/images/playIcon.svg"
+                    }
+                  />
                 </VideoA>
               </div>
             )}
@@ -528,7 +570,9 @@ export class Response extends React.Component {
                 <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
-                      src={iconClose}
+                      src={
+                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
+                      }
                       onClick={() => {
                         this.setState({ plusToggled: true });
                       }}
@@ -538,11 +582,19 @@ export class Response extends React.Component {
                     <React.Fragment>
                       <RepointsAmountWrapper>
                         <SignWrapper onClick={this.handleMinus}>
-                          <Minus src={minus} />
+                          <Minus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
+                            }
+                          />
                         </SignWrapper>
                         <NumberWrapper>{this.state.repointValue}</NumberWrapper>
                         <SignWrapper onClick={this.handlePlus}>
-                          <Plus src={plus} />
+                          <Plus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
+                            }
+                          />
                         </SignWrapper>
                       </RepointsAmountWrapper>
                       <div style={{ marginRight: "3.8px" }}>

@@ -1,13 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 import styled from "styled-components";
-import logo from "./image.png";
-import Message from "../Message/index";
+//import logo from "./image.png";
+//import Message from "../Message/index";
 import { Chat } from "../Chat";
 import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
-import { setConversationArray, setConversationIdValue } from "../../constants";
+import { setConversationIdValue } from "../../constants";
 //const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
 if (storedToken) {
@@ -375,7 +375,7 @@ export class Button extends React.Component {
               </NotificationWrapper>
             )}
             <JsButtonImageWrapper>
-              <JsButtonImage src={logo} />
+              <JsButtonImage src="https://witheyezon.com/eyezonsite/static/images/image.png" />
             </JsButtonImageWrapper>
             <JsButtonText toggle={isOpen}>
               <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
@@ -386,9 +386,9 @@ export class Button extends React.Component {
             </JsButtonText>
           </ButtonWrapper>
         )}
-        {this.state.displayMessage && (
+        {/*this.state.displayMessage && (
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
-        )}
+        )*/}
         {this.state.initializeChat && (
           <Chat
             destroy={this.destroyChat}
