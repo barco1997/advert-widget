@@ -236,9 +236,6 @@ export class Button extends React.Component {
         axios
           .get("https://api.eyezon.app/messages/dialogs?type=joiner")
           .then(function(response) {
-            self.setState({
-              apiLoading: false
-            });
             console.log(response);
             if (response.data.count > 0) {
               console.log("token, no conversation id, dialogs");
@@ -260,15 +257,10 @@ export class Button extends React.Component {
           })
           .catch(function(error) {
             console.log(error);
-            self.setState({
-              apiLoading: false
-            });
           });
       } else {
         console.log("no token, no conversation id");
-        self.setState({
-          apiLoading: false
-        });
+
         self.handleRegistration();
       }
     } else {
@@ -277,9 +269,7 @@ export class Button extends React.Component {
         .get("https://api.eyezon.app/messages/dialogs?type=joiner")
         .then(function(response) {
           console.log(response);
-          self.setState({
-            apiLoading: false
-          });
+
           if (response.data.count > 0) {
             console.log("conversation id, dialogs");
             self.showChatHere();
@@ -305,9 +295,6 @@ export class Button extends React.Component {
         })
         .catch(function(error) {
           console.log(error);
-          self.setState({
-            apiLoading: false
-          });
         });
     }
     /* } else {
@@ -372,7 +359,8 @@ export class Button extends React.Component {
     this.setState({
       displayChat: true,
       displayMessage: false,
-      initializeChat: true
+      initializeChat: true,
+      apiLoading: false
     });
   }
 
@@ -389,14 +377,16 @@ export class Button extends React.Component {
       this.setState({
         displayChat: true,
         displayMessage: false,
-        toggle: false
+        toggle: false,
+        apiLoading: false
       });
     } else {
       this.setState({ initializeChat: true }, () => {
         this.setState({
           displayChat: true,
           displayMessage: false,
-          toggle: false
+          toggle: false,
+          apiLoading: false
         });
       });
     }
