@@ -99,7 +99,7 @@ const VideoA = styled.div`
     width: 270px !important;
     cursor: pointer;
     border-radius: 10px !important;
-    background: url(${props => `${props.src}`});
+    background: url(${props => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     display: flex !important;
