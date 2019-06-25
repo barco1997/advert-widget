@@ -53,28 +53,29 @@ const storedId = ls.get("userId");
 
 const VideoWrapper = styled.div`
   &&& {
-    width: 319px;
-    height: 553px;
-    margin-left: 50px;
-    border-radius: 10px;
-    overflow: hidden;
+    width: 319px !important;
+    height: 553px !important;
+    margin-left: 50px !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
     & > video {
-      width: 100%;
-      height: 100%;
+      width: 100% !important;
+      height: 100% !important;
     }
-    display: ${props => (props.visible ? "block" : "none")};
+    display: ${props =>
+      props.visible ? "block !important" : "none !important"};
     ${media.desktop`
-  top: 0%;
-  width: 100vw;
-  height: 100vh;
+  top: 0% !important;
+  width: 100vw !important;
+  height: 100vh !important;
   
-  position: fixed;
-  border-radius: 0px;
-  margin-left: 0px;
-  background: black;
+  position: fixed !important;
+  border-radius: 0px !important;
+  margin-left: 0px !important;
+  background: black !important;
   & > video {
     
-  border-radius: 0px;
+  border-radius: 0px !important;
   }
   `};
   }
@@ -82,45 +83,46 @@ const VideoWrapper = styled.div`
 
 const PhotoWrapper = styled.div`
   &&& {
-    width: 319px;
-    height: 553px;
-    margin-left: 50px;
-    border-radius: 10px;
-    overflow: hidden;
-    display: ${props => (props.visible ? "block" : "none")};
+    width: 319px !important;
+    height: 553px !important;
+    margin-left: 50px !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    display: ${props =>
+      props.visible ? "block !important" : "none !important"};
     ${media.desktop`
-  top: 0%;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  border-radius: 0px;
-  margin-left: 0px;
+  top: 0% !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  position: fixed !important;
+  border-radius: 0px !important;
+  margin-left: 0px !important;
   & > div {
-    width: 100vw;
-  height: 100vh;
-  border-radius: 0px;
+    width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0px !important;
   }
   `};
   }
 `;
 const WindowWrapper = styled.div`
   &&& {
-    display: flex;
-    z-index: 10003;
-    position: fixed;
-    height: 553px;
-    max-width: 85%;
-    top: 50%;
-    margin-top: -276px;
-    bottom: 15%;
+    display: flex !important;
+    z-index: 10003 !important;
+    position: fixed !important;
+    height: 553px !important;
+    max-width: 85% !important;
+    top: 50% !important;
+    margin-top: -276px !important;
+    bottom: 15% !important;
     ${media.desktop`
-      top: 0%;
-      margin-top: 0px;
-      height: auto;
+      top: 0% !important;
+      margin-top: 0px !important;
+      height: auto !important;
   `};
     ${media.tablet`
       
-      max-width: 100%;
+      max-width: 100% !important;
       
   `};
   }
@@ -128,278 +130,279 @@ const WindowWrapper = styled.div`
 
 const CloseButtonB = styled.span`
   &&& {
-    position: relative;
-    left: 0px;
-    top: 0px;
-    width: 14px;
-    height: 14px;
-    opacity: 0.3;
+    position: relative !important;
+    left: 0px !important;
+    top: 0px !important;
+    width: 14px !important;
+    height: 14px !important;
+    opacity: 0.3 !important;
     &:hover {
-      opacity: 1;
+      opacity: 1 !important;
     }
     &:before,
     &:after {
-      position: absolute;
-      left: 7px;
-      content: " ";
-      height: 14px;
-      width: 3px;
-      background-color: #333;
+      position: absolute !important;
+      left: 7px !important;
+      content: " " !important;
+      height: 14px !important;
+      width: 3px !important;
+      background-color: #333 !important;
     }
     &:before {
-      transform: rotate(45deg);
+      transform: rotate(45deg) !important;
     }
     &:after {
-      transform: rotate(-45deg);
+      transform: rotate(-45deg) !important;
     }
   }
 `;
 const CloseButtonC = styled.span`
   &&& {
-    position: relative;
-    left: 0px;
-    top: 0px;
-    width: 14px;
-    height: 14px;
-    opacity: 0.3;
+    position: relative !important;
+    left: 0px !important;
+    top: 0px !important;
+    width: 14px !important;
+    height: 14px !important;
+    opacity: 0.3 !important;
     &:hover {
-      opacity: 1;
+      opacity: 1 !important;
     }
     &:before,
     &:after {
-      position: absolute;
-      left: 7px;
-      content: " ";
-      height: 14px;
-      width: 3px;
-      background-color: #333;
+      position: absolute !important;
+      left: 7px !important;
+      content: " " !important;
+      height: 14px !important;
+      width: 3px !important;
+      background-color: #333 !important;
     }
     &:before {
-      transform: rotate(45deg);
+      transform: rotate(45deg) !important;
     }
     &:after {
-      transform: rotate(-45deg);
+      transform: rotate(-45deg) !important;
     }
   }
 `;
 const CloseWrapper = styled.div`
   &&& {
-    position: absolute;
-    right: 28px;
-    top: 14px;
+    position: absolute !important;
+    right: 28px !important;
+    top: 14px !important;
   }
 `;
 const CloseWrapperB = styled.div`
   &&& {
-    position: absolute;
-    right: 28px;
-    top: 14px;
+    position: absolute !important;
+    right: 28px !important;
+    top: 14px !important;
   }
 `;
 const CloseWrapperA = styled.div`
   &&& {
-    position: absolute;
-    right: -7px;
+    position: absolute !important;
+    right: -7px !important;
 
-    top: 14px;
+    top: 14px !important;
     ${media.desktop`
-  top: -14px;
-  right: 14px;
+  top: -14px !important;
+  right: 14px !important;
   `};
   }
 `;
 
 const ChatWrapper = styled.div`
   &&& {
-    color: black;
-    width: 100%;
-    display: ${props => (props.displayFlag ? "flex" : "none")};
-    justify-content: center;
-    font-family: "Mont";
+    color: black !important;
+    width: 100% !important;
+    display: ${props =>
+      props.displayFlag ? "flex !important" : "none !important"};
+    justify-content: center !important;
+    font-family: "Mont" !important;
   }
 `;
 
 const InputFieldA = styled.input`
   &&& {
-    height: 42px;
-    color: black;
-    width: 100%;
-    max-width: 100%;
-    background: #f5f5f5;
-    border: 0.5px solid #e5e5e5;
-    box-sizing: border-box;
-    border-radius: 4px;
-    padding: 0px 10px;
-    font-family: "Mont";
-    font-weight: normal;
-    font-size: 14px;
-    outline: 0;
+    height: 42px !important;
+    color: black !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #f5f5f5 !important;
+    border: 0.5px solid #e5e5e5 !important;
+    box-sizing: border-box !important;
+    border-radius: 4px !important;
+    padding: 0px 10px !important;
+    font-family: "Mont" !important;
+    font-weight: normal !important;
+    font-size: 14px !important;
+    outline: 0 !important;
     &::placeholder {
-      color: rgba(0, 0, 0, 0.2);
+      color: rgba(0, 0, 0, 0.2) !important;
     }
   }
 `;
 
 const Image = styled.div`
   &&& {
-    background: url(${props => props.src});
-    width: 319px;
-    height: 553px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 10px;
+    background: url(${props => `${props.src} !important`});
+    width: 319px !important;
+    height: 553px !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    border-radius: 10px !important;
     ${media.desktop`
-  border-radius: 0px;
+  border-radius: 0px !important;
   `};
   }
 `;
 
 const NotificationMessageWrapper = styled.div`
   &&& {
-    position: fixed;
-    left: 0px;
-    top: 135px;
-    z-index: 20000;
-    display: ${props => (props.toggle ? "flex" : "none")};
-    flex-direction: column;
+    position: fixed !important;
+    left: 0px !important;
+    top: 135px !important;
+    z-index: 20000 !important;
+    display: ${props => (props.toggle ? "flex !important" : "none !important")};
+    flex-direction: column !important;
   }
 `;
 const NotificationMessageArrow = styled.img`
   &&& {
-    margin-left: 150px;
-    width: 220px;
-    height: 270px;
+    margin-left: 150px !important;
+    width: 220px !important;
+    height: 270px !important;
   }
 `;
 const NotificationMessageText = styled.span`
   &&& {
-    font-family: "Caveat";
-    font-weight: bold;
-    font-size: 35px;
-    margin-left: 75px;
-    width: 360px;
-    margin-top: 25px;
-    color: white;
+    font-family: "Caveat" !important;
+    font-weight: bold !important;
+    font-size: 35px !important;
+    margin-left: 75px !important;
+    width: 360px !important;
+    margin-top: 25px !important;
+    color: white !important;
   }
 `;
 
 const SendRequest = styled.button`
   &&& {
-    width: 181px;
-    height: 28px;
-    background: #ff2d55;
-    border-radius: 100px;
-    margin-top: 15px;
-    text-decoration: none;
-    border-width: 0px;
+    width: 181px !important;
+    height: 28px !important;
+    background: #ff2d55 !important;
+    border-radius: 100px !important;
+    margin-top: 15px !important;
+    text-decoration: none !important;
+    border-width: 0px !important;
 
-    -webkit-font-smoothing: antialiased;
-    -webkit-touch-callout: none;
-    user-select: none;
-    cursor: pointer;
-    outline: 0;
-    color: white;
-    font-size: 11px;
-    padding-top: 3px;
-    font-weight: normal;
-    font-family: "Mont";
+    -webkit-font-smoothing: antialiased !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+    cursor: pointer !important;
+    outline: 0 !important;
+    color: white !important;
+    font-size: 11px !important;
+    padding-top: 3px !important;
+    font-weight: normal !important;
+    font-family: "Mont" !important;
     ${media.desktop`
-  width: 100%;
-  height: 40px;
-  font-size: 14px;
+  width: 100% !important;
+  height: 40px !important;
+  font-size: 14px !important;
   `};
   }
 `;
 
 const JsChatWindow = styled.div`
   &&& {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
+    display: flex !important;
+    justify-content: flex-start !important;
+    flex-direction: column !important;
 
-    background: #fff;
+    background: #fff !important;
 
-    width: 542px;
-    height: 553px;
+    width: 542px !important;
+    height: 553px !important;
 
-    box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25);
-    border-radius: 6px;
+    box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25) !important;
+    border-radius: 6px !important;
     ${media.desktop`
-  height: 100vh;
-  width: 100vw;
-  border-radius: 0px;
+  height: 100vh !important;
+  width: 100vw !important;
+  border-radius: 0px !important;
   & > :first-child {
     
-    margin-top: 40px;
+    margin-top: 40px !important;
   }
   `};
   }
 `;
 const JsChatOverlay = styled.div`
   &&& {
-    z-index: 10002;
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    opacity: 0.4;
-    background-color: #000;
+    z-index: 10002 !important;
+    position: fixed !important;
+    top: 0px !important;
+    bottom: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+    opacity: 0.4 !important;
+    background-color: #000 !important;
     ${media.desktop`
-  display: none;
+  display: none !important;
   `};
   }
 `;
 const JsChatMessageContainer = styled.div`
   &&& {
-    width: 462px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 40px 0px;
+    width: 462px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    padding: 40px 0px !important;
 
-    margin: 0px 40px;
+    margin: 0px 40px !important;
 
-    flex: 1;
-    position: relative;
+    flex: 1 !important;
+    position: relative !important;
     ${media.desktop`
-  width: auto;
-  padding: 0px;
-  margin: 0px 15px;
-  margin-bottom: 80px;
+  width: auto !important;
+  padding: 0px !important;
+  margin: 0px 15px !important;
+  margin-bottom: 80px !important;
   `};
     ${media.android`
-  max-width: 300px;
+  max-width: 300px !important;
   `};
   }
 `;
 const JsChatMessagePlaceholder = styled.div`
   &&& {
-    width: 100%;
-    font-size: 13px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    color: rgba(0, 0, 0, 0.5);
-    flex: 1;
+    width: 100% !important;
+    font-size: 13px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+    flex: 1 !important;
     & > :first-child {
-      margin-top: 80px;
+      margin-top: 80px !important;
     }
   }
 `;
 const JsChatEmpty = styled.img`
   &&& {
-    margin-top: 60px;
-    width: 176px;
-    height: 72px;
+    margin-top: 60px !important;
+    width: 176px !important;
+    height: 72px !important;
   }
 `;
 
 const SizedForm = styled.form`
   &&& {
-    width: 100%;
-    max-width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 `;
 
@@ -1188,7 +1191,7 @@ export class Chat extends React.Component {
                 (!this.state.sentHistory || !this.state.sentHistory.status) ? (
                   <JsChatMessagePlaceholder>
                     <div>Не стесняйтесь, спросите! </div>
-                    <div style={{ textAlign: "center" }}>
+                    <div style={{ textAlign: "center !important" }}>
                       Наши сотрудники с радостью ответят на все ваши вопросы
                       {/*Участники команд расскажут о проекте и ответят на все
                       интересующие вопросы!*/}
@@ -1213,7 +1216,7 @@ export class Chat extends React.Component {
                   />
                 )}
                 <form onSubmit={this.handleSubmit}>
-                  <div style={{ flexDirection: "column" }}>
+                  <div style={{ flexDirection: "column  !important" }}>
                     <InputFieldA
                       type="text"
                       value={this.state.value}

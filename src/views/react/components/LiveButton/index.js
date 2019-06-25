@@ -10,55 +10,59 @@ import styled from "styled-components";
 
 const ButtonWrapper = styled.div`
   &&& {
-    text-decoration: none;
+    text-decoration: none !important;
     background: ${props =>
-      props.watched ? "rgba(255, 45, 85, 0.5)" : "#ff2d55"};
-    border-radius: 100px;
-    font-size: 12px;
-    display: flex;
-    width: 128px;
-    height: 28px;
-    justify-content: center;
-    align-items: center;
-    font-family: "Mont";
-    color: white;
+      props.watched
+        ? "rgba(255, 45, 85, 0.5) !important"
+        : "#ff2d55 !important"};
+    border-radius: 100px !important;
+    font-size: 12px !important;
+    display: flex !important;
+    width: 128px !important;
+    height: 28px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-family: "Mont" !important;
+    color: white !important;
   }
 `;
 const Layer2 = styled.div`
   &&& {
-    border-radius: 100px;
+    border-radius: 100px !important;
 
-    display: flex;
+    display: flex !important;
     background: ${props =>
-      props.watched ? "white" : "rgba(255, 45, 85, 0.2)"};
-    width: 160px;
-    height: 40px;
-    justify-content: center;
-    align-items: center;
+      props.watched ? "white !important" : "rgba(255, 45, 85, 0.2) !important"};
+    width: 160px !important;
+    height: 40px !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 `;
 
 const Layer3 = styled.button`
   &&& {
-    text-decoration: none;
+    text-decoration: none !important;
 
-    -webkit-font-smoothing: antialiased;
-    -webkit-touch-callout: none;
-    user-select: none;
-    cursor: pointer;
+    -webkit-font-smoothing: antialiased !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+    cursor: pointer !important;
 
-    outline: 0;
+    outline: 0 !important;
 
-    border-radius: 100px;
-    display: flex;
+    border-radius: 100px !important;
+    display: flex !important;
     background: ${props =>
-      props.watched ? "white" : "rgba(255, 45, 85, 0.05)"};
-    width: 158px;
-    height: 52px;
-    justify-content: center;
-    align-items: center;
+      props.watched
+        ? "white !important"
+        : "rgba(255, 45, 85, 0.05) !important"};
+    width: 158px !important;
+    height: 52px !important;
+    justify-content: center !important;
+    align-items: center !important;
     &:focus {
-      outline: 0;
+      outline: 0 !important;
     }
   }
 `;

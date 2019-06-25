@@ -8,62 +8,62 @@ const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
   &&& {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
 
-    flex: 1;
-    overflow: auto;
+    flex: 1 !important;
+    overflow: auto !important;
     ::-webkit-scrollbar {
-      display: none;
+      display: none !important;
     }
-    -ms-overflow-style: none;
+    -ms-overflow-style: none !important;
   }
 `;
 
 const AwaitingBoxWrapper = styled.div`
   &&& {
-    width: 250px;
-    height: 80px;
-    position: relative;
+    width: 250px !important;
+    height: 80px !important;
+    position: relative !important;
     & > div {
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      opacity: 0.4;
-      font-size: 10px;
-      font-family: "Mont";
-      font-weight: normal;
-      padding: 20px;
-      padding-left: 30px;
+      position: absolute !important;
+      left: 0px !important;
+      top: 0px !important;
+      opacity: 0.4 !important;
+      font-size: 10px !important;
+      font-family: "Mont" !important;
+      font-weight: normal !important;
+      padding: 20px !important;
+      padding-left: 30px !important;
     }
   }
 `;
 const AwaitingBoxImage = styled.img`
   &&& {
-    width: 300px;
+    width: 300px !important;
 
-    object-fit: contain;
-    position: absolute;
-    left: 0px;
-    top: 0px;
+    object-fit: contain !important;
+    position: absolute !important;
+    left: 0px !important;
+    top: 0px !important;
   }
 `;
 
 const NewTextWrap = styled.div`
   &&& {
-    line-height: 1.2;
+    line-height: 1.2 !important;
   }
 `;
 
 const SelectChatsText = styled.div`
   &&& {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    margin: 70px 30px;
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
+    margin: 70px 30px !important;
   }
 `;
 
@@ -210,7 +210,13 @@ export class MessageArea extends React.Component {
           !(this.props.existingChats.length > 0)) ||
           this.props.sentHistory.status) && (
           <div>
-            <span style={{ fontSize: "12", opacity: "0.5" }}>
+            <span
+              style={{
+                fontFamily: "Mont !important",
+                fontSize: "12px !important",
+                opacity: "0.5 !important"
+              }}
+            >
               Идет подключение ...
             </span>
             <AwaitingBoxWrapper>

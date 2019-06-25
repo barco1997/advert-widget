@@ -15,229 +15,230 @@ import axios from "axios";
 
 const Item = styled.li`
   &&& {
-    display: flex;
-    width: 100%;
-    margin: 5px 0;
-    padding: 10px 0px;
-    border-radius: 5px;
-    justify-content: flex-start;
-    min-height: 41px;
-    overflow: hidden;
-    flex-wrap: wrap;
+    display: flex !important;
+    width: 100% !important;
+    margin: 5px 0 !important;
+    padding: 10px 0px !important;
+    border-radius: 5px !important;
+    justify-content: flex-start !important;
+    min-height: 41px !important;
+    overflow: hidden !important;
+    flex-wrap: wrap !important;
   }
 `;
 
 const Icon = styled.div`
   &&& {
-    width: 40px;
-    height: 40px;
+    width: 40px !important;
+    height: 40px !important;
 
-    margin-right: 20px;
-    background: white;
+    margin-right: 20px !important;
+    background: white !important;
 
     & > img {
-      border-radius: 50%;
-      width: 100%;
-      height: 100%;
+      border-radius: 50% !important;
+      width: 100% !important;
+      height: 100% !important;
     }
     ${media.desktop`
-  width: 35px;
-  height: 35px;
-  margin-right: 15px;
+  width: 35px !important;
+  height: 35px !important;
+  margin-right: 15px !important;
   `};
   }
 `;
 
 const ItemStart = styled.div`
   &&& {
-    display: flex;
-    flex: 2;
-    flex-direction: column;
-    justify-content: center;
+    display: flex !important;
+    flex: 2 !important;
+    flex-direction: column !important;
+    justify-content: center !important;
   }
 `;
 
 const ItemEnd = styled.div`
   &&& {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
+    display: flex !important;
+    flex: 1 !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
   }
 `;
 
 const Title = styled.h4`
   &&& {
-    margin: 0;
-    font-size: 16px;
-    font-weight: bold;
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
     ${media.desktop`
-  font-size: 14px;
+  font-size: 14px !important;
   `};
   }
 `;
 const ImageA = styled.img`
   &&& {
-    height: 143px;
-    border-radius: 10px;
-    object-fit: cover;
-    width: 270px;
-    cursor: pointer;
+    height: 143px !important;
+    border-radius: 10px !important;
+    object-fit: cover !important;
+    width: 270px !important;
+    cursor: pointer !important;
     ${media.desktop`
-  height: 130px;
+  height: 130px !important;
   
-  width: 175px;
+  width: 175px !important;
   `};
   }
 `;
 const VideoA = styled.div`
   &&& {
-    height: 143px;
-    width: 270px;
+    height: 143px !important;
+    width: 270px !important;
     cursor: pointer;
-    border-radius: 10px;
-    background: url(${props => props.src});
-    background-repeat: no-repeat;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border-radius: 10px !important;
+    background: url(${props => `${props.src} !important`});
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 
     ${media.desktop`
-  height: 130px;
+  height: 130px !important;
   
-  width: 175px;
+  width: 175px !important;
   `};
   }
 `;
 
 const PlayIcon = styled.img`
   &&& {
-    height: 40px;
-    width: 40px;
+    height: 40px !important;
+    width: 40px !important;
 
-    object-fit: cover;
+    object-fit: cover !important;
 
-    cursor: pointer;
+    cursor: pointer !important;
   }
 `;
 
 const RepointsWindow = styled.div`
   &&& {
-    z-index: 16000;
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    display: flex;
-    color: white;
-    border-radius: 100px;
+    z-index: 16000 !important;
+    position: absolute !important;
+    bottom: -10px !important;
+    left: 0 !important;
+    display: flex !important;
+    color: white !important;
+    border-radius: 100px !important;
 
-    height: 28px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-    background: white;
+    height: 28px !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
+    background: white !important;
 
-    background: ${props => (props.color ? props.color : "white")};
-    width: ${props => (props.toggle ? "190px" : "28px")};
-    transition: ${props => (props.toggle ? "width 120ms linear" : "none")};
+    background: ${props => (props.color ? props.color : "white !important")};
+    width: ${props => (props.toggle ? "190px !important" : "28px !important")};
+    transition: ${props =>
+      props.toggle ? "width 120ms linear !important" : "none !important"};
 
-    overflow: hidden;
+    overflow: hidden !important;
   }
 `;
 
 const ControlIcon = styled.img`
   &&& {
-    height: 12px;
-    width: 12px;
-    object-fit: cover;
-    padding: 8px;
-    text-decoration: none;
-    -webkit-font-smoothing: antialiased;
-    -webkit-touch-callout: none;
-    user-select: none;
-    cursor: pointer;
-    outline: 0;
+    height: 12px !important;
+    width: 12px !important;
+    object-fit: cover !important;
+    padding: 8px !important;
+    text-decoration: none !important;
+    -webkit-font-smoothing: antialiased !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+    cursor: pointer !important;
+    outline: 0 !important;
     &:focus {
-      outline: 0;
+      outline: 0 !important;
     }
   }
 `;
 
 const RepointsAmountWrapper = styled.div`
   &&& {
-    margin-left: 8px;
-    height: 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin-left: 8px !important;
+    height: 28px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
   }
 `;
 
 const SignWrapper = styled.div`
   &&& {
-    height: 28px;
-    width: 28px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+    height: 28px !important;
+    width: 28px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
   }
 `;
 
 const Minus = styled.img`
   &&& {
-    height: 1.75px;
-    width: 11.8px;
+    height: 1.75px !important;
+    width: 11.8px !important;
   }
 `;
 
 const Plus = styled.img`
   &&& {
-    height: 11.8px;
-    width: 11.67px;
+    height: 11.8px !important;
+    width: 11.67px !important;
   }
 `;
 
 const NumberWrapper = styled.div`
   &&& {
-    width: 44px;
-    margin-top: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 19px;
-    color: #666666;
+    width: 44px !important;
+    margin-top: 4px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-size: 19px !important;
+    color: #666666 !important;
   }
 `;
 
 const Summary = styled.p`
   &&& {
-    margin: 0;
-    font-size: 12px;
-    opacity: 0.5;
-    margin-top: 6px;
+    margin: 0 !important;
+    font-size: 12px !important;
+    opacity: 0.5 !important;
+    margin-top: 6px !important;
   }
 `;
 const SummaryTop = styled.p`
   &&& {
-    margin: 0;
-    font-size: 12px;
-    opacity: 0.5;
-    margin-bottom: 6px;
+    margin: 0 !important;
+    font-size: 12px !important;
+    opacity: 0.5 !important;
+    margin-bottom: 6px !important;
     ${media.desktop`
-  font-size: 10px;
+  font-size: 10px !important;
   `};
   }
 `;
 
 const Date = styled.time`
   &&& {
-    opacity: 0.2;
-    margin-right: 0px;
-    font-size: 12px;
+    opacity: 0.2 !important;
+    margin-right: 0px !important;
+    font-size: 12px !important;
   }
 `;
 
@@ -381,7 +382,7 @@ export class Response extends React.Component {
 
   render() {
     return (
-      <div style={{ display: "block" }}>
+      <div style={{ display: "block !important" }}>
         <Item>
           <Icon>
             <img
@@ -420,8 +421,13 @@ export class Response extends React.Component {
             )}
             {!this.props.flv && <Title>{this.props.title}</Title>}
             {this.props.flv && !this.state.src && (
-              <div style={{ position: "relative", marginBottom: "10px" }}>
-                <RepointsWindow toggle={this.state.plusToggled}>
+              <div
+                style={{
+                  position: "relative !important",
+                  marginBottom: "10px !important"
+                }}
+              >
+                {/*<RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -451,22 +457,27 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px" }}>
+                      <div style={{ marginRight: "3.8px !important" }}>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
                       </div>
                     </React.Fragment>
                   )}
-                </RepointsWindow>
+                </RepointsWindow>*/}
                 <LiveButton id={this.props.id} setFlv={this.props.functionA}>
                   Смотреть
                 </LiveButton>
               </div>
             )}
             {this.state.typeVar === "photo" && this.state.src && (
-              <div style={{ position: "relative", marginBottom: "10px" }}>
-                <RepointsWindow toggle={this.state.plusToggled}>
+              <div
+                style={{
+                  position: "relative !important",
+                  marginBottom: "10px !important"
+                }}
+              >
+                {/*<RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -496,14 +507,14 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px" }}>
+                      <div style={{ marginRight: "3.8px !important" }}>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
                       </div>
                     </React.Fragment>
                   )}
-                </RepointsWindow>
+                </RepointsWindow>*/}
                 <ImageA
                   src={this.state.src}
                   onClick={() => this.handleClick()}
@@ -511,8 +522,13 @@ export class Response extends React.Component {
               </div>
             )}
             {this.state.typeVar === "video" && this.state.src && (
-              <div style={{ position: "relative", marginBottom: "10px" }}>
-                <RepointsWindow toggle={this.state.plusToggled}>
+              <div
+                style={{
+                  position: "relative !important",
+                  marginBottom: "10px !important"
+                }}
+              >
+                {/*<RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -542,14 +558,14 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px" }}>
+                      <div style={{ marginRight: "3.8px !important" }}>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
                       </div>
                     </React.Fragment>
                   )}
-                </RepointsWindow>
+                </RepointsWindow>*/}
                 <VideoA
                   src={this.props.thumb}
                   onClick={() => this.handleClick()}
@@ -566,8 +582,13 @@ export class Response extends React.Component {
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (
-              <div style={{ position: "relative", marginBottom: "10px" }}>
-                <RepointsWindow toggle={this.state.plusToggled}>
+              <div
+                style={{
+                  position: "relative !important",
+                  marginBottom: "10px !important"
+                }}
+              >
+                {/*<RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -597,18 +618,21 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px" }}>
+                      <div style={{ marginRight: "3.8px !important" }}>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
                       </div>
                     </React.Fragment>
                   )}
-                </RepointsWindow>
+                </RepointsWindow>*/}
                 <ReactAudioPlayer
                   src={this.state.src}
                   controls
-                  style={{ width: "270px", zIndex: "15000" }}
+                  style={{
+                    width: "270px !important",
+                    zIndex: "15000 !important"
+                  }}
                 />
               </div>
             )}

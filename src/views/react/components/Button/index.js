@@ -8,113 +8,141 @@ import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
 import { setConversationIdValue } from "../../constants";
+import { media } from "../../../../utils/media";
+import LoadingCircle from "../Loader";
 //const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
 if (storedToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
 }
 
+const ApiOverlay = styled.div`
+  &&& {
+    z-index: 10002 !important;
+    position: fixed !important;
+    top: 0px !important;
+    bottom: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+    opacity: 0.4 !important;
+    background-color: #000 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    ${media.desktop`
+  display: none !important;
+  `};
+  }
+`;
+
 const ButtonWrapper = styled.button`
   &&& {
-    text-decoration: none;
+    text-decoration: none !important;
 
-    -webkit-font-smoothing: antialiased;
-    -webkit-touch-callout: none;
-    user-select: none;
-    cursor: pointer;
-    outline: 0;
+    -webkit-font-smoothing: antialiased !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+    cursor: pointer !important;
+    outline: 0 !important;
+    /*overflow: hidden !important;*/
+    position: fixed !important;
+    z-index: 10001 !important;
+    background: #fff !important;
+    right: 2% !important;
+    bottom: 30px !important;
+    margin: 0 0 0 0 !important;
 
-    position: fixed;
-    z-index: 10001;
-    background: #fff;
-    right: 2%;
-    bottom: 30px;
-    margin: 0 0 0 0;
+    background: ${props => (props.color ? props.color : "white  !important")};
 
-    background: ${props => (props.color ? props.color : "white")};
+    border: solid 1px #dddddd !important;
+    border-radius: 28px !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: ${props =>
+      props.toggle ? "278px  !important" : "42px  !important"}; /*58*/
+    min-width: 42px !important;
+    height: 51px !important; /*56*/
 
-    border: solid 1px #dddddd;
-    border-radius: 28px;
-    display: flex;
-    width: ${props => (props.toggle ? "278px" : "56px")};
-
-    height: 56px;
-    align-items: center;
+    align-items: center !important;
 
     transition: ${props =>
-      props.toggle ? "width 120ms linear" : "width 180ms linear"};
-    font-family: "Mont";
+      props.toggle
+        ? "width 120ms linear !important"
+        : "width 180ms linear !important"};
+    font-family: "Mont" !important;
     &:focus {
-      outline: 0;
+      outline: 0 !important;
     }
   }
 `;
 
 const NotificationWrapper = styled.div`
   &&& {
-    position: absolute;
-    top: -7px;
-    right: -7px;
-    border-radius: 50%;
-    color: white;
-    background: #ff2d55;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 22px;
-    height: 22px;
+    position: absolute !important;
+    top: -7px !important;
+    right: -7px !important;
+    border-radius: 50% !important;
+    color: white !important;
+    background: #ff2d55 !important;
+    font-size: 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 22px !important;
+    height: 22px !important;
   }
 `;
 
 const JsButtonImageWrapper = styled.div`
   &&& {
-    width: 42px;
-    height: 51px;
-    border-radius: 28px;
+    width: 42px !important;
+    height: 51px !important;
+    border-radius: 28px !important;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 42px;
-    max-height: 51px;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-width: 42px !important;
+    max-height: 51px !important;
   }
 `;
 
 const JsButtonImage = styled.img`
   &&& {
-    width: 40px;
-    height: 40px;
-    max-width: 40px;
-    max-height: 40px;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    max-height: 40px !important;
   }
 `;
 const JsButtonText = styled.div`
   &&& {
-    display: flex;
+    display: flex !important;
     transition: ${props =>
-      props.toggle ? "opacity 1s ease-in" : "opacity 100ms linear"};
+      props.toggle
+        ? "opacity 1s ease-in !important"
+        : "opacity 100ms linear !important"};
 
-    opacity: ${props => (props.toggle ? "1" : "0")};
-    height: ${props => (props.toggle ? "42px" : "0px")};
-    overflow: hidden;
-    flex-direction: column;
-    width: 200px;
-    margin-right: 14px;
-    margin-left: 8px;
+    opacity: ${props => (props.toggle ? "1 !important" : "0 !important")};
+    height: 34px !important;
+
+    flex-direction: column !important;
+    width: 200px !important;
+    margin-right: 14px !important;
+    margin-left: 8px !important;
   }
 `;
 
 const JsButtonHeader = styled.div`
   &&& {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 16px !important;
+    font-weight: bold !important;
   }
 `;
 const JsButtonInfo = styled.div`
   &&& {
-    font-size: 8px;
-    opacity: 0.5;
+    font-size: 8px !important;
+    opacity: 0.5 !important;
   }
 `;
 
@@ -127,7 +155,8 @@ export class Button extends React.Component {
       displayChat: false,
       initializeChat: ls.get("token") ? true : false,
       businessId: null,
-      multiButton: false
+      multiButton: false,
+      apiLoading: false
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
@@ -195,9 +224,11 @@ export class Button extends React.Component {
     let self = this;
     self.props.setNotifications(0);
     self.setState({
-      businessId: businessId
+      businessId: businessId,
+      apiLoading: true
     });
     setConversationIdValue(businessId);
+    //return;
     //if (this.state.toggle) {
     if (!ls.get("conversationId")) {
       if (storedToken) {
@@ -205,6 +236,9 @@ export class Button extends React.Component {
         axios
           .get("https://api.eyezon.app/messages/dialogs?type=joiner")
           .then(function(response) {
+            self.setState({
+              apiLoading: false
+            });
             console.log(response);
             if (response.data.count > 0) {
               console.log("token, no conversation id, dialogs");
@@ -226,6 +260,9 @@ export class Button extends React.Component {
           })
           .catch(function(error) {
             console.log(error);
+            self.setState({
+              apiLoading: false
+            });
           });
       } else {
         console.log("no token, no conversation id");
@@ -237,7 +274,9 @@ export class Button extends React.Component {
         .get("https://api.eyezon.app/messages/dialogs?type=joiner")
         .then(function(response) {
           console.log(response);
-
+          self.setState({
+            apiLoading: false
+          });
           if (response.data.count > 0) {
             console.log("conversation id, dialogs");
             self.showChatHere();
@@ -258,11 +297,17 @@ export class Button extends React.Component {
               })
               .catch(function(error) {
                 console.log(error);
+                self.setState({
+                  apiLoading: false
+                });
               });
           }
         })
         .catch(function(error) {
           console.log(error);
+          self.setState({
+            apiLoading: false
+          });
         });
     }
     /* } else {
@@ -361,6 +406,11 @@ export class Button extends React.Component {
     const isOpen = this.state.toggle;
     return (
       <React.Fragment>
+        {this.state.apiLoading && (
+          <ApiOverlay>
+            <LoadingCircle loadingFlag />
+          </ApiOverlay>
+        )}
         {this.props.button && (
           <ButtonWrapper
             color={this.props.color}
@@ -376,6 +426,7 @@ export class Button extends React.Component {
             )}
             <JsButtonImageWrapper>
               <JsButtonImage src="https://witheyezon.com/eyezonsite/static/images/image.png" />
+              {/* <LoadingCircle loadingFlag />*/}
             </JsButtonImageWrapper>
             <JsButtonText toggle={isOpen}>
               <JsButtonHeader>Запросить трансляцию</JsButtonHeader>

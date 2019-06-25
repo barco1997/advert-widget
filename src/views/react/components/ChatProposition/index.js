@@ -6,68 +6,68 @@ import { media } from "../../../../utils/media";
 
 const Item = styled.li`
   &&& {
-    display: flex;
-    width: 100%;
-    margin: 5px 0;
-    padding: 10px 0px;
-    border-radius: 5px;
-    justify-content: flex-start;
-    min-height: 48px;
-    cursor: pointer;
-    flex-wrap: wrap;
-    background: #f1f1f1;
+    display: flex !important;
+    width: 100% !important;
+    margin: 5px 0 !important;
+    padding: 10px 0px !important;
+    border-radius: 5px !important;
+    justify-content: flex-start !important;
+    min-height: 48px !important;
+    cursor: pointer !important;
+    flex-wrap: wrap !important;
+    background: #f1f1f1 !important;
   }
 `;
 
 const ItemStart = styled.div`
   &&& {
-    display: flex;
-    flex: 2;
-    margin-left: 20px;
-    flex-direction: column;
-    justify-content: center;
+    display: flex !important;
+    flex: 2 !important;
+    margin-left: 20px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
   }
 `;
 
 const ItemEnd = styled.div`
   &&& {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
+    display: flex !important;
+    flex: 1 !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
   }
 `;
 
 const Title = styled.h4`
   &&& {
-    margin: 0;
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: bold;
+    margin: 0 !important;
+    margin-bottom: 8px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
     ${media.desktop`
-  font-size: 14px;
+  font-size: 14px !important;
   `};
   }
 `;
 
 const Summary = styled.p`
   &&& {
-    margin: 0;
-    font-size: 12px;
-    opacity: 0.5;
-    margin-top: 6px;
+    margin: 0 !important;
+    font-size: 12px !important;
+    opacity: 0.5 !important;
+    margin-top: 6px !important;
   }
 `;
 
 const Date = styled.time`
   &&& {
-    color: white;
-    margin-right: 20px;
-    font-size: 12px;
-    border-radius: 10px;
-    padding: 1px 12px;
-    background: #ff2d55;
+    color: white !important;
+    margin-right: 20px !important;
+    font-size: 12px !important;
+    border-radius: 10px !important;
+    padding: 1px 12px !important;
+    background: #ff2d55 !important;
   }
 `;
 
