@@ -22,7 +22,8 @@ const Item = styled.li`
     border-radius: 5px !important;
     justify-content: flex-start !important;
     min-height: 41px !important;
-    overflow: hidden !important;
+    height: auto !important;
+
     flex-wrap: wrap !important;
   }
 `;
@@ -94,10 +95,11 @@ const ImageA = styled.img`
 const VideoA = styled.div`
   &&& {
     height: 143px !important;
+
     width: 270px !important;
     cursor: pointer;
     border-radius: 10px !important;
-    background: url(${props => `${props.src} !important`});
+    background: url(${props => `${props.src}`});
     background-repeat: no-repeat !important;
     background-size: cover !important;
     display: flex !important;
@@ -239,6 +241,20 @@ const Date = styled.time`
     opacity: 0.2 !important;
     margin-right: 0px !important;
     font-size: 12px !important;
+  }
+`;
+
+const ItemHolder = styled.div`
+  &&& {
+    display: flex !important;
+    position: relative !important;
+    margin-bottom: 10px !important;
+  }
+`;
+
+const RepointButtonWrapper = styled.div`
+  &&& {
+    margin-right: 3.8px !important;
   }
 `;
 
@@ -421,63 +437,11 @@ export class Response extends React.Component {
             )}
             {!this.props.flv && <Title>{this.props.title}</Title>}
             {this.props.flv && !this.state.src && (
-              <div
-                style={{
-                  position: "relative !important",
-                  marginBottom: "10px !important"
-                }}
-              >
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
-                  {!this.state.plusToggled && (
-                    <ControlIcon
-                      src={
-                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
-                      }
-                      onClick={() => {
-                        this.setState({ plusToggled: true });
-                      }}
-                    />
-                  )}
-                  {this.state.plusToggled && (
-                    <React.Fragment>
-                      <RepointsAmountWrapper>
-                        <SignWrapper onClick={this.handleMinus}>
-                          <Minus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
-                            }
-                          />
-                        </SignWrapper>
-                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
-                        <SignWrapper onClick={this.handlePlus}>
-                          <Plus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
-                            }
-                          />
-                        </SignWrapper>
-                      </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px !important" }}>
-                        <ControlButton action={this.handleSend}>
-                          SEND
-                        </ControlButton>
-                      </div>
-                    </React.Fragment>
-                  )}
-                </RepointsWindow>*/}
+              <ItemHolder>
                 <LiveButton id={this.props.id} setFlv={this.props.functionA}>
                   Смотреть
                 </LiveButton>
-              </div>
-            )}
-            {this.state.typeVar === "photo" && this.state.src && (
-              <div
-                style={{
-                  position: "relative !important",
-                  marginBottom: "10px !important"
-                }}
-              >
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -507,28 +471,23 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px !important" }}>
+                      <RepointButtonWrapper>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
-                      </div>
+                      </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                </RepointsWindow>*/}
+                </RepointsWindow>
+              </ItemHolder>
+            )}
+            {this.state.typeVar === "photo" && this.state.src && (
+              <ItemHolder>
                 <ImageA
                   src={this.state.src}
                   onClick={() => this.handleClick()}
                 />
-              </div>
-            )}
-            {this.state.typeVar === "video" && this.state.src && (
-              <div
-                style={{
-                  position: "relative !important",
-                  marginBottom: "10px !important"
-                }}
-              >
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -558,14 +517,18 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px !important" }}>
+                      <RepointButtonWrapper>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
-                      </div>
+                      </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                </RepointsWindow>*/}
+                </RepointsWindow>
+              </ItemHolder>
+            )}
+            {this.state.typeVar === "video" && this.state.src && (
+              <ItemHolder>
                 <VideoA
                   src={this.props.thumb}
                   onClick={() => this.handleClick()}
@@ -578,17 +541,7 @@ export class Response extends React.Component {
                     }
                   />
                 </VideoA>
-              </div>
-            )}
-
-            {this.state.typeVar === "audio" && this.state.src && (
-              <div
-                style={{
-                  position: "relative !important",
-                  marginBottom: "10px !important"
-                }}
-              >
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -618,23 +571,59 @@ export class Response extends React.Component {
                           />
                         </SignWrapper>
                       </RepointsAmountWrapper>
-                      <div style={{ marginRight: "3.8px !important" }}>
+                      <RepointButtonWrapper>
                         <ControlButton action={this.handleSend}>
                           SEND
                         </ControlButton>
-                      </div>
+                      </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                </RepointsWindow>*/}
-                <ReactAudioPlayer
-                  src={this.state.src}
-                  controls
-                  style={{
-                    width: "270px !important",
-                    zIndex: "15000 !important"
-                  }}
-                />
-              </div>
+                </RepointsWindow>
+              </ItemHolder>
+            )}
+
+            {this.state.typeVar === "audio" && this.state.src && (
+              <ItemHolder>
+                <ReactAudioPlayer src={this.state.src} controls />
+                <RepointsWindow toggle={this.state.plusToggled}>
+                  {!this.state.plusToggled && (
+                    <ControlIcon
+                      src={
+                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
+                      }
+                      onClick={() => {
+                        this.setState({ plusToggled: true });
+                      }}
+                    />
+                  )}
+                  {this.state.plusToggled && (
+                    <React.Fragment>
+                      <RepointsAmountWrapper>
+                        <SignWrapper onClick={this.handleMinus}>
+                          <Minus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
+                            }
+                          />
+                        </SignWrapper>
+                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
+                        <SignWrapper onClick={this.handlePlus}>
+                          <Plus
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
+                            }
+                          />
+                        </SignWrapper>
+                      </RepointsAmountWrapper>
+                      <RepointButtonWrapper>
+                        <ControlButton action={this.handleSend}>
+                          SEND
+                        </ControlButton>
+                      </RepointButtonWrapper>
+                    </React.Fragment>
+                  )}
+                </RepointsWindow>
+              </ItemHolder>
             )}
             {this.props.description && !this.props.flv && !this.state.src && (
               <Summary>{this.props.description}</Summary>
@@ -647,6 +636,9 @@ export class Response extends React.Component {
       </div>
     );
   }
+}
+{
+  /**/
 }
 /*<PlayIcon src={this.state.playIcon ? playV : pauseV} />*/
 

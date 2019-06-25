@@ -266,6 +266,9 @@ export class Button extends React.Component {
           });
       } else {
         console.log("no token, no conversation id");
+        self.setState({
+          apiLoading: false
+        });
         self.handleRegistration();
       }
     } else {
@@ -297,9 +300,6 @@ export class Button extends React.Component {
               })
               .catch(function(error) {
                 console.log(error);
-                self.setState({
-                  apiLoading: false
-                });
               });
           }
         })
