@@ -15,6 +15,7 @@ export class App extends React.Component {
 
     this.setNotifications = this.setNotifications.bind(this);
     this.incrementNotifications = this.incrementNotifications.bind(this);
+    this.decrementNotifications = this.decrementNotifications.bind(this);
   }
   componentDidMount() {
     //https://api.eyezon.app/messages/dialogs?type=watcher
@@ -57,6 +58,13 @@ export class App extends React.Component {
       notificationStatus: true
     });
   }
+  decrementNotifications() {
+    console.log("Notifications: ");
+    const val = this.state.notifications;
+    this.setState({
+      notifications: val - 1
+    });
+  }
   render() {
     return (
       <React.Fragment>
@@ -69,6 +77,7 @@ export class App extends React.Component {
           incrementNotifications={this.incrementNotifications}
           notifications={this.state.notifications}
           setNotifications={this.setNotifications}
+          decrementNotifications={this.decrementNotifications}
         />
       </React.Fragment>
     );

@@ -406,6 +406,13 @@ const SizedForm = styled.form`
   }
 `;
 
+const PlaceholderMessage = styled.div`
+  &&& {
+    text-align: center !important;
+    line-height: 1.1 !important;
+  }
+`;
+
 /*function VideoShow(props) {
   const url = props.url;
   console.log(url);
@@ -565,7 +572,13 @@ export class Chat extends React.Component {
         }
         ls.set("notificationCount", notificationCount);
         //() => self.props.setNotificationStatus(true);
+        console.log("initializeChat inside: ", self.props.initializeChat);
         self.props.incrementNotifications();
+        if (self.props.initializeChat && !(self.props.displayChat === false)) {
+          console.log("initializeChat if: ", self.props.initializeChat);
+          console.log("displayFlag if: ", self.state.displayFlag);
+          self.props.decrementNotifications();
+        }
         /********* */
         if (data.userId !== storedId) {
           if (!ls.get("conversationId")) {
@@ -1158,6 +1171,7 @@ export class Chat extends React.Component {
   }
 
   render() {
+    console.log("Display flag: ", this.state.displayFlag);
     return (
       <React.Fragment>
         <ChatWrapper displayFlag={this.state.displayFlag}>
@@ -1171,7 +1185,6 @@ export class Chat extends React.Component {
           </NotificationMessageWrapper>
           <JsChatOverlay
             onClick={() => {
-              this.props.destroy();
               this.setState({
                 streamFlag: false
               });
@@ -1181,6 +1194,7 @@ export class Chat extends React.Component {
               if (this.loadedVideo.getInternalPlayer()) {
                 this.loadedVideo.getInternalPlayer().pause();
               }
+              this.props.destroy();
             }}
           />
 
@@ -1190,12 +1204,14 @@ export class Chat extends React.Component {
                 {(!this.state.messages || this.state.messages.length == 0) &&
                 (!this.state.sentHistory || !this.state.sentHistory.status) ? (
                   <JsChatMessagePlaceholder>
-                    <div>Не стесняйтесь, спросите! </div>
-                    <div style={{ textAlign: "center !important" }}>
-                      Наши сотрудники с радостью ответят на все ваши вопросы
-                      {/*Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!*/}
-                    </div>
+                    <PlaceholderMessage>
+                      Не стесняйтесь, спросите!{" "}
+                    </PlaceholderMessage>
+                    <PlaceholderMessage>
+                      {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
+                      Участники команд расскажут о проекте и ответят на все
+                      интересующие вопросы!
+                    </PlaceholderMessage>
                     <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                   </JsChatMessagePlaceholder>
                 ) : (
@@ -1232,7 +1248,6 @@ export class Chat extends React.Component {
                 <CloseWrapperA visibleExtra={this.state.photoSrc}>
                   <CloseButtonC
                     onClick={() => {
-                      this.props.destroy();
                       this.setState({
                         streamFlag: false
                       });
@@ -1240,6 +1255,7 @@ export class Chat extends React.Component {
                       if (this.loadedVideo.getInternalPlayer()) {
                         this.loadedVideo.getInternalPlayer().pause();
                       }
+                      this.props.destroy();
                     }}
                   />
                 </CloseWrapperA>

@@ -350,8 +350,10 @@ export class Button extends React.Component {
   }
   destroyChat() {
     if (!this.state.multiButton) {
+      console.log("not multi");
       this.setState({ displayChat: false });
     } else {
+      console.log("multi");
       this.setState({ displayChat: false, initializeChat: false });
     }
   }
@@ -394,6 +396,7 @@ export class Button extends React.Component {
 
   render() {
     const isOpen = this.state.toggle;
+    console.log("Init chat", this.state.initializeChat);
     return (
       <React.Fragment>
         {this.state.apiLoading && (
@@ -436,6 +439,8 @@ export class Button extends React.Component {
             displayChat={this.state.displayChat}
             businessId={this.state.businessId}
             incrementNotifications={this.props.incrementNotifications}
+            decrementNotifications={this.props.decrementNotifications}
+            initializeChat={this.state.initializeChat}
           />
         )}
       </React.Fragment>
