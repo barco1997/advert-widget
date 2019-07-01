@@ -10,11 +10,51 @@ import { CLIENT_ID, CLIENT_SECRET } from "./constants";
 import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
+const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
+let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+let currentUrl = window.location.href;
 if (storedToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
 }
+
+const ButtonReqWrapper = styled.div`
+  &&& {
+    width: 100% !important;
+    display: flex !important;
+    position: relative !important;
+  }
+`;
+
+const NotificationMessageWrapper = styled.div`
+  &&& {
+    position: fixed !important;
+    left: 0px !important;
+    top: 135px !important;
+    z-index: 20000 !important;
+    display: ${props => (props.toggle ? "flex !important" : "none !important")};
+    flex-direction: column !important;
+  }
+`;
+const NotificationMessageArrow = styled.img`
+  &&& {
+    margin-left: 150px !important;
+    width: 220px !important;
+    height: 270px !important;
+  }
+`;
+const NotificationMessageText = styled.span`
+  &&& {
+    font-family: "Caveat" !important;
+    font-weight: bold !important;
+    font-size: 35px !important;
+    margin-left: 75px !important;
+    width: 360px !important;
+    margin-top: 25px !important;
+    color: white !important;
+  }
+`;
 
 const ApiOverlay = styled.div`
   &&& {
@@ -154,8 +194,9 @@ export class Button extends React.Component {
       displayMessage: false,
       displayChat: false,
       initializeChat: ls.get("token") ? true : false,
-      businessId: null,
+      businessId: this.props.businessId,
       multiButton: false,
+      notificationMessageToggle: false,
       apiLoading: false
     };
     this.handleClick = this.handleClick.bind(this);
@@ -167,6 +208,8 @@ export class Button extends React.Component {
     this.showChatHere = this.showChatHere.bind(this);
     this.showMessageHere = this.showMessageHere.bind(this);
     this.handleRegistration = this.handleRegistration.bind(this);
+    this.notificationPermission = this.notificationPermission.bind(this);
+    this.notifyMe = this.notifyMe.bind(this);
   }
 
   handleRegistration() {
@@ -217,9 +260,110 @@ export class Button extends React.Component {
         });
     }
   }
+  notificationPermission() {
+    let self = this;
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "default") {
+      self.setState({
+        notificationMessageToggle: true
+      });
+      Notification.requestPermission(function(permission) {
+        if (permission === "granted") {
+          ls.set("notificationPermission", true);
+        }
+        self.setState({
+          notificationMessageToggle: false
+        });
+      });
+    }
+  }
+
+  notifyMe(message, href, businessId) {
+    // Проверка поддержки браузером уведомлений
+    let options = {
+      icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
+      data: href
+    };
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    }
+    // Проверка разрешения на отправку уведомлений
+    else if (Notification.permission === "granted") {
+      // Если разрешено, то создаем уведомление
+      var notification = new Notification(message, options);
+      notification.onclick = function(event) {
+        var new_window = window.open("", "_blank"); //open empty window(tab)
+        if (event.target.data.includes("?open=true")) {
+          let str = event.target.data;
+          str = str.substring(0, str.indexOf("?open"));
+          console.log("string: ", str);
+          new_window.location.href = str.concat(
+            "?open=true&businessId=",
+            businessId
+          );
+        } else {
+          console.log("target");
+          new_window.location.href = event.target.data.concat(
+            "?open=true&businessId=",
+            businessId
+          );
+        } //set url of newly created window(tab) and focus
+        notification.close();
+      };
+    }
+    // В противном случае, запрашиваем разрешение
+    else if (Notification.permission !== "denied") {
+      Notification.requestPermission(function(permission) {
+        // Если пользователь разрешил, то создаем уведомление
+        if (permission === "granted") {
+          var notification = new Notification(message, options);
+          notification.onclick = function(event) {
+            var new_window = window.open("", "_blank"); //open empty window(tab)
+            if (event.target.data.includes("?open=true")) {
+              new_window.location.href = event.target.data;
+            } else {
+              new_window.location.href = event.target.data.concat(
+                "?open=true&businessId=",
+                businessId
+              );
+            }
+            //set url of newly created window(tab) and focus
+            notification.close();
+          };
+        }
+      });
+    }
+  }
+
+  notificationPermission() {
+    let self = this;
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "default") {
+      self.setState({
+        notificationMessageToggle: true
+      });
+      Notification.requestPermission(function(permission) {
+        if (permission === "granted") {
+          ls.set("notificationPermission", true);
+        }
+        self.setState({
+          notificationMessageToggle: false
+        });
+      });
+    }
+  }
 
   handleClick(e, businessId) {
     //e.preventDefault();
+    if (!iOS) {
+      this.notificationPermission();
+      console.log(
+        "notificationMessageToggle",
+        this.state.notificationMessageToggle
+      );
+    }
     console.log("pressed eyezonButton");
     let self = this;
     self.props.setNotifications(0);
@@ -304,12 +448,49 @@ export class Button extends React.Component {
         displayChat: false,
         toggle: true
       });
+
+
     }*/
   }
 
   componentWillMount() {
     //
+
     let self = this;
+
+    if (ls.get("token")) {
+      this.socket = io("https://api.eyezon.app/", {
+        query: "token=" + ls.get("token"),
+        transports: ["websocket"],
+        upgrade: false
+      });
+      this.socket.on("newMessage", data => {
+        /**feature */
+        console.log("message data", data);
+        let notificationCount = ls.get("notificationCount");
+        if (notificationCount) {
+          notificationCount++;
+        } else {
+          notificationCount = 1;
+        }
+        ls.set("notificationCount", notificationCount);
+        //() => self.props.setNotificationStatus(true);
+        //console.log("initializeChat inside: ", self.props.initializeChat);
+        self.props.incrementNotifications();
+        if (self.state.initializeChat && !(self.state.displayChat === false)) {
+          console.log("initializeChat if: ", self.state.initializeChat);
+          console.log("displayFlag if: ", self.state.displayChat);
+          self.props.decrementNotifications();
+        }
+        if (!iOS) {
+          this.notifyMe(
+            "New message at Eyezon button",
+            currentUrl,
+            self.state.businessId
+          );
+        }
+      });
+    }
 
     if (this.props.buttons) {
       this.props.buttons.map(button =>
@@ -329,7 +510,7 @@ export class Button extends React.Component {
     }
     console.log(this.props.ifOpened);
     if (this.props.ifOpened) {
-      this.handleClick();
+      this.handleClick(null, this.props.businessId);
     }
   }
 
@@ -396,9 +577,18 @@ export class Button extends React.Component {
 
   render() {
     const isOpen = this.state.toggle;
-    console.log("Init chat", this.state.initializeChat);
+    console.log("BUSINESS_2", this.state.businessId);
+
     return (
-      <React.Fragment>
+      <ButtonReqWrapper>
+        <NotificationMessageWrapper
+          toggle={this.state.notificationMessageToggle}
+        >
+          <NotificationMessageArrow src="https://witheyezon.com/eyezonsite/static/images/arrow2.svg" />
+          <NotificationMessageText>
+            Включи уведомления, если хочешь получить ответ
+          </NotificationMessageText>
+        </NotificationMessageWrapper>
         {this.state.apiLoading && (
           <ApiOverlay>
             <LoadingCircle loadingFlag />
@@ -443,7 +633,7 @@ export class Button extends React.Component {
             initializeChat={this.state.initializeChat}
           />
         )}
-      </React.Fragment>
+      </ButtonReqWrapper>
     );
   }
 }

@@ -66,6 +66,7 @@ export class App extends React.Component {
     });
   }
   render() {
+    console.log("BUSINESS, ", this.props.businessId);
     return (
       <React.Fragment>
         <Button

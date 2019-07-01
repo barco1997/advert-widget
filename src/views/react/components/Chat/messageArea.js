@@ -153,7 +153,7 @@ export class MessageArea extends React.Component {
 
   render() {
     //const isOpen = this.state.toggle;
-    console.log("what is going on bro", this.props.sentHistory);
+    //console.log("what is going on bro", this.props.sentHistory);
     return (
       <MessageContainer
         ref={c => {

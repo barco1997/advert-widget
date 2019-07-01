@@ -257,7 +257,7 @@ const Image = styled.div`
   }
 `;
 
-const NotificationMessageWrapper = styled.div`
+/*const NotificationMessageWrapper = styled.div`
   &&& {
     position: fixed !important;
     left: 0px !important;
@@ -284,7 +284,7 @@ const NotificationMessageText = styled.span`
     margin-top: 25px !important;
     color: white !important;
   }
-`;
+`;*/
 
 const SendRequest = styled.button`
   &&& {
@@ -512,7 +512,7 @@ export class Chat extends React.Component {
             } else {
               new_window.location.href = event.target.data.concat(
                 "?open=true&businessId=",
-                this.props.businessId
+                businessId
               );
             }
             //set url of newly created window(tab) and focus
@@ -556,14 +556,14 @@ export class Chat extends React.Component {
       });
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
-        this.socket.open();
+        //this.socket.open();
       });
       this.socket.on("messageUpdated", data => {
         console.log("message got updated", data.message.attachments[0]);
         this.setState({ streamToVideo: data.message.attachments[0] });
       });
       this.socket.on("newMessage", data => {
-        /**feature */
+        /**feature 
         let notificationCount = ls.get("notificationCount");
         if (notificationCount) {
           notificationCount++;
@@ -587,13 +587,13 @@ export class Chat extends React.Component {
           }
           console.log("u got a reply again", data);
           console.log("props: ", self.props);
-          if (!iOS) {
+          /*if (!iOS) {
             this.notifyMe(
               "New message at Eyezon button",
               currentUrl,
               self.props.businessId
             );
-          }
+          }*/
           let type;
           let source;
           let thumbnail;
@@ -738,8 +738,8 @@ export class Chat extends React.Component {
               const users = response.data.users;
               const messages = response.data.messages;
               const owner = users.find(user => user.type === "owner");
-              console.log("businessId: ", self.props.businessId);
-              if (owner.businessId === self.props.businessId) {
+              console.log("businessId: ", nextProps);
+              if (owner.businessId === nextProps.businessId) {
                 console.log(messages);
                 const editedMessages = messages.map(message => ({
                   text: message.message,
@@ -1004,11 +1004,11 @@ export class Chat extends React.Component {
     this.setState({
       displayFlag: nextProps.displayChat
     });
-    if (nextProps.displayChat) {
+    /*if (nextProps.displayChat) {
       if (!iOS) {
         this.notificationPermission();
       }
-    }
+    }*/
   }
 
   loadInitialMessages(msgs) {
@@ -1175,14 +1175,14 @@ export class Chat extends React.Component {
     return (
       <React.Fragment>
         <ChatWrapper displayFlag={this.state.displayFlag}>
-          <NotificationMessageWrapper
+          {/*<NotificationMessageWrapper
             toggle={this.state.notificationMessageToggle}
           >
             <NotificationMessageArrow src="https://witheyezon.com/eyezonsite/static/images/arrow2.svg" />
             <NotificationMessageText>
               Включи уведомления, если хочешь получить ответ
             </NotificationMessageText>
-          </NotificationMessageWrapper>
+          </NotificationMessageWrapper>*/}
           <JsChatOverlay
             onClick={() => {
               this.setState({
@@ -1208,9 +1208,9 @@ export class Chat extends React.Component {
                       Не стесняйтесь, спросите!{" "}
                     </PlaceholderMessage>
                     <PlaceholderMessage>
-                      {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
-                      Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!
+                      Наши сотрудники с радостью ответят на все ваши вопросы
+                      {/*Участники команд расскажут о проекте и ответят на все
+                      интересующие вопросы!*/}
                     </PlaceholderMessage>
                     <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                   </JsChatMessagePlaceholder>
