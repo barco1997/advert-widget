@@ -306,6 +306,9 @@ export class Response extends React.Component {
   handleSend() {
     let self = this;
     const val = this.state.repointValue;
+    self.setState({
+      plusToggled: false
+    });
     if (val <= self.state.repointLimit) {
       axios
         .patch(`https://api.eyezon.app/messages/${this.props.id}/${val}`)

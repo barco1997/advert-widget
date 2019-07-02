@@ -1208,9 +1208,9 @@ export class Chat extends React.Component {
                       Не стесняйтесь, спросите!{" "}
                     </PlaceholderMessage>
                     <PlaceholderMessage>
-                      Наши сотрудники с радостью ответят на все ваши вопросы
-                      {/*Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!*/}
+                      {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
+                      Участники команд расскажут о проекте и ответят на все
+                      интересующие вопросы!
                     </PlaceholderMessage>
                     <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                   </JsChatMessagePlaceholder>

@@ -628,8 +628,6 @@ export class Button extends React.Component {
             destroy={this.destroyChat}
             displayChat={this.state.displayChat}
             businessId={this.state.businessId}
-            incrementNotifications={this.props.incrementNotifications}
-            decrementNotifications={this.props.decrementNotifications}
             initializeChat={this.state.initializeChat}
           />
         )}
