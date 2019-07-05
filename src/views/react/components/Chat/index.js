@@ -131,6 +131,7 @@ const WindowWrapper = styled.div`
 const CloseButtonB = styled.span`
   &&& {
     position: relative !important;
+    display: block !important;
     left: 0px !important;
     top: 0px !important;
     width: 14px !important;
@@ -159,6 +160,7 @@ const CloseButtonB = styled.span`
 const CloseButtonC = styled.span`
   &&& {
     position: relative !important;
+    display: block !important;
     left: 0px !important;
     top: 0px !important;
     width: 14px !important;
@@ -187,26 +189,26 @@ const CloseButtonC = styled.span`
 const CloseWrapper = styled.div`
   &&& {
     position: absolute !important;
-    right: 28px !important;
+    right: 14px !important;
     top: 14px !important;
   }
 `;
 const CloseWrapperB = styled.div`
   &&& {
     position: absolute !important;
-    right: 28px !important;
+    right: 14px !important;
     top: 14px !important;
   }
 `;
 const CloseWrapperA = styled.div`
   &&& {
     position: absolute !important;
-    right: -7px !important;
+    right: -21px !important;
 
     top: 14px !important;
     ${media.desktop`
   top: -14px !important;
-  right: 14px !important;
+  right: 0px !important;
   `};
   }
 `;
@@ -245,14 +247,15 @@ const InputFieldA = styled.input`
 
 const Image = styled.div`
   &&& {
-    background: url(${props => `${props.src} !important`});
-    width: 319px !important;
-    height: 553px !important;
+    background: url(${props => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
+    width: 319px !important;
+    height: 553px !important;
+
     border-radius: 10px !important;
     ${media.desktop`
-  border-radius: 0px !important;
+      border-radius: 0px !important;
   `};
   }
 `;
@@ -295,7 +298,7 @@ const SendRequest = styled.button`
     margin-top: 15px !important;
     text-decoration: none !important;
     border-width: 0px !important;
-
+    box-shadow: none !important;
     -webkit-font-smoothing: antialiased !important;
     -webkit-touch-callout: none !important;
     user-select: none !important;
@@ -307,7 +310,7 @@ const SendRequest = styled.button`
     font-weight: normal !important;
     font-family: "Mont" !important;
     ${media.desktop`
-  width: 100% !important;
+  width: calc(100% - 10px) !important;
   height: 40px !important;
   font-size: 14px !important;
   `};
@@ -881,7 +884,7 @@ export class Chat extends React.Component {
     if (this.live) {
       this.live.pause();
     }
-
+    console.log("photo src: ", src);
     this.setState({
       photoSrc: src,
       streamFlag: false,
@@ -1208,9 +1211,9 @@ export class Chat extends React.Component {
                       Не стесняйтесь, спросите!{" "}
                     </PlaceholderMessage>
                     <PlaceholderMessage>
-                      {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
-                      Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!
+                      Наши сотрудники с радостью ответят на все ваши вопросы
+                      {/*Участники команд расскажут о проекте и ответят на все
+                      интересующие вопросы!*/}
                     </PlaceholderMessage>
                     <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                   </JsChatMessagePlaceholder>

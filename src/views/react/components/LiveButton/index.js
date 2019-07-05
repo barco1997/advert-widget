@@ -32,7 +32,9 @@ const Layer2 = styled.div`
 
     display: flex !important;
     background: ${props =>
-      props.watched ? "white !important" : "rgba(255, 45, 85, 0.2) !important"};
+      props.watched
+        ? "rgba(255, 45, 85, 0.05) !important"
+        : "rgba(255, 45, 85, 0.2) !important"};
     width: 160px !important;
     height: 40px !important;
     justify-content: center !important;
@@ -48,14 +50,16 @@ const Layer3 = styled.button`
     -webkit-touch-callout: none !important;
     user-select: none !important;
     cursor: pointer !important;
-
+    box-shadow: none !important;
     outline: 0 !important;
-
+    border: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
     border-radius: 100px !important;
     display: flex !important;
     background: ${props =>
       props.watched
-        ? "white !important"
+        ? "rgba(255, 45, 85, 0.05) !important"
         : "rgba(255, 45, 85, 0.05) !important"};
     width: 158px !important;
     height: 52px !important;
@@ -87,15 +91,13 @@ export class Button extends React.Component {
   render() {
     const isOpen = this.state.wasWatched;
     return (
-      <React.Fragment>
-        <Layer3 watched={isOpen}>
-          <Layer2 watched={isOpen}>
-            <ButtonWrapper watched={isOpen} onClick={() => this.handleClick()}>
-              <div>{this.props.children}</div>
-            </ButtonWrapper>
-          </Layer2>
-        </Layer3>
-      </React.Fragment>
+      <Layer3 watched={isOpen}>
+        <Layer2 watched={isOpen}>
+          <ButtonWrapper watched={isOpen} onClick={() => this.handleClick()}>
+            <div>{this.props.children}</div>
+          </ButtonWrapper>
+        </Layer2>
+      </Layer3>
     );
   }
 }

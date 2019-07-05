@@ -78,7 +78,7 @@ const ApiOverlay = styled.div`
 const ButtonWrapper = styled.button`
   &&& {
     text-decoration: none !important;
-
+    box-shadow: none !important;
     -webkit-font-smoothing: antialiased !important;
     -webkit-touch-callout: none !important;
     user-select: none !important;
@@ -144,6 +144,7 @@ const JsButtonImageWrapper = styled.div`
     align-items: center !important;
     min-width: 42px !important;
     max-height: 51px !important;
+    cursor: pointer !important;
   }
 `;
 
@@ -153,6 +154,7 @@ const JsButtonImage = styled.img`
     height: 40px !important;
     min-width: 40px !important;
     max-height: 40px !important;
+    cursor: pointer !important;
   }
 `;
 const JsButtonText = styled.div`
@@ -522,7 +524,7 @@ export class Button extends React.Component {
 
   handleMouseEnter() {
     this.setState({
-      toggle: true
+      toggle: false
     });
   }
 
@@ -599,8 +601,8 @@ export class Button extends React.Component {
             color={this.props.color}
             toggle={isOpen}
             onClick={event => this.handleClick(event, this.props.businessId)}
-            onMouseEnter={() => this.handleMouseEnter()}
-            onMouseLeave={() => this.handleMouseLeave()}
+            /*onMouseEnter={() => this.handleMouseEnter()}
+            onMouseLeave={() => this.handleMouseLeave()}*/
           >
             {this.props.notifications > 0 && (
               <NotificationWrapper>
