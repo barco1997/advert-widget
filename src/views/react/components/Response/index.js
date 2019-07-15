@@ -248,7 +248,7 @@ const ItemHolder = styled.div`
   &&& {
     display: flex !important;
     position: relative !important;
-    /*margin-bottom: 10px !important;*/
+    margin-bottom: 10px !important;
   }
 `;
 
@@ -444,7 +444,7 @@ export class Response extends React.Component {
                 <LiveButton id={this.props.id} setFlv={this.props.functionA}>
                   Смотреть
                 </LiveButton>
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -481,7 +481,7 @@ export class Response extends React.Component {
                       </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                          </RepointsWindow>*/}
+                </RepointsWindow>
               </ItemHolder>
             )}
             {this.state.typeVar === "photo" && this.state.src && (
@@ -490,7 +490,7 @@ export class Response extends React.Component {
                   src={this.state.src}
                   onClick={() => this.handleClick()}
                 />
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -527,7 +527,7 @@ export class Response extends React.Component {
                       </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                          </RepointsWindow>*/}
+                </RepointsWindow>
               </ItemHolder>
             )}
             {this.state.typeVar === "video" && this.state.src && (
@@ -544,7 +544,7 @@ export class Response extends React.Component {
                     }
                   />
                 </VideoA>
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -581,14 +581,14 @@ export class Response extends React.Component {
                       </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                </RepointsWindow>*/}
+                </RepointsWindow>
               </ItemHolder>
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (
               <ItemHolder>
                 <ReactAudioPlayer src={this.state.src} controls />
-                {/*<RepointsWindow toggle={this.state.plusToggled}>
+                <RepointsWindow toggle={this.state.plusToggled}>
                   {!this.state.plusToggled && (
                     <ControlIcon
                       src={
@@ -625,7 +625,7 @@ export class Response extends React.Component {
                       </RepointButtonWrapper>
                     </React.Fragment>
                   )}
-                          </RepointsWindow>*/}
+                </RepointsWindow>
               </ItemHolder>
             )}
             {this.props.description && !this.props.flv && !this.state.src && (

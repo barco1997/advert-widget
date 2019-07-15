@@ -412,7 +412,7 @@ const SizedForm = styled.form`
 const PlaceholderMessage = styled.div`
   &&& {
     text-align: center !important;
-    line-height: 1.1 !important;
+    line-height: 1.4 !important;
   }
 `;
 
@@ -1208,12 +1208,17 @@ export class Chat extends React.Component {
                 (!this.state.sentHistory || !this.state.sentHistory.status) ? (
                   <JsChatMessagePlaceholder>
                     <PlaceholderMessage>
-                      Не стесняйтесь, спросите!{" "}
+                      {/*Не стесняйтесь, спросите!{" "}*/}
+                      We're here to share our eyes with you!
                     </PlaceholderMessage>
                     <PlaceholderMessage>
-                      Наши сотрудники с радостью ответят на все ваши вопросы
+                      {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
                       {/*Участники команд расскажут о проекте и ответят на все
                       интересующие вопросы!*/}
+                      Just ask, and our staff will help answer any
+                    </PlaceholderMessage>
+                    <PlaceholderMessage>
+                      of your questions using the magic of LIVE streams.{" "}
                     </PlaceholderMessage>
                     <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                   </JsChatMessagePlaceholder>
@@ -1240,11 +1245,11 @@ export class Chat extends React.Component {
                       type="text"
                       value={this.state.value}
                       onChange={this.handleChange}
-                      placeholder="Задайте вопрос"
+                      placeholder="Ask us something ;)"
                     />
 
                     <SendRequest type="submit" value="Submit">
-                      Отправить
+                      Send
                     </SendRequest>
                   </div>
                 </form>

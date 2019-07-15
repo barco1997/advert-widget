@@ -24,7 +24,7 @@ const MessageContainer = styled.div`
 
 const AwaitingBoxWrapper = styled.div`
   &&& {
-    width: 250px !important;
+    width: 270px !important;
     height: 80px !important;
     position: relative !important;
     & > div {
@@ -64,6 +64,16 @@ const SelectChatsText = styled.div`
     text-align: center !important;
     align-items: center !important;
     margin: 70px 30px !important;
+  }
+`;
+
+const ConnectingText = styled.span`
+  &&& {
+    display: block !important;
+    font-family: "Mont" !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+    color: rgba(0, 0, 0, 0.5) !important;
   }
 `;
 
@@ -210,21 +220,20 @@ export class MessageArea extends React.Component {
           !(this.props.existingChats.length > 0)) ||
           this.props.sentHistory.status) && (
           <div>
-            <span
-              style={{
-                fontFamily: "Mont !important",
-                fontSize: "12px !important",
-                opacity: "0.5 !important"
-              }}
-            >
-              Идет подключение ...
-            </span>
+            <ConnectingText>
+              {/*Идет подключение ...*/}
+              Connecting ...
+            </ConnectingText>
             <AwaitingBoxWrapper>
               <AwaitingBoxImage src="https://witheyezon.com/eyezonsite/static/images/awaiting.svg" />
               <NewTextWrap>
-                Пока кто-то из нашей команды готовиться ответить на ваше
+                {/*Пока кто-то из нашей команды готовиться ответить на ваше
                 сообщение, вы можете свернуть окно и продолжить пользоваться
-                сайтом, вам придет уведомление.
+                сайтом, вам придет уведомление.*/}
+                Fun Fact: Our in-store representatives go through a rigorous
+                obstacle course training in order to reach products in the
+                shortest time possible. Feel free to minimize this window,
+                continue exploring our site, while you wait for a notification.
               </NewTextWrap>
             </AwaitingBoxWrapper>
           </div>
