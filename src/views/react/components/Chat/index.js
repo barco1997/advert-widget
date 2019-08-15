@@ -20,6 +20,7 @@ import {
   getSentHistory,
   setSentHistory
 } from "../../constants";
+import StreamChat from "./streamchat";
 //require("./flv.min.js");
 let flvPlayer;
 const uuidv1 = require("uuid/v1");
@@ -65,11 +66,11 @@ const VideoWrapper = styled.div`
     display: ${props =>
       props.visible ? "block !important" : "none !important"};
     ${media.desktop`
-  top: 0% !important;
+  /*top: 0% !important;*/
   width: 100vw !important;
   height: 100vh !important;
   
-  position: fixed !important;
+  /*position: fixed !important;*/
   border-radius: 0px !important;
   margin-left: 0px !important;
   background: black !important;
@@ -78,6 +79,51 @@ const VideoWrapper = styled.div`
   border-radius: 0px !important;
   }
   `};
+  }
+`;
+
+const VideoWrapperS = styled.div`
+  &&& {
+    width: 319px !important;
+    height: 553px !important;
+    flex-direction: column !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    & > video {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    display: ${props =>
+      props.visible ? "flex !important" : "none !important"};
+    ${media.desktop`
+  /*top: 0% !important;*/
+  width: 100vw !important;
+  height: 100vh !important;
+  
+  /*position: fixed !important;*/
+  border-radius: 0px !important;
+  margin-left: 0px !important;
+  background: black !important;
+  & > video {
+    
+  border-radius: 0px !important;
+  }
+  `};
+  }
+`;
+
+const StreamWrapper = styled.div`
+  &&& {
+    ${media.desktop`
+      top: 0% !important;
+  
+      position: fixed !important;
+    `};
+    width: 319px !important;
+    height: 649px !important;
+    display: ${props =>
+      props.visible ? "flex !important" : "none !important"};
+    flex-direction: column !important;
   }
 `;
 
@@ -226,7 +272,7 @@ const ChatWrapper = styled.div`
 
 const InputFieldA = styled.input`
   &&& {
-    height: 42px !important;
+    height: 28px !important;
     color: black !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -237,10 +283,11 @@ const InputFieldA = styled.input`
     padding: 0px 10px !important;
     font-family: "Mont" !important;
     font-weight: normal !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
     outline: 0 !important;
     &::placeholder {
       color: rgba(0, 0, 0, 0.2) !important;
+      font-weight: 600 !important;
     }
   }
 `;
@@ -319,7 +366,9 @@ const SendRequest = styled.button`
 
 const JsChatWindow = styled.div`
   &&& {
-    display: flex !important;
+    /*display: flex !important;*/
+    display: ${props =>
+      props.visible ? "flex !important" : "none !important"};
     justify-content: flex-start !important;
     flex-direction: column !important;
 
@@ -416,6 +465,13 @@ const PlaceholderMessage = styled.div`
   }
 `;
 
+const TextFieldExtra = styled.div`
+  &&& {
+    margin-top: 20px !important;
+    /*width: 272px !important;*/
+  }
+`;
+
 /*function VideoShow(props) {
   const url = props.url;
   console.log(url);
@@ -435,6 +491,7 @@ export class Chat extends React.Component {
     this.state = {
       value: "",
       messages: [],
+      messagesStream: [],
       incomingMessage: false,
       awaitingConnection: false,
       startedFlag: false,
@@ -453,11 +510,13 @@ export class Chat extends React.Component {
       lastValue: "",
       flvPlayer: null,
       transactionLimit: 50,
-      sentHistory: null
+      sentHistory: null,
+      valueStream: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmitS = this.handleSubmitS.bind(this);
     this.loadInitialMessages = this.loadInitialMessages.bind(this);
     this.handleStreamClick = this.handleStreamClick.bind(this);
     this.handlePhoto = this.handlePhoto.bind(this);
@@ -467,6 +526,7 @@ export class Chat extends React.Component {
 
     this.notifyMe = this.notifyMe.bind(this);
     this.notificationPermission = this.notificationPermission.bind(this);
+    this.handleChangeInStream = this.handleChangeInStream.bind(this);
   }
 
   notifyMe(message, href, businessId) {
@@ -816,6 +876,9 @@ export class Chat extends React.Component {
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
+  handleChangeInStream(event) {
+    this.setState({ valueStream: event.target.value });
+  }
 
   handleStreamClick(id) {
     if (this.loadedVideo.getInternalPlayer()) {
@@ -1039,6 +1102,33 @@ export class Chat extends React.Component {
       setSentHistory(this.props.businessId, "", false);
     }
   }
+  handleSubmitS(event) {
+    let self = this;
+    if (!this.state.awaitingConnection) {
+      const port = ls.get("conversationId");
+      const value = this.state.valueStream;
+
+      this.setState({
+        messagesStream: [
+          ...this.state.messagesStream,
+          { text: value, time: new Date(), id: uuidv1() }
+        ],
+        valueStream: ""
+      });
+      if (ls.get("streamInProgress")) {
+        let obj = {
+          event: "comment",
+          room: /*ls.get("streamDamnId")*/ getLiveIdValue(
+            self.props.businessId
+          ),
+          text: value
+        };
+        console.log(obj);
+        self.socket.emit("port", JSON.stringify(obj));
+      }
+    }
+    event.preventDefault();
+  }
 
   handleSubmit(event) {
     let self = this;
@@ -1202,7 +1292,7 @@ export class Chat extends React.Component {
           />
 
           <WindowWrapper>
-            <JsChatWindow>
+            <JsChatWindow visible={!this.state.streamFlag}>
               <JsChatMessageContainer>
                 {(!this.state.messages || this.state.messages.length == 0) &&
                 (!this.state.sentHistory || !this.state.sentHistory.status) ? (
@@ -1269,29 +1359,39 @@ export class Chat extends React.Component {
                 </CloseWrapperA>
               </JsChatMessageContainer>
             </JsChatWindow>
-
-            <VideoWrapper visible={this.state.streamFlag}>
-              <video
-                id="live"
-                ref={stream => {
-                  this.live = stream;
-                }}
-                controls
-              />
-              <CloseWrapper>
-                <CloseButtonC
-                  onClick={() => {
-                    this.setState({
-                      streamFlag: false
-                    });
-                    this.live.pause();
-                    flvPlayer.destroy();
-                    ls.set("streamInProgress", false);
+            <StreamWrapper visible={this.state.streamFlag}>
+              <VideoWrapperS visible={this.state.streamFlag}>
+                <video
+                  id="live"
+                  ref={stream => {
+                    this.live = stream;
                   }}
+                  controls
                 />
-              </CloseWrapper>
-            </VideoWrapper>
-
+                <CloseWrapper>
+                  <CloseButtonC
+                    onClick={() => {
+                      this.setState({
+                        streamFlag: false
+                      });
+                      this.live.pause();
+                      flvPlayer.destroy();
+                      ls.set("streamInProgress", false);
+                    }}
+                  />
+                </CloseWrapper>
+                <StreamChat messages={this.state.messagesStream} />
+              </VideoWrapperS>
+              <TextFieldExtra>
+                <InputFieldA
+                  type="text"
+                  value={this.state.valueStream}
+                  onChange={this.handleChangeInStream}
+                  placeholder="Ask us something ;)"
+                />
+              </TextFieldExtra>
+              <SendRequest onClick={this.handleSubmitS}>Send</SendRequest>
+            </StreamWrapper>
             <VideoWrapper
               visible={this.state.videoSrc && !this.state.streamFlag}
             >
