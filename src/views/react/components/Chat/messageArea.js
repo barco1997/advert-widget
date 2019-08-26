@@ -93,22 +93,15 @@ export class MessageArea extends React.Component {
   componentWillReceiveProps(nextProps) {
     let propsToCome = nextProps;
     if (nextProps.strVideo !== null) {
-      console.log("one step further", nextProps.strVideo.src);
+      /*console.log("one step further", nextProps.strVideo);
       const index = nextProps.messages
         .slice()
         .reverse()
         .findIndex(a => a.type === "stream");
       const count = nextProps.messages.length - 1;
       const finalIndex = index >= 0 ? count - index : index;
-      console.log(finalIndex);
-      const frog = [
-        ...this.state.streamIndexVal,
-        {
-          index: finalIndex,
-          src: nextProps.strVideo.src,
-          thumb: nextProps.strVideo.thumbnail
-        }
-      ];
+      
+      
       this.setState({
         streamIndexVal: [
           ...this.state.streamIndexVal,
@@ -118,14 +111,12 @@ export class MessageArea extends React.Component {
             thumb: nextProps.strVideo.thumbnail
           }
         ]
-      });
+      });*/
 
-      console.log("Stream Index Value", frog);
-      console.log("True?", frog.some(elem => elem.index === finalIndex));
-      console.log(
-        "Src:",
-        frog.filter(elem => elem.index === finalIndex)[0].src
+      let indexOfCurrentVideo1 = nextProps.messages.findIndex(
+        a => a.id === nextProps.strVideo
       );
+      propsToCome.messages[indexOfCurrentVideo1].type = "video";
       nextProps.handleStreamToVideo();
     }
     if (nextProps.manipulateVideoId) {
@@ -170,7 +161,7 @@ export class MessageArea extends React.Component {
           this.messageList = c;
         }}
       >
-        {this.props.sentHistory.status && !(this.state.messages.length > 0) && (
+        {/*this.props.sentHistory.status && !(this.state.messages.length > 0) && (
           <Response
             title={this.props.sentHistory.message.text}
             description={this.props.sentHistory.message.user || "Вы"}
@@ -179,7 +170,7 @@ export class MessageArea extends React.Component {
             type={this.props.sentHistory.message.type}
             transactionLimit={this.props.transactionLimit}
           />
-        )}
+        )*/}
         {this.state.messages.map((message, index) => (
           <Response
             key={message.id || uuidv1()}
@@ -192,22 +183,8 @@ export class MessageArea extends React.Component {
             icon={message.photo}
             flv={message.flv}
             functionA={message.flv ? this.props.setFlv : null}
-            src={
-              message.flv &&
-              this.state.streamIndexVal.some(elem => elem.index === index)
-                ? this.state.streamIndexVal.filter(
-                    elem => elem.index === index
-                  )[0].src
-                : message.src
-            }
-            thumb={
-              message.flv &&
-              this.state.streamIndexVal.some(elem => elem.index === index)
-                ? this.state.streamIndexVal.filter(
-                    elem => elem.index === index
-                  )[0].thumb
-                : message.thumb
-            }
+            src={message.src}
+            thumb={message.thumb}
             type={message.type}
             handlePhoto={this.props.handlePhoto}
             handleVideo={this.props.handleVideo}
@@ -216,10 +193,11 @@ export class MessageArea extends React.Component {
             transactionLimit={this.props.transactionLimit}
           />
         ))}
-        {((this.state.awaitingConnection &&
-          !(this.props.existingChats.length > 0)) ||
-          this.props.sentHistory.status) && (
-          <div>
+        {this.state.awaitingConnection && (
+          /*!(
+          this.props.existingChats.length > 0
+        ) */ /*||
+          this.props.sentHistory.status &&*/ <div>
             <ConnectingText>
               {/*Идет подключение ...*/}
               Connecting ...
@@ -238,14 +216,14 @@ export class MessageArea extends React.Component {
             </AwaitingBoxWrapper>
           </div>
         )}
-        {this.props.existingChats.length > 0 && (
+        {/*this.props.existingChats.length > 0 && (
           <SelectChatsText>
             {" "}
             К сожалению, все специалисты заняты. Вы можете присоединиться к
             другому запросу:{" "}
           </SelectChatsText>
-        )}
-        {this.props.existingChats.length > 0 &&
+        )*/}
+        {/*this.props.existingChats.length > 0 &&
           this.props.existingChats.map(chat => (
             <div
               key={chat.port.id}
@@ -257,7 +235,7 @@ export class MessageArea extends React.Component {
                 messagesCount={chat.messages.count}
               />
             </div>
-          ))}
+          ))*/}
       </MessageContainer>
     );
   }

@@ -325,12 +325,12 @@ export class Response extends React.Component {
     }
   }
 
-  componentWillMount() {
+  /*componentWillMount() {
     if (this.state.typeVar === "stream" && this.props.src) {
       console.log("got stream", this.props.src);
       this.setItems("video", this.props.src);
     }
-  }
+  }*/
   componentDidMount() {
     this.setState({
       repointLimit: this.props.transactionLimit
@@ -376,7 +376,7 @@ export class Response extends React.Component {
         pauseIcon: false
       });
     }
-    if (this.state.typeVar === "stream" && nextProps.src) {
+    if (this.state.typeVar === "stream" && nextProps.type === "video") {
       console.log("got stream", nextProps.src);
       this.setItems("video", nextProps.src);
     }
@@ -413,11 +413,13 @@ export class Response extends React.Component {
             />
           </Icon>
           <ItemStart>
-            {this.props.description && this.props.flv && !this.state.src && (
-              <SummaryTop>
-                {this.props.description} начал прямую трансляцию
-              </SummaryTop>
-            )}
+            {this.props.description &&
+              this.props.flv &&
+              this.state.typeVar === "stream" && (
+                <SummaryTop>
+                  {this.props.description} начал прямую трансляцию
+                </SummaryTop>
+              )}
             {this.props.description && this.state.typeVar === "audio" && (
               <SummaryTop>{this.props.description} поделился аудио</SummaryTop>
             )}
@@ -439,49 +441,11 @@ export class Response extends React.Component {
               <SummaryTop>{this.props.description} поделился фото</SummaryTop>
             )}
             {!this.props.flv && <Title>{this.props.title}</Title>}
-            {this.props.flv && !this.state.src && (
+            {this.props.flv && this.state.typeVar === "stream" && (
               <ItemHolder>
-                <LiveButton id={this.props.id} setFlv={this.props.functionA}>
+                <LiveButton id={this.props.flv} setFlv={this.props.functionA}>
                   Смотреть
                 </LiveButton>
-                <RepointsWindow toggle={this.state.plusToggled}>
-                  {!this.state.plusToggled && (
-                    <ControlIcon
-                      src={
-                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
-                      }
-                      onClick={() => {
-                        this.setState({ plusToggled: true });
-                      }}
-                    />
-                  )}
-                  {this.state.plusToggled && (
-                    <React.Fragment>
-                      <RepointsAmountWrapper>
-                        <SignWrapper onClick={this.handleMinus}>
-                          <Minus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
-                            }
-                          />
-                        </SignWrapper>
-                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
-                        <SignWrapper onClick={this.handlePlus}>
-                          <Plus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
-                            }
-                          />
-                        </SignWrapper>
-                      </RepointsAmountWrapper>
-                      <RepointButtonWrapper>
-                        <ControlButton action={this.handleSend}>
-                          SEND
-                        </ControlButton>
-                      </RepointButtonWrapper>
-                    </React.Fragment>
-                  )}
-                </RepointsWindow>
               </ItemHolder>
             )}
             {this.state.typeVar === "photo" && this.state.src && (
@@ -490,44 +454,6 @@ export class Response extends React.Component {
                   src={this.state.src}
                   onClick={() => this.handleClick()}
                 />
-                <RepointsWindow toggle={this.state.plusToggled}>
-                  {!this.state.plusToggled && (
-                    <ControlIcon
-                      src={
-                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
-                      }
-                      onClick={() => {
-                        this.setState({ plusToggled: true });
-                      }}
-                    />
-                  )}
-                  {this.state.plusToggled && (
-                    <React.Fragment>
-                      <RepointsAmountWrapper>
-                        <SignWrapper onClick={this.handleMinus}>
-                          <Minus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
-                            }
-                          />
-                        </SignWrapper>
-                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
-                        <SignWrapper onClick={this.handlePlus}>
-                          <Plus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
-                            }
-                          />
-                        </SignWrapper>
-                      </RepointsAmountWrapper>
-                      <RepointButtonWrapper>
-                        <ControlButton action={this.handleSend}>
-                          SEND
-                        </ControlButton>
-                      </RepointButtonWrapper>
-                    </React.Fragment>
-                  )}
-                </RepointsWindow>
               </ItemHolder>
             )}
             {this.state.typeVar === "video" && this.state.src && (
@@ -544,88 +470,12 @@ export class Response extends React.Component {
                     }
                   />
                 </VideoA>
-                <RepointsWindow toggle={this.state.plusToggled}>
-                  {!this.state.plusToggled && (
-                    <ControlIcon
-                      src={
-                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
-                      }
-                      onClick={() => {
-                        this.setState({ plusToggled: true });
-                      }}
-                    />
-                  )}
-                  {this.state.plusToggled && (
-                    <React.Fragment>
-                      <RepointsAmountWrapper>
-                        <SignWrapper onClick={this.handleMinus}>
-                          <Minus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
-                            }
-                          />
-                        </SignWrapper>
-                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
-                        <SignWrapper onClick={this.handlePlus}>
-                          <Plus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
-                            }
-                          />
-                        </SignWrapper>
-                      </RepointsAmountWrapper>
-                      <RepointButtonWrapper>
-                        <ControlButton action={this.handleSend}>
-                          SEND
-                        </ControlButton>
-                      </RepointButtonWrapper>
-                    </React.Fragment>
-                  )}
-                </RepointsWindow>
               </ItemHolder>
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (
               <ItemHolder>
                 <ReactAudioPlayer src={this.state.src} controls />
-                <RepointsWindow toggle={this.state.plusToggled}>
-                  {!this.state.plusToggled && (
-                    <ControlIcon
-                      src={
-                        "https://witheyezon.com/eyezonsite/static/images/iconClose.png"
-                      }
-                      onClick={() => {
-                        this.setState({ plusToggled: true });
-                      }}
-                    />
-                  )}
-                  {this.state.plusToggled && (
-                    <React.Fragment>
-                      <RepointsAmountWrapper>
-                        <SignWrapper onClick={this.handleMinus}>
-                          <Minus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/minus.png"
-                            }
-                          />
-                        </SignWrapper>
-                        <NumberWrapper>{this.state.repointValue}</NumberWrapper>
-                        <SignWrapper onClick={this.handlePlus}>
-                          <Plus
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/plus.png"
-                            }
-                          />
-                        </SignWrapper>
-                      </RepointsAmountWrapper>
-                      <RepointButtonWrapper>
-                        <ControlButton action={this.handleSend}>
-                          SEND
-                        </ControlButton>
-                      </RepointButtonWrapper>
-                    </React.Fragment>
-                  )}
-                </RepointsWindow>
               </ItemHolder>
             )}
             {this.props.description && !this.props.flv && !this.state.src && (

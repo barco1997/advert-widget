@@ -60,14 +60,13 @@ function apiHandler(api, params) {
       if (params.targets && params.targets.length > 0) {
         buttons = params.targets.map(target => {
           return {
-            id: target.buttonId,
-            target: document.getElementById(target.buttonId),
-            businessId: target.businessId
+            buttonId: target.buttonId,
+            target: document.getElementById(target.targetId)
           };
         });
       }
       if (openChat) {
-        updatedParams.businessId = url.searchParams.get("businessId");
+        updatedParams.initialButtonId = url.searchParams.get("buttonId");
         react(updatedParams, true, buttons);
       } else {
         react(updatedParams, false, buttons);

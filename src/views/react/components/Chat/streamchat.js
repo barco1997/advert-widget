@@ -13,13 +13,15 @@ const MessageContainer = styled.div`
     display: flex !important;
     position: absolute !important;
     bottom: 0 !important;
+    left: 0 !important;
     flex-direction: column !important;
-    justify-content: flex-start !important;
-    background: linear-gradient(
+    justify-content: flex-end !important;
+    background: rgba(0, 0, 0, 0.5)
+      /*linear-gradient(
       180deg,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0.5) 100%
-    ) !important;
+    )*/ !important;
     flex: 1 !important;
     height: 167px !important;
     overflow: auto !important;
@@ -42,6 +44,48 @@ const Response = styled.div`
     align-items: center !important;
     color: #ffffff !important;
     width: 188px !important;
+    padding-left: 12px !important;
+    margin-bottom: 5px !important;
+  }
+`;
+const Shader = styled.div`
+  &&& {
+    width: 100% !important;
+    z-index: 10009 !important;
+    display: flex !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0) 90%,
+      rgba(0, 0, 0, 0) 100%
+    ) !important;
+
+    height: 167px !important;
+  }
+`;
+
+const DoubleWrapper = styled.div`
+  &&& {
+    position: absolute !important;
+    height: 167px !important;
+    width: 100% !important;
+    bottom: 35px !important;
+    left: 0 !important;
+  }
+`;
+
+const Wrapper = styled.div`
+  &&& {
+    position: relative !important;
+    height: 100% !important;
+    width: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    opacity: 1 !important;
   }
 `;
 
@@ -49,7 +93,24 @@ export class StreamChat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: this.props.messages || []
+      messages: this.props.messages || [
+        { id: "123", text: "Hello" },
+        { id: "124", text: "Hello, bro" },
+        { id: "125", text: "Hello" },
+        { id: "126", text: "Hello, bro" },
+        { id: "127", text: "Hello" },
+        { id: "128", text: "Hello, bro" },
+        { id: "129", text: "Hello" },
+        { id: "130", text: "Hello, bro" },
+        { id: "223", text: "Hello" },
+        { id: "224", text: "Hello, bro" },
+        { id: "225", text: "Hello" },
+        { id: "226", text: "Hello, bro" },
+        { id: "227", text: "Hello" },
+        { id: "228", text: "Hello, bro" },
+        { id: "229", text: "Hello" },
+        { id: "230", text: "Hello, bro1" }
+      ]
     };
     this.messageRef = [];
     this.setItems = this.setItems.bind(this);
@@ -57,7 +118,9 @@ export class StreamChat extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     //let propsToCome = nextProps;
-    this.setItems(nextProps);
+    if (nextProps.messages) {
+      this.setItems(nextProps);
+    }
   }
 
   setItems(props) {
@@ -85,15 +148,20 @@ export class StreamChat extends React.Component {
     //const isOpen = this.state.toggle;
     //console.log("what is going on bro", this.props.sentHistory);
     return (
-      <MessageContainer
-        ref={c => {
-          this.messageList = c;
-        }}
-      >
-        {this.state.messages.map(message => (
-          <Response key={message.id || uuidv1()}>{message.text}</Response>
-        ))}
-      </MessageContainer>
+      <DoubleWrapper>
+        <Wrapper>
+          <MessageContainer
+            ref={c => {
+              this.messageList = c;
+            }}
+          >
+            {this.state.messages.map(message => (
+              <Response key={message.id || uuidv1()}>{message.text}</Response>
+            ))}
+          </MessageContainer>
+          <Shader />
+        </Wrapper>
+      </DoubleWrapper>
     );
   }
 }

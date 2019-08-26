@@ -196,11 +196,15 @@ export class Button extends React.Component {
       displayMessage: false,
       displayChat: false,
       initializeChat: ls.get("token") ? true : false,
+      buttonId: this.props.buttonId,
       businessId: this.props.businessId,
       multiButton: false,
       notificationMessageToggle: false,
       apiLoading: false
     };
+    this.handleRegistration = this.handleRegistration.bind(this);
+    this.notifyMe = this.notifyMe.bind(this);
+    this.notificationPermission = this.notificationPermission.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
@@ -209,30 +213,35 @@ export class Button extends React.Component {
     this.showChat = this.showChat.bind(this);
     this.showChatHere = this.showChatHere.bind(this);
     this.showMessageHere = this.showMessageHere.bind(this);
-    this.handleRegistration = this.handleRegistration.bind(this);
-    this.notificationPermission = this.notificationPermission.bind(this);
-    this.notifyMe = this.notifyMe.bind(this);
   }
 
   handleRegistration() {
-    let self = this;
+    //let self = this;
     //const storedToken = ls.get("token");
-    ls.set("conversationPermission", true);
-    if (ls.get("token")) {
-      axios.defaults.headers.common.Authorization = `Bearer ${ls.get("token")}`;
-      self.showChat();
+    //ls.set("conversationPermission", true);
+    if (ls.get("userId")) {
+      //axios.defaults.headers.common.Authorization = `Bearer ${ls.get("token")}`;
+      this.showChat();
     } else {
-      const uuidv1 = require("uuid/v1");
-      const uuidv4 = require("uuid/v4");
-      const time = uuidv1();
-      const random = uuidv4();
-      const prefix = "bt_";
-      const uniquePassword = prefix.concat(time, random);
-      const uniqueId = uniquePassword.slice(0, 63);
-      ls.set("userId", uniqueId);
-      ls.set("uniquePassword", uniquePassword);
+      //const uuidv1 = require("uuid/v1");
+      //const uuidv4 = require("uuid/v4");
+      //const time = uuidv1();
+      //const random = uuidv4();
+      const mongoObjectId =
+        ((new Date().getTime() / 1000) | 0).toString(16) +
+        "xxxxxxxxxxxxxxxx"
+          .replace(/[x]/g, function() {
+            return ((Math.random() * 16) | 0).toString(16);
+          })
+          .toLowerCase();
 
-      axios
+      //const prefix = "bt_";
+      //const uniqueId = time.concat(random).slice(0, 63);
+      ls.set("userId", mongoObjectId);
+      this.showChat();
+      //ls.set("uniquePassword", uniquePassword);
+
+      /*axios
         .post(
           "https://api.eyezon.app/register/basic",
           {
@@ -259,25 +268,7 @@ export class Button extends React.Component {
         })
         .catch(function(error) {
           console.log(error);
-        });
-    }
-  }
-  notificationPermission() {
-    let self = this;
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "default") {
-      self.setState({
-        notificationMessageToggle: true
-      });
-      Notification.requestPermission(function(permission) {
-        if (permission === "granted") {
-          ls.set("notificationPermission", true);
-        }
-        self.setState({
-          notificationMessageToggle: false
-        });
-      });
+        });*/
     }
   }
 
@@ -357,7 +348,7 @@ export class Button extends React.Component {
     }
   }
 
-  handleClick(e, businessId) {
+  handleClick(e, buttonId) {
     //e.preventDefault();
     if (!iOS) {
       this.notificationPermission();
@@ -370,21 +361,24 @@ export class Button extends React.Component {
     let self = this;
     self.props.setNotifications(0);
     self.setState({
-      businessId: businessId,
+      buttonId: buttonId,
       apiLoading: true
     });
-    setConversationIdValue(businessId);
+    //setConversationIdValue(businessId); -------Here
     //return;
     //if (this.state.toggle) {
-    if (!ls.get("conversationId")) {
-      if (storedToken) {
-        axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+    if (!ls.get("dialogId")) {
+      if (ls.get("userId")) {
+        //axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
         axios
-          .get("https://api.eyezon.app/messages/dialogs?type=joiner")
+          .post(
+            `https://eyezon.herokuapp.com/api/user/${ls.get("userId")}/dialogs`,
+            {}
+          )
           .then(function(response) {
             console.log(response);
             if (response.data.count > 0) {
-              console.log("token, no conversation id, dialogs");
+              console.log("userId, no dialog id, dialogs");
               //let notifPerm = ls.get("conversationPermission");
               /*if (ls.get("conversationPermission")) {
                 ls.set("conversationId", response.data.dialogs[0].port._id);
@@ -394,10 +388,11 @@ export class Button extends React.Component {
                 );
                 console.log("Not supposed to reach here - check if errors");
               }*/
-
+              ls.set("dialogId", response.data.data[0]._id);
               self.showChatHere();
             } else {
-              console.log("token, no conversation id, no dialogs");
+              console.log("userId, no dialog id, no dialogs");
+
               self.handleRegistration();
             }
           })
@@ -405,23 +400,30 @@ export class Button extends React.Component {
             console.log(error);
           });
       } else {
-        console.log("no token, no conversation id");
+        console.log("no userId, no conversation id");
 
         self.handleRegistration();
       }
     } else {
-      axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+      //axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
       axios
-        .get("https://api.eyezon.app/messages/dialogs?type=joiner")
+        .post(
+          `https://eyezon.herokuapp.com/api/dialog/${ls.get(
+            "dialogId"
+          )}/messages`,
+          {}
+        )
         .then(function(response) {
           console.log(response);
 
           if (response.data.count > 0) {
-            console.log("conversation id, dialogs");
+            console.log("dialog id, dialogs");
             self.showChatHere();
           } else {
-            console.log("conversation id, no dialogs");
-            axios
+            console.log("dialog id, no dialogs");
+            ls.set("dialogId", "");
+            self.showChatHere();
+            /*axios
               .get("https://api.eyezon.app/users/")
               .then(function(response) {
                 console.log(response);
@@ -436,10 +438,12 @@ export class Button extends React.Component {
               })
               .catch(function(error) {
                 console.log(error);
-              });
+              });*/
           }
         })
         .catch(function(error) {
+          ls.set("dialogId", "");
+          self.showChatHere();
           console.log(error);
         });
     }
@@ -460,30 +464,24 @@ export class Button extends React.Component {
 
     let self = this;
 
-    if (ls.get("token")) {
-      this.socket = io("https://api.eyezon.app/", {
-        query: "token=" + ls.get("token"),
+    if (ls.get("userId")) {
+      this.socket = io("https://eyezon.herokuapp.com", {
+        /*query: "token=" + ls.get("token"),*/
         transports: ["websocket"],
         upgrade: false
       });
-      this.socket.on("newMessage", data => {
+      this.socket.on("received", data => {
         /**feature */
         console.log("message data", data);
-        let notificationCount = ls.get("notificationCount");
-        if (notificationCount) {
-          notificationCount++;
-        } else {
-          notificationCount = 1;
-        }
-        ls.set("notificationCount", notificationCount);
+
         //() => self.props.setNotificationStatus(true);
         //console.log("initializeChat inside: ", self.props.initializeChat);
-        self.props.incrementNotifications();
+        /*self.props.incrementNotifications();
         if (self.state.initializeChat && !(self.state.displayChat === false)) {
           console.log("initializeChat if: ", self.state.initializeChat);
           console.log("displayFlag if: ", self.state.displayChat);
           self.props.decrementNotifications();
-        }
+        }*/
         if (!iOS) {
           this.notifyMe(
             "New message at Eyezon button",
@@ -497,7 +495,7 @@ export class Button extends React.Component {
     if (this.props.buttons) {
       this.props.buttons.map(button =>
         button.target.addEventListener("click", event =>
-          self.handleClick(event, button.businessId)
+          self.handleClick(event, button.buttonId)
         )
       );
       let b_count = 0;
@@ -512,7 +510,7 @@ export class Button extends React.Component {
     }
     console.log(this.props.ifOpened);
     if (this.props.ifOpened) {
-      this.handleClick(null, this.props.businessId);
+      this.handleClick(null, this.props.buttonId);
     }
   }
 
@@ -579,7 +577,7 @@ export class Button extends React.Component {
 
   render() {
     const isOpen = this.state.toggle;
-    console.log("BUSINESS_2", this.state.businessId);
+    //console.log("BUSINESS_2", this.state.businessId);
 
     return (
       <ButtonReqWrapper>
@@ -600,7 +598,7 @@ export class Button extends React.Component {
           <ButtonWrapper
             color={this.props.color}
             toggle={isOpen}
-            onClick={event => this.handleClick(event, this.props.businessId)}
+            onClick={event => this.handleClick(event, this.props.buttonId)}
             /*onMouseEnter={() => this.handleMouseEnter()}
             onMouseLeave={() => this.handleMouseLeave()}*/
           >
@@ -630,6 +628,7 @@ export class Button extends React.Component {
             destroy={this.destroyChat}
             displayChat={this.state.displayChat}
             businessId={this.state.businessId}
+            buttonId={this.state.buttonId}
             initializeChat={this.state.initializeChat}
           />
         )}

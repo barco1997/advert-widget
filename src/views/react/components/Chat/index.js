@@ -22,7 +22,7 @@ import {
 } from "../../constants";
 import StreamChat from "./streamchat";
 //require("./flv.min.js");
-let flvPlayer;
+//let flvPlayer;
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -37,9 +37,9 @@ function load(url) {
     document.head.appendChild(script);
   });
 }
-
+var context = new AudioContext();
 load(
-  "https://witheyezon.com/eyezonsite/static/flv.min.js" /*"https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"*/
+  "https://witheyezon.com/eyezonsite/static/flashphoner.js" /*"https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"*/
 )
   .then(function() {
     console.log("Loaded!");
@@ -59,7 +59,7 @@ const VideoWrapper = styled.div`
     margin-left: 50px !important;
     border-radius: 10px !important;
     overflow: hidden !important;
-    & > video {
+    & > iframe {
       width: 100% !important;
       height: 100% !important;
     }
@@ -84,11 +84,13 @@ const VideoWrapper = styled.div`
 
 const VideoWrapperS = styled.div`
   &&& {
+    position: relative !important;
     width: 319px !important;
     height: 553px !important;
     flex-direction: column !important;
     border-radius: 10px !important;
     overflow: hidden !important;
+    background: black !important;
     & > video {
       width: 100% !important;
       height: 100% !important;
@@ -412,7 +414,7 @@ const JsChatMessageContainer = styled.div`
     flex-direction: column !important;
     justify-content: flex-start !important;
     padding: 40px 0px !important;
-
+    height: 100% !important;
     margin: 0px 40px !important;
 
     flex: 1 !important;
@@ -472,6 +474,18 @@ const TextFieldExtra = styled.div`
   }
 `;
 
+const ControlShader = styled.div`
+  &&& {
+    position: absolute !important;
+    pointer-events: none !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    height: 35px !important;
+    width: 100% !important;
+    bottom: 0px !important;
+    left: 0 !important;
+  }
+`;
+
 /*function VideoShow(props) {
   const url = props.url;
   console.log(url);
@@ -522,14 +536,14 @@ export class Chat extends React.Component {
     this.handlePhoto = this.handlePhoto.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleStreamToVideo = this.handleStreamToVideo.bind(this);
-    this.handlePropositionClick = this.handlePropositionClick.bind(this);
+    //this.handlePropositionClick = this.handlePropositionClick.bind(this);
 
     this.notifyMe = this.notifyMe.bind(this);
     this.notificationPermission = this.notificationPermission.bind(this);
     this.handleChangeInStream = this.handleChangeInStream.bind(this);
   }
 
-  notifyMe(message, href, businessId) {
+  notifyMe(message, href, buttonId) {
     // Проверка поддержки браузером уведомлений
     let options = {
       icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
@@ -549,14 +563,14 @@ export class Chat extends React.Component {
           str = str.substring(0, str.indexOf("?open"));
           console.log("string: ", str);
           new_window.location.href = str.concat(
-            "?open=true&businessId=",
-            businessId
+            "?open=true&buttonId=",
+            buttonId
           );
         } else {
           console.log("target");
           new_window.location.href = event.target.data.concat(
-            "?open=true&businessId=",
-            businessId
+            "?open=true&buttonId=",
+            buttonId
           );
         } //set url of newly created window(tab) and focus
         notification.close();
@@ -574,8 +588,8 @@ export class Chat extends React.Component {
               new_window.location.href = event.target.data;
             } else {
               new_window.location.href = event.target.data.concat(
-                "?open=true&businessId=",
-                businessId
+                "?open=true&buttonId=",
+                buttonId
               );
             }
             //set url of newly created window(tab) and focus
@@ -608,24 +622,29 @@ export class Chat extends React.Component {
   componentWillMount() {
     let self = this;
 
-    if (ls.get("token")) {
-      this.socket = io("https://api.eyezon.app/", {
-        query: "token=" + ls.get("token"),
+    if (ls.get("userId")) {
+      this.socket = io("https://eyezon.herokuapp.com/", {
+        /*query: "token=" + ls.get("token"),*/
         transports: ["websocket"],
         upgrade: false
       });
       this.socket.on("connect", () => {
         console.log("socket got connected");
+        /*let obj = {
+          _id: ls.get("dialogId")
+        };*/
+        //console.log(obj);
+        self.socket.emit("enterDialog", ls.get("dialogId"));
       });
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
         //this.socket.open();
       });
-      this.socket.on("messageUpdated", data => {
-        console.log("message got updated", data.message.attachments[0]);
-        this.setState({ streamToVideo: data.message.attachments[0] });
+      this.socket.on("streamToVideo", data => {
+        console.log("message got updated", data);
+        this.setState({ streamToVideo: data.messageId });
       });
-      this.socket.on("newMessage", data => {
+      this.socket.on("received", data => {
         /**feature 
         let notificationCount = ls.get("notificationCount");
         if (notificationCount) {
@@ -644,12 +663,12 @@ export class Chat extends React.Component {
         }
         /********* */
         if (data.userId !== storedId) {
-          if (!ls.get("conversationId")) {
-            ls.set("conversationId", data.requestId);
-            setConversationArray(self.props.businessId, data.requestId);
+          if (!ls.get("dialogId")) {
+            ls.set("dialogId", data._id);
+            //setConversationArray(self.props.businessId, data.requestId);
           }
           console.log("u got a reply again", data);
-          console.log("props: ", self.props);
+          //console.log("props: ", self.props);
           /*if (!iOS) {
             this.notifyMe(
               "New message at Eyezon button",
@@ -660,55 +679,42 @@ export class Chat extends React.Component {
           let type;
           let source;
           let thumbnail;
-          if (
-            data.attachments.length > 0 &&
-            data.attachments[0].type === "audio"
-          ) {
+          if (data.attachment && data.attachment.type === "AUDIO") {
             type = "audio";
-            source = data.attachments[0].src;
+            source = data.attachment.src;
           }
 
-          if (
-            data.attachments.length > 0 &&
-            data.attachments[0].type === "video"
-          ) {
+          if (data.attachment && data.attachment.type === "VIDEO") {
             type = "video";
-            source = data.attachments[0].src;
-            thumbnail = data.attachments[0].thumbnail;
+            source = data.attachment.src;
+            thumbnail = data.attachment.thumbnail;
           }
 
-          if (
-            data.attachments.length > 0 &&
-            data.attachments[0].type === "photo"
-          ) {
+          if (data.attachment && data.attachment.type === "PHOTO") {
             type = "photo";
-            source = data.attachments[0].src;
+            source = data.attachment.src;
           }
 
-          if (
-            data.attachments.length > 0 &&
-            data.attachments[0].type === "stream"
-          ) {
+          if (data.attachment && data.attachment.type === "STREAM") {
             type = "stream";
             ls.set("streamDamnId", data._id);
-            setLiveArray(self.props.businessId, data._id);
+            setLiveArray(self.props.buttonId, data._id);
+            source = data.attachment.src;
           }
-          setSentHistory(self.props.businessId, "", false);
+          //setSentHistory(self.props.businessId, "", false);
           this.setState({
             messages: [
               ...this.state.messages,
               {
-                text: data.message,
+                text: data.messageText,
                 time: new Date(),
                 awaitingConnection: false,
-                photo: data.user.photo,
-                user: data.user.firstName.concat(" ", data.user.lastName),
+                photo:
+                  /*data.user.photo*/ "https://witheyezon.com/eyezonsite/static/images/logo.png",
+                user: data.user /*.firstName.concat(" ", data.user.lastName)*/,
                 type: type,
-                flv:
-                  type === "stream"
-                    ? `https://static.eyezon.app/live/${data._id}.flv`
-                    : null,
-                streamId: type === "stream" ? data._id : null,
+                flv: type === "stream" ? data.attachment.src : null,
+                streamId: type === "stream" ? data.attachment.src : null,
 
                 src: source,
                 thumb: thumbnail,
@@ -716,8 +722,8 @@ export class Chat extends React.Component {
               }
             ],
             awaitingConnection: false,
-            startedFlag: true,
-            sentHistory: { message: "", status: false }
+            startedFlag: true
+            /*sentHistory: { message: "", status: false }*/
           });
         }
       });
@@ -727,7 +733,7 @@ export class Chat extends React.Component {
           this.notifyMe(
             "Stream started at Eyezon button",
             currentUrl,
-            self.props.businessId
+            self.props.buttonId
           );
         }
         /*this.socket.emit(
@@ -741,7 +747,7 @@ export class Chat extends React.Component {
           this.notifyMe(
             "Stream ended at Eyezon button",
             currentUrl,
-            self.props.businessId
+            self.props.buttonId
           );
         }
         ls.set("streamInProgress", false);
@@ -752,18 +758,18 @@ export class Chat extends React.Component {
         this.socket.emit("port", JSON.stringify(objlv));
       });
 
-      this.socket.on("port", data => {
+      this.socket.on("streamEvent", data => {
         console.log("what data:", data);
-        if (data.event === "comment") {
+        if (data.type === "MESSAGE") {
           this.setState({
-            messages: [
-              ...this.state.messages,
+            messagesStream: [
+              ...this.state.messagesStream,
               {
-                text: data.text,
+                text: data.content,
                 time: new Date(),
-                photo: data.user.photo,
-                user: data.user.firstName.concat(" ", data.user.lastName),
-                type: null,
+                photo:
+                  "https://witheyezon.com/eyezonsite/static/images/logo.png",
+                user: "Streamer",
                 id: uuidv1()
               }
             ]
@@ -772,7 +778,7 @@ export class Chat extends React.Component {
       });
       this.socket.open();
     }
-    axios
+    /*axios
       .get(`https://api.eyezon.app/market/transactions`)
       .then(function(response) {
         console.log(response.data.transactions.totalAmount);
@@ -782,7 +788,7 @@ export class Chat extends React.Component {
       })
       .catch(function(error) {
         console.log(error);
-      });
+      });*/
   }
 
   componentWillUpdate(nextProps) {
@@ -791,55 +797,54 @@ export class Chat extends React.Component {
       nextProps.displayChat &&
       nextProps.displayChat !== this.props.displayChat
     ) {
-      if (ls.get("conversationId")) {
+      if (ls.get("dialogId")) {
         if (this.state.firstTimeFlag) {
           axios
-            .get(
-              `https://api.eyezon.app/messages/get/${ls.get("conversationId")}/`
+            .post(
+              `https://eyezon.herokuapp.com/api/dialog/${ls.get(
+                "dialogId"
+              )}/messages`,
+              {}
             )
             .then(function(response) {
-              const users = response.data.users;
-              const messages = response.data.messages;
-              const owner = users.find(user => user.type === "owner");
-              console.log("businessId: ", nextProps);
-              if (owner.businessId === nextProps.businessId) {
-                console.log(messages);
-                const editedMessages = messages.map(message => ({
-                  text: message.message,
-                  time: message.time,
-                  photo: users.filter(user => user.userId === message.userId)[0]
-                    .photo,
-                  user: users
+              //const users = response.data.users;
+              const messages = response.data.data;
+              //const owner = users.find(user => user.type === "owner");
+              // console.log("businessId: ", nextProps);
+              // if (owner.businessId === nextProps.businessId) {
+              console.log(response);
+              const editedMessages = messages.map(message => ({
+                text: message.messageText,
+                time: message.createdAt,
+                photo:
+                  "https://witheyezon.com/eyezonsite/static/images/logo.png" /*users.filter(user => user.userId === message.userId)[0]
+                    .photo*/,
+                user:
+                  message.user /*users
                     .filter(user => user.userId === message.userId)[0]
                     .firstName.concat(
                       " ",
                       users.filter(user => user.userId === message.userId)[0]
                         .lastName
-                    ),
-                  type:
-                    message.attachments.length > 0
-                      ? message.attachments[0].type
-                      : "message",
-                  src:
-                    message.attachments.length > 0
-                      ? message.attachments[0].src
-                      : null,
-                  thumb:
-                    message.attachments.length > 0 &&
-                    message.attachments[0].type === "video"
-                      ? message.attachments[0].thumbnail
-                      : null,
-                  flv:
-                    message.attachments.length > 0 &&
-                    message.attachments[0].type === "stream"
-                      ? `https://static.eyezon.app/live/${message._id}.flv`
-                      : "",
-                  id: message._id
-                }));
-                console.log("Users - ", users);
+                    )*/,
+                type: message.attachment
+                  ? message.attachment.type.toLowerCase()
+                  : "message",
+                src: message.attachment ? message.attachment.src : null,
+                thumb:
+                  message.attachment && message.attachment.type === "VIDEO"
+                    ? message.attachment.thumbnail
+                    : null,
+                flv:
+                  message.attachment && message.attachment.type === "STREAM"
+                    ? message.attachment.src
+                    : "",
+                id: message._id
+              }));
+              //console.log("Users - ", users);
 
-                self.loadInitialMessages(editedMessages);
-              } /*else {
+              self.loadInitialMessages(editedMessages);
+              /* } else {
                 console.log("delete conversationId");
                 ls.delete("conversationId");
               }
@@ -859,18 +864,18 @@ export class Chat extends React.Component {
             });
         }
       } else {
-        const sh = getSentHistory(this.props.businessId);
-        console.log("SH: ", sh);
-        this.setState({
+        //const sh = getSentHistory(this.props.businessId);
+        //console.log("SH: ", sh);
+        /*this.setState({
           sentHistory: sh
-        });
+        });*/
       }
     }
   }
 
   componentWillUnmount() {
     ls.set("streamInProgress", false);
-    this.socket.close();
+    if (this.socket) this.socket.close();
   }
 
   handleChange(event) {
@@ -885,59 +890,38 @@ export class Chat extends React.Component {
       this.loadedVideo.getInternalPlayer().pause();
     }
     this.setState({
-      streamLink: url,
+      streamLink: id,
       streamFlag: true,
       photoSrc: null
     });
-    let self = this;
-    ls.set("streamInProgress", true);
+    //let self = this;
+    /*ls.set("streamInProgress", true);
     ls.set("streamDamnId", id);
-    setLiveArray(self.props.businessId, id);
-
-    let url = `https://static.eyezon.app/live/${id}.flv`;
+    setLiveArray(this.props.buttonId, id);
+    var session = Flashphoner.createSession({
+      urlServer: "wss://server.witheyezon.com:8443"
+    }).play();
+    session
+      .createStream({
+        name: "ffb140cc",
+        display: this.live
+      })
+      .play();*/
+    /*let url = `wss://server.witheyezon.com:8443/${id}`;
     let stream = this.live;
-    console.log(
-      "THIS IS STREAM HLS LINK",
-      `https://static.eyezon.app/live/${id}/index.m3u8`
-    );
 
-    if (flvjs.isSupported()) {
-      flvPlayer = flvjs.createPlayer({
-        type: "flv",
-        url: url
-      });
-      flvPlayer.attachMediaElement(stream);
-      flvPlayer.load();
-      flvPlayer.play();
-    } /*else if (Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource(`https://static.eyezon.app/live/${id}/index.m3u8`);
-      hls.attachMedia(stream);
-      hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        if (stream.requestFullscreen) {
-          stream.requestFullscreen();
-        } else if (stream.mozRequestFullScreen) {
-          stream.mozRequestFullScreen();
-        } else if (stream.webkitRequestFullscreen) {
-          stream.webkitRequestFullscreen();
-        } else if (stream.msRequestFullscreen) {
-          stream.msRequestFullscreen();
-        }
-        stream.play();
-      });
-      
-    }*/
-    if (iOS) {
+    this.live.srcObject = url;*/
+    /*if (iOS) {
       alert(
         "Извините, но на iOS стримы пока не поддерживаются,  дождитесь окончания трансляции и просмотрите запись, просим прощения за неудобства"
       );
-    }
-    console.log("first success");
+    }*/
+    /*console.log("first success");
     let obj = {
       event: "joinRoom",
-      room: /*ls.get("streamDamnId")*/ getLiveIdValue(self.props.businessId)
+      room:  getLiveIdValue(self.props.businessId)
     };
-    this.socket.emit("port", JSON.stringify(obj));
+    this.socket.emit("port", JSON.stringify(obj));*/
   }
 
   handlePhoto(src) {
@@ -945,7 +929,7 @@ export class Chat extends React.Component {
       this.loadedVideo.getInternalPlayer().pause();
     }
     if (this.live) {
-      this.live.pause();
+      /*this.live.pause();*/
     }
     console.log("photo src: ", src);
     this.setState({
@@ -957,7 +941,7 @@ export class Chat extends React.Component {
 
   handleVideo(src, videoManipulateId) {
     if (this.live) {
-      this.live.pause();
+      /*this.live.pause();*/
     }
     let ifPsI = this.state.ifPauseIcon;
     this.setState({
@@ -990,7 +974,7 @@ export class Chat extends React.Component {
     });
   }
 
-  handlePropositionClick(id) {
+  /*handlePropositionClick(id) {
     let self = this;
     const chat = this.state.existingChats.find(chat => chat.port.id === id);
     const users = chat.messages.users;
@@ -1024,7 +1008,7 @@ export class Chat extends React.Component {
     }));
     ls.set("conversationId", chat.port.id);
     console.log("conv id: ", chat.port.id);
-    setConversationArray(self.props.businessId, chat.port.id);
+    setConversationArray(self.props.buttonId, chat.port.id);
     const value = this.state.lastValue;
     axios
       .get(`https://api.eyezon.app/ports/${chat.port.id}`)
@@ -1064,7 +1048,7 @@ export class Chat extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
-  }
+  }*/
 
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -1087,20 +1071,20 @@ export class Chat extends React.Component {
       }
       return 0;
     });
-    const sh = getSentHistory(this.props.businessId);
-    console.log("the sentH value: ", sh);
-    const flag = msgs.length > 1;
+    //const sh = getSentHistory(this.props.businessId);
+    //console.log("the sentH value: ", sh);
+    const flag = msgs.length > 0;
     this.setState({
       messages: msgs,
       firstTimeFlag: false,
       startedFlag: flag ? true : false,
       existingChats: [],
-      awaitingConnection: false,
-      sentHistory: flag ? { message: "", status: false } : sh
+      awaitingConnection: false
+      /*sentHistory: flag ? { message: "", status: false } : sh*/
     });
-    if (flag) {
+    /*if (flag) {
       setSentHistory(this.props.businessId, "", false);
-    }
+    }*/
   }
   handleSubmitS(event) {
     let self = this;
@@ -1115,17 +1099,16 @@ export class Chat extends React.Component {
         ],
         valueStream: ""
       });
-      if (ls.get("streamInProgress")) {
-        let obj = {
-          event: "comment",
-          room: /*ls.get("streamDamnId")*/ getLiveIdValue(
-            self.props.businessId
-          ),
-          text: value
-        };
-        console.log(obj);
-        self.socket.emit("port", JSON.stringify(obj));
-      }
+      //if (ls.get("streamInProgress")) {
+      let obj = {
+        messageText: value,
+        dialogId: ls.get("dialogId"),
+        userId: ls.get("userId"),
+        type: "STREAM"
+      };
+      console.log(obj);
+      self.socket.emit("messageOnStream", JSON.stringify(obj));
+      //}
     }
     event.preventDefault();
   }
@@ -1141,18 +1124,43 @@ export class Chat extends React.Component {
         ],
         value: "",
         awaitingConnection: true,
-        lastValue: value,
-        sentHistory: {
+        lastValue: value
+        /*sentHistory: {
           message: { text: value, time: new Date(), id: uuidv1() },
           status: true
-        }
+        }*/
       });
-      setSentHistory(
+
+      axios
+        .post("https://eyezon.herokuapp.com/api/dialog", {
+          client: ls.get("userId"),
+          title: value,
+          websiteUrl: currentUrl,
+          button: self.props.buttonId,
+          description: value
+        })
+        .then(function(response) {
+          console.log("U sent the request - thats new response:", response);
+          ls.set("dialogId", response.data._id);
+          /*let obj = {
+            messageText: value,
+            dialogId: response.data._id,
+            userId: ls.get("userId")
+          };
+          console.log(obj);
+          self.socket.emit("message", JSON.stringify(obj));*/
+          //ls.set("conversationId", members[0]._id);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+      /*setSentHistory(
         self.props.businessId,
         { text: value, time: new Date(), id: uuidv1() },
         true
-      );
-      axios
+      );*/
+      /*axios
         .get(`https://api.eyezon.app/ports?businessId=${self.props.businessId}`)
         .then(function(response) {
           const freePorts = response.data.ports.filter(
@@ -1173,8 +1181,8 @@ export class Chat extends React.Component {
                   self.props.businessId
                 }`,
                 {
-                  message: value
-                  /*url: currentUrl*/
+                  message: value,
+                  url: currentUrl
                 }
               )
               .then(function(response) {
@@ -1213,9 +1221,9 @@ export class Chat extends React.Component {
                   //
                 });
             });
-            /*self.setState({
-              existingChats: response.data.ports
-            });*/
+            //self.setState({
+              //existingChats: response.data.ports
+            //});
           }
           //
           //
@@ -1224,9 +1232,9 @@ export class Chat extends React.Component {
         })
         .catch(function(error) {
           console.log(error);
-        });
+        });*/
     } else if (!this.state.awaitingConnection) {
-      const port = ls.get("conversationId");
+      const port = ls.get("dialogId");
       const value = this.state.value;
 
       this.setState({
@@ -1238,26 +1246,22 @@ export class Chat extends React.Component {
       });
       if (ls.get("streamInProgress")) {
         let obj = {
-          event: "comment",
-          room: /*ls.get("streamDamnId")*/ getLiveIdValue(
-            self.props.businessId
-          ),
-          text: value
+          messageText: value,
+          dialogId: ls.get("dialogId"),
+          userId: ls.get("userId"),
+          type: "DIALOG"
         };
         console.log(obj);
-        self.socket.emit("port", JSON.stringify(obj));
+        self.socket.emit("message", JSON.stringify(obj));
       } else {
-        axios
-          .put(`https://api.eyezon.app/messages/${port}`, {
-            message: value,
-            url: currentUrl
-          })
-          .then(function(response) {
-            console.log(response);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+        let obj = {
+          messageText: value,
+          dialogId: ls.get("dialogId"),
+          userId: ls.get("userId"),
+          type: "DIALOG"
+        };
+        console.log(obj);
+        self.socket.emit("message", JSON.stringify(obj));
       }
     }
     event.preventDefault();
@@ -1266,9 +1270,8 @@ export class Chat extends React.Component {
   render() {
     console.log("Display flag: ", this.state.displayFlag);
     return (
-      <React.Fragment>
-        <ChatWrapper displayFlag={this.state.displayFlag}>
-          {/*<NotificationMessageWrapper
+      <ChatWrapper displayFlag={this.state.displayFlag}>
+        {/*<NotificationMessageWrapper
             toggle={this.state.notificationMessageToggle}
           >
             <NotificationMessageArrow src="https://witheyezon.com/eyezonsite/static/images/arrow2.svg" />
@@ -1276,176 +1279,201 @@ export class Chat extends React.Component {
               Включи уведомления, если хочешь получить ответ
             </NotificationMessageText>
           </NotificationMessageWrapper>*/}
-          <JsChatOverlay
-            onClick={() => {
-              this.setState({
-                streamFlag: false
-              });
-              if (this.live) {
-                this.live.pause();
-              }
-              if (this.loadedVideo.getInternalPlayer()) {
-                this.loadedVideo.getInternalPlayer().pause();
-              }
-              this.props.destroy();
-            }}
-          />
+        <JsChatOverlay
+          onClick={() => {
+            this.setState({
+              streamFlag: false
+            });
+            if (this.live) {
+              /*this.live.pause();*/
+            }
+            if (this.loadedVideo.getInternalPlayer()) {
+              this.loadedVideo.getInternalPlayer().pause();
+            }
+            this.props.destroy();
+          }}
+        />
 
-          <WindowWrapper>
-            <JsChatWindow visible={!this.state.streamFlag}>
-              <JsChatMessageContainer>
-                {(!this.state.messages || this.state.messages.length == 0) &&
-                (!this.state.sentHistory || !this.state.sentHistory.status) ? (
-                  <JsChatMessagePlaceholder>
-                    <PlaceholderMessage>
-                      {/*Не стесняйтесь, спросите!{" "}*/}
-                      We're here to share our eyes with you!
-                    </PlaceholderMessage>
-                    <PlaceholderMessage>
-                      {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
-                      {/*Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!*/}
-                      Just ask, and our staff will help answer any
-                    </PlaceholderMessage>
-                    <PlaceholderMessage>
-                      of your questions using the magic of LIVE streams.{" "}
-                    </PlaceholderMessage>
-                    <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
-                  </JsChatMessagePlaceholder>
-                ) : (
-                  <MessageArea
-                    messages={this.state.messages}
-                    awaitingConnection={this.state.awaitingConnection}
-                    setFlv={this.handleStreamClick}
-                    handlePhoto={this.handlePhoto}
-                    handleVideo={this.handleVideo}
-                    handleStreamToVideo={this.handleStreamToVideo}
-                    strVideo={this.state.streamToVideo}
-                    manipulateVideoId={this.state.videoManipulateId}
-                    ifPauseIcon={this.state.ifPauseIcon}
-                    existingChats={this.state.existingChats}
-                    handlePropositionClick={this.handlePropositionClick}
-                    transactionLimit={this.state.transactionLimit}
-                    sentHistory={this.state.sentHistory}
-                  />
-                )}
-                <form onSubmit={this.handleSubmit}>
-                  <div style={{ flexDirection: "column  !important" }}>
-                    <InputFieldA
-                      type="text"
-                      value={this.state.value}
-                      onChange={this.handleChange}
-                      placeholder="Ask us something ;)"
-                    />
+        <WindowWrapper>
+          <JsChatWindow visible={!this.state.streamFlag}>
+            <JsChatMessageContainer>
+              {!this.state.messages ||
+              this.state.messages.length ==
+                0 /*&&
+                (!this.state.sentHistory || !this.state.sentHistory.status)*/ ? (
+                <JsChatMessagePlaceholder>
+                  <PlaceholderMessage>
+                    {/*Не стесняйтесь, спросите!{" "}*/}
+                    We're here to share our eyes with you!
+                  </PlaceholderMessage>
+                  <PlaceholderMessage>
+                    {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
+                    {/*Участники команд расскажут о проекте и ответят на все
+                      интересующие вопросы!
+                      
+                      {/**/}
+                    */} Just ask, and our staff will help answer any
+                  </PlaceholderMessage>
 
-                    <SendRequest type="submit" value="Submit">
-                      Send
-                    </SendRequest>
-                  </div>
-                </form>
-                <CloseWrapperA visibleExtra={this.state.photoSrc}>
-                  <CloseButtonC
-                    onClick={() => {
-                      this.setState({
-                        streamFlag: false
-                      });
-                      this.live.pause();
-                      if (this.loadedVideo.getInternalPlayer()) {
-                        this.loadedVideo.getInternalPlayer().pause();
-                      }
-                      this.props.destroy();
-                    }}
+                  <PlaceholderMessage>
+                    of your questions using the magic of LIVE streams.{" "}
+                  </PlaceholderMessage>
+                  <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
+                </JsChatMessagePlaceholder>
+              ) : (
+                <MessageArea
+                  messages={this.state.messages}
+                  awaitingConnection={this.state.awaitingConnection}
+                  setFlv={this.handleStreamClick}
+                  handlePhoto={this.handlePhoto}
+                  handleVideo={this.handleVideo}
+                  handleStreamToVideo={this.handleStreamToVideo}
+                  strVideo={this.state.streamToVideo}
+                  manipulateVideoId={this.state.videoManipulateId}
+                  ifPauseIcon={this.state.ifPauseIcon}
+                  existingChats={this.state.existingChats}
+                  transactionLimit={this.state.transactionLimit}
+                  sentHistory={this.state.sentHistory}
+                />
+              )}
+              <form onSubmit={this.handleSubmit}>
+                <div style={{ flexDirection: "column  !important" }}>
+                  <InputFieldA
+                    type="text"
+                    value={this.state.value}
+                    onChange={this.handleChange}
+                    placeholder="Ask us something ;)"
                   />
-                </CloseWrapperA>
-              </JsChatMessageContainer>
-            </JsChatWindow>
-            <StreamWrapper visible={this.state.streamFlag}>
-              <VideoWrapperS visible={this.state.streamFlag}>
-                <video
-                  id="live"
-                  ref={stream => {
-                    this.live = stream;
+
+                  <SendRequest type="submit" value="Submit">
+                    Send
+                  </SendRequest>
+                </div>
+              </form>
+              <CloseWrapperA visibleExtra={this.state.photoSrc}>
+                <CloseButtonC
+                  onClick={() => {
+                    this.setState({
+                      streamFlag: false
+                    });
+                    /*this.live.pause();*/
+                    if (this.loadedVideo.getInternalPlayer()) {
+                      this.loadedVideo.getInternalPlayer().pause();
+                    }
+                    this.props.destroy();
                   }}
-                  controls
                 />
-                <CloseWrapper>
-                  <CloseButtonC
-                    onClick={() => {
-                      this.setState({
-                        streamFlag: false
-                      });
-                      this.live.pause();
-                      flvPlayer.destroy();
-                      ls.set("streamInProgress", false);
-                    }}
-                  />
-                </CloseWrapper>
-                <StreamChat messages={this.state.messagesStream} />
-              </VideoWrapperS>
-              <TextFieldExtra>
-                <InputFieldA
-                  type="text"
-                  value={this.state.valueStream}
-                  onChange={this.handleChangeInStream}
-                  placeholder="Ask us something ;)"
-                />
-              </TextFieldExtra>
-              <SendRequest onClick={this.handleSubmitS}>Send</SendRequest>
-            </StreamWrapper>
-            <VideoWrapper
-              visible={this.state.videoSrc && !this.state.streamFlag}
-            >
-              <ReactPlayer
-                url={this.state.videoSrc}
-                playing={this.state.ifPauseIcon}
-                width="100%"
-                height="100%"
+              </CloseWrapperA>
+            </JsChatMessageContainer>
+          </JsChatWindow>
+          <StreamWrapper visible={this.state.streamFlag /*true*/}>
+            <VideoWrapperS visible={this.state.streamFlag /*true*/}>
+              {/*<video
+                id="live"
+                ref={stream => {
+                  this.live = stream;
+                }}
                 controls
-                ref={video => {
-                  this.loadedVideo = video;
-                }}
-                onPause={() => {
-                  this.setState({
-                    ifPauseIcon: false
-                  });
-                }}
-                onPlay={() => {
-                  this.setState({
-                    ifPauseIcon: true
-                  });
-                  this.live.pause();
-                }}
               />
+             */}
+              {true && (
+                <iframe
+                  id="fp_embed_player"
+                  src={`https://wcs5-eu.flashphoner.com:8888/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${ls.get(
+                    "dialogId"
+                  )}&mediaProviders=WebRTC&skin=dark`}
+                  marginWidth="0"
+                  marginHeight="0"
+                  frameBorder="0"
+                  width="100%"
+                  height="100%"
+                  scrolling="no"
+                  allowFullScreen="allowfullscreen"
+                />
+              )}
               <CloseWrapper>
                 <CloseButtonC
                   onClick={() => {
                     this.setState({
-                      videoSrc: null,
-                      ifPauseIcon: false
+                      streamFlag: false
                     });
-                    if (this.loadedVideo.getInternalPlayer()) {
-                      this.loadedVideo.getInternalPlayer().pause();
-                    }
+                    /*this.live.pause();*/
+                    flvPlayer.destroy();
+                    ls.set("streamInProgress", false);
                   }}
                 />
               </CloseWrapper>
-            </VideoWrapper>
-            <PhotoWrapper visible={this.state.photoSrc}>
-              <Image src={this.state.photoSrc}>
-                <CloseWrapperB>
-                  <CloseButtonB
-                    onClick={() => {
-                      this.setState({
-                        photoSrc: null
-                      });
-                    }}
-                  />
-                </CloseWrapperB>
-              </Image>
-            </PhotoWrapper>
-          </WindowWrapper>
-        </ChatWrapper>
-      </React.Fragment>
+              <StreamChat messages={this.state.messagesStream} />
+              <ControlShader />
+            </VideoWrapperS>
+            <TextFieldExtra>
+              <InputFieldA
+                type="text"
+                value={this.state.valueStream}
+                onChange={this.handleChangeInStream}
+                placeholder="Ask us something ;)"
+              />
+            </TextFieldExtra>
+            <SendRequest
+              onClick={() => {
+                this.handleSubmitS();
+                this.handleStreamClick("asdasd");
+              }}
+            >
+              Send
+            </SendRequest>
+          </StreamWrapper>
+          <VideoWrapper visible={this.state.videoSrc && !this.state.streamFlag}>
+            <ReactPlayer
+              url={this.state.videoSrc}
+              playing={this.state.ifPauseIcon}
+              width="100%"
+              height="100%"
+              controls
+              ref={video => {
+                this.loadedVideo = video;
+              }}
+              onPause={() => {
+                this.setState({
+                  ifPauseIcon: false
+                });
+              }}
+              onPlay={() => {
+                this.setState({
+                  ifPauseIcon: true
+                });
+                /*this.live.pause();*/
+              }}
+            />
+            <CloseWrapper>
+              <CloseButtonC
+                onClick={() => {
+                  this.setState({
+                    videoSrc: null,
+                    ifPauseIcon: false
+                  });
+                  if (this.loadedVideo.getInternalPlayer()) {
+                    this.loadedVideo.getInternalPlayer().pause();
+                  }
+                }}
+              />
+            </CloseWrapper>
+          </VideoWrapper>
+          <PhotoWrapper visible={this.state.photoSrc}>
+            <Image src={this.state.photoSrc}>
+              <CloseWrapperB>
+                <CloseButtonB
+                  onClick={() => {
+                    this.setState({
+                      photoSrc: null
+                    });
+                  }}
+                />
+              </CloseWrapperB>
+            </Image>
+          </PhotoWrapper>
+        </WindowWrapper>
+      </ChatWrapper>
     );
   }
 }

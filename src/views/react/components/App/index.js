@@ -12,37 +12,35 @@ export class App extends React.Component {
       notifications: 0,
       notificationStatus: false
     };
-
     this.setNotifications = this.setNotifications.bind(this);
     this.incrementNotifications = this.incrementNotifications.bind(this);
     this.decrementNotifications = this.decrementNotifications.bind(this);
   }
   componentDidMount() {
-    //https://api.eyezon.app/messages/dialogs?type=watcher
+    //get amount of notifications
+
     let self = this;
-
-    axios
-      .get("https://api.eyezon.app/messages/dialogs?type=watcher")
-      .then(function(response) {
-        let answersCount = 0;
-        response.data.dialogs.map(
-          dialog => (answersCount = answersCount + dialog.answersCount)
-        );
-
-        let notificationCount = ls.get("notificationCount");
-        console.log(answersCount);
-        console.log(notificationCount);
-        if (answersCount > notificationCount) {
+    const buttonId = this.props.buttonId;
+    const userId = ls.get("userId");
+    /*if (userId) {
+      url = `https://eyezon.herokuapp.com/api/button/${buttonId}/unreaded/${userId}`;
+      axios
+        .get(url)
+        .then(function(response) {
+          //let notificationCount = ls.get("notificationCount");
+          console.log(response);
+          //console.log(notificationCount);
+          /*if (response.answers > 0) {
           self.setState({
-            notifications: answersCount - notificationCount,
+            notifications: response.answers,
             notificationStatus: true
           });
         }
-        ls.set("notificationCount", answersCount);
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+}*/
   }
 
   setNotifications(val) {
@@ -66,12 +64,13 @@ export class App extends React.Component {
     });
   }
   render() {
-    console.log("BUSINESS, ", this.props.businessId);
+    //console.log("BUSINESS, ", this.props.businessId);
     return (
       <React.Fragment>
         <Button
           color={this.props.color}
           businessId={this.props.businessId}
+          buttonId={this.props.buttonId}
           ifOpened={this.props.ifOpened}
           button={this.props.button || this.state.notificationStatus}
           buttons={this.props.buttons}

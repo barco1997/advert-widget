@@ -18,8 +18,9 @@ export function react(params, ifOpened, buttons) {
     <React.Fragment>
       <App
         color={params.color}
-        button={params.button}
+        button={params.buttonOnTop}
         businessId={params.businessId}
+        buttonId={params.initialButtonId}
         ifOpened={ifOpened}
         buttons={buttons}
       />
