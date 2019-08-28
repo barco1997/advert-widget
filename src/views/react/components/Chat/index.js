@@ -668,6 +668,7 @@ export class Chat extends React.Component {
           self.props.decrementNotifications();
         }
         /********* */
+        console.log("message got received", data);
         if (data.userId !== storedId) {
           if (!ls.get("dialogId")) {
             ls.set("dialogId", data._id);
@@ -736,7 +737,7 @@ export class Chat extends React.Component {
           });
         }
       });
-      this.socket.on("portOnline", data => {
+      /*this.socket.on("portOnline", data => {
         console.log("port on data:", data);
         if (!iOS) {
           this.notifyMe(
@@ -745,10 +746,7 @@ export class Chat extends React.Component {
             self.props.buttonId
           );
         }
-        /*this.socket.emit(
-          "joinRoom",
-          getLiveIdValue(self.props.businessId) /*ls.get("streamDamnId")*/
-        /*);*/
+        
       });
       this.socket.on("portOffline", data => {
         console.log("port off data:", data);
@@ -762,10 +760,10 @@ export class Chat extends React.Component {
         ls.set("streamInProgress", false);
         let objlv = {
           event: "leaveRoom",
-          room: /*ls.get("streamDamnId")*/ getLiveIdValue(self.props.businessId)
+          room:  getLiveIdValue(self.props.businessId)
         };
         this.socket.emit("port", JSON.stringify(objlv));
-      });
+      });*/
 
       this.socket.on("streamEvent", data => {
         console.log("what data:", data);
@@ -1097,7 +1095,7 @@ export class Chat extends React.Component {
       setSentHistory(this.props.businessId, "", false);
     }*/
   }
-  handleSubmitS(event) {
+  handleSubmitS() {
     let self = this;
     if (!this.state.awaitingConnection) {
       const port = ls.get("conversationId");
@@ -1121,7 +1119,6 @@ export class Chat extends React.Component {
       self.socket.emit("messageOnStream", JSON.stringify(obj));
       //}
     }
-    event.preventDefault();
   }
 
   handleSubmit(event) {
@@ -1404,7 +1401,7 @@ export class Chat extends React.Component {
                   id="fp_embed_player"
                   src={`https://wcs5-eu.flashphoner.com:8888/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${ls.get(
                     "dialogId"
-                  )}&mediaProviders=WebRTC&skin=dark`}
+                  )}&mediaProviders=WebRTC&skin=dark&autoplay=true`}
                   marginWidth="0"
                   marginHeight="0"
                   frameBorder="0"
@@ -1420,8 +1417,8 @@ export class Chat extends React.Component {
                     this.setState({
                       streamFlag: false
                     });
-                    /*this.live.pause();*/
-                    flvPlayer.destroy();
+                    /*this.live.pause();
+                    flvPlayer.destroy();*/
                     ls.set("streamInProgress", false);
                   }}
                 />
