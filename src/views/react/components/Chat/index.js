@@ -37,7 +37,11 @@ function load(url) {
     document.head.appendChild(script);
   });
 }
-var context = new AudioContext();
+let context;
+if (!iOS) {
+  context = new AudioContext();
+}
+
 load(
   "https://witheyezon.com/eyezonsite/static/flashphoner.js" /*"https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"*/
 )
@@ -634,7 +638,9 @@ export class Chat extends React.Component {
           _id: ls.get("dialogId")
         };*/
         //console.log(obj);
-        self.socket.emit("enterDialog", ls.get("dialogId"));
+        if (ls.get("dialogId")) {
+          self.socket.emit("enterDialog", ls.get("dialogId"));
+        }
       });
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
@@ -711,7 +717,10 @@ export class Chat extends React.Component {
                 awaitingConnection: false,
                 photo:
                   /*data.user.photo*/ "https://witheyezon.com/eyezonsite/static/images/logo.png",
-                user: data.user /*.firstName.concat(" ", data.user.lastName)*/,
+                user:
+                  data.user === ls.get("userId")
+                    ? "Вы"
+                    : "Админ" /*.firstName.concat(" ", data.user.lastName)*/,
                 type: type,
                 flv: type === "stream" ? data.attachment.src : null,
                 streamId: type === "stream" ? data.attachment.src : null,
@@ -820,7 +829,9 @@ export class Chat extends React.Component {
                   "https://witheyezon.com/eyezonsite/static/images/logo.png" /*users.filter(user => user.userId === message.userId)[0]
                     .photo*/,
                 user:
-                  message.user /*users
+                  message.user === ls.get("userId")
+                    ? "Вы"
+                    : "Админ" /*users
                     .filter(user => user.userId === message.userId)[0]
                     .firstName.concat(
                       " ",
@@ -1142,6 +1153,18 @@ export class Chat extends React.Component {
         .then(function(response) {
           console.log("U sent the request - thats new response:", response);
           ls.set("dialogId", response.data._id);
+          self.socket.emit("enterDialog", response.data._id);
+          const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+          axios
+            .post(url, {
+              eventType: "SENDED_REQUESTS"
+            })
+            .then(function(response) {
+              console.log("button clicked", response);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
           /*let obj = {
             messageText: value,
             dialogId: response.data._id,
@@ -1303,21 +1326,21 @@ export class Chat extends React.Component {
                 (!this.state.sentHistory || !this.state.sentHistory.status)*/ ? (
                 <JsChatMessagePlaceholder>
                   <PlaceholderMessage>
-                    {/*Не стесняйтесь, спросите!{" "}*/}
-                    We're here to share our eyes with you!
+                    Не стесняйтесь, спросите!
+                    {/*We're here to share our eyes with you!*/}
                   </PlaceholderMessage>
                   <PlaceholderMessage>
-                    {/*Наши сотрудники с радостью ответят на все ваши вопросы*/}
+                    Наши сотрудники с радостью ответят на все ваши вопросы*
                     {/*Участники команд расскажут о проекте и ответят на все
                       интересующие вопросы!
                       
-                      {/**/}
-                    */} Just ask, and our staff will help answer any
+                      {/*
+                    Just ask, and our staff will help answer any*/}
                   </PlaceholderMessage>
 
-                  <PlaceholderMessage>
+                  {/*<PlaceholderMessage>
                     of your questions using the magic of LIVE streams.{" "}
-                  </PlaceholderMessage>
+                  </PlaceholderMessage>*/}
                   <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                 </JsChatMessagePlaceholder>
               ) : (
@@ -1342,11 +1365,11 @@ export class Chat extends React.Component {
                     type="text"
                     value={this.state.value}
                     onChange={this.handleChange}
-                    placeholder="Ask us something ;)"
+                    placeholder="Спросите что-нибудь ;)"
                   />
 
                   <SendRequest type="submit" value="Submit">
-                    Send
+                    {/*Send*/}Отправить
                   </SendRequest>
                 </div>
               </form>
@@ -1420,7 +1443,7 @@ export class Chat extends React.Component {
                 this.handleStreamClick("asdasd");
               }}
             >
-              Send
+              {/*Send*/}Отправить
             </SendRequest>
           </StreamWrapper>
           <VideoWrapper visible={this.state.videoSrc && !this.state.streamFlag}>

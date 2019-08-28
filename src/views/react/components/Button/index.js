@@ -364,12 +364,9 @@ export class Button extends React.Component {
       buttonId: buttonId,
       apiLoading: true
     });
-    //setConversationIdValue(businessId); -------Here
-    //return;
-    //if (this.state.toggle) {
+
     if (!ls.get("dialogId")) {
       if (ls.get("userId")) {
-        //axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
         axios
           .post(
             `https://eyezon.herokuapp.com/api/user/${ls.get("userId")}/dialogs`,
@@ -386,7 +383,6 @@ export class Button extends React.Component {
                   self.state.businessId,
                   response.data.dialogs[0].port._id
                 );
-                console.log("Not supposed to reach here - check if errors");
               }*/
               ls.set("dialogId", response.data.data[0]._id);
               self.showChatHere();
@@ -405,7 +401,6 @@ export class Button extends React.Component {
         self.handleRegistration();
       }
     } else {
-      //axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
       axios
         .post(
           `https://eyezon.herokuapp.com/api/dialog/${ls.get(
@@ -423,22 +418,6 @@ export class Button extends React.Component {
             console.log("dialog id, no dialogs");
             ls.set("dialogId", "");
             self.showChatHere();
-            /*axios
-              .get("https://api.eyezon.app/users/")
-              .then(function(response) {
-                console.log(response);
-                if (response.data.user.dialogsCount > 0) {
-                  console.log("got here");
-                  self.showChatHere();
-                } else {
-                  ls.set("conversationId", "");
-                  //setConversationArray(self.state.businessId, "");
-                  self.showChatHere();
-                }
-              })
-              .catch(function(error) {
-                console.log(error);
-              });*/
           }
         })
         .catch(function(error) {
@@ -447,16 +426,17 @@ export class Button extends React.Component {
           console.log(error);
         });
     }
-    /* } else {
-     console.log("toggle");
-      this.setState({
-        displayMessage: false,
-        displayChat: false,
-        toggle: true
+    const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+    axios
+      .post(url, {
+        eventType: "CLICK"
+      })
+      .then(function(response) {
+        console.log("button clicked", response);
+      })
+      .catch(function(error) {
+        console.log(error);
       });
-
-
-    }*/
   }
 
   componentWillMount() {
