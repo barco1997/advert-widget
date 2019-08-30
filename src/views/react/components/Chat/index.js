@@ -18,7 +18,8 @@ import {
   getLiveIdValue,
   setLiveArray,
   getSentHistory,
-  setSentHistory
+  setSentHistory,
+  getRndInteger
 } from "../../constants";
 import StreamChat from "./streamchat";
 //require("./flv.min.js");
@@ -717,7 +718,13 @@ export class Chat extends React.Component {
                 time: new Date(),
                 awaitingConnection: false,
                 photo:
-                  /*data.user.photo*/ "https://witheyezon.com/eyezonsite/static/images/logo.png",
+                  data.user === ls.get("userId")
+                    ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                        "userIcon"
+                      )}.png`
+                    : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
+                        "adminIcon"
+                      )}.png`,
                 user:
                   data.user === ls.get("userId")
                     ? "Вы"
@@ -823,8 +830,15 @@ export class Chat extends React.Component {
               const editedMessages = messages.map(message => ({
                 text: message.messageText,
                 time: message.createdAt,
+
                 photo:
-                  "https://witheyezon.com/eyezonsite/static/images/logo.png" /*users.filter(user => user.userId === message.userId)[0]
+                  message.user === ls.get("userId")
+                    ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                        "userIcon"
+                      )}.png`
+                    : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
+                        "adminIcon"
+                      )}.png` /*users.filter(user => user.userId === message.userId)[0]
                     .photo*/,
                 user:
                   message.user === ls.get("userId")
@@ -1123,12 +1137,19 @@ export class Chat extends React.Component {
 
   handleSubmit(event) {
     let self = this;
+    const rndUser = getRndInteger(1, 8);
+    const rndAdmin = getRndInteger(1, 2);
     if (!this.state.startedFlag && !this.state.awaitingConnection) {
       const value = this.state.value;
       this.setState({
         messages: [
           ...this.state.messages,
-          { text: value, time: new Date(), id: uuidv1() }
+          {
+            text: value,
+            time: new Date(),
+            id: uuidv1(),
+            photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUser}.png`
+          }
         ],
         value: "",
         awaitingConnection: true,
@@ -1151,6 +1172,8 @@ export class Chat extends React.Component {
           console.log("U sent the request - thats new response:", response);
           ls.set("dialogId", response.data._id);
           self.socket.emit("enterDialog", response.data._id);
+          ls.set("adminIcon", rndAdmin);
+          ls.set("userIcon", rndUser);
           const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
           axios
             .post(url, {
@@ -1260,7 +1283,14 @@ export class Chat extends React.Component {
       this.setState({
         messages: [
           ...this.state.messages,
-          { text: value, time: new Date(), id: uuidv1() }
+          {
+            text: value,
+            time: new Date(),
+            id: uuidv1(),
+            photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+              "userIcon"
+            )}.png`
+          }
         ],
         value: ""
       });
@@ -1401,7 +1431,7 @@ export class Chat extends React.Component {
                   id="fp_embed_player"
                   src={`https://wcs5-eu.flashphoner.com:8888/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${ls.get(
                     "dialogId"
-                  )}&mediaProviders=WebRTC&skin=dark&autoplay=true`}
+                  )}&mediaProviders=WebRTC`}
                   marginWidth="0"
                   marginHeight="0"
                   frameBorder="0"
@@ -1437,7 +1467,6 @@ export class Chat extends React.Component {
             <SendRequest
               onClick={() => {
                 this.handleSubmitS();
-                this.handleStreamClick("asdasd");
               }}
             >
               {/*Send*/}Отправить
