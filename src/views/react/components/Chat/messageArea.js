@@ -117,6 +117,7 @@ export class MessageArea extends React.Component {
         a => a.id === nextProps.strVideo
       );
       propsToCome.messages[indexOfCurrentVideo1].type = "video";
+      console.log("VERY IMPORTANT", propsToCome.messages[indexOfCurrentVideo1]);
       nextProps.handleStreamToVideo();
     }
     if (nextProps.manipulateVideoId) {

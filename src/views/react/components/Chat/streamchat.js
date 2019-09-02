@@ -16,12 +16,11 @@ const MessageContainer = styled.div`
     left: 0 !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: rgba(0, 0, 0, 0.5)
-      /*linear-gradient(
+    background: /*rgba(0, 0, 0, 0.5)*/ linear-gradient(
       180deg,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0.5) 100%
-    )*/ !important;
+    ) !important;
     flex: 1 !important;
     height: 167px !important;
     overflow: auto !important;
@@ -43,6 +42,16 @@ const Response = styled.div`
 
     align-items: center !important;
     color: #ffffff !important;
+    /*-webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ) !important;
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ) !important;*/
     width: 188px !important;
     padding-left: 12px !important;
     margin-bottom: 5px !important;
@@ -93,24 +102,7 @@ export class StreamChat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: this.props.messages || [
-        { id: "123", text: "Hello" },
-        { id: "124", text: "Hello, bro" },
-        { id: "125", text: "Hello" },
-        { id: "126", text: "Hello, bro" },
-        { id: "127", text: "Hello" },
-        { id: "128", text: "Hello, bro" },
-        { id: "129", text: "Hello" },
-        { id: "130", text: "Hello, bro" },
-        { id: "223", text: "Hello" },
-        { id: "224", text: "Hello, bro" },
-        { id: "225", text: "Hello" },
-        { id: "226", text: "Hello, bro" },
-        { id: "227", text: "Hello" },
-        { id: "228", text: "Hello, bro" },
-        { id: "229", text: "Hello" },
-        { id: "230", text: "Hello, bro1" }
-      ]
+      messages: this.props.messages
     };
     this.messageRef = [];
     this.setItems = this.setItems.bind(this);
@@ -159,7 +151,7 @@ export class StreamChat extends React.Component {
               <Response key={message.id || uuidv1()}>{message.text}</Response>
             ))}
           </MessageContainer>
-          <Shader />
+          {/*<Shader />*/}
         </Wrapper>
       </DoubleWrapper>
     );

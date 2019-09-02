@@ -196,7 +196,6 @@ export class Button extends React.Component {
       displayMessage: false,
       displayChat: false,
       initializeChat: ls.get("token") ? true : false,
-      buttonId: this.props.buttonId,
       businessId: this.props.businessId,
       multiButton: false,
       notificationMessageToggle: false,
@@ -216,17 +215,10 @@ export class Button extends React.Component {
   }
 
   handleRegistration() {
-    //let self = this;
-    //const storedToken = ls.get("token");
     //ls.set("conversationPermission", true);
     if (ls.get("userId")) {
-      //axios.defaults.headers.common.Authorization = `Bearer ${ls.get("token")}`;
       this.showChat();
     } else {
-      //const uuidv1 = require("uuid/v1");
-      //const uuidv4 = require("uuid/v4");
-      //const time = uuidv1();
-      //const random = uuidv4();
       const mongoObjectId =
         ((new Date().getTime() / 1000) | 0).toString(16) +
         "xxxxxxxxxxxxxxxx"
@@ -235,44 +227,29 @@ export class Button extends React.Component {
           })
           .toLowerCase();
 
-      //const prefix = "bt_";
-      //const uniqueId = time.concat(random).slice(0, 63);
       ls.set("userId", mongoObjectId);
       this.showChat();
-      //ls.set("uniquePassword", uniquePassword);
-
-      /*axios
-        .post(
-          "https://api.eyezon.app/register/basic",
-          {
-            userId: uniqueId,
-            nickName: "myapiBt",
-            password: uniquePassword,
-            lastName: "Button",
-            firstName: "User",
-            photo:
-              "https://firebasestorage.googleapis.com/v0/b/eyezon-192313.appspot.com/o/photos%2Fbasic_user_photo.jpg?alt=media"
-          },
-          {
-            auth: {
-              username: CLIENT_ID,
-              password: CLIENT_SECRET
-            }
-          }
-        )
+    }
+  }
+  componentDidMount() {
+    let self = this;
+    if (ls.get("userId")) {
+      const url = `https://eyezon.herokuapp.com/api/button/${
+        this.props.buttonId
+      }/unread/${ls.get("userId")}`;
+      axios
+        .get(url)
         .then(function(response) {
-          const token = response.data.access_token;
-          ls.set("token", token);
-          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-          self.showChat();
+          console.log("button UNREAD", response.data.count);
+          self.props.setNotifications(response.data.count);
         })
         .catch(function(error) {
           console.log(error);
-        });*/
+        });
     }
   }
-
-  notifyMe(message, href, businessId) {
+  /*
+  notifyMe(message, href, buttonId) {
     // Проверка поддержки браузером уведомлений
     let options = {
       icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
@@ -292,14 +269,14 @@ export class Button extends React.Component {
           str = str.substring(0, str.indexOf("?open"));
           console.log("string: ", str);
           new_window.location.href = str.concat(
-            "?open=true&businessId=",
-            businessId
+            "?open=true&buttonId=",
+            buttonId
           );
         } else {
           console.log("target");
           new_window.location.href = event.target.data.concat(
-            "?open=true&businessId=",
-            businessId
+            "?open=true&buttonId=",
+            buttonId
           );
         } //set url of newly created window(tab) and focus
         notification.close();
@@ -317,8 +294,67 @@ export class Button extends React.Component {
               new_window.location.href = event.target.data;
             } else {
               new_window.location.href = event.target.data.concat(
-                "?open=true&businessId=",
-                businessId
+                "?open=true&buttonId=",
+                buttonId
+              );
+            }
+            //set url of newly created window(tab) and focus
+            notification.close();
+          };
+        }
+      });
+    }
+  }
+  
+  */
+
+  notifyMe(message, href, buttonId) {
+    // Проверка поддержки браузером уведомлений
+    let options = {
+      icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
+      data: href
+    };
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    }
+    // Проверка разрешения на отправку уведомлений
+    else if (Notification.permission === "granted") {
+      // Если разрешено, то создаем уведомление
+      var notification = new Notification(message, options);
+      notification.onclick = function(event) {
+        var new_window = window.open("", "_blank"); //open empty window(tab)
+        if (event.target.data.includes("?open=true")) {
+          let str = event.target.data;
+          str = str.substring(0, str.indexOf("?open"));
+          console.log("string: ", str);
+          new_window.location.href = str.concat(
+            "?open=true&buttonId=",
+            buttonId
+          );
+        } else {
+          console.log("target");
+          new_window.location.href = event.target.data.concat(
+            "?open=true&buttonId=",
+            buttonId
+          );
+        } //set url of newly created window(tab) and focus
+        notification.close();
+      };
+    }
+    // В противном случае, запрашиваем разрешение
+    else if (Notification.permission !== "denied") {
+      Notification.requestPermission(function(permission) {
+        // Если пользователь разрешил, то создаем уведомление
+        if (permission === "granted") {
+          var notification = new Notification(message, options);
+          notification.onclick = function(event) {
+            var new_window = window.open("", "_blank"); //open empty window(tab)
+            if (event.target.data.includes("?open=true")) {
+              new_window.location.href = event.target.data;
+            } else {
+              new_window.location.href = event.target.data.concat(
+                "?open=true&buttonId=",
+                buttonId
               );
             }
             //set url of newly created window(tab) and focus
@@ -357,6 +393,10 @@ export class Button extends React.Component {
         this.state.notificationMessageToggle
       );
     }
+    if (ls.get("dialogId")) {
+      this.socket.emit("readMessage", ls.get("dialogId"));
+    }
+
     console.log("pressed eyezonButton");
     let self = this;
     self.props.setNotifications(0);
@@ -450,14 +490,31 @@ export class Button extends React.Component {
         transports: ["websocket"],
         upgrade: false
       });
+      this.socket.on("connect", () => {
+        console.log("socket got connected");
+        /*let obj = {
+          _id: ls.get("dialogId")
+        };*/
+        //console.log(obj);
+        if (ls.get("dialogId")) {
+          self.socket.emit("enterDialog", ls.get("dialogId"));
+        }
+      });
       this.socket.on("received", data => {
         /**feature */
         console.log("message data", data);
 
         //() => self.props.setNotificationStatus(true);
         //console.log("initializeChat inside: ", self.props.initializeChat);
-        /*self.props.incrementNotifications();
-        if (self.state.initializeChat && !(self.state.displayChat === false)) {
+        self.props.incrementNotifications();
+        /***Feature****** */
+        if (self.state.initializeChat && self.state.displayChat) {
+          console.log("initializeChat if: ", self.props.initializeChat);
+          console.log("displayFlag if: ", self.state.displayFlag);
+          self.props.decrementNotifications();
+        }
+        /******* */
+        /*if (self.state.initializeChat && !(self.state.displayChat === false)) {
           console.log("initializeChat if: ", self.state.initializeChat);
           console.log("displayFlag if: ", self.state.displayChat);
           self.props.decrementNotifications();
@@ -466,7 +523,7 @@ export class Button extends React.Component {
           this.notifyMe(
             "New message at Eyezon button",
             currentUrl,
-            self.state.businessId
+            self.props.buttonId
           );
         }
       });
@@ -510,13 +567,13 @@ export class Button extends React.Component {
     this.setState({ displayMessage: false });
   }
   destroyChat() {
-    if (!this.state.multiButton) {
+    /*if (!this.state.multiButton) {
       console.log("not multi");
       this.setState({ displayChat: false });
-    } else {
-      console.log("multi");
-      this.setState({ displayChat: false, initializeChat: false });
-    }
+    } else {*/
+    console.log("multi");
+    this.setState({ displayChat: false, initializeChat: false });
+    //}
   }
   showChat() {
     this.setState({
@@ -536,23 +593,25 @@ export class Button extends React.Component {
   }
 
   showChatHere() {
-    if (!this.state.multiButton) {
+    // if (!this.state.multiButton) {
+    /*console.log("BUSINESS_1");
+    this.setState({
+      displayChat: true,
+      displayMessage: false,
+      toggle: false,
+      apiLoading: false
+    });
+    } else {*/
+    console.log("BUSINESS_2");
+    this.setState({ initializeChat: true }, () => {
       this.setState({
         displayChat: true,
         displayMessage: false,
         toggle: false,
         apiLoading: false
       });
-    } else {
-      this.setState({ initializeChat: true }, () => {
-        this.setState({
-          displayChat: true,
-          displayMessage: false,
-          toggle: false,
-          apiLoading: false
-        });
-      });
-    }
+    });
+    //}
   }
 
   render() {
@@ -608,7 +667,7 @@ export class Button extends React.Component {
             destroy={this.destroyChat}
             displayChat={this.state.displayChat}
             businessId={this.state.businessId}
-            buttonId={this.state.buttonId}
+            buttonId={this.props.buttonId}
             initializeChat={this.state.initializeChat}
           />
         )}

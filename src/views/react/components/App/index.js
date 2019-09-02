@@ -44,9 +44,18 @@ export class App extends React.Component {
   }
 
   setNotifications(val) {
-    this.setState({
-      notifications: val
-    });
+    console.log("Set method happened", val);
+    //let obj;
+    if (val > 0) {
+      this.setState({
+        notifications: val,
+        notificationStatus: true
+      });
+    } else {
+      this.setState({
+        notifications: val
+      });
+    }
   }
   incrementNotifications() {
     console.log("Notifications: ");
@@ -58,7 +67,7 @@ export class App extends React.Component {
   }
   decrementNotifications() {
     console.log("Notifications: ");
-    const val = this.state.notifications;
+    const val = this.state.notifications > 0 ? this.state.notifications : 1;
     this.setState({
       notifications: val - 1
     });

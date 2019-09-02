@@ -90,15 +90,16 @@ const VideoWrapper = styled.div`
 const VideoWrapperS = styled.div`
   &&& {
     position: relative !important;
-    width: 319px !important;
+    width: 309px !important;
     height: 553px !important;
     flex-direction: column !important;
     border-radius: 10px !important;
     overflow: hidden !important;
     background: black !important;
-    & > video {
-      width: 100% !important;
-      height: 100% !important;
+    & > iframe {
+      margin-left: -4px !important;
+      width: 319px !important;
+      height: 553px !important;
     }
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
@@ -110,7 +111,7 @@ const VideoWrapperS = styled.div`
   /*position: fixed !important;*/
   border-radius: 0px !important;
   margin-left: 0px !important;
-  background: black !important;
+  
   & > video {
     
   border-radius: 0px !important;
@@ -126,7 +127,7 @@ const StreamWrapper = styled.div`
   
       position: fixed !important;
     `};
-    width: 319px !important;
+    width: 309px !important;
     height: 649px !important;
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
@@ -373,15 +374,18 @@ const SendRequest = styled.button`
 
 const JsChatWindow = styled.div`
   &&& {
-    /*display: flex !important;*/
-    display: ${props =>
-      props.visible ? "flex !important" : "none !important"};
+   display: flex !important;
+     /*display: ${props =>
+       props.visible ? "flex !important" : "none !important"};
+       width: 542px !important;*/
     justify-content: flex-start !important;
     flex-direction: column !important;
-
     background: #fff !important;
-
-    width: 542px !important;
+      /**** Feature ****/
+    overflow: hidden !important;
+    width: ${props => (props.visible ? "542px" : "0")} !important;
+      /**** End     ****/
+    
     height: 553px !important;
 
     box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25) !important;
@@ -467,8 +471,10 @@ const SizedForm = styled.form`
 
 const PlaceholderMessage = styled.div`
   &&& {
+    white-space: pre-line !important;
+    display: block !important;
     text-align: center !important;
-    line-height: 1.4 !important;
+    line-height: 1.3 !important;
   }
 `;
 
@@ -649,41 +655,21 @@ export class Chat extends React.Component {
       });
       this.socket.on("streamToVideo", data => {
         console.log("message got updated", data);
-        this.setState({ streamToVideo: data.messageId });
+        this.setState({ streamToVideo: data.messageId, streamFlag: false });
+        /*this.live.pause();
+        flvPlayer.destroy();*/
+        ls.set("streamInProgress", false);
       });
       this.socket.on("received", data => {
-        /**feature 
-        let notificationCount = ls.get("notificationCount");
-        if (notificationCount) {
-          notificationCount++;
-        } else {
-          notificationCount = 1;
-        }
-        ls.set("notificationCount", notificationCount);
-        //() => self.props.setNotificationStatus(true);
-        console.log("initializeChat inside: ", self.props.initializeChat);
-        self.props.incrementNotifications();
-        if (self.props.initializeChat && !(self.props.displayChat === false)) {
-          console.log("initializeChat if: ", self.props.initializeChat);
-          console.log("displayFlag if: ", self.state.displayFlag);
-          self.props.decrementNotifications();
-        }
-        /********* */
         console.log("message got received", data);
+        self.socket.emit("readMessage", ls.get("dialogId"));
         if (data.userId !== storedId) {
           if (!ls.get("dialogId")) {
             ls.set("dialogId", data._id);
             //setConversationArray(self.props.businessId, data.requestId);
           }
           console.log("u got a reply again", data);
-          //console.log("props: ", self.props);
-          /*if (!iOS) {
-            this.notifyMe(
-              "New message at Eyezon button",
-              currentUrl,
-              self.props.businessId
-            );
-          }*/
+
           let type;
           let source;
           let thumbnail;
@@ -708,6 +694,7 @@ export class Chat extends React.Component {
             ls.set("streamDamnId", data._id);
             setLiveArray(self.props.buttonId, data._id);
             source = data.attachment.src;
+            thumbnail = data.attachment.thumbnail;
           }
           //setSentHistory(self.props.businessId, "", false);
           this.setState({
@@ -827,43 +814,47 @@ export class Chat extends React.Component {
               // console.log("businessId: ", nextProps);
               // if (owner.businessId === nextProps.businessId) {
               console.log(response);
-              const editedMessages = messages.map(message => ({
-                text: message.messageText,
-                time: message.createdAt,
+              const editedMessages = messages
+                .filter(msg => !(msg.type && msg.type === "STREAM"))
+                .map(message => ({
+                  text: message.messageText,
+                  time: message.createdAt,
 
-                photo:
-                  message.user === ls.get("userId")
-                    ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
-                        "userIcon"
-                      )}.png`
-                    : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
-                        "adminIcon"
-                      )}.png` /*users.filter(user => user.userId === message.userId)[0]
+                  photo:
+                    message.user === ls.get("userId")
+                      ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                          "userIcon"
+                        )}.png`
+                      : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
+                          "adminIcon"
+                        )}.png` /*users.filter(user => user.userId === message.userId)[0]
                     .photo*/,
-                user:
-                  message.user === ls.get("userId")
-                    ? "Вы"
-                    : "Админ" /*users
+                  user:
+                    message.user === ls.get("userId")
+                      ? "Вы"
+                      : "Админ" /*users
                     .filter(user => user.userId === message.userId)[0]
                     .firstName.concat(
                       " ",
                       users.filter(user => user.userId === message.userId)[0]
                         .lastName
                     )*/,
-                type: message.attachment
-                  ? message.attachment.type.toLowerCase()
-                  : "message",
-                src: message.attachment ? message.attachment.src : null,
-                thumb:
-                  message.attachment && message.attachment.type === "VIDEO"
-                    ? message.attachment.thumbnail
-                    : null,
-                flv:
-                  message.attachment && message.attachment.type === "STREAM"
-                    ? message.attachment.src
-                    : "",
-                id: message._id
-              }));
+                  type: message.attachment
+                    ? message.attachment.type.toLowerCase()
+                    : "message",
+                  src: message.attachment ? message.attachment.src : null,
+                  thumb:
+                    message.attachment &&
+                    (message.attachment.type === "VIDEO" ||
+                      message.attachment.type === "STREAM")
+                      ? message.attachment.thumbnail
+                      : null,
+                  flv:
+                    message.attachment && message.attachment.type === "STREAM"
+                      ? message.attachment.src
+                      : "",
+                  id: message._id
+                }));
               //console.log("Users - ", users);
 
               self.loadInitialMessages(editedMessages);
@@ -917,34 +908,17 @@ export class Chat extends React.Component {
       streamFlag: true,
       photoSrc: null
     });
-    //let self = this;
-    /*ls.set("streamInProgress", true);
-    ls.set("streamDamnId", id);
-    setLiveArray(this.props.buttonId, id);
-    var session = Flashphoner.createSession({
-      urlServer: "wss://server.witheyezon.com:8443"
-    }).play();
-    session
-      .createStream({
-        name: "ffb140cc",
-        display: this.live
+    const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+    axios
+      .post(url, {
+        eventType: "STREAMS_COUNT"
       })
-      .play();*/
-    /*let url = `wss://server.witheyezon.com:8443/${id}`;
-    let stream = this.live;
-
-    this.live.srcObject = url;*/
-    /*if (iOS) {
-      alert(
-        "Извините, но на iOS стримы пока не поддерживаются,  дождитесь окончания трансляции и просмотрите запись, просим прощения за неудобства"
-      );
-    }*/
-    /*console.log("first success");
-    let obj = {
-      event: "joinRoom",
-      room:  getLiveIdValue(self.props.businessId)
-    };
-    this.socket.emit("port", JSON.stringify(obj));*/
+      .then(function(response) {
+        console.log("STREAM button clicked", response);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   handlePhoto(src) {
@@ -1111,224 +1085,136 @@ export class Chat extends React.Component {
   }
   handleSubmitS() {
     let self = this;
-    if (!this.state.awaitingConnection) {
-      const port = ls.get("conversationId");
-      const value = this.state.valueStream;
-
-      this.setState({
-        messagesStream: [
-          ...this.state.messagesStream,
-          { text: value, time: new Date(), id: uuidv1() }
-        ],
-        valueStream: ""
-      });
-      //if (ls.get("streamInProgress")) {
-      let obj = {
-        messageText: value,
-        dialogId: ls.get("dialogId"),
-        userId: ls.get("userId"),
-        type: "STREAM"
-      };
-      console.log(obj);
-      self.socket.emit("messageOnStream", JSON.stringify(obj));
-      //}
+    const value = this.state.valueStream;
+    if (value.length > 0) {
+      if (!this.state.awaitingConnection) {
+        this.setState({
+          messagesStream: [
+            ...this.state.messagesStream,
+            { text: value, time: new Date(), id: uuidv1() }
+          ],
+          valueStream: ""
+        });
+        //if (ls.get("streamInProgress")) {
+        let obj = {
+          messageText: value,
+          dialogId: ls.get("dialogId"),
+          userId: ls.get("userId"),
+          type: "STREAM"
+        };
+        console.log(obj);
+        self.socket.emit("messageOnStream", JSON.stringify(obj));
+        //}
+      }
     }
   }
 
   handleSubmit(event) {
     let self = this;
+    const value = this.state.value;
     const rndUser = getRndInteger(1, 8);
     const rndAdmin = getRndInteger(1, 2);
-    if (!this.state.startedFlag && !this.state.awaitingConnection) {
-      const value = this.state.value;
-      this.setState({
-        messages: [
-          ...this.state.messages,
-          {
-            text: value,
-            time: new Date(),
-            id: uuidv1(),
-            photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUser}.png`
-          }
-        ],
-        value: "",
-        awaitingConnection: true,
-        lastValue: value
-        /*sentHistory: {
+    if (value.length > 0) {
+      if (!this.state.startedFlag && !this.state.awaitingConnection) {
+        this.setState({
+          messages: [
+            ...this.state.messages,
+            {
+              text: value,
+              time: new Date(),
+              id: uuidv1(),
+              photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUser}.png`
+            }
+          ],
+          value: "",
+          awaitingConnection: true,
+          lastValue: value
+          /*sentHistory: {
           message: { text: value, time: new Date(), id: uuidv1() },
           status: true
         }*/
-      });
+        });
 
-      axios
-        .post("https://eyezon.herokuapp.com/api/dialog", {
-          client: ls.get("userId"),
-          title: value,
-          websiteUrl: currentUrl,
-          button: self.props.buttonId,
-          description: value
-        })
-        .then(function(response) {
-          console.log("U sent the request - thats new response:", response);
-          ls.set("dialogId", response.data._id);
-          self.socket.emit("enterDialog", response.data._id);
-          ls.set("adminIcon", rndAdmin);
-          ls.set("userIcon", rndUser);
-          const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
-          axios
-            .post(url, {
-              eventType: "SENDED_REQUESTS"
-            })
-            .then(function(response) {
-              console.log("button clicked", response);
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-          /*let obj = {
+        axios
+          .post("https://eyezon.herokuapp.com/api/dialog", {
+            client: ls.get("userId"),
+            title: value,
+            websiteUrl: currentUrl,
+            button: self.props.buttonId,
+            description: value
+          })
+          .then(function(response) {
+            console.log("U sent the request - thats new response:", response);
+            ls.set("dialogId", response.data._id);
+            self.socket.emit("enterDialog", response.data._id);
+            ls.set("adminIcon", rndAdmin);
+            ls.set("userIcon", rndUser);
+            const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+            axios
+              .post(url, {
+                eventType: "SENDED_REQUESTS"
+              })
+              .then(function(response) {
+                console.log("button clicked", response);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+            /*let obj = {
             messageText: value,
             dialogId: response.data._id,
             userId: ls.get("userId")
           };
           console.log(obj);
           self.socket.emit("message", JSON.stringify(obj));*/
-          //ls.set("conversationId", members[0]._id);
-        })
-        .catch(function(error) {
-          console.log(error);
+            //ls.set("conversationId", members[0]._id);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      } else if (!this.state.awaitingConnection) {
+        this.setState({
+          messages: [
+            ...this.state.messages,
+            {
+              text: value,
+              time: new Date(),
+              id: uuidv1(),
+              photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                "userIcon"
+              )}.png`
+            }
+          ],
+          value: ""
         });
-
-      /*setSentHistory(
-        self.props.businessId,
-        { text: value, time: new Date(), id: uuidv1() },
-        true
-      );*/
-      /*axios
-        .get(`https://api.eyezon.app/ports?businessId=${self.props.businessId}`)
-        .then(function(response) {
-          const freePorts = response.data.ports.filter(
-            port => !port.isDiscussionInProgress
-          );
-          console.log("The ports needed", freePorts);
-
-          console.log(value);
-          //
-          //
-          //
-          //
-          //
-          if (freePorts.length !== 0) {
-            axios
-              .post(
-                `https://api.eyezon.app/ports/requestBusinessStream/${
-                  self.props.businessId
-                }`,
-                {
-                  message: value,
-                  url: currentUrl
-                }
-              )
-              .then(function(response) {
-                console.log(
-                  "U sent the request - thats new response:",
-                  response
-                );
-
-                //ls.set("conversationId", members[0]._id);
-              })
-              .catch(function(error) {
-                console.log(error);
-              });
-          } else {
-            console.log("The ports with conversation", response.data.ports);
-            response.data.ports.map(port => {
-              axios
-                .get(`https://api.eyezon.app/messages/get/${port._id}/`)
-                .then(function(response) {
-                  //
-                  console.log("Mapping port to messages", response);
-                  self.setState({
-                    existingChats: [
-                      ...self.state.existingChats,
-                      {
-                        port: {
-                          id: port._id,
-                          date: port.waiters[0].date,
-                          request: port.waiters[0].message
-                        },
-                        messages: response.data
-                      }
-                    ]
-                  });
-
-                  //
-                });
-            });
-            //self.setState({
-              //existingChats: response.data.ports
-            //});
-          }
-          //
-          //
-          //
-          //end of temporary code
-        })
-        .catch(function(error) {
-          console.log(error);
-        });*/
-    } else if (!this.state.awaitingConnection) {
-      const port = ls.get("dialogId");
-      const value = this.state.value;
-
-      this.setState({
-        messages: [
-          ...this.state.messages,
-          {
-            text: value,
-            time: new Date(),
-            id: uuidv1(),
-            photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
-              "userIcon"
-            )}.png`
-          }
-        ],
-        value: ""
-      });
-      if (ls.get("streamInProgress")) {
-        let obj = {
-          messageText: value,
-          dialogId: ls.get("dialogId"),
-          userId: ls.get("userId"),
-          type: "DIALOG"
-        };
-        console.log(obj);
-        self.socket.emit("message", JSON.stringify(obj));
-      } else {
-        let obj = {
-          messageText: value,
-          dialogId: ls.get("dialogId"),
-          userId: ls.get("userId"),
-          type: "DIALOG"
-        };
-        console.log(obj);
-        self.socket.emit("message", JSON.stringify(obj));
+        if (ls.get("streamInProgress")) {
+          let obj = {
+            messageText: value,
+            dialogId: ls.get("dialogId"),
+            userId: ls.get("userId"),
+            type: "DIALOG"
+          };
+          console.log(obj);
+          self.socket.emit("message", JSON.stringify(obj));
+        } else {
+          let obj = {
+            messageText: value,
+            dialogId: ls.get("dialogId"),
+            userId: ls.get("userId"),
+            type: "DIALOG"
+          };
+          console.log(obj);
+          self.socket.emit("message", JSON.stringify(obj));
+        }
       }
     }
     event.preventDefault();
   }
 
   render() {
-    console.log("Display flag: ", this.state.displayFlag);
+    //console.log("Display flag: ", this.state.displayFlag);
     return (
       <ChatWrapper displayFlag={this.state.displayFlag}>
-        {/*<NotificationMessageWrapper
-            toggle={this.state.notificationMessageToggle}
-          >
-            <NotificationMessageArrow src="https://witheyezon.com/eyezonsite/static/images/arrow2.svg" />
-            <NotificationMessageText>
-              Включи уведомления, если хочешь получить ответ
-            </NotificationMessageText>
-          </NotificationMessageWrapper>*/}
         <JsChatOverlay
           onClick={() => {
             this.setState({
@@ -1353,21 +1239,15 @@ export class Chat extends React.Component {
                 (!this.state.sentHistory || !this.state.sentHistory.status)*/ ? (
                 <JsChatMessagePlaceholder>
                   <PlaceholderMessage>
-                    Не стесняйтесь, спросите!
-                    {/*We're here to share our eyes with you!*/}
-                  </PlaceholderMessage>
-                  <PlaceholderMessage>
+                    Не стесняйтесь, спросите! {"\n"}
                     Наши сотрудники с радостью ответят на все ваши вопросы*
                     {/*Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!
-                      
-                      {/*
-                    Just ask, and our staff will help answer any*/}
+                      интересующие вопросы!*/}
+                    {/*We're here to share our eyes with you!*/}
+                    {/* Just ask, and our staff will help answer any
+                    of your questions using the magic of LIVE streams.</PlaceholderMessage>*/}
                   </PlaceholderMessage>
 
-                  {/*<PlaceholderMessage>
-                    of your questions using the magic of LIVE streams.{" "}
-                  </PlaceholderMessage>*/}
                   <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                 </JsChatMessagePlaceholder>
               ) : (
@@ -1386,16 +1266,21 @@ export class Chat extends React.Component {
                   sentHistory={this.state.sentHistory}
                 />
               )}
-              <form onSubmit={this.handleSubmit}>
+              <form>
                 <div style={{ flexDirection: "column  !important" }}>
                   <InputFieldA
                     type="text"
                     value={this.state.value}
                     onChange={this.handleChange}
                     placeholder="Спросите что-нибудь ;)"
+                    onKeyPress={event => {
+                      if (event.key === "Enter") {
+                        this.handleSubmit(event);
+                      }
+                    }}
                   />
 
-                  <SendRequest type="submit" value="Submit">
+                  <SendRequest onClick={this.handleSubmit}>
                     {/*Send*/}Отправить
                   </SendRequest>
                 </div>
@@ -1435,8 +1320,6 @@ export class Chat extends React.Component {
                   marginWidth="0"
                   marginHeight="0"
                   frameBorder="0"
-                  width="100%"
-                  height="100%"
                   scrolling="no"
                   allowFullScreen="allowfullscreen"
                 />
@@ -1462,6 +1345,11 @@ export class Chat extends React.Component {
                 value={this.state.valueStream}
                 onChange={this.handleChangeInStream}
                 placeholder="Ask us something ;)"
+                onKeyPress={event => {
+                  if (event.key === "Enter") {
+                    this.handleSubmitS();
+                  }
+                }}
               />
             </TextFieldExtra>
             <SendRequest
