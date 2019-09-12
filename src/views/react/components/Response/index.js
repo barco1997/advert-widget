@@ -37,7 +37,6 @@ const Icon = styled.div`
     background: white !important;
 
     & > img {
-      border-radius: 50% !important;
       width: 100% !important;
       height: 100% !important;
     }

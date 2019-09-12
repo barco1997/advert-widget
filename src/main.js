@@ -1,4 +1,5 @@
 import "./views/global/cleanslate.css";
+import "./views/global/style.css";
 import { react } from "./views/react";
 import "./fonts/fonts.css";
 const supportedAPI = ["init", "message", "react"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)

@@ -1,0 +1,11 @@
+#root {
+  position: absolute !important;
+  top: -8px !important;
+  left: -8px !important;
+}
+
+#root button {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}

@@ -54,6 +54,8 @@ const AwaitingBoxImage = styled.img`
 const NewTextWrap = styled.div`
   &&& {
     line-height: 1.2 !important;
+    overflow: hidden !important;
+    max-width: 220px !important;
   }
 `;
 
@@ -206,9 +208,7 @@ export class MessageArea extends React.Component {
             <AwaitingBoxWrapper>
               <AwaitingBoxImage src="https://witheyezon.com/eyezonsite/static/images/awaiting.svg" />
               <NewTextWrap>
-                Пока кто-то из нашей команды готовиться ответить на ваше
-                сообщение, вы можете свернуть окно и продолжить пользоваться
-                сайтом, вам придет уведомление.
+                {this.props.waitingText}
                 {/*Fun Fact: Our in-store representatives go through a rigorous
                 obstacle course training in order to reach products in the
                 shortest time possible. Feel free to minimize this window,

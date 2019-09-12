@@ -7,9 +7,10 @@ import axios from "axios";
 import ls from "local-storage";
 
 import ReactPlayer from "react-player";
-
+//import Div100vh from "react-div-100vh";
 //import favicon from "./favicon.png";
 //import arrow from "./arrow2.svg";
+import DeviceOrientation, { Orientation } from "react-screen-orientation";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
 import {
@@ -64,23 +65,25 @@ const VideoWrapper = styled.div`
     margin-left: 50px !important;
     border-radius: 10px !important;
     overflow: hidden !important;
-    & > iframe {
+    & > video {
       width: 100% !important;
       height: 100% !important;
     }
     display: ${props =>
       props.visible ? "block !important" : "none !important"};
     ${media.desktop`
-  /*top: 0% !important;*/
+  top: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
+  /*position: absolute;*/
   
-  /*position: fixed !important;*/
+  position: fixed !important;
   border-radius: 0px !important;
   margin-left: 0px !important;
   background: black !important;
   & > video {
-    
+    width: 100% !important;
+  height: 100% !important;
   border-radius: 0px !important;
   }
   `};
@@ -104,16 +107,19 @@ const VideoWrapperS = styled.div`
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
     ${media.desktop`
-  /*top: 0% !important;*/
+  /*top: 0% !important;
+  position: absolute;*/
   width: 100vw !important;
-  height: 100vh !important;
+  height: calc(100vh - 110px) !important;
+  
   
   /*position: fixed !important;*/
   border-radius: 0px !important;
   margin-left: 0px !important;
-  
-  & > video {
-    
+  background: black !important;
+  & > iframe {
+    width: 100vw !important;
+  height: calc(100vh - 110px) !important;
   border-radius: 0px !important;
   }
   `};
@@ -122,16 +128,18 @@ const VideoWrapperS = styled.div`
 
 const StreamWrapper = styled.div`
   &&& {
-    ${media.desktop`
-      top: 0% !important;
-  
-      position: fixed !important;
-    `};
-    width: 309px !important;
-    height: 649px !important;
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
+    width: 309px !important;
+    height: 649px !important;
     flex-direction: column !important;
+    ${media.desktop`
+      top: 0% !important;
+      background: white !important;
+      position: fixed !important;
+      width: 100vw !important;
+      
+    `};
   }
 `;
 
@@ -152,8 +160,8 @@ const PhotoWrapper = styled.div`
   border-radius: 0px !important;
   margin-left: 0px !important;
   & > div {
-    width: 100vw !important;
-  height: 100vh !important;
+    width: 100% !important;
+  height: 100% !important;
   border-radius: 0px !important;
   }
   `};
@@ -163,15 +171,20 @@ const WindowWrapper = styled.div`
   &&& {
     display: flex !important;
     z-index: 10003 !important;
-    position: fixed !important;
-    height: 553px !important;
-    max-width: 85% !important;
+    /*
     top: 50% !important;
     margin-top: -276px !important;
     bottom: 15% !important;
+    */
+    height: 553px !important;
+    max-width: 85% !important;
+
     ${media.desktop`
+      position: absolute !important;
       top: 0% !important;
-      margin-top: 0px !important;
+      left: 0% !important;
+      max-width: 100% !important;
+      /*margin-top: 0px !important;*/
       height: auto !important;
   `};
     ${media.tablet`
@@ -182,15 +195,15 @@ const WindowWrapper = styled.div`
   }
 `;
 
-const CloseButtonB = styled.span`
+const CloseButton = styled.span`
   &&& {
     position: relative !important;
     display: block !important;
-    left: 0px !important;
-    top: 0px !important;
+    left: 2px !important;
+    top: 3.5px !important;
     width: 14px !important;
     height: 14px !important;
-    opacity: 0.3 !important;
+    opacity: 0.6 !important;
     &:hover {
       opacity: 1 !important;
     }
@@ -209,35 +222,11 @@ const CloseButtonB = styled.span`
     &:after {
       transform: rotate(-45deg) !important;
     }
-  }
-`;
-const CloseButtonC = styled.span`
-  &&& {
-    position: relative !important;
-    display: block !important;
-    left: 0px !important;
-    top: 0px !important;
-    width: 14px !important;
-    height: 14px !important;
-    opacity: 0.3 !important;
-    &:hover {
-      opacity: 1 !important;
-    }
-    &:before,
-    &:after {
-      position: absolute !important;
-      left: 7px !important;
-      content: " " !important;
-      height: 14px !important;
-      width: 3px !important;
-      background-color: #333 !important;
-    }
-    &:before {
-      transform: rotate(45deg) !important;
-    }
-    &:after {
-      transform: rotate(-45deg) !important;
-    }
+    ${media.desktop`
+    left: 2px !important;
+      
+      
+  `};
   }
 `;
 const CloseWrapper = styled.div`
@@ -245,15 +234,13 @@ const CloseWrapper = styled.div`
     position: absolute !important;
     right: 14px !important;
     top: 14px !important;
+    background: rgba(255, 255, 255, 0.4) !important;
+    width: 21px !important;
+    height: 21px !important;
+    border-radius: 50% !important;
   }
 `;
-const CloseWrapperB = styled.div`
-  &&& {
-    position: absolute !important;
-    right: 14px !important;
-    top: 14px !important;
-  }
-`;
+
 const CloseWrapperA = styled.div`
   &&& {
     position: absolute !important;
@@ -261,8 +248,8 @@ const CloseWrapperA = styled.div`
 
     top: 14px !important;
     ${media.desktop`
-  top: -14px !important;
-  right: 0px !important;
+      top: -14px !important;
+      right: 0px !important;
   `};
   }
 `;
@@ -270,11 +257,16 @@ const CloseWrapperA = styled.div`
 const ChatWrapper = styled.div`
   &&& {
     color: black !important;
-    width: 100% !important;
+    width: 100vw !important;
+    height: 100vh !important;
     display: ${props =>
       props.displayFlag ? "flex !important" : "none !important"};
     justify-content: center !important;
+    align-items: center !important;
     font-family: "Mont" !important;
+    ${media.tablet`
+    justify-content: flex-start !important;
+  `};
   }
 `;
 
@@ -297,6 +289,13 @@ const InputFieldA = styled.input`
       color: rgba(0, 0, 0, 0.2) !important;
       font-weight: 600 !important;
     }
+    ${media.desktop`
+      
+      width: ${props =>
+        props.stream ? "calc(100% - 20px)" : "100%"} !important;
+        margin-left: ${props => (props.stream ? "10px" : "0px")} !important;
+      
+  `};
   }
 `;
 
@@ -365,9 +364,13 @@ const SendRequest = styled.button`
     font-weight: normal !important;
     font-family: "Mont" !important;
     ${media.desktop`
-  width: calc(100% - 10px) !important;
-  height: 40px !important;
-  font-size: 14px !important;
+      width: ${props =>
+        props.stream ? "calc(100% - 26px)" : "calc(100% - 10px)"}!important;
+      height: 40px !important;
+      font-size: 14px !important;
+      margin-right: ${props => (props.stream ? "0px" : "5px")}!important;
+      margin-left: ${props => (props.stream ? "8px" : "0px")}!important;
+      margin-top: 10px !important;
   `};
   }
 `;
@@ -391,7 +394,7 @@ const JsChatWindow = styled.div`
     box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25) !important;
     border-radius: 6px !important;
     ${media.desktop`
-  height: 100vh !important;
+  height: ${props => (props.height ? `${props.height}px` : "100%")} !important;
   width: 100vw !important;
   border-radius: 0px !important;
   & > :first-child {
@@ -412,7 +415,7 @@ const JsChatOverlay = styled.div`
     opacity: 0.4 !important;
     background-color: #000 !important;
     ${media.desktop`
-  display: none !important;
+      display: none !important;
   `};
   }
 `;
@@ -481,7 +484,9 @@ const PlaceholderMessage = styled.div`
 const TextFieldExtra = styled.div`
   &&& {
     margin-top: 20px !important;
-    /*width: 272px !important;*/
+    ${media.android`
+    margin-top: 10px !important;
+    `};
   }
 `;
 
@@ -536,7 +541,8 @@ export class Chat extends React.Component {
       flvPlayer: null,
       transactionLimit: 50,
       sentHistory: null,
-      valueStream: ""
+      valueStream: "",
+      innerHeight: window.innerHeight
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -552,6 +558,27 @@ export class Chat extends React.Component {
     this.notifyMe = this.notifyMe.bind(this);
     this.notificationPermission = this.notificationPermission.bind(this);
     this.handleChangeInStream = this.handleChangeInStream.bind(this);
+    this.handleChangeOrientation = this.handleChangeOrientation.bind(this);
+    this.orientationChanged = this.orientationChanged.bind(this);
+    this.handleChangeOrientationWrapper = this.handleChangeOrientationWrapper.bind(
+      this
+    );
+  }
+
+  orientationChanged() {
+    const timeout = 120;
+    return new window.Promise(function(resolve) {
+      const go = (i, height0) => {
+        window.innerHeight != height0 || i >= timeout
+          ? resolve()
+          : window.requestAnimationFrame(() => go(i + 1, height0));
+      };
+      go(0, window.innerHeight);
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("onorientationchange", this.handleResize);
   }
 
   notifyMe(message, href, buttonId) {
@@ -1210,7 +1237,29 @@ export class Chat extends React.Component {
     }
     event.preventDefault();
   }
-
+  handleChangeOrientation() {
+    let self = this;
+    this.orientationChanged().then(function() {
+      /*self.setState({
+        innerHeight: window.innerHeight
+      });*/
+      self.forceUpdate();
+      console.log("onorientationchange", window.innerHeight);
+    });
+  }
+  handleChangeOrientationWrapper() {
+    let self = this; // Store `this` component outside the callback
+    if ("onorientationchange" in window) {
+      window.addEventListener(
+        "orientationchange",
+        self.handleChangeOrientation,
+        false
+      );
+    }
+  }
+  componentDidMount() {
+    this.handleChangeOrientationWrapper();
+  }
   render() {
     //console.log("Display flag: ", this.state.displayFlag);
     return (
@@ -1231,7 +1280,10 @@ export class Chat extends React.Component {
         />
 
         <WindowWrapper>
-          <JsChatWindow visible={!this.state.streamFlag}>
+          <JsChatWindow
+            visible={!this.state.streamFlag}
+            height={window.innerHeight}
+          >
             <JsChatMessageContainer>
               {!this.state.messages ||
               this.state.messages.length ==
@@ -1239,8 +1291,7 @@ export class Chat extends React.Component {
                 (!this.state.sentHistory || !this.state.sentHistory.status)*/ ? (
                 <JsChatMessagePlaceholder>
                   <PlaceholderMessage>
-                    Не стесняйтесь, спросите! {"\n"}
-                    Наши сотрудники с радостью ответят на все ваши вопросы*
+                    {this.props.greetingText}
                     {/*Участники команд расскажут о проекте и ответят на все
                       интересующие вопросы!*/}
                     {/*We're here to share our eyes with you!*/}
@@ -1264,6 +1315,7 @@ export class Chat extends React.Component {
                   existingChats={this.state.existingChats}
                   transactionLimit={this.state.transactionLimit}
                   sentHistory={this.state.sentHistory}
+                  waitingText={this.props.waitingText}
                 />
               )}
               <form>
@@ -1286,7 +1338,7 @@ export class Chat extends React.Component {
                 </div>
               </form>
               <CloseWrapperA visibleExtra={this.state.photoSrc}>
-                <CloseButtonC
+                <CloseButton
                   onClick={() => {
                     this.setState({
                       streamFlag: false
@@ -1301,6 +1353,7 @@ export class Chat extends React.Component {
               </CloseWrapperA>
             </JsChatMessageContainer>
           </JsChatWindow>
+
           <StreamWrapper visible={this.state.streamFlag /*true*/}>
             <VideoWrapperS visible={this.state.streamFlag /*true*/}>
               {/*<video
@@ -1325,7 +1378,7 @@ export class Chat extends React.Component {
                 />
               )}
               <CloseWrapper>
-                <CloseButtonC
+                <CloseButton
                   onClick={() => {
                     this.setState({
                       streamFlag: false
@@ -1341,10 +1394,11 @@ export class Chat extends React.Component {
             </VideoWrapperS>
             <TextFieldExtra>
               <InputFieldA
+                stream
                 type="text"
                 value={this.state.valueStream}
                 onChange={this.handleChangeInStream}
-                placeholder="Ask us something ;)"
+                placeholder="Спросите что-нибудь ;)"
                 onKeyPress={event => {
                   if (event.key === "Enter") {
                     this.handleSubmitS();
@@ -1353,6 +1407,7 @@ export class Chat extends React.Component {
               />
             </TextFieldExtra>
             <SendRequest
+              stream
               onClick={() => {
                 this.handleSubmitS();
               }}
@@ -1383,7 +1438,7 @@ export class Chat extends React.Component {
               }}
             />
             <CloseWrapper>
-              <CloseButtonC
+              <CloseButton
                 onClick={() => {
                   this.setState({
                     videoSrc: null,
@@ -1398,15 +1453,15 @@ export class Chat extends React.Component {
           </VideoWrapper>
           <PhotoWrapper visible={this.state.photoSrc}>
             <Image src={this.state.photoSrc}>
-              <CloseWrapperB>
-                <CloseButtonB
+              <CloseWrapper>
+                <CloseButton
                   onClick={() => {
                     this.setState({
                       photoSrc: null
                     });
                   }}
                 />
-              </CloseWrapperB>
+              </CloseWrapper>
             </Image>
           </PhotoWrapper>
         </WindowWrapper>

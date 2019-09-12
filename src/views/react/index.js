@@ -14,6 +14,13 @@ export function react(params, ifOpened, buttons) {
     elements.push(temporary.children[0]);
     body.appendChild(temporary.children[0]);
   }
+  window.addEventListener("scroll", () => {
+    document.documentElement.style.setProperty(
+      "--scroll-y",
+      `${window.scrollY}px`
+    );
+  });
+  console.log("marginLeft", body.style);
   ReactDOM.render(
     <React.Fragment>
       <App

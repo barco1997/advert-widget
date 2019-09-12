@@ -10,11 +10,22 @@ import { CLIENT_ID, CLIENT_SECRET } from "./constants";
 import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
+//import disableScroll from "disable-scroll";
 const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let currentUrl = window.location.href;
+//const bodyScroll = require("body-scroll-toggle");
+let ifMobile =
+  navigator.userAgent.match(/Android/i) ||
+  navigator.userAgent.match(/webOS/i) ||
+  navigator.userAgent.match(/iPhone/i) ||
+  navigator.userAgent.match(/iPad/i) ||
+  navigator.userAgent.match(/iPod/i) ||
+  navigator.userAgent.match(/BlackBerry/i) ||
+  navigator.userAgent.match(/Windows Phone/i);
+
 if (storedToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
 }
@@ -188,6 +199,29 @@ const JsButtonInfo = styled.div`
   }
 `;
 
+const disableScroll = () => {
+  //document.body.classList.add("unscrollable");
+  if (ifMobile) {
+    const scrollY = document.documentElement.style.getPropertyValue(
+      "--scroll-y"
+    );
+    const body = document.body;
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}`;
+  }
+};
+
+const enableScroll = () => {
+  //document.body.classList.remove("unscrollable");
+  if (ifMobile) {
+    const body = document.body;
+    const scrollY = body.style.top;
+    body.style.position = "";
+    body.style.top = "";
+    window.scrollTo(0, parseInt(scrollY || "0") * -1);
+  }
+};
+
 export class Button extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -248,65 +282,6 @@ export class Button extends React.Component {
         });
     }
   }
-  /*
-  notifyMe(message, href, buttonId) {
-    // Проверка поддержки браузером уведомлений
-    let options = {
-      icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
-      data: href
-    };
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
-    }
-    // Проверка разрешения на отправку уведомлений
-    else if (Notification.permission === "granted") {
-      // Если разрешено, то создаем уведомление
-      var notification = new Notification(message, options);
-      notification.onclick = function(event) {
-        var new_window = window.open("", "_blank"); //open empty window(tab)
-        if (event.target.data.includes("?open=true")) {
-          let str = event.target.data;
-          str = str.substring(0, str.indexOf("?open"));
-          console.log("string: ", str);
-          new_window.location.href = str.concat(
-            "?open=true&buttonId=",
-            buttonId
-          );
-        } else {
-          console.log("target");
-          new_window.location.href = event.target.data.concat(
-            "?open=true&buttonId=",
-            buttonId
-          );
-        } //set url of newly created window(tab) and focus
-        notification.close();
-      };
-    }
-    // В противном случае, запрашиваем разрешение
-    else if (Notification.permission !== "denied") {
-      Notification.requestPermission(function(permission) {
-        // Если пользователь разрешил, то создаем уведомление
-        if (permission === "granted") {
-          var notification = new Notification(message, options);
-          notification.onclick = function(event) {
-            var new_window = window.open("", "_blank"); //open empty window(tab)
-            if (event.target.data.includes("?open=true")) {
-              new_window.location.href = event.target.data;
-            } else {
-              new_window.location.href = event.target.data.concat(
-                "?open=true&buttonId=",
-                buttonId
-              );
-            }
-            //set url of newly created window(tab) and focus
-            notification.close();
-          };
-        }
-      });
-    }
-  }
-  
-  */
 
   notifyMe(message, href, buttonId) {
     // Проверка поддержки браузером уведомлений
@@ -492,39 +467,33 @@ export class Button extends React.Component {
       });
       this.socket.on("connect", () => {
         console.log("socket got connected");
-        /*let obj = {
-          _id: ls.get("dialogId")
-        };*/
-        //console.log(obj);
         if (ls.get("dialogId")) {
           self.socket.emit("enterDialog", ls.get("dialogId"));
         }
       });
       this.socket.on("received", data => {
         /**feature */
-        console.log("message data", data);
 
-        //() => self.props.setNotificationStatus(true);
-        //console.log("initializeChat inside: ", self.props.initializeChat);
-        self.props.incrementNotifications();
-        /***Feature****** */
-        if (self.state.initializeChat && self.state.displayChat) {
-          console.log("initializeChat if: ", self.props.initializeChat);
-          console.log("displayFlag if: ", self.state.displayFlag);
-          self.props.decrementNotifications();
-        }
-        /******* */
-        /*if (self.state.initializeChat && !(self.state.displayChat === false)) {
-          console.log("initializeChat if: ", self.state.initializeChat);
-          console.log("displayFlag if: ", self.state.displayChat);
-          self.props.decrementNotifications();
-        }*/
-        if (!iOS) {
-          this.notifyMe(
-            "New message at Eyezon button",
-            currentUrl,
-            self.props.buttonId
-          );
+        if (data.user !== ls.get("userId")) {
+          console.log("message data", data);
+
+          self.props.incrementNotifications();
+
+          /***Feature****** */
+          if (self.state.initializeChat && self.state.displayChat) {
+            console.log("initializeChat if: ", self.props.initializeChat);
+            console.log("displayFlag if: ", self.state.displayFlag);
+            self.props.decrementNotifications();
+          }
+          /******* */
+
+          if (!iOS) {
+            this.notifyMe(
+              "New message at Eyezon button",
+              currentUrl,
+              self.props.buttonId
+            );
+          }
         }
       });
     }
@@ -573,6 +542,7 @@ export class Button extends React.Component {
     } else {*/
     console.log("multi");
     this.setState({ displayChat: false, initializeChat: false });
+    enableScroll();
     //}
   }
   showChat() {
@@ -582,6 +552,7 @@ export class Button extends React.Component {
       initializeChat: true,
       apiLoading: false
     });
+    disableScroll();
   }
 
   showMessageHere() {
@@ -611,12 +582,25 @@ export class Button extends React.Component {
         apiLoading: false
       });
     });
+    disableScroll();
     //}
   }
 
+  /*componentDidUpdate(prevProps) {
+    if (
+      this.props.greetingText &&
+      this.props.greetingText !== prevProps.greetingText
+    ) {
+      this.setState({
+        greetingText: this.props.greetingText,
+        waitingText: this.props.waitingText
+      });
+    }
+  }*/
+
   render() {
     const isOpen = this.state.toggle;
-    //console.log("BUSINESS_2", this.state.businessId);
+    console.log("BUSINESS_2", this.state.greetingText);
 
     return (
       <ButtonReqWrapper>
@@ -669,6 +653,8 @@ export class Button extends React.Component {
             businessId={this.state.businessId}
             buttonId={this.props.buttonId}
             initializeChat={this.state.initializeChat}
+            greetingText={this.props.greetingText}
+            waitingText={this.props.waitingText}
           />
         )}
       </ButtonReqWrapper>

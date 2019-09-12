@@ -10,7 +10,11 @@ export class App extends React.Component {
     super(props, context);
     this.state = {
       notifications: 0,
-      notificationStatus: false
+      notificationStatus: false,
+      greetingText:
+        "Не стесняйтесь, спросите!\n Наши сотрудники с радостью ответят на все ваши вопросы",
+      waitingText:
+        "Пока кто-то из нашей команды готовиться ответить на ваше\n сообщение, вы можете свернуть окно и продолжить пользоваться\n сайтом, вам придет уведомление."
     };
     this.setNotifications = this.setNotifications.bind(this);
     this.incrementNotifications = this.incrementNotifications.bind(this);
@@ -22,25 +26,21 @@ export class App extends React.Component {
     let self = this;
     const buttonId = this.props.buttonId;
     const userId = ls.get("userId");
-    /*if (userId) {
-      url = `https://eyezon.herokuapp.com/api/button/${buttonId}/unreaded/${userId}`;
-      axios
-        .get(url)
-        .then(function(response) {
-          //let notificationCount = ls.get("notificationCount");
-          console.log(response);
-          //console.log(notificationCount);
-          /*if (response.answers > 0) {
-          self.setState({
-            notifications: response.answers,
-            notificationStatus: true
-          });
-        }
-        })
-        .catch(function(error) {
-          console.log(error);
+
+    const url = `https://eyezon.herokuapp.com/api/button/${buttonId}`;
+    axios
+      .get(url)
+      .then(function(response) {
+        //let notificationCount = ls.get("notificationCount");
+        console.log("INITIAL STUFF", response);
+        self.setState({
+          greetingText: response.data.greetingText,
+          waitingText: response.data.waitingText
         });
-}*/
+      })
+      .catch(function(error) {
+        console.log("INITIAL ERROR", error);
+      });
   }
 
   setNotifications(val) {
@@ -87,6 +87,8 @@ export class App extends React.Component {
           notifications={this.state.notifications}
           setNotifications={this.setNotifications}
           decrementNotifications={this.decrementNotifications}
+          greetingText={this.state.greetingText}
+          waitingText={this.state.waitingText}
         />
       </React.Fragment>
     );
