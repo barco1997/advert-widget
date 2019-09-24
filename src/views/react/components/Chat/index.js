@@ -65,6 +65,7 @@ const VideoWrapper = styled.div`
     margin-left: 50px !important;
     border-radius: 10px !important;
     overflow: hidden !important;
+    position: relative !important;
     & > video {
       width: 100% !important;
       height: 100% !important;
@@ -75,7 +76,7 @@ const VideoWrapper = styled.div`
   top: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
-  /*position: absolute;*/
+  /*position: realive;*/
   
   position: fixed !important;
   border-radius: 0px !important;
@@ -110,7 +111,7 @@ const VideoWrapperS = styled.div`
   /*top: 0% !important;
   position: absolute;*/
   width: 100vw !important;
-  height: calc(100vh - 110px) !important;
+  height: calc(100% - 146px) !important;
   
   
   /*position: fixed !important;*/
@@ -119,7 +120,7 @@ const VideoWrapperS = styled.div`
   background: black !important;
   & > iframe {
     width: 100vw !important;
-  height: calc(100vh - 110px) !important;
+  height: 100vh !important;
   border-radius: 0px !important;
   }
   `};
@@ -138,7 +139,8 @@ const StreamWrapper = styled.div`
       background: white !important;
       position: fixed !important;
       width: 100vw !important;
-      
+      height: ${props =>
+        props.height ? `${props.height}px` : "auto"} !important;
     `};
   }
 `;
@@ -259,6 +261,10 @@ const ChatWrapper = styled.div`
     color: black !important;
     width: 100vw !important;
     height: 100vh !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 10000 !important;
     display: ${props =>
       props.displayFlag ? "flex !important" : "none !important"};
     justify-content: center !important;
@@ -272,7 +278,7 @@ const ChatWrapper = styled.div`
 
 const InputFieldA = styled.input`
   &&& {
-    height: 28px !important;
+    height: 30px !important;
     color: black !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -290,7 +296,8 @@ const InputFieldA = styled.input`
       font-weight: 600 !important;
     }
     ${media.desktop`
-      
+    font-size: 16px !important;
+      height: 44px !important;
       width: ${props =>
         props.stream ? "calc(100% - 20px)" : "100%"} !important;
         margin-left: ${props => (props.stream ? "10px" : "0px")} !important;
@@ -349,7 +356,7 @@ const SendRequest = styled.button`
     height: 28px !important;
     background: #ff2d55 !important;
     border-radius: 100px !important;
-    margin-top: 15px !important;
+    margin-top: 10px !important;
     text-decoration: none !important;
     border-width: 0px !important;
     box-shadow: none !important;
@@ -366,11 +373,11 @@ const SendRequest = styled.button`
     ${media.desktop`
       width: ${props =>
         props.stream ? "calc(100% - 26px)" : "calc(100% - 10px)"}!important;
-      height: 40px !important;
-      font-size: 14px !important;
+      height: 48px !important;
+      font-size: 16px !important;
       margin-right: ${props => (props.stream ? "0px" : "5px")}!important;
       margin-left: ${props => (props.stream ? "8px" : "0px")}!important;
-      margin-top: 10px !important;
+      margin-top: 16px !important;
   `};
   }
 `;
@@ -435,7 +442,7 @@ const JsChatMessageContainer = styled.div`
   width: auto !important;
   padding: 0px !important;
   margin: 0px 15px !important;
-  margin-bottom: 80px !important;
+  margin-bottom: 20px !important;
   `};
     ${media.android`
   max-width: 300px !important;
@@ -448,12 +455,12 @@ const JsChatMessagePlaceholder = styled.div`
     font-size: 13px !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     align-items: center !important;
     color: rgba(0, 0, 0, 0.5) !important;
     flex: 1 !important;
     & > :first-child {
-      margin-top: 80px !important;
+      margin-top: -20px !important;
     }
   }
 `;
@@ -465,19 +472,13 @@ const JsChatEmpty = styled.img`
   }
 `;
 
-const SizedForm = styled.form`
-  &&& {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-`;
-
 const PlaceholderMessage = styled.div`
   &&& {
     white-space: pre-line !important;
     display: block !important;
     text-align: center !important;
     line-height: 1.3 !important;
+    font-size: 14px !important;
   }
 `;
 
@@ -541,8 +542,7 @@ export class Chat extends React.Component {
       flvPlayer: null,
       transactionLimit: 50,
       sentHistory: null,
-      valueStream: "",
-      innerHeight: window.innerHeight
+      valueStream: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1258,7 +1258,7 @@ export class Chat extends React.Component {
     }
   }
   componentDidMount() {
-    this.handleChangeOrientationWrapper();
+    //this.handleChangeOrientationWrapper();
   }
   render() {
     //console.log("Display flag: ", this.state.displayFlag);
@@ -1282,7 +1282,7 @@ export class Chat extends React.Component {
         <WindowWrapper>
           <JsChatWindow
             visible={!this.state.streamFlag}
-            height={window.innerHeight}
+            height={this.props.innerHeight}
           >
             <JsChatMessageContainer>
               {!this.state.messages ||
@@ -1354,7 +1354,10 @@ export class Chat extends React.Component {
             </JsChatMessageContainer>
           </JsChatWindow>
 
-          <StreamWrapper visible={this.state.streamFlag /*true*/}>
+          <StreamWrapper
+            height={this.props.innerHeight}
+            visible={this.state.streamFlag /*true*/}
+          >
             <VideoWrapperS visible={this.state.streamFlag /*true*/}>
               {/*<video
                 id="live"
@@ -1367,7 +1370,7 @@ export class Chat extends React.Component {
               {true && (
                 <iframe
                   id="fp_embed_player"
-                  src={`https://wcs5-eu.flashphoner.com:8888/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${ls.get(
+                  src={`https://wcs5-eu.flashphoner.com:8444/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${ls.get(
                     "dialogId"
                   )}&mediaProviders=WebRTC`}
                   marginWidth="0"

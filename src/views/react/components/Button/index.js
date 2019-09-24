@@ -69,7 +69,7 @@ const NotificationMessageText = styled.span`
 
 const ApiOverlay = styled.div`
   &&& {
-    z-index: 10002 !important;
+    z-index: 20002 !important;
     position: fixed !important;
     top: 0px !important;
     bottom: 0px !important;
@@ -80,9 +80,9 @@ const ApiOverlay = styled.div`
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    ${media.desktop`
-  display: none !important;
-  `};
+    /*${media.desktop`
+    position: absolute !important;
+  `};*/
   }
 `;
 
@@ -97,7 +97,7 @@ const ButtonWrapper = styled.button`
     outline: 0 !important;
     /*overflow: hidden !important;*/
     position: fixed !important;
-    z-index: 10001 !important;
+    z-index: 9998 !important;
     background: #fff !important;
     right: 2% !important;
     bottom: 30px !important;
@@ -233,7 +233,8 @@ export class Button extends React.Component {
       businessId: this.props.businessId,
       multiButton: false,
       notificationMessageToggle: false,
-      apiLoading: false
+      apiLoading: false,
+      innerHeight: window.innerHeight
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -541,7 +542,11 @@ export class Button extends React.Component {
       this.setState({ displayChat: false });
     } else {*/
     console.log("multi");
-    this.setState({ displayChat: false, initializeChat: false });
+    this.setState({
+      displayChat: false,
+      initializeChat: false,
+      innerHeight: window.innerHeight
+    });
     enableScroll();
     //}
   }
@@ -655,6 +660,7 @@ export class Button extends React.Component {
             initializeChat={this.state.initializeChat}
             greetingText={this.props.greetingText}
             waitingText={this.props.waitingText}
+            innerHeight={this.state.innerHeight}
           />
         )}
       </ButtonReqWrapper>

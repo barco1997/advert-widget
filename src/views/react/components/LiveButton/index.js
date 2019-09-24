@@ -18,8 +18,8 @@ const ButtonWrapper = styled.div`
     border-radius: 100px !important;
     font-size: 12px !important;
     display: flex !important;
-    width: 128px !important;
-    height: 28px !important;
+    width: 142px !important;
+    height: 36px !important;
     justify-content: center !important;
     align-items: center !important;
     font-family: "Mont" !important;
@@ -91,13 +91,9 @@ export class Button extends React.Component {
   render() {
     const isOpen = this.state.wasWatched;
     return (
-      <Layer3 watched={isOpen}>
-        <Layer2 watched={isOpen}>
-          <ButtonWrapper watched={isOpen} onClick={() => this.handleClick()}>
-            <div>{this.props.children}</div>
-          </ButtonWrapper>
-        </Layer2>
-      </Layer3>
+      <ButtonWrapper onClick={() => this.handleClick()}>
+        <div>{this.props.children}</div>
+      </ButtonWrapper>
     );
   }
 }

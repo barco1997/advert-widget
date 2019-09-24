@@ -24,48 +24,10 @@ const MessageContainer = styled.div`
 
 const AwaitingBoxWrapper = styled.div`
   &&& {
-    width: 270px !important;
+    width: 100% !important;
     height: 80px !important;
-    position: relative !important;
-    & > div {
-      position: absolute !important;
-      left: 0px !important;
-      top: 0px !important;
-      opacity: 0.4 !important;
-      font-size: 10px !important;
-      font-family: "Mont" !important;
-      font-weight: normal !important;
-      padding: 20px !important;
-      padding-left: 30px !important;
-    }
-  }
-`;
-const AwaitingBoxImage = styled.img`
-  &&& {
-    width: 300px !important;
-
-    object-fit: contain !important;
-    position: absolute !important;
-    left: 0px !important;
-    top: 0px !important;
-  }
-`;
-
-const NewTextWrap = styled.div`
-  &&& {
-    line-height: 1.2 !important;
-    overflow: hidden !important;
-    max-width: 220px !important;
-  }
-`;
-
-const SelectChatsText = styled.div`
-  &&& {
     display: flex !important;
     justify-content: center !important;
-    text-align: center !important;
-    align-items: center !important;
-    margin: 70px 30px !important;
   }
 `;
 
@@ -76,6 +38,21 @@ const ConnectingText = styled.span`
     font-size: 10px !important;
     line-height: 1.3 !important;
     color: rgba(0, 0, 0, 0.5) !important;
+  }
+`;
+
+const PlaceholderMessage = styled.div`
+  &&& {
+    white-space: pre-line !important;
+    display: block !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
+    font-size: 14px !important;
+    font-family: "Mont" !important;
+    font-weight: 500 !important;
+    opacity: 0.4 !important;
+
+    padding: 36px 0px !important;
   }
 `;
 
@@ -95,26 +72,6 @@ export class MessageArea extends React.Component {
   componentWillReceiveProps(nextProps) {
     let propsToCome = nextProps;
     if (nextProps.strVideo !== null) {
-      /*console.log("one step further", nextProps.strVideo);
-      const index = nextProps.messages
-        .slice()
-        .reverse()
-        .findIndex(a => a.type === "stream");
-      const count = nextProps.messages.length - 1;
-      const finalIndex = index >= 0 ? count - index : index;
-      
-      
-      this.setState({
-        streamIndexVal: [
-          ...this.state.streamIndexVal,
-          {
-            index: finalIndex,
-            src: nextProps.strVideo.src,
-            thumb: nextProps.strVideo.thumbnail
-          }
-        ]
-      });*/
-
       let indexOfCurrentVideo1 = nextProps.messages.findIndex(
         a => a.id === nextProps.strVideo
       );
@@ -164,16 +121,6 @@ export class MessageArea extends React.Component {
           this.messageList = c;
         }}
       >
-        {/*this.props.sentHistory.status && !(this.state.messages.length > 0) && (
-          <Response
-            title={this.props.sentHistory.message.text}
-            description={this.props.sentHistory.message.user || "Вы"}
-            date={this.props.sentHistory.message.time}
-            icon={this.props.sentHistory.message.photo}
-            type={this.props.sentHistory.message.type}
-            transactionLimit={this.props.transactionLimit}
-          />
-        )*/}
         {this.state.messages.map((message, index) => (
           <Response
             key={message.id || uuidv1()}
@@ -197,46 +144,19 @@ export class MessageArea extends React.Component {
           />
         ))}
         {this.state.awaitingConnection && (
-          /*!(
-          this.props.existingChats.length > 0
-        ) */ /*||
-          this.props.sentHistory.status &&*/ <div>
-            <ConnectingText>
-              Идет подключение ...
-              {/*Connecting ...*/}
-            </ConnectingText>
+          <div>
             <AwaitingBoxWrapper>
-              <AwaitingBoxImage src="https://witheyezon.com/eyezonsite/static/images/awaiting.svg" />
-              <NewTextWrap>
+              {/*<AwaitingBoxImage src="https://witheyezon.com/eyezonsite/static/images/awaiting.svg" />*/}
+              <PlaceholderMessage>
                 {this.props.waitingText}
                 {/*Fun Fact: Our in-store representatives go through a rigorous
                 obstacle course training in order to reach products in the
                 shortest time possible. Feel free to minimize this window,
                 continue exploring our site, while you wait for a notification.*/}
-              </NewTextWrap>
+              </PlaceholderMessage>
             </AwaitingBoxWrapper>
           </div>
         )}
-        {/*this.props.existingChats.length > 0 && (
-          <SelectChatsText>
-            {" "}
-            К сожалению, все специалисты заняты. Вы можете присоединиться к
-            другому запросу:{" "}
-          </SelectChatsText>
-        )*/}
-        {/*this.props.existingChats.length > 0 &&
-          this.props.existingChats.map(chat => (
-            <div
-              key={chat.port.id}
-              onClick={() => this.props.handlePropositionClick(chat.port.id)}
-            >
-              <ChatProposition
-                title={chat.port.request}
-                description={chat.port.date}
-                messagesCount={chat.messages.count}
-              />
-            </div>
-          ))*/}
       </MessageContainer>
     );
   }
