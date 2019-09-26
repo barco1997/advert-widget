@@ -730,7 +730,6 @@ export class Chat extends React.Component {
               {
                 text: data.messageText,
                 time: new Date(),
-                awaitingConnection: false,
                 photo:
                   data.user === ls.get("userId")
                     ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
@@ -1098,12 +1097,13 @@ export class Chat extends React.Component {
     //const sh = getSentHistory(this.props.businessId);
     //console.log("the sentH value: ", sh);
     const flag = msgs.length > 0;
+    const flagOne = flag && msgs.length < 2;
     this.setState({
       messages: msgs,
       firstTimeFlag: false,
       startedFlag: flag ? true : false,
       existingChats: [],
-      awaitingConnection: false
+      awaitingConnection: flagOne ? true : false
       /*sentHistory: flag ? { message: "", status: false } : sh*/
     });
     /*if (flag) {
@@ -1174,6 +1174,7 @@ export class Chat extends React.Component {
             console.log("U sent the request - thats new response:", response);
             ls.set("dialogId", response.data._id);
             self.socket.emit("enterDialog", response.data._id);
+            self.props.joinDialogue();
             ls.set("adminIcon", rndAdmin);
             ls.set("userIcon", rndUser);
             const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;

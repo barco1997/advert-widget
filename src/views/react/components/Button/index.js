@@ -247,6 +247,7 @@ export class Button extends React.Component {
     this.showChat = this.showChat.bind(this);
     this.showChatHere = this.showChatHere.bind(this);
     this.showMessageHere = this.showMessageHere.bind(this);
+    this.joinDialogue = this.joinDialogue.bind(this);
   }
 
   handleRegistration() {
@@ -360,6 +361,12 @@ export class Button extends React.Component {
     }
   }
 
+  joinDialogue() {
+    if (ls.get("dialogId")) {
+      this.socket.emit("enterDialog", ls.get("dialogId"));
+    }
+  }
+
   handleClick(e, buttonId) {
     //e.preventDefault();
     if (!iOS) {
@@ -460,44 +467,42 @@ export class Button extends React.Component {
 
     let self = this;
 
-    if (ls.get("userId")) {
-      this.socket = io("https://eyezon.herokuapp.com", {
-        /*query: "token=" + ls.get("token"),*/
-        transports: ["websocket"],
-        upgrade: false
-      });
-      this.socket.on("connect", () => {
-        console.log("socket got connected");
-        if (ls.get("dialogId")) {
-          self.socket.emit("enterDialog", ls.get("dialogId"));
+    //if (ls.get("userId")) {
+    this.socket = io("https://eyezon.herokuapp.com", {
+      /*query: "token=" + ls.get("token"),*/
+      transports: ["websocket"],
+      upgrade: false
+    });
+    this.socket.on("connect", () => {
+      console.log("socket got connected");
+      this.joinDialogue();
+    });
+    this.socket.on("received", data => {
+      /**feature */
+
+      if (data.user !== ls.get("userId")) {
+        console.log("message data", data);
+
+        self.props.incrementNotifications();
+
+        /***Feature****** */
+        if (self.state.initializeChat && self.state.displayChat) {
+          console.log("initializeChat if: ", self.props.initializeChat);
+          console.log("displayFlag if: ", self.state.displayFlag);
+          self.props.decrementNotifications();
         }
-      });
-      this.socket.on("received", data => {
-        /**feature */
+        /******* */
 
-        if (data.user !== ls.get("userId")) {
-          console.log("message data", data);
-
-          self.props.incrementNotifications();
-
-          /***Feature****** */
-          if (self.state.initializeChat && self.state.displayChat) {
-            console.log("initializeChat if: ", self.props.initializeChat);
-            console.log("displayFlag if: ", self.state.displayFlag);
-            self.props.decrementNotifications();
-          }
-          /******* */
-
-          if (!iOS) {
-            this.notifyMe(
-              "New message at Eyezon button",
-              currentUrl,
-              self.props.buttonId
-            );
-          }
+        if (!iOS) {
+          this.notifyMe(
+            "New message at Eyezon button",
+            currentUrl,
+            self.props.buttonId
+          );
         }
-      });
-    }
+      }
+    });
+    //}
 
     if (this.props.buttons) {
       this.props.buttons.map(button =>
@@ -661,6 +666,7 @@ export class Button extends React.Component {
             greetingText={this.props.greetingText}
             waitingText={this.props.waitingText}
             innerHeight={this.state.innerHeight}
+            joinDialogue={this.joinDialogue}
           />
         )}
       </ButtonReqWrapper>
