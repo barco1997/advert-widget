@@ -362,6 +362,9 @@ export class Button extends React.Component {
   }
 
   joinDialogue() {
+    if (ls.get("userId")) {
+      this.socket.emit("enterSocket", ls.get("userId"));
+    }
     if (ls.get("dialogId")) {
       this.socket.emit("enterDialog", ls.get("dialogId"));
     }
@@ -505,10 +508,12 @@ export class Button extends React.Component {
     //}
 
     if (this.props.buttons) {
-      this.props.buttons.map(button =>
-        button.target.addEventListener("click", event =>
-          self.handleClick(event, button.buttonId)
-        )
+      this.props.buttons.map(
+        button =>
+          button.target &&
+          button.target.addEventListener("click", event =>
+            self.handleClick(event, button.buttonId)
+          )
       );
       let b_count = 0;
       if (this.props.button) {

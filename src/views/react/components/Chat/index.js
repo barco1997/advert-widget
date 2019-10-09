@@ -1,30 +1,13 @@
 import React from "react";
-
 import styled from "styled-components";
-//import empty from "./empty.png";
-
 import axios from "axios";
 import ls from "local-storage";
-
 import ReactPlayer from "react-player";
-//import Div100vh from "react-div-100vh";
-//import favicon from "./favicon.png";
-//import arrow from "./arrow2.svg";
-import DeviceOrientation, { Orientation } from "react-screen-orientation";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
-import {
-  setConversationArray,
-  setConversationIdValue,
-  getLiveIdValue,
-  setLiveArray,
-  getSentHistory,
-  setSentHistory,
-  getRndInteger
-} from "../../constants";
+import { setLiveArray, getRndInteger } from "../../constants";
 import StreamChat from "./streamchat";
-//require("./flv.min.js");
-//let flvPlayer;
+
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -44,9 +27,7 @@ if (!iOS) {
   context = new AudioContext();
 }
 
-load(
-  "https://witheyezon.com/eyezonsite/static/flashphoner.js" /*"https://gitcdn.xyz/cdn/esterTion/live_html5_lib/c3c77fa197621a0560a9a9d16cbe8bf8d4d39bbb/flv.min.js"*/
-)
+load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
   .then(function() {
     console.log("Loaded!");
   })
@@ -54,9 +35,8 @@ load(
     console.error("Something went wrong!", err);
   });
 const io = require("socket.io-client");
-//const storedToken = ls.get("token");
+
 const storedId = ls.get("userId");
-//const conversationId = ls.get("conversationId");
 
 const VideoWrapper = styled.div`
   &&& {
@@ -76,8 +56,6 @@ const VideoWrapper = styled.div`
   top: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
-  /*position: realive;*/
-  
   position: fixed !important;
   border-radius: 0px !important;
   margin-left: 0px !important;
@@ -108,13 +86,12 @@ const VideoWrapperS = styled.div`
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
     ${media.desktop`
-  /*top: 0% !important;
-  position: absolute;*/
+  
   width: 100vw !important;
   height: calc(100% - 146px) !important;
   
   
-  /*position: fixed !important;*/
+  
   border-radius: 0px !important;
   margin-left: 0px !important;
   background: black !important;
@@ -173,11 +150,7 @@ const WindowWrapper = styled.div`
   &&& {
     display: flex !important;
     z-index: 10003 !important;
-    /*
-    top: 50% !important;
-    margin-top: -276px !important;
-    bottom: 15% !important;
-    */
+
     height: 553px !important;
     max-width: 85% !important;
 
@@ -186,7 +159,7 @@ const WindowWrapper = styled.div`
       top: 0% !important;
       left: 0% !important;
       max-width: 100% !important;
-      /*margin-top: 0px !important;*/
+      
       height: auto !important;
   `};
     ${media.tablet`
@@ -320,35 +293,6 @@ const Image = styled.div`
   `};
   }
 `;
-
-/*const NotificationMessageWrapper = styled.div`
-  &&& {
-    position: fixed !important;
-    left: 0px !important;
-    top: 135px !important;
-    z-index: 20000 !important;
-    display: ${props => (props.toggle ? "flex !important" : "none !important")};
-    flex-direction: column !important;
-  }
-`;
-const NotificationMessageArrow = styled.img`
-  &&& {
-    margin-left: 150px !important;
-    width: 220px !important;
-    height: 270px !important;
-  }
-`;
-const NotificationMessageText = styled.span`
-  &&& {
-    font-family: "Caveat" !important;
-    font-weight: bold !important;
-    font-size: 35px !important;
-    margin-left: 75px !important;
-    width: 360px !important;
-    margin-top: 25px !important;
-    color: white !important;
-  }
-`;*/
 
 const SendRequest = styled.button`
   &&& {
@@ -503,19 +447,6 @@ const ControlShader = styled.div`
   }
 `;
 
-/*function VideoShow(props) {
-  const url = props.url;
-  console.log(url);
-  if (url !== "") {
-    return (
-      <VideoWrapper>
-        <ReactPlayer url={url} playing width="318px" height="553px" />
-      </VideoWrapper>
-    );
-  }
-  return null;
-}*/
-
 export class Chat extends React.Component {
   constructor(props) {
     super(props);
@@ -553,7 +484,6 @@ export class Chat extends React.Component {
     this.handlePhoto = this.handlePhoto.bind(this);
     this.handleVideo = this.handleVideo.bind(this);
     this.handleStreamToVideo = this.handleStreamToVideo.bind(this);
-    //this.handlePropositionClick = this.handlePropositionClick.bind(this);
 
     this.notifyMe = this.notifyMe.bind(this);
     this.notificationPermission = this.notificationPermission.bind(this);
@@ -662,16 +592,13 @@ export class Chat extends React.Component {
 
     if (ls.get("userId")) {
       this.socket = io("https://eyezon.herokuapp.com/", {
-        /*query: "token=" + ls.get("token"),*/
         transports: ["websocket"],
         upgrade: false
       });
       this.socket.on("connect", () => {
         console.log("socket got connected");
-        /*let obj = {
-          _id: ls.get("dialogId")
-        };*/
-        //console.log(obj);
+
+        self.socket.emit("enterSocket", ls.get("userId"));
         if (ls.get("dialogId")) {
           self.socket.emit("enterDialog", ls.get("dialogId"));
         }
@@ -693,7 +620,6 @@ export class Chat extends React.Component {
         if (data.userId !== storedId) {
           if (!ls.get("dialogId")) {
             ls.set("dialogId", data._id);
-            //setConversationArray(self.props.businessId, data.requestId);
           }
           console.log("u got a reply again", data);
 
@@ -723,7 +649,7 @@ export class Chat extends React.Component {
             source = data.attachment.src;
             thumbnail = data.attachment.thumbnail;
           }
-          //setSentHistory(self.props.businessId, "", false);
+
           this.setState({
             messages: [
               ...this.state.messages,
@@ -738,10 +664,7 @@ export class Chat extends React.Component {
                     : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
                         "adminIcon"
                       )}.png`,
-                user:
-                  data.user === ls.get("userId")
-                    ? "Вы"
-                    : "Админ" /*.firstName.concat(" ", data.user.lastName)*/,
+                user: data.user === ls.get("userId") ? "Вы" : "Админ",
                 type: type,
                 flv: type === "stream" ? data.attachment.src : null,
                 streamId: type === "stream" ? data.attachment.src : null,
@@ -753,37 +676,9 @@ export class Chat extends React.Component {
             ],
             awaitingConnection: false,
             startedFlag: true
-            /*sentHistory: { message: "", status: false }*/
           });
         }
       });
-      /*this.socket.on("portOnline", data => {
-        console.log("port on data:", data);
-        if (!iOS) {
-          this.notifyMe(
-            "Stream started at Eyezon button",
-            currentUrl,
-            self.props.buttonId
-          );
-        }
-        
-      });
-      this.socket.on("portOffline", data => {
-        console.log("port off data:", data);
-        if (!iOS) {
-          this.notifyMe(
-            "Stream ended at Eyezon button",
-            currentUrl,
-            self.props.buttonId
-          );
-        }
-        ls.set("streamInProgress", false);
-        let objlv = {
-          event: "leaveRoom",
-          room:  getLiveIdValue(self.props.businessId)
-        };
-        this.socket.emit("port", JSON.stringify(objlv));
-      });*/
 
       this.socket.on("streamEvent", data => {
         console.log("what data:", data);
@@ -805,17 +700,6 @@ export class Chat extends React.Component {
       });
       this.socket.open();
     }
-    /*axios
-      .get(`https://api.eyezon.app/market/transactions`)
-      .then(function(response) {
-        console.log(response.data.transactions.totalAmount);
-        self.setState({
-          transactionLimit: response.data.transactions.totalAmount
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });*/
   }
 
   componentWillUpdate(nextProps) {
@@ -834,11 +718,8 @@ export class Chat extends React.Component {
               {}
             )
             .then(function(response) {
-              //const users = response.data.users;
               const messages = response.data.data;
-              //const owner = users.find(user => user.type === "owner");
-              // console.log("businessId: ", nextProps);
-              // if (owner.businessId === nextProps.businessId) {
+
               console.log(response);
               const editedMessages = messages
                 .filter(msg => !(msg.type && msg.type === "STREAM"))
@@ -853,18 +734,8 @@ export class Chat extends React.Component {
                         )}.png`
                       : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
                           "adminIcon"
-                        )}.png` /*users.filter(user => user.userId === message.userId)[0]
-                    .photo*/,
-                  user:
-                    message.user === ls.get("userId")
-                      ? "Вы"
-                      : "Админ" /*users
-                    .filter(user => user.userId === message.userId)[0]
-                    .firstName.concat(
-                      " ",
-                      users.filter(user => user.userId === message.userId)[0]
-                        .lastName
-                    )*/,
+                        )}.png`,
+                  user: message.user === ls.get("userId") ? "Вы" : "Админ",
                   type: message.attachment
                     ? message.attachment.type.toLowerCase()
                     : "message",
@@ -881,34 +752,13 @@ export class Chat extends React.Component {
                       : "",
                   id: message._id
                 }));
-              //console.log("Users - ", users);
 
               self.loadInitialMessages(editedMessages);
-              /* } else {
-                console.log("delete conversationId");
-                ls.delete("conversationId");
-              }
-              //const buttonUserId = ls.get("userId");
-              /*if (
-                users.filter(
-                  user => user.userId === buttonUserId && user.type === "joiner"
-                ).length === 0
-              ) {
-                self.loadInitialMessages([]);
-              } else {*/
-
-              //}
             })
             .catch(function(error) {
               console.log(error);
             });
         }
-      } else {
-        //const sh = getSentHistory(this.props.businessId);
-        //console.log("SH: ", sh);
-        /*this.setState({
-          sentHistory: sh
-        });*/
       }
     }
   }
@@ -974,21 +824,6 @@ export class Chat extends React.Component {
       videoManipulateId: videoManipulateId,
       ifPauseIcon: !ifPsI
     });
-    /*if (Hls.isSupported()) {
-      let video = this.loadedVideo.getInternalPlayer();
-      if (video.requestFullscreen) {
-        video.requestFullscreen();
-      } else if (video.mozRequestFullScreen) {
-        
-        video.mozRequestFullScreen();
-      } else if (video.webkitRequestFullscreen) {
-        
-        video.webkitRequestFullscreen();
-      } else if (video.msRequestFullscreen) {
-        
-        video.msRequestFullscreen();
-      }
-    }*/
   }
 
   handleStreamToVideo() {
@@ -997,91 +832,10 @@ export class Chat extends React.Component {
     });
   }
 
-  /*handlePropositionClick(id) {
-    let self = this;
-    const chat = this.state.existingChats.find(chat => chat.port.id === id);
-    const users = chat.messages.users;
-    const messages = chat.messages.messages;
-    const editedMessages = messages.map(message => ({
-      text: message.message,
-      time: message.time,
-      photo: users.filter(user => user.userId === message.userId)[0].photo,
-      user: users
-        .filter(user => user.userId === message.userId)[0]
-        .firstName.concat(
-          " ",
-          users.filter(user => user.userId === message.userId)[0].lastName
-        ),
-      type:
-        message.attachments.length > 0
-          ? message.attachments[0].type
-          : "message",
-      src: message.attachments.length > 0 ? message.attachments[0].src : null,
-      thumb:
-        message.attachments.length > 0 &&
-        message.attachments[0].type === "video"
-          ? message.attachments[0].thumbnail
-          : null,
-      flv:
-        message.attachments.length > 0 &&
-        message.attachments[0].type === "stream"
-          ? `https://static.eyezon.app/live/${message._id}.flv`
-          : "",
-      id: message._id
-    }));
-    ls.set("conversationId", chat.port.id);
-    console.log("conv id: ", chat.port.id);
-    setConversationArray(self.props.buttonId, chat.port.id);
-    const value = this.state.lastValue;
-    axios
-      .get(`https://api.eyezon.app/ports/${chat.port.id}`)
-      .then(function(response) {
-        console.log(response);
-        if (response.data.port.isLive) {
-          let room = this.state.streamId;
-          const streamMessage = editedMessages.find(
-            message => message.type === "stream"
-          );
-          room = streamMessage.id;
-          let obj = {
-            event: "comment",
-            room: room,
-            text: value
-          };
-          console.log(obj);
-          self.socket.emit("port", JSON.stringify(obj));
-        } else {
-          axios
-            .put(`https://api.eyezon.app/messages/${chat.port.id}`, {
-              message: value,
-              url: currentUrl
-            })
-            .then(function(response) {
-              console.log(response);
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-        }
-        self.loadInitialMessages([
-          ...editedMessages,
-          { text: value, time: new Date(), id: uuidv1() }
-        ]);
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  }*/
-
   componentWillReceiveProps(nextProps) {
     this.setState({
       displayFlag: nextProps.displayChat
     });
-    /*if (nextProps.displayChat) {
-      if (!iOS) {
-        this.notificationPermission();
-      }
-    }*/
   }
 
   loadInitialMessages(msgs) {
@@ -1094,8 +848,7 @@ export class Chat extends React.Component {
       }
       return 0;
     });
-    //const sh = getSentHistory(this.props.businessId);
-    //console.log("the sentH value: ", sh);
+
     const flag = msgs.length > 0;
     const flagOne = flag && msgs.length < 2;
     this.setState({
@@ -1104,11 +857,7 @@ export class Chat extends React.Component {
       startedFlag: flag ? true : false,
       existingChats: [],
       awaitingConnection: flagOne ? true : false
-      /*sentHistory: flag ? { message: "", status: false } : sh*/
     });
-    /*if (flag) {
-      setSentHistory(this.props.businessId, "", false);
-    }*/
   }
   handleSubmitS() {
     let self = this;
@@ -1122,7 +871,7 @@ export class Chat extends React.Component {
           ],
           valueStream: ""
         });
-        //if (ls.get("streamInProgress")) {
+
         let obj = {
           messageText: value,
           dialogId: ls.get("dialogId"),
@@ -1131,7 +880,6 @@ export class Chat extends React.Component {
         };
         console.log(obj);
         self.socket.emit("messageOnStream", JSON.stringify(obj));
-        //}
       }
     }
   }
@@ -1156,11 +904,18 @@ export class Chat extends React.Component {
           value: "",
           awaitingConnection: true,
           lastValue: value
-          /*sentHistory: {
-          message: { text: value, time: new Date(), id: uuidv1() },
-          status: true
-        }*/
         });
+
+        self.socket.emit(
+          "message",
+          JSON.stringify({
+            client: ls.get("userId"),
+            title: value,
+            websiteUrl: currentUrl,
+            button: self.props.buttonId,
+            description: value
+          })
+        );
 
         axios
           .post("https://eyezon.herokuapp.com/api/dialog", {
@@ -1188,14 +943,6 @@ export class Chat extends React.Component {
               .catch(function(error) {
                 console.log(error);
               });
-            /*let obj = {
-            messageText: value,
-            dialogId: response.data._id,
-            userId: ls.get("userId")
-          };
-          console.log(obj);
-          self.socket.emit("message", JSON.stringify(obj));*/
-            //ls.set("conversationId", members[0]._id);
           })
           .catch(function(error) {
             console.log(error);
@@ -1262,7 +1009,6 @@ export class Chat extends React.Component {
     //this.handleChangeOrientationWrapper();
   }
   render() {
-    //console.log("Display flag: ", this.state.displayFlag);
     return (
       <ChatWrapper displayFlag={this.state.displayFlag}>
         <JsChatOverlay
@@ -1286,18 +1032,10 @@ export class Chat extends React.Component {
             height={this.props.innerHeight}
           >
             <JsChatMessageContainer>
-              {!this.state.messages ||
-              this.state.messages.length ==
-                0 /*&&
-                (!this.state.sentHistory || !this.state.sentHistory.status)*/ ? (
+              {!this.state.messages || this.state.messages.length == 0 ? (
                 <JsChatMessagePlaceholder>
                   <PlaceholderMessage>
                     {this.props.greetingText}
-                    {/*Участники команд расскажут о проекте и ответят на все
-                      интересующие вопросы!*/}
-                    {/*We're here to share our eyes with you!*/}
-                    {/* Just ask, and our staff will help answer any
-                    of your questions using the magic of LIVE streams.</PlaceholderMessage>*/}
                   </PlaceholderMessage>
 
                   <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
@@ -1360,14 +1098,6 @@ export class Chat extends React.Component {
             visible={this.state.streamFlag /*true*/}
           >
             <VideoWrapperS visible={this.state.streamFlag /*true*/}>
-              {/*<video
-                id="live"
-                ref={stream => {
-                  this.live = stream;
-                }}
-                controls
-              />
-             */}
               {true && (
                 <iframe
                   id="fp_embed_player"
