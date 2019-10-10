@@ -10,6 +10,8 @@ import { CLIENT_ID, CLIENT_SECRET } from "./constants";
 import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
+import MinEmailRequest from "./minemailrequest";
+
 //import disableScroll from "disable-scroll";
 const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
@@ -199,6 +201,20 @@ const JsButtonInfo = styled.div`
   }
 `;
 
+const MinReqWrapper = styled.div`
+  &&& {
+    position: relative !important;
+    top: 0px !important;
+    left: 0px !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: block;
+    ${media.tablet`
+    display: none !important;
+  `};
+  }
+`;
+
 const disableScroll = () => {
   //document.body.classList.add("unscrollable");
   if (ifMobile) {
@@ -234,7 +250,10 @@ export class Button extends React.Component {
       multiButton: false,
       notificationMessageToggle: false,
       apiLoading: false,
-      innerHeight: window.innerHeight
+      innerHeight: window.innerHeight,
+      displayEmailRequest: false,
+      emailSentFlag: false,
+      displayMainRequest: false
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -248,6 +267,46 @@ export class Button extends React.Component {
     this.showChatHere = this.showChatHere.bind(this);
     this.showMessageHere = this.showMessageHere.bind(this);
     this.joinDialogue = this.joinDialogue.bind(this);
+    this.closeRequest = this.closeRequest.bind(this);
+    this.closeMainRequest = this.closeMainRequest.bind(this);
+    this.showMainRequest = this.showMainRequest.bind(this);
+    this.sendEmailDetails = this.sendEmailDetails.bind(this);
+  }
+
+  closeRequest() {
+    this.setState({
+      displayEmailRequest: false
+    });
+  }
+
+  closeMainRequest() {
+    this.setState({
+      displayMainRequest: false
+    });
+  }
+
+  showMainRequest() {
+    this.setState({
+      displayMainRequest: true
+    });
+  }
+
+  sendEmailDetails(email, name) {
+    console.log("Clicked AAA", email, name);
+    this.socket.emit(
+      "fillClientData",
+      JSON.stringify({
+        id: ls.get("userId"),
+        name,
+        email
+      })
+    );
+    this.setState({
+      emailSentFlag: true,
+      displayMainRequest: false,
+      displayEmailRequest: false,
+      displayChat: false
+    });
   }
 
   handleRegistration() {
@@ -273,6 +332,9 @@ export class Button extends React.Component {
       const url = `https://eyezon.herokuapp.com/api/button/${
         this.props.buttonId
       }/unread/${ls.get("userId")}`;
+      const url2 = `https://eyezon.herokuapp.com/api/client/${ls.get(
+        "userId"
+      )}`;
       axios
         .get(url)
         .then(function(response) {
@@ -282,11 +344,23 @@ export class Button extends React.Component {
         .catch(function(error) {
           console.log(error);
         });
+      axios
+        .get(url2)
+        .then(function(response) {
+          console.log("Email sent?", response);
+          self.setState({
+            emailSentFlag: true
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   }
 
   notifyMe(message, href, buttonId) {
     // Проверка поддержки браузером уведомлений
+
     let options = {
       icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
       data: href
@@ -352,7 +426,7 @@ export class Button extends React.Component {
       });
       Notification.requestPermission(function(permission) {
         if (permission === "granted") {
-          ls.set("notificationPermission", true);
+          //ls.set("notificationPermission", true);
         }
         self.setState({
           notificationMessageToggle: false
@@ -363,6 +437,7 @@ export class Button extends React.Component {
 
   joinDialogue() {
     if (ls.get("userId")) {
+      console.log("TO BE SURE");
       this.socket.emit("enterSocket", ls.get("userId"));
     }
     if (ls.get("dialogId")) {
@@ -371,13 +446,10 @@ export class Button extends React.Component {
   }
 
   handleClick(e, buttonId) {
+    this.closeRequest();
     //e.preventDefault();
     if (!iOS) {
       this.notificationPermission();
-      console.log(
-        "notificationMessageToggle",
-        this.state.notificationMessageToggle
-      );
     }
     if (ls.get("dialogId")) {
       this.socket.emit("readMessage", ls.get("dialogId"));
@@ -495,7 +567,16 @@ export class Button extends React.Component {
           self.props.decrementNotifications();
         }
         /******* */
-
+        if (
+          "Notification" in window &&
+          !(Notification.permission === "granted") &&
+          !this.state.emailSentFlag &&
+          !this.state.displayChat
+        ) {
+          self.setState({
+            displayEmailRequest: true
+          });
+        }
         if (!iOS) {
           this.notifyMe(
             "New message at Eyezon button",
@@ -547,15 +628,12 @@ export class Button extends React.Component {
     this.setState({ displayMessage: false });
   }
   destroyChat() {
-    /*if (!this.state.multiButton) {
-      console.log("not multi");
-      this.setState({ displayChat: false });
-    } else {*/
     console.log("multi");
     this.setState({
       displayChat: false,
       initializeChat: false,
-      innerHeight: window.innerHeight
+      innerHeight: window.innerHeight,
+      displayMainRequest: false
     });
     enableScroll();
     //}
@@ -579,16 +657,6 @@ export class Button extends React.Component {
   }
 
   showChatHere() {
-    // if (!this.state.multiButton) {
-    /*console.log("BUSINESS_1");
-    this.setState({
-      displayChat: true,
-      displayMessage: false,
-      toggle: false,
-      apiLoading: false
-    });
-    } else {*/
-    console.log("BUSINESS_2");
     this.setState({ initializeChat: true }, () => {
       this.setState({
         displayChat: true,
@@ -601,24 +669,19 @@ export class Button extends React.Component {
     //}
   }
 
-  /*componentDidUpdate(prevProps) {
-    if (
-      this.props.greetingText &&
-      this.props.greetingText !== prevProps.greetingText
-    ) {
-      this.setState({
-        greetingText: this.props.greetingText,
-        waitingText: this.props.waitingText
-      });
-    }
-  }*/
-
   render() {
     const isOpen = this.state.toggle;
-    console.log("BUSINESS_2", this.state.greetingText);
 
     return (
       <ButtonReqWrapper>
+        {this.state.displayEmailRequest && (
+          <MinReqWrapper>
+            <MinEmailRequest
+              closeRequest={this.closeRequest}
+              sendEmailDetails={this.sendEmailDetails}
+            />
+          </MinReqWrapper>
+        )}
         <NotificationMessageWrapper
           toggle={this.state.notificationMessageToggle}
         >
@@ -645,6 +708,7 @@ export class Button extends React.Component {
                 {this.props.notifications}
               </NotificationWrapper>
             )}
+
             <JsButtonImageWrapper>
               <JsButtonImage src="https://witheyezon.com/eyezonsite/static/images/image.png" />
               {/* <LoadingCircle loadingFlag />*/}
@@ -672,6 +736,11 @@ export class Button extends React.Component {
             waitingText={this.props.waitingText}
             innerHeight={this.state.innerHeight}
             joinDialogue={this.joinDialogue}
+            displayMainRequest={this.state.displayMainRequest}
+            closeMainRequest={this.closeMainRequest}
+            showMainRequest={this.showMainRequest}
+            emailSentFlag={this.state.emailSentFlag}
+            sendEmailDetails={this.sendEmailDetails}
           />
         )}
       </ButtonReqWrapper>

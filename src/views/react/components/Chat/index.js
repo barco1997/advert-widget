@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import ls from "local-storage";
@@ -7,7 +7,7 @@ import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
 import { setLiveArray, getRndInteger } from "../../constants";
 import StreamChat from "./streamchat";
-
+import EmailRequest from "../Button/emailrequest";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -589,7 +589,8 @@ export class Chat extends React.Component {
 
   componentWillMount() {
     let self = this;
-
+    const rndUser = getRndInteger(1, 8);
+    const rndAdmin = getRndInteger(1, 2);
     if (ls.get("userId")) {
       this.socket = io("https://eyezon.herokuapp.com/", {
         transports: ["websocket"],
@@ -606,6 +607,25 @@ export class Chat extends React.Component {
       this.socket.on("disconnect", () => {
         console.log("socket got disconnected");
         //this.socket.open();
+      });
+      this.socket.on("dialogCreated", id => {
+        console.log("dialogCreated");
+        ls.set("dialogId", id);
+        self.socket.emit("enterDialog", id);
+        self.props.joinDialogue();
+        ls.set("adminIcon", rndAdmin);
+        ls.set("userIcon", rndUser);
+        const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+        axios
+          .post(url, {
+            eventType: "SENDED_REQUESTS"
+          })
+          .then(function(response) {
+            console.log("button clicked", response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
       });
       this.socket.on("streamToVideo", data => {
         console.log("message got updated", data);
@@ -906,8 +926,8 @@ export class Chat extends React.Component {
           lastValue: value
         });
 
-        self.socket.emit(
-          "message",
+        /*self.socket.emit(
+          "createDialog",
           JSON.stringify({
             client: ls.get("userId"),
             title: value,
@@ -915,7 +935,7 @@ export class Chat extends React.Component {
             button: self.props.buttonId,
             description: value
           })
-        );
+        );*/
 
         axios
           .post("https://eyezon.herokuapp.com/api/dialog", {
@@ -1032,61 +1052,78 @@ export class Chat extends React.Component {
             height={this.props.innerHeight}
           >
             <JsChatMessageContainer>
-              {!this.state.messages || this.state.messages.length == 0 ? (
-                <JsChatMessagePlaceholder>
-                  <PlaceholderMessage>
-                    {this.props.greetingText}
-                  </PlaceholderMessage>
-
-                  <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
-                </JsChatMessagePlaceholder>
-              ) : (
-                <MessageArea
-                  messages={this.state.messages}
-                  awaitingConnection={this.state.awaitingConnection}
-                  setFlv={this.handleStreamClick}
-                  handlePhoto={this.handlePhoto}
-                  handleVideo={this.handleVideo}
-                  handleStreamToVideo={this.handleStreamToVideo}
-                  strVideo={this.state.streamToVideo}
-                  manipulateVideoId={this.state.videoManipulateId}
-                  ifPauseIcon={this.state.ifPauseIcon}
-                  existingChats={this.state.existingChats}
-                  transactionLimit={this.state.transactionLimit}
-                  sentHistory={this.state.sentHistory}
-                  waitingText={this.props.waitingText}
+              {this.props.displayMainRequest ? (
+                <EmailRequest
+                  sendEmailDetails={this.props.sendEmailDetails}
+                  destroy={this.props.destroy}
                 />
-              )}
-              <form>
-                <div style={{ flexDirection: "column  !important" }}>
-                  <InputFieldA
-                    type="text"
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    placeholder="Спросите что-нибудь ;)"
-                    onKeyPress={event => {
-                      if (event.key === "Enter") {
-                        this.handleSubmit(event);
-                      }
-                    }}
-                  />
+              ) : (
+                <Fragment>
+                  {!this.state.messages || this.state.messages.length == 0 ? (
+                    <JsChatMessagePlaceholder>
+                      <PlaceholderMessage>
+                        {this.props.greetingText}
+                      </PlaceholderMessage>
 
-                  <SendRequest onClick={this.handleSubmit}>
-                    {/*Send*/}Отправить
-                  </SendRequest>
-                </div>
-              </form>
+                      <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
+                    </JsChatMessagePlaceholder>
+                  ) : (
+                    <MessageArea
+                      messages={this.state.messages}
+                      awaitingConnection={this.state.awaitingConnection}
+                      setFlv={this.handleStreamClick}
+                      handlePhoto={this.handlePhoto}
+                      handleVideo={this.handleVideo}
+                      handleStreamToVideo={this.handleStreamToVideo}
+                      strVideo={this.state.streamToVideo}
+                      manipulateVideoId={this.state.videoManipulateId}
+                      ifPauseIcon={this.state.ifPauseIcon}
+                      existingChats={this.state.existingChats}
+                      transactionLimit={this.state.transactionLimit}
+                      sentHistory={this.state.sentHistory}
+                      waitingText={this.props.waitingText}
+                    />
+                  )}
+                  <form>
+                    <div style={{ flexDirection: "column  !important" }}>
+                      <InputFieldA
+                        type="text"
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        placeholder="Спросите что-нибудь ;)"
+                        onKeyPress={event => {
+                          if (event.key === "Enter") {
+                            this.handleSubmit(event);
+                          }
+                        }}
+                      />
+
+                      <SendRequest onClick={this.handleSubmit}>
+                        {/*Send*/}Отправить
+                      </SendRequest>
+                    </div>
+                  </form>
+                </Fragment>
+              )}
               <CloseWrapperA visibleExtra={this.state.photoSrc}>
                 <CloseButton
                   onClick={() => {
                     this.setState({
                       streamFlag: false
                     });
+                    if (
+                      !this.props.displayMainRequest &&
+                      !this.props.emailSentFlag
+                    ) {
+                      this.props.showMainRequest();
+                    } else {
+                      //this.props.closeMainRequest();
+                      this.props.destroy();
+                    }
                     /*this.live.pause();*/
                     if (this.loadedVideo.getInternalPlayer()) {
                       this.loadedVideo.getInternalPlayer().pause();
                     }
-                    this.props.destroy();
                   }}
                 />
               </CloseWrapperA>
