@@ -23,7 +23,14 @@ function load(url) {
   });
 }
 let context;
-if (!iOS) {
+/*if (!iOS) {
+  context = new AudioContext();
+}*/
+let AudioContext =
+  window.AudioContext || // Default
+  window.webkitAudioContext || // Safari and old versions of Chrome
+  false;
+if (AudioContext) {
   context = new AudioContext();
 }
 
@@ -493,6 +500,7 @@ export class Chat extends React.Component {
     this.handleChangeOrientationWrapper = this.handleChangeOrientationWrapper.bind(
       this
     );
+    this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
   }
 
   orientationChanged() {
@@ -1025,6 +1033,7 @@ export class Chat extends React.Component {
       );
     }
   }
+  handleAndroidKeyboard() {}
   componentDidMount() {
     //this.handleChangeOrientationWrapper();
   }
@@ -1036,13 +1045,16 @@ export class Chat extends React.Component {
             this.setState({
               streamFlag: false
             });
-            if (this.live) {
-              /*this.live.pause();*/
+            if (!this.props.displayMainRequest && !this.props.emailSentFlag) {
+              this.props.showMainRequest();
+            } else {
+              //this.props.closeMainRequest();
+              this.props.destroy();
             }
+            /*this.live.pause();*/
             if (this.loadedVideo.getInternalPlayer()) {
               this.loadedVideo.getInternalPlayer().pause();
             }
-            this.props.destroy();
           }}
         />
 
@@ -1087,6 +1099,12 @@ export class Chat extends React.Component {
                   <form>
                     <div style={{ flexDirection: "column  !important" }}>
                       <InputFieldA
+                        ref={item => {
+                          this.mainInput = item;
+                        }}
+                        onFocus={() => {
+                          this.mainInput.scrollIntoView();
+                        }}
                         type="text"
                         value={this.state.value}
                         onChange={this.handleChange}

@@ -8,7 +8,8 @@ const TextWrap = styled.div`
   &&& {
     display: flex !important;
     flex-direction: column !important;
-    width: 448px !important;
+    max-width: 462px !important;
+    width: 100% !important;
   }
 `;
 
@@ -69,7 +70,7 @@ export class EmailRequest extends React.Component {
         <PositionWrapper marginTop="8px">
           <FormField
             placeholder="Email"
-            maxWidth="448px"
+            maxWidth="462px"
             noOutline="true"
             value={this.state.email}
             onChange={event => this.handleChange("email", event.target.value)}
@@ -79,7 +80,7 @@ export class EmailRequest extends React.Component {
         <PositionWrapper marginTop="8px">
           <FormField
             placeholder="Имя"
-            maxWidth="448px"
+            maxWidth="462px"
             noOutline="true"
             value={this.state.name}
             onChange={event => this.handleChange("name", event.target.value)}

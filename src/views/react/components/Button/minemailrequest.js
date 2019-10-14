@@ -84,8 +84,8 @@ export class MinEmailRequest extends React.Component {
         <Close src={Delete} onClick={this.props.closeRequest} />
         <Heading marginTop="6px">Не пропустите ответ!</Heading>
         <Heading color="#979797">
-          Включитель уведомления или оставьте почту. Как только сотрудник
-          ответит, вы получите ссылку на диалог.
+          Включите уведомления или оставьте почту. Как только сотрудник ответит,
+          вы получите ссылку на диалог.
         </Heading>
         <Text>Ваш email:</Text>
         <PositionWrapper marginTop="8px">
