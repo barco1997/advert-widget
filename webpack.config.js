@@ -51,8 +51,12 @@ module.exports = env => {
             }
           },
           {
-            test: /\.(jpe?g|png|ttf|eot|svg|mp3|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+            test: /\.(jpe?g|png|ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
             use: "base64-inline-loader?name=[name].[ext]"
+          },
+          {
+            test: /\.mp3$/,
+            use: "file-loader?name=[name].[ext]"
           }
         ]
       }

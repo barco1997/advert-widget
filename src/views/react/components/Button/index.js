@@ -11,7 +11,7 @@ import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
-import messageSound from "./for-sure.mp3";
+const messageSound = require("./not.mp3");
 
 //import disableScroll from "disable-scroll";
 const io = require("socket.io-client");

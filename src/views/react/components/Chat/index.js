@@ -480,7 +480,8 @@ export class Chat extends React.Component {
       flvPlayer: null,
       transactionLimit: 50,
       sentHistory: null,
-      valueStream: ""
+      valueStream: "",
+      androidChatActive: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1061,7 +1062,11 @@ export class Chat extends React.Component {
         <WindowWrapper>
           <JsChatWindow
             visible={!this.state.streamFlag}
-            height={this.props.innerHeight}
+            height={
+              this.state.androidChatActive
+                ? window.innerHeight
+                : this.props.innerHeight
+            }
           >
             <JsChatMessageContainer>
               {this.props.displayMainRequest ? (
@@ -1103,7 +1108,14 @@ export class Chat extends React.Component {
                           this.mainInput = item;
                         }}
                         onFocus={() => {
-                          this.mainInput.scrollIntoView();
+                          this.setState({
+                            androidChatActive: false
+                          });
+                        }}
+                        onBlur={() => {
+                          this.setState({
+                            androidChatActive: false
+                          });
                         }}
                         type="text"
                         value={this.state.value}
@@ -1149,7 +1161,11 @@ export class Chat extends React.Component {
           </JsChatWindow>
 
           <StreamWrapper
-            height={this.props.innerHeight}
+            height={
+              this.state.androidChatActive
+                ? window.innerHeight
+                : this.props.innerHeight
+            }
             visible={this.state.streamFlag /*true*/}
           >
             <VideoWrapperS visible={this.state.streamFlag /*true*/}>
