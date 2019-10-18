@@ -11,6 +11,7 @@ import EmailRequest from "../Button/emailrequest";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
 function load(url) {
   return new Promise(function(resolve, reject) {
     var script = document.createElement("script");
@@ -243,7 +244,7 @@ const ChatWrapper = styled.div`
     height: 100vh !important;
     position: fixed !important;
     left: 0 !important;
-    top: 0 !important;
+    top: ${props => (props.top ? props.top : "0")} !important;
     z-index: 10000 !important;
     display: ${props =>
       props.displayFlag ? "flex !important" : "none !important"};
@@ -481,7 +482,7 @@ export class Chat extends React.Component {
       transactionLimit: 50,
       sentHistory: null,
       valueStream: "",
-      androidChatActive: false
+      androidOffset: 0
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -502,6 +503,7 @@ export class Chat extends React.Component {
       this
     );
     this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
 
   orientationChanged() {
@@ -516,8 +518,16 @@ export class Chat extends React.Component {
     });
   }
 
+  handleResize() {
+    if (isAndroid) {
+      this.setState({
+        androidOffset: `-${this.props.innerHeight - window.innerHeight}px`
+      });
+    }
+  }
+
   componentWillUnmount() {
-    window.removeEventListener("onorientationchange", this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
   }
 
   notifyMe(message, href, buttonId) {
@@ -1034,13 +1044,21 @@ export class Chat extends React.Component {
       );
     }
   }
-  handleAndroidKeyboard() {}
+  handleAndroidKeyboard(value) {
+    this.setState({
+      androidOffset: value ? `-${200}px` : `${0}px`
+    });
+  }
   componentDidMount() {
     //this.handleChangeOrientationWrapper();
+    window.addEventListener("resize", this.handleResize);
   }
   render() {
     return (
-      <ChatWrapper displayFlag={this.state.displayFlag}>
+      <ChatWrapper
+        displayFlag={this.state.displayFlag}
+        top={this.state.androidOffset}
+      >
         <JsChatOverlay
           onClick={() => {
             this.setState({
@@ -1062,11 +1080,7 @@ export class Chat extends React.Component {
         <WindowWrapper>
           <JsChatWindow
             visible={!this.state.streamFlag}
-            height={
-              this.state.androidChatActive
-                ? window.innerHeight
-                : this.props.innerHeight
-            }
+            height={this.props.innerHeight}
           >
             <JsChatMessageContainer>
               {this.props.displayMainRequest ? (
@@ -1108,14 +1122,10 @@ export class Chat extends React.Component {
                           this.mainInput = item;
                         }}
                         onFocus={() => {
-                          this.setState({
-                            androidChatActive: false
-                          });
+                          //this.handleAndroidKeyboard(true);
                         }}
                         onBlur={() => {
-                          this.setState({
-                            androidChatActive: false
-                          });
+                          //this.handleAndroidKeyboard(false);
                         }}
                         type="text"
                         value={this.state.value}
@@ -1161,11 +1171,7 @@ export class Chat extends React.Component {
           </JsChatWindow>
 
           <StreamWrapper
-            height={
-              this.state.androidChatActive
-                ? window.innerHeight
-                : this.props.innerHeight
-            }
+            height={this.props.innerHeight}
             visible={this.state.streamFlag /*true*/}
           >
             <VideoWrapperS visible={this.state.streamFlag /*true*/}>
