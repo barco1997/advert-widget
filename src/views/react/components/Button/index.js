@@ -11,8 +11,7 @@ import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
-const messageSound = require("./not.mp3");
-
+//const messageSound = require("https://witheyezon.com/eyezonsite/static/not.mp3");
 //import disableScroll from "disable-scroll";
 const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
@@ -373,6 +372,7 @@ export class Button extends React.Component {
     else if (Notification.permission === "granted") {
       // Если разрешено, то создаем уведомление
       var notification = new Notification(message, options);
+
       notification.onclick = function(event) {
         var new_window = window.open("", "_blank"); //open empty window(tab)
         if (event.target.data.includes("?open=true")) {
@@ -555,7 +555,7 @@ export class Button extends React.Component {
     });
     this.socket.on("received", data => {
       /**feature */
-
+      this.notificationSound.play();
       if (data.user !== ls.get("userId")) {
         console.log("message data", data);
 
@@ -675,6 +675,13 @@ export class Button extends React.Component {
 
     return (
       <ButtonReqWrapper>
+        <audio
+          ref={element => {
+            this.notificationSound = element;
+          }}
+          src="https://witheyezon.com/eyezonsite/static/not.mp3"
+          hidden="hidden"
+        ></audio>
         {this.state.displayEmailRequest && (
           <MinReqWrapper>
             <MinEmailRequest

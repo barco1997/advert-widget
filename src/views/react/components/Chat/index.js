@@ -294,7 +294,7 @@ const Image = styled.div`
     background-size: cover !important;
     width: 319px !important;
     height: 553px !important;
-
+    position: relative !important;
     border-radius: 10px !important;
     ${media.desktop`
       border-radius: 0px !important;
@@ -341,6 +341,7 @@ const JsChatWindow = styled.div`
        props.visible ? "flex !important" : "none !important"};
        width: 542px !important;*/
     justify-content: flex-start !important;
+    align-items: center !important;
     flex-direction: column !important;
     background: #fff !important;
       /**** Feature ****/
@@ -391,7 +392,7 @@ const JsChatMessageContainer = styled.div`
     flex: 1 !important;
     position: relative !important;
     ${media.desktop`
-  width: auto !important;
+  width: calc(100% - 30px) !important;
   padding: 0px !important;
   margin: 0px 15px !important;
   margin-bottom: 20px !important;
@@ -1082,13 +1083,36 @@ export class Chat extends React.Component {
             visible={!this.state.streamFlag}
             height={this.props.innerHeight}
           >
-            <JsChatMessageContainer>
-              {this.props.displayMainRequest ? (
-                <EmailRequest
-                  sendEmailDetails={this.props.sendEmailDetails}
-                  destroy={this.props.destroy}
-                />
-              ) : (
+            {this.props.displayMainRequest ? (
+              <EmailRequest
+                sendEmailDetails={this.props.sendEmailDetails}
+                destroy={this.props.destroy}
+              >
+                <CloseWrapperA visibleExtra={this.state.photoSrc}>
+                  <CloseButton
+                    onClick={() => {
+                      this.setState({
+                        streamFlag: false
+                      });
+                      if (
+                        !this.props.displayMainRequest &&
+                        !this.props.emailSentFlag
+                      ) {
+                        this.props.showMainRequest();
+                      } else {
+                        //this.props.closeMainRequest();
+                        this.props.destroy();
+                      }
+                      /*this.live.pause();*/
+                      if (this.loadedVideo.getInternalPlayer()) {
+                        this.loadedVideo.getInternalPlayer().pause();
+                      }
+                    }}
+                  />
+                </CloseWrapperA>
+              </EmailRequest>
+            ) : (
+              <JsChatMessageContainer>
                 <Fragment>
                   {!this.state.messages || this.state.messages.length == 0 ? (
                     <JsChatMessagePlaceholder>
@@ -1144,30 +1168,31 @@ export class Chat extends React.Component {
                     </div>
                   </form>
                 </Fragment>
-              )}
-              <CloseWrapperA visibleExtra={this.state.photoSrc}>
-                <CloseButton
-                  onClick={() => {
-                    this.setState({
-                      streamFlag: false
-                    });
-                    if (
-                      !this.props.displayMainRequest &&
-                      !this.props.emailSentFlag
-                    ) {
-                      this.props.showMainRequest();
-                    } else {
-                      //this.props.closeMainRequest();
-                      this.props.destroy();
-                    }
-                    /*this.live.pause();*/
-                    if (this.loadedVideo.getInternalPlayer()) {
-                      this.loadedVideo.getInternalPlayer().pause();
-                    }
-                  }}
-                />
-              </CloseWrapperA>
-            </JsChatMessageContainer>
+
+                <CloseWrapperA visibleExtra={this.state.photoSrc}>
+                  <CloseButton
+                    onClick={() => {
+                      this.setState({
+                        streamFlag: false
+                      });
+                      if (
+                        !this.props.displayMainRequest &&
+                        !this.props.emailSentFlag
+                      ) {
+                        this.props.showMainRequest();
+                      } else {
+                        //this.props.closeMainRequest();
+                        this.props.destroy();
+                      }
+                      /*this.live.pause();*/
+                      if (this.loadedVideo.getInternalPlayer()) {
+                        this.loadedVideo.getInternalPlayer().pause();
+                      }
+                    }}
+                  />
+                </CloseWrapperA>
+              </JsChatMessageContainer>
+            )}
           </JsChatWindow>
 
           <StreamWrapper
