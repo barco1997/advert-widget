@@ -8,6 +8,7 @@ import { media } from "../../../../utils/media";
 import { setLiveArray, getRndInteger } from "../../constants";
 import StreamChat from "./streamchat";
 import EmailRequest from "../Button/emailrequest";
+import UnmountTracker from "../UnmountTracker";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -34,7 +35,8 @@ let AudioContext =
 if (AudioContext) {
   context = new AudioContext();
 }
-
+const rndUser = getRndInteger(1, 8);
+const rndAdmin = getRndInteger(1, 2);
 load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
   .then(function() {
     console.log("Loaded!");
@@ -120,7 +122,7 @@ const StreamWrapper = styled.div`
     height: 649px !important;
     flex-direction: column !important;
     ${media.desktop`
-      top: 0% !important;
+      top: ${props => (props.top ? props.top : "0")} !important;
       background: white !important;
       position: fixed !important;
       width: 100vw !important;
@@ -609,8 +611,7 @@ export class Chat extends React.Component {
 
   componentWillMount() {
     let self = this;
-    const rndUser = getRndInteger(1, 8);
-    const rndAdmin = getRndInteger(1, 2);
+
     if (ls.get("userId")) {
       this.socket = io("https://eyezon.herokuapp.com/", {
         transports: ["websocket"],
@@ -819,6 +820,7 @@ export class Chat extends React.Component {
     if (this.loadedVideo.getInternalPlayer()) {
       this.loadedVideo.getInternalPlayer().pause();
     }
+    //this.socket.emit("enterStream", ls.get("userId"));
     this.setState({
       streamLink: id,
       streamFlag: true,
@@ -927,8 +929,8 @@ export class Chat extends React.Component {
   handleSubmit(event) {
     let self = this;
     const value = this.state.value;
-    const rndUser = getRndInteger(1, 8);
-    const rndAdmin = getRndInteger(1, 2);
+    const rndUserLocal = ls.get("userIcon") ? ls.get("userIcon") : rndUser;
+
     if (value.length > 0) {
       if (!this.state.startedFlag && !this.state.awaitingConnection) {
         this.setState({
@@ -938,26 +940,24 @@ export class Chat extends React.Component {
               text: value,
               time: new Date(),
               id: uuidv1(),
-              photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUser}.png`
+              photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUserLocal}.png`
             }
           ],
           value: "",
           awaitingConnection: true,
           lastValue: value
         });
-
-        /*self.socket.emit(
-          "createDialog",
-          JSON.stringify({
-            client: ls.get("userId"),
-            title: value,
-            websiteUrl: currentUrl,
-            button: self.props.buttonId,
-            description: value
-          })
-        );*/
-
-        axios
+        const newObj = /*JSON.stringify(*/ {
+          client: ls.get("userId"),
+          title: document.getElementsByTagName("h1")[0].textContent || value,
+          websiteUrl: currentUrl,
+          button: self.props.buttonId,
+          description: value
+        }; /*)*/
+        console.log("newObj", newObj);
+        self.socket.emit("createDialog", newObj);
+        console.log("reached C");
+        /*axios
           .post("https://eyezon.herokuapp.com/api/dialog", {
             client: ls.get("userId"),
             title: value,
@@ -986,7 +986,7 @@ export class Chat extends React.Component {
           })
           .catch(function(error) {
             console.log(error);
-          });
+          });*/
       } else if (!this.state.awaitingConnection) {
         this.setState({
           messages: [
@@ -1175,6 +1175,7 @@ export class Chat extends React.Component {
                       this.setState({
                         streamFlag: false
                       });
+                      //this.socket.emit("leaveStream", ls.get("userId"));
                       if (
                         !this.props.displayMainRequest &&
                         !this.props.emailSentFlag
@@ -1198,27 +1199,27 @@ export class Chat extends React.Component {
           <StreamWrapper
             height={this.props.innerHeight}
             visible={this.state.streamFlag /*true*/}
+            top={this.state.androidOffset}
           >
             <VideoWrapperS visible={this.state.streamFlag /*true*/}>
-              {true && (
-                <iframe
-                  id="fp_embed_player"
-                  src={`https://wcs5-eu.flashphoner.com:8444/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${ls.get(
-                    "dialogId"
-                  )}&mediaProviders=WebRTC`}
-                  marginWidth="0"
-                  marginHeight="0"
-                  frameBorder="0"
-                  scrolling="no"
-                  allowFullScreen="allowfullscreen"
-                />
-              )}
+              <UnmountTracker
+                mountFunction={() => {
+                  this.socket.emit("enterStream", ls.get("dialogId"));
+                }}
+                unmountFunction={() => {
+                  this.socket.emit("leaveStream", ls.get("dialogId"));
+                }}
+                dialogId={ls.get("dialogId")}
+                visible={this.state.streamFlag /*true*/}
+              />
+
               <CloseWrapper>
                 <CloseButton
                   onClick={() => {
                     this.setState({
                       streamFlag: false
                     });
+                    //this.socket.emit("leaveStream", ls.get("userId"));
                     /*this.live.pause();
                     flvPlayer.destroy();*/
                     ls.set("streamInProgress", false);

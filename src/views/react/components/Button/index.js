@@ -555,8 +555,8 @@ export class Button extends React.Component {
     });
     this.socket.on("received", data => {
       /**feature */
-      this.notificationSound.play();
       if (data.user !== ls.get("userId")) {
+        this.notificationSound.play();
         console.log("message data", data);
 
         self.props.incrementNotifications();
