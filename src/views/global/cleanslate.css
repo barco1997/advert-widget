@@ -731,7 +731,7 @@
   direction: ltr !important;
   text-align: left !important; /* for IE, Opera */
   text-align: start !important; /* recommended W3C Spec */
-  font-family: "Mont", serif !important; /* Override this with whatever font-family is required */
+  font-family: "Montserrat", serif !important; /* Override this with whatever font-family is required */
   color: black !important;
   font-style: normal !important;
   font-weight: normal !important;

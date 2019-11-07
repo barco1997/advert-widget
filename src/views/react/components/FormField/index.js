@@ -7,7 +7,7 @@ const Wrapper = styled.input`
       props.maxWidth ? props.maxWidth : "220px"} !important;
     height: ${props => (props.height ? props.height : "36.55px")} !important;
     width: 100vw !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-size: 12px !important;
     line-height: 15px !important;
     color: #000000 !important;
@@ -42,7 +42,7 @@ const Helper = styled.div`
     bottom: -14.45px !important;
     left: 23px !important;
 
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: normal !important;
     font-size: 9px !important;

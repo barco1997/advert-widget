@@ -26,7 +26,7 @@ const Heading = styled.div`
     display: flex !important;
     font-size: 14px !important;
     line-height: 140% !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     color: ${props => props.color || "#000000"} !important;
     margin-top: ${props => props.marginTop || "36px"}!important;
     justify-content: center !important;
@@ -39,7 +39,7 @@ const Text = styled.div`
     display: flex !important;
     font-size: 14px !important;
     line-height: 140% !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     color: #979797 !important;
     margin-top: ${props => props.marginTop || "24px"}!important;
   }

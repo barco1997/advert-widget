@@ -122,7 +122,7 @@ const ButtonWrapper = styled.button`
       props.toggle
         ? "width 120ms linear !important"
         : "width 180ms linear !important"};
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     &:focus {
       outline: 0 !important;
     }

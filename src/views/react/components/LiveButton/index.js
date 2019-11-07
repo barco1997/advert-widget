@@ -22,7 +22,7 @@ const ButtonWrapper = styled.div`
     height: 36px !important;
     justify-content: center !important;
     align-items: center !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     color: white !important;
   }
 `;

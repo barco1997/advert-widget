@@ -252,7 +252,7 @@ const ChatWrapper = styled.div`
       props.displayFlag ? "flex !important" : "none !important"};
     justify-content: center !important;
     align-items: center !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     ${media.tablet`
     justify-content: flex-start !important;
   `};
@@ -270,7 +270,7 @@ const InputFieldA = styled.input`
     box-sizing: border-box !important;
     border-radius: 4px !important;
     padding: 0px 10px !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-weight: normal !important;
     font-size: 12px !important;
     outline: 0 !important;
@@ -323,7 +323,7 @@ const SendRequest = styled.button`
     font-size: 11px !important;
     padding-top: 3px !important;
     font-weight: normal !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     ${media.desktop`
       width: ${props =>
         props.stream ? "calc(100% - 26px)" : "calc(100% - 10px)"}!important;

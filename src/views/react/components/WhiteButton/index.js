@@ -14,7 +14,7 @@ const Wrapper = styled.button`
 
     justify-content: center !important;
     align-items: center !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-size: 12px !important;
     line-height: 15px !important;
     text-align: center !important;

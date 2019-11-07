@@ -36,7 +36,7 @@ const Button = styled.div`
 const ButtonExtra = styled.div`
   &&& {
     padding-top: 4px !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-size: 13px !important;
     color: #ff2d55 !important;
   }

@@ -34,7 +34,7 @@ const AwaitingBoxWrapper = styled.div`
 const ConnectingText = styled.span`
   &&& {
     display: block !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-size: 10px !important;
     line-height: 1.3 !important;
     color: rgba(0, 0, 0, 0.5) !important;
@@ -48,7 +48,7 @@ const PlaceholderMessage = styled.div`
     text-align: center !important;
     line-height: 1.3 !important;
     font-size: 14px !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-weight: 500 !important;
     opacity: 0.4 !important;
 

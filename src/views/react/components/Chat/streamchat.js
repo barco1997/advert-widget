@@ -34,7 +34,7 @@ const MessageContainer = styled.div`
 const Response = styled.div`
   &&& {
     display: flex !important;
-    font-family: "Mont" !important;
+    font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: 600 !important;
     font-size: 12px !important;
