@@ -103,7 +103,6 @@ export class Response extends React.Component {
       });
     }
     if (this.state.typeVar === "stream" && nextProps.src) {
-      console.log("got stream", nextProps.src);
       this.setItems("video", nextProps.src);
     }
   }

@@ -281,7 +281,7 @@ export class Response extends React.Component {
 
   handlePlus() {
     const rep = this.state.repointValue + 1;
-    console.log("Plus: ", rep);
+
     if (rep <= 10 && rep <= this.state.repointLimit) {
       this.setState({
         repointValue: rep
@@ -339,7 +339,6 @@ export class Response extends React.Component {
   handleClick() {
     let self = this;
     if (this.props.type === "photo" && this.state.src) {
-      console.log("mama");
       this.props.handlePhoto(this.state.src);
     } else if (this.props.type === "video" && this.state.src) {
       //const ifPlayed = this.state.playIcon;
@@ -376,7 +375,6 @@ export class Response extends React.Component {
       });
     }
     if (this.state.typeVar === "stream" && nextProps.type === "video") {
-      console.log("got stream", nextProps.src);
       this.setItems("video", nextProps.src);
     }
   }

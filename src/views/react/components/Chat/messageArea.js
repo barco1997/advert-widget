@@ -76,11 +76,10 @@ export class MessageArea extends React.Component {
         a => a.id === nextProps.strVideo
       );
       propsToCome.messages[indexOfCurrentVideo1].type = "video";
-      console.log("VERY IMPORTANT", propsToCome.messages[indexOfCurrentVideo1]);
+
       nextProps.handleStreamToVideo();
     }
     if (nextProps.manipulateVideoId) {
-      console.log("Help me");
       let indexOfCurrentVideo = nextProps.messages.findIndex(
         message => message.id === nextProps.manipulateVideoId
       );
@@ -113,8 +112,6 @@ export class MessageArea extends React.Component {
   }
 
   render() {
-    //const isOpen = this.state.toggle;
-    //console.log("what is going on bro", this.props.sentHistory);
     return (
       <MessageContainer
         ref={c => {

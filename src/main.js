@@ -8,8 +8,6 @@ const supportedAPI = ["init", "message", "react"]; // enlist all methods support
     The main entry of the application
     */
 function app(window) {
-  console.log("JS-Widget starting");
-
   // set default configurations
   let configurations = {
     someDefaultConfiguration: false
@@ -55,8 +53,6 @@ function apiHandler(api, params) {
       let updatedParams = params;
       let url = new URL(window.location.href);
       let openChat = url.searchParams.get("open");
-      console.log("location: ", window.location.href);
-      console.log("chat open? ", openChat);
 
       if (params.targets && params.targets.length > 0) {
         buttons = params.targets.map(target => {

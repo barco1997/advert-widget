@@ -551,13 +551,12 @@ export class Chat extends React.Component {
         if (event.target.data.includes("?open=true")) {
           let str = event.target.data;
           str = str.substring(0, str.indexOf("?open"));
-          console.log("string: ", str);
+
           new_window.location.href = str.concat(
             "?open=true&buttonId=",
             buttonId
           );
         } else {
-          console.log("target");
           new_window.location.href = event.target.data.concat(
             "?open=true&buttonId=",
             buttonId
@@ -618,19 +617,15 @@ export class Chat extends React.Component {
         upgrade: false
       });
       this.socket.on("connect", () => {
-        console.log("socket got connected");
-
         self.socket.emit("enterSocket", ls.get("userId"));
         if (ls.get("dialogId")) {
           self.socket.emit("enterDialog", ls.get("dialogId"));
         }
       });
       this.socket.on("disconnect", () => {
-        console.log("socket got disconnected");
         //this.socket.open();
       });
       this.socket.on("dialogCreated", id => {
-        console.log("dialogCreated");
         ls.set("dialogId", id);
         self.socket.emit("enterDialog", id);
         self.props.joinDialogue();
@@ -641,28 +636,23 @@ export class Chat extends React.Component {
           .post(url, {
             eventType: "SENDED_REQUESTS"
           })
-          .then(function(response) {
-            console.log("button clicked", response);
-          })
+          .then(function(response) {})
           .catch(function(error) {
             console.log(error);
           });
       });
       this.socket.on("streamToVideo", data => {
-        console.log("message got updated", data);
         this.setState({ streamToVideo: data.messageId, streamFlag: false });
         /*this.live.pause();
         flvPlayer.destroy();*/
         ls.set("streamInProgress", false);
       });
       this.socket.on("received", data => {
-        console.log("message got received", data);
         self.socket.emit("readMessage", ls.get("dialogId"));
         if (data.userId !== storedId) {
           if (!ls.get("dialogId")) {
             ls.set("dialogId", data._id);
           }
-          console.log("u got a reply again", data);
 
           let type;
           let source;
@@ -722,7 +712,6 @@ export class Chat extends React.Component {
       });
 
       this.socket.on("streamEvent", data => {
-        console.log("what data:", data);
         if (data.type === "MESSAGE") {
           this.setState({
             messagesStream: [
@@ -761,7 +750,6 @@ export class Chat extends React.Component {
             .then(function(response) {
               const messages = response.data.data;
 
-              console.log(response);
               const editedMessages = messages
                 .filter(msg => !(msg.type && msg.type === "STREAM"))
                 .map(message => ({
@@ -831,9 +819,7 @@ export class Chat extends React.Component {
       .post(url, {
         eventType: "STREAMS_COUNT"
       })
-      .then(function(response) {
-        console.log("STREAM button clicked", response);
-      })
+      .then(function(response) {})
       .catch(function(error) {
         console.log(error);
       });
@@ -846,7 +832,7 @@ export class Chat extends React.Component {
     if (this.live) {
       /*this.live.pause();*/
     }
-    console.log("photo src: ", src);
+
     this.setState({
       photoSrc: src,
       streamFlag: false,
@@ -920,7 +906,7 @@ export class Chat extends React.Component {
           userId: ls.get("userId"),
           type: "STREAM"
         };
-        console.log(obj);
+
         self.socket.emit("messageOnStream", JSON.stringify(obj));
       }
     }
@@ -954,39 +940,8 @@ export class Chat extends React.Component {
           button: self.props.buttonId,
           description: value
         }; /*)*/
-        console.log("newObj", newObj);
+
         self.socket.emit("createDialog", newObj);
-        console.log("reached C");
-        /*axios
-          .post("https://eyezon.herokuapp.com/api/dialog", {
-            client: ls.get("userId"),
-            title: value,
-            websiteUrl: currentUrl,
-            button: self.props.buttonId,
-            description: value
-          })
-          .then(function(response) {
-            console.log("U sent the request - thats new response:", response);
-            ls.set("dialogId", response.data._id);
-            self.socket.emit("enterDialog", response.data._id);
-            self.props.joinDialogue();
-            ls.set("adminIcon", rndAdmin);
-            ls.set("userIcon", rndUser);
-            const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
-            axios
-              .post(url, {
-                eventType: "SENDED_REQUESTS"
-              })
-              .then(function(response) {
-                console.log("button clicked", response);
-              })
-              .catch(function(error) {
-                console.log(error);
-              });
-          })
-          .catch(function(error) {
-            console.log(error);
-          });*/
       } else if (!this.state.awaitingConnection) {
         this.setState({
           messages: [
@@ -1009,7 +964,7 @@ export class Chat extends React.Component {
             userId: ls.get("userId"),
             type: "DIALOG"
           };
-          console.log(obj);
+
           self.socket.emit("message", JSON.stringify(obj));
         } else {
           let obj = {
@@ -1018,7 +973,7 @@ export class Chat extends React.Component {
             userId: ls.get("userId"),
             type: "DIALOG"
           };
-          console.log(obj);
+
           self.socket.emit("message", JSON.stringify(obj));
         }
       }
@@ -1032,7 +987,6 @@ export class Chat extends React.Component {
         innerHeight: window.innerHeight
       });*/
       self.forceUpdate();
-      console.log("onorientationchange", window.innerHeight);
     });
   }
   handleChangeOrientationWrapper() {

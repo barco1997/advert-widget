@@ -20,7 +20,7 @@ export function react(params, ifOpened, buttons) {
       `${window.scrollY}px`
     );
   });
-  console.log("marginLeft", body.style);
+
   ReactDOM.render(
     <React.Fragment>
       <App

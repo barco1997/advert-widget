@@ -18,12 +18,10 @@ export class UnmountTracker extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.visible && this.props.visible !== prevProps.visible) {
       if (this.props.mountFunction) {
-        console.log("DOING");
         this.props.mountFunction();
       }
     } else if (this.props.visible !== prevProps.visible) {
       if (this.props.unmountFunction) {
-        console.log("UNDOING");
         this.props.unmountFunction();
       }
     }
