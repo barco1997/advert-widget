@@ -292,7 +292,6 @@ export class Button extends React.Component {
   }
 
   sendEmailDetails(email, name) {
-    console.log("Clicked AAA", email, name);
     this.socket.emit(
       "fillClientData",
       JSON.stringify({
@@ -338,7 +337,6 @@ export class Button extends React.Component {
       axios
         .get(url)
         .then(function(response) {
-          console.log("button UNREAD", response.data.count);
           self.props.setNotifications(response.data.count);
         })
         .catch(function(error) {
@@ -347,7 +345,6 @@ export class Button extends React.Component {
       axios
         .get(url2)
         .then(function(response) {
-          console.log("Email sent?", response);
           self.setState({
             emailSentFlag: true
           });
@@ -378,13 +375,12 @@ export class Button extends React.Component {
         if (event.target.data.includes("?open=true")) {
           let str = event.target.data;
           str = str.substring(0, str.indexOf("?open"));
-          console.log("string: ", str);
+
           new_window.location.href = str.concat(
             "?open=true&buttonId=",
             buttonId
           );
         } else {
-          console.log("target");
           new_window.location.href = event.target.data.concat(
             "?open=true&buttonId=",
             buttonId
@@ -438,7 +434,6 @@ export class Button extends React.Component {
 
   joinDialogue() {
     if (ls.get("userId")) {
-      console.log("TO BE SURE");
       this.socket.emit("enterSocket", ls.get("userId"));
     }
     if (ls.get("dialogId")) {
@@ -456,7 +451,6 @@ export class Button extends React.Component {
       this.socket.emit("readMessage", ls.get("dialogId"));
     }
 
-    console.log("pressed eyezonButton");
     let self = this;
     self.props.setNotifications(0);
     self.setState({
@@ -472,9 +466,7 @@ export class Button extends React.Component {
             {}
           )
           .then(function(response) {
-            console.log(response);
             if (response.data.count > 0) {
-              console.log("userId, no dialog id, dialogs");
               //let notifPerm = ls.get("conversationPermission");
               /*if (ls.get("conversationPermission")) {
                 ls.set("conversationId", response.data.dialogs[0].port._id);
@@ -486,8 +478,6 @@ export class Button extends React.Component {
               ls.set("dialogId", response.data.data[0]._id);
               self.showChatHere();
             } else {
-              console.log("userId, no dialog id, no dialogs");
-
               self.handleRegistration();
             }
           })
@@ -495,8 +485,6 @@ export class Button extends React.Component {
             console.log(error);
           });
       } else {
-        console.log("no userId, no conversation id");
-
         self.handleRegistration();
       }
     } else {
@@ -508,13 +496,9 @@ export class Button extends React.Component {
           {}
         )
         .then(function(response) {
-          console.log(response);
-
           if (response.data.count > 0) {
-            console.log("dialog id, dialogs");
             self.showChatHere();
           } else {
-            console.log("dialog id, no dialogs");
             ls.set("dialogId", "");
             self.showChatHere();
           }
@@ -530,9 +514,7 @@ export class Button extends React.Component {
       .post(url, {
         eventType: "CLICK"
       })
-      .then(function(response) {
-        console.log("button clicked", response);
-      })
+      .then(function(response) {})
       .catch(function(error) {
         console.log(error);
       });
@@ -550,21 +532,17 @@ export class Button extends React.Component {
       upgrade: false
     });
     this.socket.on("connect", () => {
-      console.log("socket got connected");
       this.joinDialogue();
     });
     this.socket.on("received", data => {
       /**feature */
       if (data.user !== ls.get("userId")) {
         this.notificationSound.play();
-        console.log("message data", data);
 
         self.props.incrementNotifications();
 
         /***Feature****** */
         if (self.state.initializeChat && self.state.displayChat) {
-          console.log("initializeChat if: ", self.props.initializeChat);
-          console.log("displayFlag if: ", self.state.displayFlag);
           self.props.decrementNotifications();
         }
         /******* */
@@ -607,7 +585,7 @@ export class Button extends React.Component {
         });
       }
     }
-    console.log(this.props.ifOpened);
+
     if (this.props.ifOpened) {
       this.handleClick(null, this.props.buttonId);
     }
@@ -629,7 +607,6 @@ export class Button extends React.Component {
     this.setState({ displayMessage: false });
   }
   destroyChat() {
-    console.log("multi");
     this.setState({
       displayChat: false,
       initializeChat: false,

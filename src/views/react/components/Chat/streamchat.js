@@ -137,8 +137,6 @@ export class StreamChat extends React.Component {
   }
 
   render() {
-    //const isOpen = this.state.toggle;
-    //console.log("what is going on bro", this.props.sentHistory);
     return (
       <DoubleWrapper>
         <Wrapper>

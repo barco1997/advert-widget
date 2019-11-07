@@ -32,7 +32,7 @@ export class App extends React.Component {
       .get(url)
       .then(function(response) {
         //let notificationCount = ls.get("notificationCount");
-        console.log("INITIAL STUFF", response);
+
         self.setState({
           greetingText: response.data.greetingText,
           waitingText: response.data.waitingText
@@ -44,7 +44,6 @@ export class App extends React.Component {
   }
 
   setNotifications(val) {
-    console.log("Set method happened", val);
     //let obj;
     if (val > 0) {
       this.setState({
@@ -58,7 +57,6 @@ export class App extends React.Component {
     }
   }
   incrementNotifications() {
-    console.log("Notifications: ");
     const val = this.state.notifications;
     this.setState({
       notifications: val + 1,
@@ -66,14 +64,12 @@ export class App extends React.Component {
     });
   }
   decrementNotifications() {
-    console.log("Notifications: ");
     const val = this.state.notifications > 0 ? this.state.notifications : 1;
     this.setState({
       notifications: val - 1
     });
   }
   render() {
-    //console.log("BUSINESS, ", this.props.businessId);
     return (
       <React.Fragment>
         <Button
