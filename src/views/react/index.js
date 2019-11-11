@@ -6,7 +6,7 @@ import App from "./components/App";
 let elements = [];
 let body;
 
-export function react(params, ifOpened, buttons) {
+export function react(params, ifOpened, buttons, eyezonGlobal) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
   body = document.getElementsByTagName("body")[0];
@@ -30,6 +30,7 @@ export function react(params, ifOpened, buttons) {
         buttonId={params.initialButtonId}
         ifOpened={ifOpened}
         buttons={buttons}
+        eyezonGlobal={params.eyezonGlobal}
       />
     </React.Fragment>,
     document.getElementById("root")

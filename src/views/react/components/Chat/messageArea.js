@@ -126,6 +126,7 @@ export class MessageArea extends React.Component {
             }}
             title={message.text}
             description={message.user || "Вы"}
+            ifRecipient={(message.user || "Вы") === "Вы"}
             date={message.time}
             icon={message.photo}
             flv={message.flv}

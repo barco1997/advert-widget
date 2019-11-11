@@ -13,6 +13,7 @@ import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
 //const messageSound = require("https://witheyezon.com/eyezonsite/static/not.mp3");
 //import disableScroll from "disable-scroll";
+
 const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
@@ -253,7 +254,8 @@ export class Button extends React.Component {
       innerHeight: window.innerHeight,
       displayEmailRequest: false,
       emailSentFlag: false,
-      displayMainRequest: false
+      displayMainRequest: false,
+      currentTitle: null
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -325,8 +327,12 @@ export class Button extends React.Component {
       this.showChat();
     }
   }
+
   componentDidMount() {
     let self = this;
+    if (this.props.eyezonGlobal)
+      this.props.eyezonGlobal.function = (buttonId, title) =>
+        this.handleClick(null, buttonId, title);
     if (ls.get("userId")) {
       const url = `https://eyezon.herokuapp.com/api/button/${
         this.props.buttonId
@@ -441,8 +447,17 @@ export class Button extends React.Component {
     }
   }
 
-  handleClick(e, buttonId) {
+  handleClick(e, buttonId, title) {
     this.closeRequest();
+    if (title) {
+      this.setState({
+        currentTitle: title
+      });
+    } else {
+      this.setState({
+        currentTitle: null
+      });
+    }
     //e.preventDefault();
     if (!iOS) {
       this.notificationPermission();
@@ -726,6 +741,7 @@ export class Button extends React.Component {
             showMainRequest={this.showMainRequest}
             emailSentFlag={this.state.emailSentFlag}
             sendEmailDetails={this.sendEmailDetails}
+            currentTitle={this.state.currentTitle}
           />
         )}
       </ButtonReqWrapper>

@@ -935,7 +935,11 @@ export class Chat extends React.Component {
         });
         const newObj = /*JSON.stringify(*/ {
           client: ls.get("userId"),
-          title: document.getElementsByTagName("h1")[0].textContent || value,
+          title: this.props.currentTitle
+            ? this.props.currentTitle
+            : document.getElementsByTagName("h1").length > 0
+            ? document.getElementsByTagName("h1")[0].textContent
+            : value,
           websiteUrl: currentUrl,
           button: self.props.buttonId,
           description: value

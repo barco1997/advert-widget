@@ -14,6 +14,7 @@
     <button href="#" id="eyezonButton">DO IT</button>
 
     <script>
+      var eyezonGlobal = { function: null };
       (function(w, d, s, o, f, js, fjs) {
         w["JS-Widget"] = o;
         w[o] =
@@ -35,7 +36,8 @@
         initialButtonId: "5d5b22d87e8dbf0036fa3da0",
         targets: [
           { buttonId: "5d5b22d87e8dbf0036fa3da0", targetId: "eyezonButton" }
-        ]
+        ],
+        eyezonGlobal: eyezonGlobal
       });
     </script>
   </body>

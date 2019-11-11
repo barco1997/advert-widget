@@ -85,6 +85,7 @@ export class App extends React.Component {
           decrementNotifications={this.decrementNotifications}
           greetingText={this.state.greetingText}
           waitingText={this.state.waitingText}
+          eyezonGlobal={this.props.eyezonGlobal}
         />
       </React.Fragment>
     );

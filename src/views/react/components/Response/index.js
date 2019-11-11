@@ -17,19 +17,23 @@ const Item = styled.li`
   &&& {
     display: flex !important;
     width: 100% !important;
-    margin: 5px 0 !important;
-    padding: 10px 0px !important;
+    margin: 0px 0 !important;
+    padding: 5px 0px !important;
     border-radius: 5px !important;
     justify-content: flex-start !important;
     min-height: 41px !important;
     height: auto !important;
 
     flex-wrap: wrap !important;
+    ${media.desktop`
+      margin: 5px 0 !important;
+    `};
   }
 `;
 
 const Icon = styled.div`
   &&& {
+    display: none !important;
     width: 40px !important;
     height: 40px !important;
 
@@ -41,10 +45,11 @@ const Icon = styled.div`
       height: 100% !important;
     }
     ${media.desktop`
-  width: 35px !important;
-  height: 35px !important;
-  margin-right: 15px !important;
-  `};
+      display: block !important;
+      width: 35px !important;
+      height: 35px !important;
+      margin-right: 15px !important;
+    `};
   }
 `;
 
@@ -60,27 +65,67 @@ const ItemStart = styled.div`
 const ItemEnd = styled.div`
   &&& {
     display: flex !important;
-    flex: 1 !important;
+    flex: 0.15 !important;
     flex-direction: column !important;
     align-items: flex-end !important;
     justify-content: center !important;
+    ${media.desktop`
+      flex: 1 !important;
+    `};
+  }
+`;
+const ExtraStream = styled.div`
+  &&& {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 15px !important;
+    background: #ececec !important;
+    border-radius: 20px 20px 20px 0px !important;
+    margin-right: auto !important;
+    margin-left: 3px !important;
+    ${media.desktop`
+    margin-left: 0px !important;
+    padding: 0px !important;
+    background: none !important;
+    border-radius: 0px !important;
+  `};
   }
 `;
 
 const Title = styled.h4`
   &&& {
+    padding: 15px 15px 12px 12px !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    color: ${props => (props.ifRecipient ? "white" : "black")} !important;
+    background: ${props =>
+      props.ifRecipient
+        ? "linear-gradient(100.96deg, #FF2D55 0%, #FF2D79 100%)"
+        : "#ECECEC"} !important;
     margin: 0 !important;
+    margin-left: ${props => (props.ifRecipient ? "auto" : "3px")} !important;
+    margin-right: ${props => (props.ifRecipient ? "0" : "auto")} !important;
+    border-radius: ${props =>
+      props.ifRecipient
+        ? "20px 20px 0px 20px"
+        : "20px 20px 20px 0px"} !important;
+    ${media.desktop`
+    padding: 0px !important;
+    color: inherit !important;
+    background: none !important;
     font-size: 16px !important;
     font-weight: bold !important;
-    ${media.desktop`
-  font-size: 14px !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      font-size: 14px !important;
   `};
   }
 `;
 const ImageA = styled.img`
   &&& {
     height: 143px !important;
-    border-radius: 10px !important;
+    border-radius: 10px 10px 10px 0px !important;
     object-fit: cover !important;
     width: 270px !important;
     cursor: pointer !important;
@@ -97,7 +142,7 @@ const VideoA = styled.div`
 
     width: 270px !important;
     cursor: pointer;
-    border-radius: 10px !important;
+    border-radius: 10px 10px 10px 0px !important;
     background: url(${props => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
@@ -124,117 +169,45 @@ const PlayIcon = styled.img`
   }
 `;
 
-const RepointsWindow = styled.div`
-  &&& {
-    z-index: 16000 !important;
-    position: absolute !important;
-    bottom: -10px !important;
-    left: 0 !important;
-    display: flex !important;
-    color: white !important;
-    border-radius: 100px !important;
-
-    height: 28px !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
-    background: white !important;
-
-    background: ${props => (props.color ? props.color : "white !important")};
-    width: ${props => (props.toggle ? "190px !important" : "28px !important")};
-    transition: ${props =>
-      props.toggle ? "width 120ms linear !important" : "none !important"};
-
-    overflow: hidden !important;
-  }
-`;
-
-const ControlIcon = styled.img`
-  &&& {
-    height: 12px !important;
-    width: 12px !important;
-    object-fit: cover !important;
-    padding: 8px !important;
-    text-decoration: none !important;
-    -webkit-font-smoothing: antialiased !important;
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    cursor: pointer !important;
-    outline: 0 !important;
-    &:focus {
-      outline: 0 !important;
-    }
-  }
-`;
-
-const RepointsAmountWrapper = styled.div`
-  &&& {
-    margin-left: 8px !important;
-    height: 28px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-`;
-
-const SignWrapper = styled.div`
-  &&& {
-    height: 28px !important;
-    width: 28px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    cursor: pointer !important;
-  }
-`;
-
-const Minus = styled.img`
-  &&& {
-    height: 1.75px !important;
-    width: 11.8px !important;
-  }
-`;
-
-const Plus = styled.img`
-  &&& {
-    height: 11.8px !important;
-    width: 11.67px !important;
-  }
-`;
-
-const NumberWrapper = styled.div`
-  &&& {
-    width: 44px !important;
-    margin-top: 4px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    font-size: 19px !important;
-    color: #666666 !important;
-  }
-`;
-
 const Summary = styled.p`
   &&& {
+    display: none !important;
     margin: 0 !important;
     font-size: 12px !important;
     opacity: 0.5 !important;
     margin-top: 6px !important;
+    ${media.desktop`
+      display: block !important;
+    `};
   }
 `;
 const SummaryTop = styled.p`
   &&& {
+    display: none !important;
     margin: 0 !important;
     font-size: 12px !important;
     opacity: 0.5 !important;
     margin-bottom: 6px !important;
     ${media.desktop`
-  font-size: 10px !important;
+      display: block !important;
+      font-size: 10px !important;
   `};
   }
 `;
-
+const SummaryTopStream = styled.p`
+  &&& {
+    margin: 0 !important;
+    font-size: 12px !important;
+    opacity: 1 !important;
+    margin-bottom: 10px !important;
+    margin-left: 3px !important;
+    ${media.desktop`
+    opacity: 0.5 !important;
+      margin-bottom: 6px !important;
+      font-size: 10px !important;
+  `};
+  }
+`;
 const Date = styled.time`
   &&& {
     opacity: 0.2 !important;
@@ -247,13 +220,11 @@ const ItemHolder = styled.div`
   &&& {
     display: flex !important;
     position: relative !important;
-    margin-bottom: 10px !important;
-  }
-`;
-
-const RepointButtonWrapper = styled.div`
-  &&& {
-    margin-right: 3.8px !important;
+    margin-bottom: 0px !important;
+    margin-left: 3px !important;
+    ${media.desktop`
+      margin-bottom: 10px !important;
+  `};
   }
 `;
 
@@ -410,13 +381,6 @@ export class Response extends React.Component {
             />
           </Icon>
           <ItemStart>
-            {this.props.description &&
-              this.props.flv &&
-              this.state.typeVar === "stream" && (
-                <SummaryTop>
-                  {this.props.description} начал прямую трансляцию
-                </SummaryTop>
-              )}
             {this.props.description && this.state.typeVar === "audio" && (
               <SummaryTop>{this.props.description} поделился аудио</SummaryTop>
             )}
@@ -437,14 +401,40 @@ export class Response extends React.Component {
             {this.props.description && this.state.typeVar === "photo" && (
               <SummaryTop>{this.props.description} поделился фото</SummaryTop>
             )}
-            {!this.props.flv && <Title>{this.props.title}</Title>}
+            {/** */}
+            {/** */}
+            {/** */}
+            {/*<ExtraTitle>*/}
+            {/* </ExtraTitle>*/}
+            {!this.props.flv &&
+              !(
+                this.state.typeVar === "photo" ||
+                this.state.typeVar === "video" ||
+                this.state.typeVar === "audio"
+              ) && (
+                <Title ifRecipient={this.props.ifRecipient}>
+                  {this.props.title}
+                </Title>
+              )}
+            {/** */}
+            {/** */}
+            {/** */}
             {this.props.flv && this.state.typeVar === "stream" && (
-              <ItemHolder>
-                <LiveButton id={this.props.flv} setFlv={this.props.functionA}>
-                  Смотреть
-                </LiveButton>
-              </ItemHolder>
+              <ExtraStream>
+                {this.props.description && (
+                  <SummaryTopStream>
+                    {this.props.description} начал прямую трансляцию
+                  </SummaryTopStream>
+                )}
+
+                <ItemHolder>
+                  <LiveButton id={this.props.flv} setFlv={this.props.functionA}>
+                    Смотреть
+                  </LiveButton>
+                </ItemHolder>
+              </ExtraStream>
             )}
+
             {this.state.typeVar === "photo" && this.state.src && (
               <ItemHolder>
                 <ImageA
@@ -471,7 +461,7 @@ export class Response extends React.Component {
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (
-              <ItemHolder>
+              <ItemHolder audio>
                 <ReactAudioPlayer src={this.state.src} controls />
               </ItemHolder>
             )}
@@ -490,6 +480,101 @@ export class Response extends React.Component {
 {
   /**/
 }
-/*<PlayIcon src={this.state.playIcon ? playV : pauseV} />*/
-
 export default Response;
+/*<PlayIcon src={this.state.playIcon ? playV : pauseV} />*/
+/*const RepointsWindow = styled.div`
+  &&& {
+    z-index: 16000 !important;
+    position: absolute !important;
+    bottom: -10px !important;
+    left: 0 !important;
+    display: flex !important;
+    color: white !important;
+    border-radius: 100px !important;
+
+    height: 28px !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
+    background: white !important;
+
+    background: ${props => (props.color ? props.color : "white !important")};
+    width: ${props => (props.toggle ? "190px !important" : "28px !important")};
+    transition: ${props =>
+      props.toggle ? "width 120ms linear !important" : "none !important"};
+
+    overflow: hidden !important;
+  }
+`;
+
+const ControlIcon = styled.img`
+  &&& {
+    height: 12px !important;
+    width: 12px !important;
+    object-fit: cover !important;
+    padding: 8px !important;
+    text-decoration: none !important;
+    -webkit-font-smoothing: antialiased !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+    cursor: pointer !important;
+    outline: 0 !important;
+    &:focus {
+      outline: 0 !important;
+    }
+  }
+`;
+
+const RepointsAmountWrapper = styled.div`
+  &&& {
+    margin-left: 8px !important;
+    height: 28px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+`;
+
+const SignWrapper = styled.div`
+  &&& {
+    height: 28px !important;
+    width: 28px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
+  }
+`;
+
+const Minus = styled.img`
+  &&& {
+    height: 1.75px !important;
+    width: 11.8px !important;
+  }
+`;
+
+const Plus = styled.img`
+  &&& {
+    height: 11.8px !important;
+    width: 11.67px !important;
+  }
+`;
+
+const NumberWrapper = styled.div`
+  &&& {
+    width: 44px !important;
+    margin-top: 4px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-size: 19px !important;
+    color: #666666 !important;
+  }
+`;
+
+const RepointButtonWrapper = styled.div`
+  &&& {
+    margin-right: 3.8px !important;
+  }
+`;*/
