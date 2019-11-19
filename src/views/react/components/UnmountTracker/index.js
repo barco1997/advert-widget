@@ -7,14 +7,14 @@ export class UnmountTracker extends React.Component {
       console.log("DOING");
       this.props.mountFunction();
     }
-  }
+  }*/
 
   componentWillUnmount() {
     console.log("UNDOING");
     if (this.props.unmountFunction) {
       this.props.unmountFunction();
     }
-  }*/
+  }
   componentDidUpdate(prevProps) {
     if (this.props.visible && this.props.visible !== prevProps.visible) {
       if (this.props.mountFunction) {
@@ -31,7 +31,7 @@ export class UnmountTracker extends React.Component {
     return (
       <iframe
         id="fp_embed_player"
-        src={`https://wcs5-eu.flashphoner.com:8444/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${this.props.dialogId}&mediaProviders=WebRTC`}
+        src={`https://server.witheyezon.com:8444/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${this.props.dialogId}&mediaProviders=WebRTC,Flash,MSE,WSPlayer`}
         marginWidth="0"
         marginHeight="0"
         frameBorder="0"

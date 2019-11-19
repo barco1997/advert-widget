@@ -263,10 +263,12 @@ const InputFieldA = styled.input`
   &&& {
     height: 30px !important;
     color: black !important;
+    flex: 1 !important;
     width: 100% !important;
+    opacity: ${props => (props.blocked ? "0.7" : "1")} !important;
     max-width: 100% !important;
     background: #f5f5f5 !important;
-    border: 0.5px solid #e5e5e5 !important;
+    border: 0px solid #e5e5e5 !important;
     box-sizing: border-box !important;
     border-radius: 4px !important;
     padding: 0px 10px !important;
@@ -285,6 +287,35 @@ const InputFieldA = styled.input`
         props.stream ? "calc(100% - 20px)" : "100%"} !important;
         margin-left: ${props => (props.stream ? "10px" : "0px")} !important;
       
+  `};
+  }
+`;
+
+const ImageCart = styled.div`
+  &&& {
+    background: url(${props => props.src}) !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    width: 18px !important;
+    height: 18px !important;
+    position: relative !important;
+  }
+`;
+
+const CartWrapper = styled.div`
+  &&& {
+    border-radius: 50% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 30px !important;
+    height: 30px !important;
+    background: #f5f5f5 !important;
+    margin-left: 15px !important;
+    cursor: pointer !important;
+    ${media.tablet`
+    width: 44px !important;
+    height: 44px !important;
   `};
   }
 `;
@@ -446,6 +477,14 @@ const TextFieldExtra = styled.div`
   }
 `;
 
+const CartTextFieldExtra = styled.div`
+  &&& {
+    display: flex !important;
+    width: 100% !important;
+    align-items: center !important;
+  }
+`;
+
 const ControlShader = styled.div`
   &&& {
     position: absolute !important;
@@ -507,6 +546,7 @@ export class Chat extends React.Component {
     );
     this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.handleCart = this.handleCart.bind(this);
   }
 
   orientationChanged() {
@@ -526,6 +566,51 @@ export class Chat extends React.Component {
       this.setState({
         androidOffset: `-${this.props.innerHeight - window.innerHeight}px`
       });
+    }
+  }
+
+  handleCart() {
+    /*********************************************************************************** */
+    let self = this;
+    const value =
+      document.getElementsByTagName("h1").length > 0
+        ? document.getElementsByTagName("h1")[0].textContent
+        : document.getElementsByClassName("p-product__char-txt").length > 0
+        ? document.getElementsByClassName("p-product__char-txt")[0].textContent
+        : "empty";
+    const rndUserLocal = ls.get("userIcon") ? ls.get("userIcon") : rndUser;
+    if (this.state.startedFlag && !this.state.awaitingConnection) {
+      this.setState({
+        messages: [
+          ...this.state.messages,
+          {
+            text: value,
+            time: new Date(),
+            id: uuidv1(),
+            photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUserLocal}.png`
+          }
+        ],
+        value: ""
+      });
+      if (ls.get("streamInProgress")) {
+        let obj = {
+          messageText: value,
+          dialogId: ls.get("dialogId"),
+          userId: ls.get("userId"),
+          type: "DIALOG"
+        };
+
+        self.socket.emit("message", JSON.stringify(obj));
+      } else {
+        let obj = {
+          messageText: value,
+          dialogId: ls.get("dialogId"),
+          userId: ls.get("userId"),
+          type: "DIALOG"
+        };
+
+        self.socket.emit("message", JSON.stringify(obj));
+      }
     }
   }
 
@@ -1099,27 +1184,41 @@ export class Chat extends React.Component {
                   )}
                   <form>
                     <div style={{ flexDirection: "column  !important" }}>
-                      <InputFieldA
-                        ref={item => {
-                          this.mainInput = item;
-                        }}
-                        onFocus={() => {
-                          //this.handleAndroidKeyboard(true);
-                        }}
-                        onBlur={() => {
-                          //this.handleAndroidKeyboard(false);
-                        }}
-                        type="text"
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        placeholder="Спросите что-нибудь ;)"
-                        onKeyPress={event => {
-                          if (event.key === "Enter") {
-                            this.handleSubmit(event);
+                      <CartTextFieldExtra>
+                        <InputFieldA
+                          ref={item => {
+                            this.mainInput = item;
+                          }}
+                          onFocus={() => {
+                            //this.handleAndroidKeyboard(true);
+                          }}
+                          onBlur={() => {
+                            //this.handleAndroidKeyboard(false);
+                          }}
+                          type="text"
+                          value={this.state.value}
+                          onChange={this.handleChange}
+                          blocked={this.state.awaitingConnection}
+                          disabled={this.state.awaitingConnection}
+                          placeholder={
+                            this.state.awaitingConnection
+                              ? "Для продолжения диалога дождитесь ответа"
+                              : "Спросите что-нибудь ;)"
                           }
-                        }}
-                      />
-
+                          onKeyPress={event => {
+                            if (event.key === "Enter") {
+                              this.handleSubmit(event);
+                            }
+                          }}
+                        />
+                        <CartWrapper onClick={this.handleCart}>
+                          <ImageCart
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/cart.png"
+                            }
+                          />
+                        </CartWrapper>
+                      </CartTextFieldExtra>
                       <SendRequest onClick={this.handleSubmit}>
                         {/*Send*/}Отправить
                       </SendRequest>
