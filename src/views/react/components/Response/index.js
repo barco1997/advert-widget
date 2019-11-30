@@ -45,7 +45,7 @@ const Icon = styled.div`
       height: 100% !important;
     }
     ${media.desktop`
-      display: block !important;
+      display: none !important;
       width: 35px !important;
       height: 35px !important;
       margin-right: 15px !important;
@@ -70,7 +70,7 @@ const ItemEnd = styled.div`
     align-items: flex-end !important;
     justify-content: center !important;
     ${media.desktop`
-      flex: 1 !important;
+      flex: 0.20/*1*/ !important;
     `};
   }
 `;
@@ -85,10 +85,10 @@ const ExtraStream = styled.div`
     margin-right: auto !important;
     margin-left: 3px !important;
     ${media.desktop`
-    margin-left: 0px !important;
+    /*margin-left: 0px !important;
     padding: 0px !important;
     background: none !important;
-    border-radius: 0px !important;
+    border-radius: 0px !important;*/
   `};
   }
 `;
@@ -111,13 +111,17 @@ const Title = styled.h4`
         ? "20px 20px 0px 20px"
         : "20px 20px 20px 0px"} !important;
     ${media.desktop`
-    padding: 0px !important;
+    
+    
+    /*background: none !important;
     color: inherit !important;
-    background: none !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-      margin-left: 0 !important;
+    margin-left: 0 !important;
       margin-right: 0 !important;
+      padding: 0px !important;
+      font-weight: bold !important;*/
+    
+    
+      
       font-size: 14px !important;
   `};
   }
@@ -177,7 +181,7 @@ const Summary = styled.p`
     opacity: 0.5 !important;
     margin-top: 6px !important;
     ${media.desktop`
-      display: block !important;
+      display: none !important;
     `};
   }
 `;
@@ -189,7 +193,7 @@ const SummaryTop = styled.p`
     opacity: 0.5 !important;
     margin-bottom: 6px !important;
     ${media.desktop`
-      display: block !important;
+      display: none !important;
       font-size: 10px !important;
   `};
   }
@@ -202,8 +206,8 @@ const SummaryTopStream = styled.p`
     margin-bottom: 10px !important;
     margin-left: 3px !important;
     ${media.desktop`
-    opacity: 0.5 !important;
-      margin-bottom: 6px !important;
+    /*opacity: 0.5 !important;
+      margin-bottom: 6px !important;*/
       font-size: 10px !important;
   `};
   }
@@ -223,7 +227,7 @@ const ItemHolder = styled.div`
     margin-bottom: 0px !important;
     margin-left: 3px !important;
     ${media.desktop`
-      margin-bottom: 10px !important;
+      margin-bottom: /*10px*/0px !important;
   `};
   }
 `;

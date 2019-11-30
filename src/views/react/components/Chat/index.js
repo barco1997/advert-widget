@@ -13,6 +13,8 @@ const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+let SESSION_STATUS;
+let STREAM_STATUS;
 function load(url) {
   return new Promise(function(resolve, reject) {
     var script = document.createElement("script");
@@ -40,6 +42,8 @@ const rndAdmin = getRndInteger(1, 2);
 load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
   .then(function() {
     console.log("Loaded!");
+    SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
+    STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
   })
   .catch(function(err) {
     console.error("Something went wrong!", err);
@@ -697,11 +701,12 @@ export class Chat extends React.Component {
     let self = this;
 
     if (ls.get("userId")) {
-      this.socket = io("https://eyezon.herokuapp.com/", {
+      this.socket = this.props.socket;
+      /*this.socket = io("https://eyezon.herokuapp.com/", {
         transports: ["websocket"],
         upgrade: false
-      });
-      this.socket.on("connect", () => {
+      });*/
+      /*this.socket.on("connect", () => {
         self.socket.emit("enterSocket", ls.get("userId"));
         if (ls.get("dialogId")) {
           self.socket.emit("enterDialog", ls.get("dialogId"));
@@ -709,7 +714,7 @@ export class Chat extends React.Component {
       });
       this.socket.on("disconnect", () => {
         //this.socket.open();
-      });
+      });*/
       this.socket.on("dialogCreated", id => {
         ls.set("dialogId", id);
         self.socket.emit("enterDialog", id);
@@ -1096,6 +1101,15 @@ export class Chat extends React.Component {
   componentDidMount() {
     //this.handleChangeOrientationWrapper();
     window.addEventListener("resize", this.handleResize);
+    try {
+      Flashphoner.init({
+        flashMediaProviderSwfLocation:
+          "https://witheyezon.com/eyezonsite/static/media-provider.swf"
+      });
+    } catch (e) {
+      console.log("Your browser doesn't support webrtc or flash");
+      return;
+    }
   }
   render() {
     return (
@@ -1262,12 +1276,15 @@ export class Chat extends React.Component {
               <UnmountTracker
                 mountFunction={() => {
                   this.socket.emit("enterStream", ls.get("dialogId"));
+                  console.log("Socket sent");
                 }}
                 unmountFunction={() => {
                   this.socket.emit("leaveStream", ls.get("dialogId"));
                 }}
                 dialogId={ls.get("dialogId")}
                 visible={this.state.streamFlag /*true*/}
+                SESSION_STATUS={SESSION_STATUS}
+                STREAM_STATUS={STREAM_STATUS}
               />
 
               <CloseWrapper>

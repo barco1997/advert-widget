@@ -742,6 +742,7 @@ export class Button extends React.Component {
             emailSentFlag={this.state.emailSentFlag}
             sendEmailDetails={this.sendEmailDetails}
             currentTitle={this.state.currentTitle}
+            socket={this.socket}
           />
         )}
       </ButtonReqWrapper>

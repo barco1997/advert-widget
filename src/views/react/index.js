@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import html from "./index.html";
 import App from "./components/App";
-
+//import * as fms from "./firebase-messaging-sw.js";
 let elements = [];
 let body;
 
@@ -20,6 +20,19 @@ export function react(params, ifOpened, buttons, eyezonGlobal) {
       `${window.scrollY}px`
     );
   });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register(
+        /*"https://witheyezon.com/eyezonsite*/ "./firebase-messaging-sw.js"
+      )
+      .then(function(registration) {
+        console.log("Registration successful, scope is:", registration.scope);
+      })
+      .catch(function(err) {
+        console.log("Service worker registration failed, error:", err);
+      });
+  }
 
   ReactDOM.render(
     <React.Fragment>
