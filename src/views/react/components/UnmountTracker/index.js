@@ -5,6 +5,10 @@ const VideoElement = styled.div`
   &&& {
     width: 100% !important;
     height: 100% !important;
+    & > video {
+      width: 100% !important;
+      height: 100% !important;
+    }
   }
 `;
 export class UnmountTracker extends React.Component {
@@ -49,6 +53,11 @@ export class UnmountTracker extends React.Component {
           });*/
         //setStatus(stream.status());
         //onStarted(stream);
+        if (self.props.iOS) {
+          document
+            .getElementById(stream.id())
+            .setAttribute("playsinline", true);
+        }
         self.setState({
           stream
         });
@@ -67,32 +76,39 @@ export class UnmountTracker extends React.Component {
   componentDidUpdate(prevProps) {
     let self = this;
     if (this.props.visible && this.props.visible !== prevProps.visible) {
-      console.log("Create new session with url");
-      Flashphoner.createSession({
-        urlServer: "wss://server.witheyezon.com:8443"
-      })
-        .on(this.props.SESSION_STATUS.ESTABLISHED, function(session) {
-          //setStatus(session.status());
-          //session connected, start playback
-          if (self.props.mountFunction) {
-            console.log("Trying to mount");
-            self.props.mountFunction();
-          }
-          self.playStream(session, self.props.dialogId);
+      if (/*!this.props.iOS*/ true) {
+        console.log("Create new session with url");
+        Flashphoner.createSession({
+          urlServer: "wss://server.witheyezon.com:8443"
         })
-        .on(this.props.SESSION_STATUS.DISCONNECTED, function() {
-          //setStatus(SESSION_STATUS.DISCONNECTED);
-          //onStopped();
-        })
-        .on(this.props.SESSION_STATUS.FAILED, function() {
-          //setStatus(SESSION_STATUS.FAILED);
-          //onStopped();
-        });
+          .on(this.props.SESSION_STATUS.ESTABLISHED, function(session) {
+            //setStatus(session.status());
+            //session connected, start playback
+            if (self.props.mountFunction) {
+              console.log("Trying to mount");
+              self.props.mountFunction();
+            }
+            self.playStream(session, self.props.dialogId);
+          })
+          .on(this.props.SESSION_STATUS.DISCONNECTED, function() {
+            //setStatus(SESSION_STATUS.DISCONNECTED);
+            //onStopped();
+          })
+          .on(this.props.SESSION_STATUS.FAILED, function() {
+            //setStatus(SESSION_STATUS.FAILED);
+            //onStopped();
+          });
+      } else {
+        if (self.props.mountFunction) {
+          console.log("Trying to mount");
+          self.props.mountFunction();
+        }
+      }
     } else if (this.props.visible !== prevProps.visible) {
       if (this.props.unmountFunction) {
         this.props.unmountFunction();
       }
-      if (this.state.stream) {
+      if (this.state.stream /*&& !this.props.iOS*/) {
         this.state.stream.stop();
       }
     }
@@ -110,13 +126,13 @@ export class UnmountTracker extends React.Component {
 }
 
 /*<iframe
-        id="fp_embed_player"
-        src={`https://server.witheyezon.com:8444/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${this.props.dialogId}&mediaProviders=WebRTC,Flash,MSE,WSPlayer`}
-        marginWidth="0"
-        marginHeight="0"
-        frameBorder="0"
-        scrolling="no"
-        allowFullScreen="allowfullscreen"
-      />*/
+            id="fp_embed_player"
+            src={`https://server.witheyezon.com:8444/embed_player?urlServer=wss://server.witheyezon.com:8443&streamName=${this.props.dialogId}&mediaProviders=WebRTC,Flash,MSE,WSPlayer`}
+            marginWidth="0"
+            marginHeight="0"
+            frameBorder="0"
+            scrolling="no"
+            allowFullScreen="allowfullscreen"
+          />*/
 
 export default UnmountTracker;

@@ -732,7 +732,11 @@ export class Chat extends React.Component {
           });
       });
       this.socket.on("streamToVideo", data => {
-        this.setState({ streamToVideo: data.messageId, streamFlag: false });
+        this.setState({
+          streamToVideo: data.messageId,
+          streamFlag: false,
+          messagesStream: []
+        });
         /*this.live.pause();
         flvPlayer.destroy();*/
         ls.set("streamInProgress", false);
@@ -1276,15 +1280,17 @@ export class Chat extends React.Component {
               <UnmountTracker
                 mountFunction={() => {
                   this.socket.emit("enterStream", ls.get("dialogId"));
-                  console.log("Socket sent");
+                  console.log("enter stream");
                 }}
                 unmountFunction={() => {
                   this.socket.emit("leaveStream", ls.get("dialogId"));
+                  console.log("left stream");
                 }}
                 dialogId={ls.get("dialogId")}
                 visible={this.state.streamFlag /*true*/}
                 SESSION_STATUS={SESSION_STATUS}
                 STREAM_STATUS={STREAM_STATUS}
+                iOS={iOS}
               />
 
               <CloseWrapper>
