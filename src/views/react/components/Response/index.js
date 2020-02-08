@@ -225,7 +225,8 @@ const ItemHolder = styled.div`
     display: flex !important;
     position: relative !important;
     margin-bottom: 0px !important;
-    margin-left: 3px !important;
+    margin-left: ${props => (props.ifRecipient ? "auto" : "3px")} !important;
+    margin-right: ${props => (props.ifRecipient ? "0" : "auto")} !important;
     ${media.desktop`
       margin-bottom: /*10px*/0px !important;
   `};
@@ -465,7 +466,7 @@ export class Response extends React.Component {
             )}
 
             {this.state.typeVar === "audio" && this.state.src && (
-              <ItemHolder audio>
+              <ItemHolder audio ifRecipient={this.props.ifRecipient}>
                 <ReactAudioPlayer src={this.state.src} controls />
               </ItemHolder>
             )}

@@ -1,9 +1,9 @@
 {
   "name": "js-widget",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --config webpack.config.js ",
+    "build": "./node_modules/.bin/webpack --config webpack.config.js",
     "build-release": "./node_modules/.bin/webpack --config webpack.config.js --env.prod",
-    "start": "./node_modules/.bin/webpack-dev-server --open"
+    "start": "./node_modules/.bin/webpack-dev-server --env.dev --open"
   },
   "babel": {
     "presets": [
@@ -33,17 +33,22 @@
     "base64-inline-loader": "^1.1.1",
     "date-fns": "^1.30.1",
     "disable-scroll": "^0.5.0",
-    "firebase": "^7.4.0",
+    "firebase": "^7.6.2",
+    "get-blob-duration": "^1.1.0",
     "hls.js": "^0.12.3",
     "local-storage": "^1.4.2",
+    "moment": "^2.24.0",
     "react": "^16.9.0",
     "react-audio-player": "^0.11.0",
     "react-div-100vh": "^0.3.4",
     "react-dom": "^16.6.3",
+    "react-firebase-file-uploader": "^2.4.3",
+    "react-mic": "^12.4.1",
     "react-player": "^1.9.3",
     "react-redux": "^6.0.0",
     "react-screen-orientation": "0.0.4",
     "react-scrollbar": "^0.5.4",
+    "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "socket.io": "^2.2.0",

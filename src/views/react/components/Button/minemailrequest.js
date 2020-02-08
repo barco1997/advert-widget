@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Delete from "./close.svg";
+
 import FormField from "../FormField";
 import BasicButton from "../BasicButton";
 
@@ -81,7 +81,10 @@ export class MinEmailRequest extends React.Component {
   render() {
     return (
       <ChatWrap>
-        <Close src={Delete} onClick={this.props.closeRequest} />
+        <Close
+          src="https://witheyezon.com/eyezonsite/static/images/close.svg"
+          onClick={this.props.closeRequest}
+        />
         <Heading marginTop="6px">Не пропустите ответ!</Heading>
         <Heading color="#979797">
           Включите уведомления или оставьте почту. Как только сотрудник ответит,

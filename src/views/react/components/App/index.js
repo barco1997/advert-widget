@@ -86,6 +86,7 @@ export class App extends React.Component {
           greetingText={this.state.greetingText}
           waitingText={this.state.waitingText}
           eyezonGlobal={this.props.eyezonGlobal}
+          firebase={this.props.firebase}
         />
       </React.Fragment>
     );

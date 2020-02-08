@@ -2,9 +2,44 @@ import React from "react";
 import ReactDOM from "react-dom";
 import html from "./index.html";
 import App from "./components/App";
+import Firebase, { FirebaseContext } from "./components/Firebase";
+import { load } from "./constants";
 //import * as fms from "./firebase-messaging-sw.js";
 let elements = [];
 let body;
+/*<script>Mp3LameEncoderConfig = { memoryInitializerPrefixURL: "https://witheyezon.com/eyezonsite/wp3/" };</script>
+    <script src="https://witheyezon.com/eyezonsite/wp3/Mp3LameEncoder.min.js"></script>
+    <script src="https://witheyezon.com/eyezonsite/wp3/W3Module.js"></script>
+    <script src="https://witheyezon.com/eyezonsite/wp3/schema-ebml.js"></script>
+    <script src="https://witheyezon.com/eyezonsite/wp3/lib-ebml.js"></script>*/
+load("https://witheyezon.com/eyezonsite/wp3/Mp3LameEncoder.min.js")
+  .then(function() {
+    console.log("Loaded Mp3LameEncoder!");
+  })
+  .catch(function(err) {
+    console.error("Something went wrong!", err);
+  });
+load("https://witheyezon.com/eyezonsite/wp3/W3Module.js")
+  .then(function() {
+    console.log("Loaded W3Module!");
+  })
+  .catch(function(err) {
+    console.error("Something went wrong!", err);
+  });
+load("https://witheyezon.com/eyezonsite/wp3/schema-ebml.js")
+  .then(function() {
+    console.log("Loaded schema!");
+    load("https://witheyezon.com/eyezonsite/wp3/lib-ebml.js")
+      .then(function() {
+        console.log("Loaded lib!");
+      })
+      .catch(function(err) {
+        console.error("Something went wrong!", err);
+      });
+  })
+  .catch(function(err) {
+    console.error("Something went wrong!", err);
+  });
 
 export function react(params, ifOpened, buttons, eyezonGlobal) {
   let temporary = document.createElement("div");
@@ -35,17 +70,17 @@ export function react(params, ifOpened, buttons, eyezonGlobal) {
   }
 
   ReactDOM.render(
-    <React.Fragment>
-      <App
-        color={params.color}
-        button={params.buttonOnTop}
-        businessId={params.businessId}
-        buttonId={params.initialButtonId}
-        ifOpened={ifOpened}
-        buttons={buttons}
-        eyezonGlobal={params.eyezonGlobal}
-      />
-    </React.Fragment>,
-    document.getElementById("root")
+    /*<FirebaseContext.Provider value={new Firebase()}>*/
+    <App
+      color={params.color}
+      button={params.buttonOnTop}
+      businessId={params.businessId}
+      buttonId={params.initialButtonId}
+      ifOpened={ifOpened}
+      buttons={buttons}
+      eyezonGlobal={params.eyezonGlobal}
+      firebase={new Firebase()}
+    />,
+    /*</FirebaseContext.Provider>*/ document.getElementById("root")
   );
 }

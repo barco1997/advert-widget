@@ -5,27 +5,23 @@ import ls from "local-storage";
 import ReactPlayer from "react-player";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
-import { setLiveArray, getRndInteger } from "../../constants";
+import { setLiveArray, getRndInteger, load } from "../../constants";
 import StreamChat from "./streamchat";
 import EmailRequest from "../Button/emailrequest";
 import UnmountTracker from "../UnmountTracker";
+import StandaloneTimer from "../StandaloneTimer";
+import { ReactMic } from "react-mic";
+import { withFirebase } from "../Firebase";
+import firebase from "firebase";
+//import { compose } from "recompose";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
 let SESSION_STATUS;
 let STREAM_STATUS;
-function load(url) {
-  return new Promise(function(resolve, reject) {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.async = true;
-    script.src = url;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-}
+let PRELOADER_URL;
+
 let context;
 /*if (!iOS) {
   context = new AudioContext();
@@ -44,10 +40,12 @@ load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
     console.log("Loaded!");
     SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
     STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
+    PRELOADER_URL = "https://witheyezon.com/eyezonsite/static/preloader.mp4";
   })
   .catch(function(err) {
     console.error("Something went wrong!", err);
   });
+
 const io = require("socket.io-client");
 
 const storedId = ls.get("userId");
@@ -90,7 +88,7 @@ const VideoWrapperS = styled.div`
     height: 553px !important;
     flex-direction: column !important;
     border-radius: 10px !important;
-    overflow: hidden !important;
+    /*overflow: hidden !important;*/
     background: black !important;
     & > iframe {
       margin-left: -4px !important;
@@ -164,7 +162,7 @@ const WindowWrapper = styled.div`
   &&& {
     display: flex !important;
     z-index: 10003 !important;
-
+    justify-content: center !important;
     height: 553px !important;
     max-width: 85% !important;
 
@@ -173,7 +171,7 @@ const WindowWrapper = styled.div`
       top: 0% !important;
       left: 0% !important;
       max-width: 100% !important;
-      
+      justify-content: flex-start !important;
       height: auto !important;
   `};
     ${media.tablet`
@@ -227,6 +225,46 @@ const CloseWrapper = styled.div`
     width: 21px !important;
     height: 21px !important;
     border-radius: 50% !important;
+  }
+`;
+
+const AudioTimer = styled.div`
+  &&& {
+    width: 62px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    position: absolute !important;
+    top: 6px !important;
+    left: 8px !important;
+    ${media.desktop`
+    top:13px !important;
+  `};
+  }
+`;
+
+const TimerCircle = styled.div`
+  &&& {
+    width: 12px !important;
+    height: 12px !important;
+    background: #fa194f !important;
+    border-radius: 50% !important;
+  }
+`;
+
+const Timer = styled.div`
+  &&& {
+    font-family: "Montserrat" !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+
+    /* Черный текст */
+
+    color: #333333 !important;
   }
 `;
 
@@ -303,6 +341,33 @@ const ImageCart = styled.div`
     width: 18px !important;
     height: 18px !important;
     position: relative !important;
+    cursor: pointer !important;
+  }
+`;
+
+const ImageMic = styled.div`
+  &&& {
+    background: url(${props => props.src}) !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    width: 16px !important;
+    height: 16px !important;
+    position: relative !important;
+    cursor: pointer !important;
+    position: absolute !important;
+    top: 6px !important;
+    right: 8px !important;
+    ${media.desktop`
+    top: 13px !important;
+  `};
+  }
+`;
+
+const MicLogicHidden = styled.div`
+  &&& {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    position: absolute !important;
   }
 `;
 
@@ -335,6 +400,15 @@ const Image = styled.div`
     border-radius: 10px !important;
     ${media.desktop`
       border-radius: 0px !important;
+  `};
+  }
+`;
+
+const CustomForm = styled.form`
+  &&& {
+    height: 73px !important;
+    ${media.desktop`
+    height: auto !important;
   `};
   }
 `;
@@ -425,7 +499,7 @@ const JsChatMessageContainer = styled.div`
     padding: 40px 0px !important;
     height: 100% !important;
     margin: 0px 40px !important;
-
+    max-height: calc(100% - 83px) !important;
     flex: 1 !important;
     position: relative !important;
     ${media.desktop`
@@ -433,6 +507,7 @@ const JsChatMessageContainer = styled.div`
   padding: 0px !important;
   margin: 0px 15px !important;
   margin-bottom: 20px !important;
+  max-height: calc(100% - 63px) !important;
   `};
     ${media.android`
   max-width: 300px !important;
@@ -489,6 +564,13 @@ const CartTextFieldExtra = styled.div`
   }
 `;
 
+const CartTextFieldRelative = styled.div`
+  &&& {
+    position: relative !important;
+    width: 100% !important;
+  }
+`;
+
 const ControlShader = styled.div`
   &&& {
     position: absolute !important;
@@ -528,7 +610,10 @@ export class Chat extends React.Component {
       transactionLimit: 50,
       sentHistory: null,
       valueStream: "",
-      androidOffset: 0
+      androidOffset: 0,
+      ifTimer: false,
+      audioDuration: 0,
+      shouldTimerStop: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -551,6 +636,34 @@ export class Chat extends React.Component {
     this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleCart = this.handleCart.bind(this);
+    this.handleUp = this.handleUp.bind(this);
+    this.handleDown = this.handleDown.bind(this);
+    this.setAudioDuration = this.setAudioDuration.bind(this);
+    this.onData = this.onData.bind(this);
+    this.onStop = this.onStop.bind(this);
+    this.handleUnload = this.handleUnload.bind(this);
+    this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
+  }
+
+  handleBeforeUnload(e) {
+    if (this.state.streamFlag) {
+      e.preventDefault();
+      return (e.returnValue =
+        "Вы уверены, что хотите закрыть вкладку во время прямой трансляции?");
+    }
+  }
+
+  handleUnload(e) {
+    if (this.state.streamFlag) {
+      this.socket.emit("leaveStream", ls.get("dialogId"));
+      ls.set("tabClosed", true);
+    }
+  }
+
+  setAudioDuration(val) {
+    this.setState({
+      audioDuration: val
+    });
   }
 
   orientationChanged() {
@@ -620,6 +733,10 @@ export class Chat extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("beforeunload", this.handleBeforeUnload);
+    window.removeEventListener("unload", this.handleUnload);
+    ls.set("streamInProgress", false);
+    if (this.socket) this.socket.close();
   }
 
   notifyMe(message, href, buttonId) {
@@ -822,7 +939,6 @@ export class Chat extends React.Component {
           });
         }
       });
-      this.socket.open();
     }
   }
 
@@ -884,11 +1000,6 @@ export class Chat extends React.Component {
         }
       }
     }
-  }
-
-  componentWillUnmount() {
-    ls.set("streamInProgress", false);
-    if (this.socket) this.socket.close();
   }
 
   handleChange(event) {
@@ -1104,6 +1215,8 @@ export class Chat extends React.Component {
   }
   componentDidMount() {
     //this.handleChangeOrientationWrapper();
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
+    window.addEventListener("unload", this.handleUnload);
     window.addEventListener("resize", this.handleResize);
     try {
       Flashphoner.init({
@@ -1115,7 +1228,100 @@ export class Chat extends React.Component {
       return;
     }
   }
+
+  handleUp() {
+    this.setState({
+      ifTimer: false
+    });
+  }
+
+  handleDown() {
+    if (this.state.startedFlag && !this.state.awaitingConnection) {
+      this.setState({
+        ifTimer: true
+      });
+    }
+  }
+
+  onData(recordedBlob) {
+    //console.log("chunk of real-time data is: ", recordedBlob);
+  }
+
+  onStop(recordedBlob) {
+    let self = this;
+    W3Module.convertWebmToMP3(recordedBlob.blob).then(mp4Blob => {
+      var uploadTask = self.props.firebase.putVoice(
+        ls.get("userId"),
+        mp4Blob.blob
+      );
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        function(snapshot) {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          //console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+              //console.log("Upload is paused");
+              break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+              //console.log("Upload is running");
+              break;
+          }
+        },
+        function(error) {
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case "storage/unauthorized":
+              // User doesn't have permission to access the object
+              break;
+
+            case "storage/canceled":
+              // User canceled the upload
+              break;
+
+            case "storage/unknown":
+              // Unknown error occurred, inspect error.serverResponse
+              break;
+          }
+        },
+        function() {
+          // Upload completed successfully, now we can get the download URL
+          uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            //console.log("File available at", downloadURL);
+            self.setState({
+              messages: [
+                ...self.state.messages,
+                {
+                  time: new Date(),
+                  id: uuidv1(),
+                  photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                    "userIcon"
+                  )}.png`,
+                  type: "audio",
+                  src: downloadURL
+                }
+              ]
+            });
+
+            let obj = {
+              dialogId: ls.get("dialogId"),
+              userId: ls.get("userId"),
+              attachmentType: "AUDIO",
+              attachmentUrl: downloadURL
+            };
+
+            self.socket.emit("message", JSON.stringify(obj));
+          });
+        }
+      );
+    });
+  }
+
   render() {
+    //console.log("PROPS", this.props.firebase.putVoice);
     return (
       <ChatWrapper
         displayFlag={this.state.displayFlag}
@@ -1200,35 +1406,69 @@ export class Chat extends React.Component {
                       waitingText={this.props.waitingText}
                     />
                   )}
-                  <form>
+                  <CustomForm>
                     <div style={{ flexDirection: "column  !important" }}>
                       <CartTextFieldExtra>
-                        <InputFieldA
-                          ref={item => {
-                            this.mainInput = item;
-                          }}
-                          onFocus={() => {
-                            //this.handleAndroidKeyboard(true);
-                          }}
-                          onBlur={() => {
-                            //this.handleAndroidKeyboard(false);
-                          }}
-                          type="text"
-                          value={this.state.value}
-                          onChange={this.handleChange}
-                          blocked={this.state.awaitingConnection}
-                          disabled={this.state.awaitingConnection}
-                          placeholder={
-                            this.state.awaitingConnection
-                              ? "Для продолжения диалога дождитесь ответа"
-                              : "Спросите что-нибудь ;)"
-                          }
-                          onKeyPress={event => {
-                            if (event.key === "Enter") {
-                              this.handleSubmit(event);
+                        <CartTextFieldRelative>
+                          <InputFieldA
+                            ref={item => {
+                              this.mainInput = item;
+                            }}
+                            onFocus={() => {
+                              //this.handleAndroidKeyboard(true);
+                            }}
+                            onBlur={() => {
+                              //this.handleAndroidKeyboard(false);
+                            }}
+                            type="text"
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            blocked={this.state.awaitingConnection}
+                            disabled={this.state.awaitingConnection}
+                            placeholder={
+                              this.state.ifTimer
+                                ? ""
+                                : this.state.awaitingConnection
+                                ? "Для продолжения диалога дождитесь ответа"
+                                : "Спросите что-нибудь ;)"
                             }
-                          }}
-                        />
+                            onKeyPress={event => {
+                              if (event.key === "Enter") {
+                                this.handleSubmit(event);
+                              }
+                            }}
+                          />
+                          {this.state.ifTimer && (
+                            <AudioTimer>
+                              <TimerCircle />
+                              <Timer>
+                                <StandaloneTimer
+                                  setDuration={this.setAudioDuration}
+                                />
+                              </Timer>
+                            </AudioTimer>
+                          )}
+                          {/*<ImageMic
+                            src={
+                              "https://witheyezon.com/eyezonsite/static/images/mic.png"
+                            }
+                            onMouseDown={this.handleDown}
+                            onTouchStart={this.handleDown}
+                            onMouseUp={this.handleUp}
+                            onTouchEnd={this.handleUp}
+                            tabIndex="0"
+                          />
+                          <MicLogicHidden>
+                            <ReactMic
+                              record={this.state.ifTimer}
+                              className="sound-wave"
+                              onStop={this.onStop}
+                              onData={this.onData}
+                              strokeColor="#000000"
+                              backgroundColor="#FF4081"
+                            />
+                          </MicLogicHidden>*/}
+                        </CartTextFieldRelative>
                         <CartWrapper onClick={this.handleCart}>
                           <ImageCart
                             src={
@@ -1241,7 +1481,7 @@ export class Chat extends React.Component {
                         {/*Send*/}Отправить
                       </SendRequest>
                     </div>
-                  </form>
+                  </CustomForm>
                 </Fragment>
 
                 <CloseWrapperA visibleExtra={this.state.photoSrc}>
@@ -1290,6 +1530,7 @@ export class Chat extends React.Component {
                 visible={this.state.streamFlag /*true*/}
                 SESSION_STATUS={SESSION_STATUS}
                 STREAM_STATUS={STREAM_STATUS}
+                PRELOADER_URL={PRELOADER_URL}
                 iOS={iOS}
               />
 

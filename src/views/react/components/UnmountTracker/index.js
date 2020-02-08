@@ -1,13 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-
+let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const VideoElement = styled.div`
   &&& {
     width: 100% !important;
     height: 100% !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
     & > video {
       width: 100% !important;
       height: 100% !important;
+      border-radius: 10px !important;
     }
   }
 `;
@@ -19,7 +22,7 @@ export class UnmountTracker extends React.Component {
     };
 
     this.playStream = this.playStream.bind(this);
-
+    this.start = this.start.bind(this);
     //this.played = this.played.bind(this);
     //this.paused = this.paused.bind(this);
   }
@@ -73,36 +76,50 @@ export class UnmountTracker extends React.Component {
       .play();
   }
 
-  componentDidUpdate(prevProps) {
+  start() {
     let self = this;
-    if (this.props.visible && this.props.visible !== prevProps.visible) {
-      if (/*!this.props.iOS*/ true) {
-        console.log("Create new session with url");
-        Flashphoner.createSession({
-          urlServer: "wss://server.witheyezon.com:8443"
-        })
-          .on(this.props.SESSION_STATUS.ESTABLISHED, function(session) {
-            //setStatus(session.status());
-            //session connected, start playback
-            if (self.props.mountFunction) {
-              console.log("Trying to mount");
-              self.props.mountFunction();
-            }
-            self.playStream(session, self.props.dialogId);
-          })
-          .on(this.props.SESSION_STATUS.DISCONNECTED, function() {
-            //setStatus(SESSION_STATUS.DISCONNECTED);
-            //onStopped();
-          })
-          .on(this.props.SESSION_STATUS.FAILED, function() {
-            //setStatus(SESSION_STATUS.FAILED);
-            //onStopped();
-          });
-      } else {
+    console.log("Create new session with url");
+    Flashphoner.createSession({
+      urlServer: "wss://server.witheyezon.com:8443"
+    })
+      .on(this.props.SESSION_STATUS.ESTABLISHED, function(session) {
+        //setStatus(session.status());
+        //session connected, start playback
         if (self.props.mountFunction) {
           console.log("Trying to mount");
           self.props.mountFunction();
         }
+        self.playStream(session, self.props.dialogId);
+      })
+      .on(this.props.SESSION_STATUS.DISCONNECTED, function() {
+        //setStatus(SESSION_STATUS.DISCONNECTED);
+        //onStopped();
+      })
+      .on(this.props.SESSION_STATUS.FAILED, function() {
+        //setStatus(SESSION_STATUS.FAILED);
+        //onStopped();
+      });
+  }
+
+  componentDidUpdate(prevProps) {
+    let self = this;
+    if (this.props.visible && this.props.visible !== prevProps.visible) {
+      console.log("IOS", this.props.iOS);
+      if (
+        isSafari ||
+        this.props.iOS ||
+        Flashphoner.getMediaProviders()[0] === "MSE"
+      ) {
+        console.log("IOS or IOS mobile");
+        Flashphoner.playFirstVideo(
+          self.player,
+          false,
+          self.props.PRELOADER_URL
+        ).then(function() {
+          self.start();
+        });
+      } else {
+        this.start();
       }
     } else if (this.props.visible !== prevProps.visible) {
       if (this.props.unmountFunction) {

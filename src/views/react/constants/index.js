@@ -124,3 +124,15 @@ export const getSentHistory = businessId => {
 export const getRndInteger = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export const load = url => {
+  return new Promise(function(resolve, reject) {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+};

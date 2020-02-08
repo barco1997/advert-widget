@@ -101,7 +101,7 @@ export class EmailRequest extends React.Component {
         <MainBlock>
           <Heading marginTop="60px">Не пропустите ответ!</Heading>
           <Heading color="#979797">
-            Включитель уведомления или оставьте почту. Как только сотрудник
+            Включите уведомления или оставьте почту. Как только сотрудник
             ответит, вы получите ссылку на диалог.
           </Heading>
           <Text marginTop="36px">Ваш email:</Text>

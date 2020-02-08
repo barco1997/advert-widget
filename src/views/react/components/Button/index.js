@@ -11,6 +11,7 @@ import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
+//import { FirebaseContext } from "../Firebase/index";
 //const messageSound = require("https://witheyezon.com/eyezonsite/static/not.mp3");
 //import disableScroll from "disable-scroll";
 
@@ -103,7 +104,7 @@ const ButtonWrapper = styled.button`
     z-index: 9998 !important;
     background: #fff !important;
     right: 2% !important;
-    bottom: 30px !important;
+    bottom: 130px !important;
     margin: 0 0 0 0 !important;
 
     background: ${props => (props.color ? props.color : "white  !important")};
@@ -549,6 +550,9 @@ export class Button extends React.Component {
     this.socket.on("connect", () => {
       this.joinDialogue();
     });
+    this.socket.on("disconnect", () => {
+      this.socket.open();
+    });
     this.socket.on("received", data => {
       /**feature */
       if (data.user !== ls.get("userId")) {
@@ -604,6 +608,7 @@ export class Button extends React.Component {
     if (this.props.ifOpened) {
       this.handleClick(null, this.props.buttonId);
     }
+    this.socket.open();
   }
 
   handleMouseLeave() {
@@ -743,7 +748,9 @@ export class Button extends React.Component {
             sendEmailDetails={this.sendEmailDetails}
             currentTitle={this.state.currentTitle}
             socket={this.socket}
+            firebase={this.props.firebase}
           />
+        )}
         )}
       </ButtonReqWrapper>
     );
