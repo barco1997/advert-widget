@@ -1,8 +1,8 @@
 import "./views/global/cleanslate.css";
 import "./views/global/style.css";
-import { react } from "./views/react";
+import { react, reactTest } from "./views/react";
 import "./fonts/fonts.css";
-const supportedAPI = ["init", "message", "react"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
+const supportedAPI = ["init", "message", "react", "reacttest"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
 
 /**
     The main entry of the application
@@ -68,6 +68,11 @@ function apiHandler(api, params) {
       } else {
         react(updatedParams, false, buttons);
       }
+
+      break;
+
+    case "reacttest":
+      reactTest(params, true, buttons);
 
       break;
 
