@@ -56,34 +56,33 @@ const Icon = styled.div`
 const ItemStart = styled.div`
   &&& {
     display: flex !important;
-    flex: 2 !important;
+    margin-left: ${props => (props.ifRecipient ? "auto" : "3px")} !important;
+    margin-right: ${props => (props.ifRecipient ? "0" : "auto")} !important;
     flex-direction: column !important;
     justify-content: center !important;
   }
 `;
 
-const ItemEnd = styled.div`
+const ResponseAdditional = styled.div`
   &&& {
     display: flex !important;
-    flex: 0.15 !important;
-    flex-direction: column !important;
+
     align-items: flex-end !important;
-    justify-content: center !important;
-    ${media.desktop`
-      flex: 0.20/*1*/ !important;
-    `};
+
+    flex-direction: ${props =>
+      props.ifRecipient ? "row-reverse" : "row"} !important;
+    flex-wrap: nowrap !important;
   }
 `;
 const ExtraStream = styled.div`
   &&& {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
     align-items: flex-start !important;
     padding: 15px !important;
-    background: #ececec !important;
-    border-radius: 20px 20px 20px 0px !important;
-    margin-right: auto !important;
-    margin-left: 3px !important;
+    background: #ff2d55 !important;
+    border-radius: 5px 5px 5px 0px !important;
+
     ${media.desktop`
     /*margin-left: 0px !important;
     padding: 0px !important;
@@ -95,8 +94,10 @@ const ExtraStream = styled.div`
 
 const Title = styled.h4`
   &&& {
+    display: flex !important;
     padding: 15px 15px 12px 12px !important;
     font-size: 14px !important;
+    word-break: break-all !important;
     font-weight: normal !important;
     color: ${props => (props.ifRecipient ? "white" : "black")} !important;
     background: ${props =>
@@ -104,12 +105,9 @@ const Title = styled.h4`
         ? "linear-gradient(100.96deg, #FF2D55 0%, #FF2D79 100%)"
         : "#ECECEC"} !important;
     margin: 0 !important;
-    margin-left: ${props => (props.ifRecipient ? "auto" : "3px")} !important;
-    margin-right: ${props => (props.ifRecipient ? "0" : "auto")} !important;
+    width: auto !important;
     border-radius: ${props =>
-      props.ifRecipient
-        ? "20px 20px 0px 20px"
-        : "20px 20px 20px 0px"} !important;
+      props.ifRecipient ? "5px 5px 0px 5px" : "5px 5px 5px 0px"} !important;
     ${media.desktop`
     
     
@@ -203,19 +201,28 @@ const SummaryTopStream = styled.p`
     margin: 0 !important;
     font-size: 12px !important;
     opacity: 1 !important;
-    margin-bottom: 10px !important;
+
+    color: #ffffff !important;
     margin-left: 3px !important;
+    margin-right: 10px !important;
+    margin-top: 3px !important;
+    width: 150px !important;
+    line-height: 17px !important;
     ${media.desktop`
     /*opacity: 0.5 !important;
       margin-bottom: 6px !important;*/
-      font-size: 10px !important;
+      font-size: 12px !important;
   `};
   }
 `;
 const Date = styled.time`
   &&& {
+    display: flex !important;
     opacity: 0.2 !important;
-    margin-right: 0px !important;
+    /*margin: 0px 10px !important;*/
+    margin-top: 5px !important;
+    justify-content: ${props =>
+      props.ifRecipient ? "flex-end" : "flex-start"} !important;
     font-size: 12px !important;
   }
 `;
@@ -225,8 +232,7 @@ const ItemHolder = styled.div`
     display: flex !important;
     position: relative !important;
     margin-bottom: 0px !important;
-    margin-left: ${props => (props.ifRecipient ? "auto" : "3px")} !important;
-    margin-right: ${props => (props.ifRecipient ? "0" : "auto")} !important;
+
     ${media.desktop`
       margin-bottom: /*10px*/0px !important;
   `};
@@ -385,7 +391,7 @@ export class Response extends React.Component {
               alt="item type"
             />
           </Icon>
-          <ItemStart>
+          <ItemStart ifRecipient={this.props.ifRecipient}>
             {this.props.description && this.state.typeVar === "audio" && (
               <SummaryTop>{this.props.description} поделился аудио</SummaryTop>
             )}
@@ -411,72 +417,78 @@ export class Response extends React.Component {
             {/** */}
             {/*<ExtraTitle>*/}
             {/* </ExtraTitle>*/}
-            {!this.props.flv &&
-              !(
-                this.state.typeVar === "photo" ||
-                this.state.typeVar === "video" ||
-                this.state.typeVar === "audio"
-              ) && (
-                <Title ifRecipient={this.props.ifRecipient}>
-                  {this.props.title}
-                </Title>
-              )}
+
             {/** */}
             {/** */}
             {/** */}
-            {this.props.flv && this.state.typeVar === "stream" && (
-              <ExtraStream>
-                {this.props.description && (
-                  <SummaryTopStream>
-                    {this.props.description} начал прямую трансляцию
-                  </SummaryTopStream>
+            <ResponseAdditional ifRecipient={this.props.ifRecipient}>
+              {!this.props.flv &&
+                !(
+                  this.state.typeVar === "photo" ||
+                  this.state.typeVar === "video" ||
+                  this.state.typeVar === "audio"
+                ) && (
+                  <Title ifRecipient={this.props.ifRecipient}>
+                    {this.props.title}
+                  </Title>
                 )}
+              {this.props.flv && this.state.typeVar === "stream" && (
+                <ExtraStream>
+                  {this.props.description && (
+                    <SummaryTopStream>
+                      {this.props.description} начал прямую трансляцию
+                    </SummaryTopStream>
+                  )}
 
+                  <ItemHolder>
+                    <LiveButton
+                      id={this.props.flv}
+                      setFlv={this.props.functionA}
+                    >
+                      Смотреть
+                    </LiveButton>
+                  </ItemHolder>
+                </ExtraStream>
+              )}
+
+              {this.state.typeVar === "photo" && this.state.src && (
                 <ItemHolder>
-                  <LiveButton id={this.props.flv} setFlv={this.props.functionA}>
-                    Смотреть
-                  </LiveButton>
-                </ItemHolder>
-              </ExtraStream>
-            )}
-
-            {this.state.typeVar === "photo" && this.state.src && (
-              <ItemHolder>
-                <ImageA
-                  src={this.state.src}
-                  onClick={() => this.handleClick()}
-                />
-              </ItemHolder>
-            )}
-            {this.state.typeVar === "video" && this.state.src && (
-              <ItemHolder>
-                <VideoA
-                  src={this.props.thumb}
-                  onClick={() => this.handleClick()}
-                >
-                  <PlayIcon
-                    src={
-                      this.state.pauseIcon
-                        ? "https://witheyezon.com/eyezonsite/static/images/pauseIcon.svg"
-                        : "https://witheyezon.com/eyezonsite/static/images/playIcon.svg"
-                    }
+                  <ImageA
+                    src={this.state.src}
+                    onClick={() => this.handleClick()}
                   />
-                </VideoA>
-              </ItemHolder>
-            )}
+                </ItemHolder>
+              )}
+              {this.state.typeVar === "video" && this.state.src && (
+                <ItemHolder>
+                  <VideoA
+                    src={this.props.thumb}
+                    onClick={() => this.handleClick()}
+                  >
+                    <PlayIcon
+                      src={
+                        this.state.pauseIcon
+                          ? "https://witheyezon.com/eyezonsite/static/images/pauseIcon.svg"
+                          : "https://witheyezon.com/eyezonsite/static/images/playIcon.svg"
+                      }
+                    />
+                  </VideoA>
+                </ItemHolder>
+              )}
 
-            {this.state.typeVar === "audio" && this.state.src && (
-              <ItemHolder audio ifRecipient={this.props.ifRecipient}>
-                <ReactAudioPlayer src={this.state.src} controls />
-              </ItemHolder>
-            )}
-            {this.props.description && !this.props.flv && !this.state.src && (
-              <Summary>{this.props.description}</Summary>
-            )}
+              {this.state.typeVar === "audio" && this.state.src && (
+                <ItemHolder audio ifRecipient={this.props.ifRecipient}>
+                  <ReactAudioPlayer src={this.state.src} controls />
+                </ItemHolder>
+              )}
+              {this.props.description && !this.props.flv && !this.state.src && (
+                <Summary>{this.props.description}</Summary>
+              )}
+            </ResponseAdditional>
+            <Date ifRecipient={this.props.ifRecipient}>
+              {format(this.props.date, "h:m")}
+            </Date>
           </ItemStart>
-          <ItemEnd>
-            <Date>{format(this.props.date, "h:m")}</Date>
-          </ItemEnd>
         </Item>
       </div>
     );

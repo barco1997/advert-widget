@@ -8,66 +8,38 @@ import React from "react";
 //import PropTypes from "prop-types";
 import styled from "styled-components";
 
+const Image = styled.div`
+  &&& {
+    background: url(${props => props.src}) !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    width: 8px !important;
+    margin-right: 7px !important;
+    height: 11px !important;
+  }
+`;
+
 const ButtonWrapper = styled.div`
   &&& {
     text-decoration: none !important;
     background: ${props =>
       props.watched
         ? "rgba(255, 45, 85, 0.5) !important"
-        : "#ff2d55 !important"};
-    border-radius: 100px !important;
+        : "#FFFFFF !important"};
+    border-radius: 5px !important;
     font-size: 12px !important;
     display: flex !important;
-    width: 142px !important;
+    width: 103px !important;
     height: 36px !important;
     justify-content: center !important;
     align-items: center !important;
     font-family: "Montserrat" !important;
-    color: white !important;
+    color: #000000 !important;
   }
 `;
-const Layer2 = styled.div`
+const Child = styled.div`
   &&& {
-    border-radius: 100px !important;
-
-    display: flex !important;
-    background: ${props =>
-      props.watched
-        ? "rgba(255, 45, 85, 0.05) !important"
-        : "rgba(255, 45, 85, 0.2) !important"};
-    width: 160px !important;
-    height: 40px !important;
-    justify-content: center !important;
-    align-items: center !important;
-  }
-`;
-
-const Layer3 = styled.button`
-  &&& {
-    text-decoration: none !important;
-
-    -webkit-font-smoothing: antialiased !important;
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    cursor: pointer !important;
-    box-shadow: none !important;
-    outline: 0 !important;
-    border: 0px !important;
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
-    border-radius: 100px !important;
-    display: flex !important;
-    background: ${props =>
-      props.watched
-        ? "rgba(255, 45, 85, 0.05) !important"
-        : "rgba(255, 45, 85, 0.05) !important"};
-    width: 158px !important;
-    height: 52px !important;
-    justify-content: center !important;
-    align-items: center !important;
-    &:focus {
-      outline: 0 !important;
-    }
+    margin-top: 2px !important;
   }
 `;
 
@@ -89,10 +61,10 @@ export class Button extends React.Component {
   }
 
   render() {
-    const isOpen = this.state.wasWatched;
     return (
       <ButtonWrapper onClick={() => this.handleClick()}>
-        <div>{this.props.children}</div>
+        <Image src="https://witheyezon.com/eyezonsite/static/images/Vector.png" />
+        <Child>{this.props.children}</Child>
       </ButtonWrapper>
     );
   }

@@ -4,6 +4,7 @@ import React from "react";
 import axios from "axios";
 import ls from "local-storage";
 import Button from "../Button";
+//import { messaging } from "./fcm-init";
 
 export class App extends React.Component {
   constructor(props, context) {
@@ -11,10 +12,12 @@ export class App extends React.Component {
     this.state = {
       notifications: 0,
       notificationStatus: false,
-      greetingText:
-        "Не стесняйтесь, спросите!\n Наши сотрудники с радостью ответят на все ваши вопросы",
+      greetingTitle: "Не стесняйтесь, спросите!",
+      greetingText: "Наши сотрудники с радостью ответят на все ваши вопросы",
       waitingText:
-        "Пока кто-то из нашей команды готовиться ответить на ваше\n сообщение, вы можете свернуть окно и продолжить пользоваться\n сайтом, вам придет уведомление."
+        "вы можете свернуть окно и продолжить пользоваться\n сайтом, вам придет уведомление.",
+      waitingTitle:
+        "Пока кто-то из нашей команды готовиться ответить на ваше сообщение, "
     };
     this.setNotifications = this.setNotifications.bind(this);
     this.incrementNotifications = this.incrementNotifications.bind(this);
@@ -32,15 +35,32 @@ export class App extends React.Component {
       .get(url)
       .then(function(response) {
         //let notificationCount = ls.get("notificationCount");
-
+        console.log("RESP", response);
         self.setState({
           greetingText: response.data.greetingText,
-          waitingText: response.data.waitingText
+          greetingTitle: response.data.greetingTitle,
+          waitingText: response.data.waitingText,
+          waitingTitle: response.data.waitingTitle
         });
       })
       .catch(function(error) {
         console.log("INITIAL ERROR", error);
       });
+    var messaging = this.props.firebase.messagingFunc();
+    //console.log("MESS", messaging);
+    messaging
+      .requestPermission()
+      .then(function() {
+        messaging.getToken().then(token => {
+          console.log("TOKEN", token);
+        });
+      })
+      .catch(function(err) {
+        console.log("Unable to get permission to notify.", err);
+      });
+    navigator.serviceWorker.addEventListener("message", message =>
+      console.log(message)
+    );
   }
 
   setNotifications(val) {
@@ -85,6 +105,8 @@ export class App extends React.Component {
           decrementNotifications={this.decrementNotifications}
           greetingText={this.state.greetingText}
           waitingText={this.state.waitingText}
+          greetingTitle={this.state.greetingTitle}
+          waitingTitle={this.state.waitingTitle}
           eyezonGlobal={this.props.eyezonGlobal}
           firebase={this.props.firebase}
         />

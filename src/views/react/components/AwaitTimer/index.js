@@ -6,8 +6,25 @@ import styled from "styled-components";
 /*****************************************************************************/
 /*************************** Styling the page ********************************/
 /*****************************************************************************/
-const Wrapper = styled.span`
-  display: inline-block;
+const Wrapper = styled.div`
+  &&& {
+    display: flex !important;
+    font-family: "Montserrat" !important;
+    font-style: normal !important;
+    font-weight: bold !important;
+    font-size: 48px !important;
+    line-height: 61px !important;
+
+    color: #000000 !important;
+  }
+`;
+
+const SingleChar = styled.div`
+  &&& {
+    width: 31px !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
 `;
 
 const toTwoDigits = num => {
@@ -18,13 +35,13 @@ const toTwoDigits = num => {
 /*************************** Class Logic *************************************/
 /*****************************************************************************/
 
-class StandaloneTimer extends Component {
+class AwaitTimer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       delay: 1000,
-      minutes: 0,
-      seconds: 0
+      minutes: this.props.startMin ? this.props.startMin : 0,
+      seconds: this.props.startSec ? this.props.startSec : 0
     };
     this.setTime = this.setTime.bind(this);
   }
@@ -42,9 +59,9 @@ class StandaloneTimer extends Component {
           60 * Math.floor((this.state.seconds + 1) / 60)
       },
       () => {
-        this.props.setDuration(
-          (this.state.minutes * 60 + this.state.seconds) * 1000
-        );
+        if (this.state.minutes === 2) {
+          this.props.exceedFunc();
+        }
       }
     );
   }
@@ -56,12 +73,18 @@ class StandaloneTimer extends Component {
   }
 
   render() {
+    const minutes = toTwoDigits(this.state.minutes);
+    const seconds = toTwoDigits(this.state.seconds);
+
     return (
       <Wrapper>
-        {toTwoDigits(this.state.minutes)}:{toTwoDigits(this.state.seconds)}
+        <SingleChar>{minutes[0]}</SingleChar>
+        <SingleChar>{minutes[1]}</SingleChar>:
+        <SingleChar>{seconds[0]}</SingleChar>
+        <SingleChar>{seconds[1]}</SingleChar>
       </Wrapper>
     );
   }
 }
 
-export default StandaloneTimer;
+export default AwaitTimer;

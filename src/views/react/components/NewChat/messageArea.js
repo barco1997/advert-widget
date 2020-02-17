@@ -7,15 +7,17 @@ import ChatProposition from "../ChatProposition";
 import AwaitTimer from "../AwaitTimer";
 import moment from "moment";
 import ls from "local-storage";
+import { media } from "../../../../utils/media";
 const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
   &&& {
-    width: 100% !important;
+    width: calc(100% - 48px) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
-
+    margin: 0px 24px !important;
+    margin-top: 20px !important;
     flex: 1 !important;
     overflow: auto !important;
     ::-webkit-scrollbar {
@@ -23,6 +25,10 @@ const MessageContainer = styled.div`
     }
     -ms-overflow-style: none !important;
     margin-bottom: 5px !important;
+    ${media.desktop`
+    width: calc(100% - 30px) !important;
+    margin: 0px 15px !important;
+    `};
   }
 `;
 
@@ -209,9 +215,9 @@ export class MessageArea extends React.Component {
           this.state.success ||
           this.state.timerExceeded) && (
           <ConnectingText>
-            <B>Спасибо за ваш запрос</B>
+            <B>{this.props.waitingTitle}</B>
             <br />
-            Мы ответим вам в течении 2-ух минут:)
+            {this.props.waitingText}
             <br />
             {!this.state.timerExceeded && lessThan2 && !this.state.success && (
               <AwaitTimer
@@ -246,9 +252,7 @@ export class MessageArea extends React.Component {
         {!this.state.awaitingConnection && this.state.success && (
           <Result>Успели!</Result>
         )}
-        {(this.state.awaitingConnection ||
-          this.state.success ||
-          this.state.timerExceeded) &&
+        {(this.state.awaitingConnection || this.state.timerExceeded) &&
           (this.state.timerExceeded || !lessThan2) && (
             <Late>Задержка с ответом...</Late>
           )}

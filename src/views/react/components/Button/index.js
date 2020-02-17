@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 //import logo from "./image.png";
 //import Message from "../Message/index";
-import { Chat } from "../Chat";
+import { Chat } from "../NewChat";
 import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
@@ -739,6 +739,8 @@ export class Button extends React.Component {
             initializeChat={this.state.initializeChat}
             greetingText={this.props.greetingText}
             waitingText={this.props.waitingText}
+            greetingTitle={this.props.greetingTitle}
+            waitingTitle={this.props.waitingTitle}
             innerHeight={this.state.innerHeight}
             joinDialogue={this.joinDialogue}
             displayMainRequest={this.state.displayMainRequest}
