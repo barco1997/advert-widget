@@ -1,16 +1,21 @@
 import React from "react";
 import styled from "styled-components";
+import Star from "./star.svg";
+import CheckedStar from "./checkedstar.svg";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
-    width: 327px !important;
-    height: 40px !important;
-    justify-content: center !important;
+    width: 193px !important;
+    height: 25px !important;
+    justify-content: space-between !important;
     align-items: center !important;
-    text-align: center !important;
-    border: 1px solid #bebebe !important;
-    box-sizing: border-box !important;
-    border-radius: 5px !important;
+  }
+`;
+
+const ImgWrap = styled.img`
+  &&& {
+    width: 25px !important;
+    height: 25px !important;
     cursor: pointer !important;
   }
 `;
@@ -19,19 +24,43 @@ export class RateCall extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: true
+      rating: 0
     };
     this.handleClick = this.handleClick.bind(this);
   }
-  handleClick() {
+  handleClick(e) {
     this.setState({
-      selected: !this.state.selected
+      rating: e
     });
   }
   render() {
     return (
-      <Wrapper onClick={this.handleClick}>
-        {this.state.selected && <img src={Image} alt="logo" />}
+      <Wrapper>
+        <ImgWrap
+          src={this.state.rating >= 0 ? CheckedStar : Star}
+          alt="logo"
+          onClick={() => this.handleClick(0)}
+        />
+        <ImgWrap
+          src={this.state.rating >= 1 ? CheckedStar : Star}
+          alt="logo"
+          onClick={() => this.handleClick(1)}
+        />
+        <ImgWrap
+          src={this.state.rating >= 2 ? CheckedStar : Star}
+          alt="logo"
+          onClick={() => this.handleClick(2)}
+        />
+        <ImgWrap
+          src={this.state.rating >= 3 ? CheckedStar : Star}
+          alt="logo"
+          onClick={() => this.handleClick(3)}
+        />
+        <ImgWrap
+          src={this.state.rating >= 4 ? CheckedStar : Star}
+          alt="logo"
+          onClick={() => this.handleClick(4)}
+        />
       </Wrapper>
     );
   }

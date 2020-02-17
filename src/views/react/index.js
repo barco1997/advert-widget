@@ -14,6 +14,7 @@ import RateCall from "./components/RateCall";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
+    background: rgba(0, 0, 0, 0.2) !important;
     border: 2px solid red !important;
     width: 500px !important;
     height: 500px !important;
@@ -136,7 +137,7 @@ export function reactTest(params, ifOpened, buttons, eyezonGlobal) {
   ReactDOM.render(
     /*<FirebaseContext.Provider value={new Firebase()}>*/
     <Wrapper>
-      <RateCall />
+      <FooterLogo />
     </Wrapper>,
     /*</FirebaseContext.Provider>*/ document.getElementById("root")
   );
