@@ -25,7 +25,7 @@ const Text = styled.div`
 const Image = styled.img`
   &&& {
     width: 80px !important;
-    height: 26px !important;
+    object-fit: contain !important;
   }
 `;
 export class FooterLogo extends React.Component {
