@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Logo from "./logoeye.png";
+//import Logo from "./logoeye.png";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
@@ -28,15 +28,18 @@ const Image = styled.img`
     object-fit: contain !important;
   }
 `;
-export class FooterLogo extends React.Component {
+export class Disclaimer extends React.Component {
   render() {
     return (
       <Wrapper>
         <Text>Мы используем</Text>
-        <Image src={Logo} alt="logo" />
+        <Image
+          src="https://www.witheyezon.com/eyezonsite/static/img/logoeye.png"
+          alt="logo"
+        />
       </Wrapper>
     );
   }
 }
 
-export default FooterLogo;
+export default Disclaimer;

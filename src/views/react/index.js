@@ -137,7 +137,7 @@ export function reactTest(params, ifOpened, buttons, eyezonGlobal) {
   ReactDOM.render(
     /*<FirebaseContext.Provider value={new Firebase()}>*/
     <Wrapper>
-      <FooterLogo />
+      <CriticalInfo />
     </Wrapper>,
     /*</FirebaseContext.Provider>*/ document.getElementById("root")
   );
