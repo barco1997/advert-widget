@@ -14,6 +14,7 @@ const Text = styled.div`
     display: flex !important;
     height: 16px !important;
     margin-right: 8px !important;
+    margin-bottom: 1px !important;
     font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: 500 !important;
@@ -24,7 +25,7 @@ const Text = styled.div`
 `;
 const Image = styled.img`
   &&& {
-    width: 80px !important;
+    width: 75px !important;
     object-fit: contain !important;
   }
 `;
@@ -34,7 +35,7 @@ export class Disclaimer extends React.Component {
       <Wrapper>
         <Text>Мы используем</Text>
         <Image
-          src="https://www.witheyezon.com/eyezonsite/static/img/logoeye.png"
+          src="https://www.witheyezon.com/eyezonsite/static/images/logoeye.png"
           alt="logo"
         />
       </Wrapper>

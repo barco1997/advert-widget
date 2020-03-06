@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     font-weight: bold !important;
     font-size: 48px !important;
     line-height: 61px !important;
-
+    margin-bottom: 10px !important;
     color: #000000 !important;
   }
 `;

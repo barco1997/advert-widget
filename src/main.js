@@ -1,7 +1,8 @@
 import "./views/global/cleanslate.css";
 import "./views/global/style.css";
-import { react, reactTest } from "./views/react";
+import { react /*, reactTest*/ } from "./views/react";
 import "./fonts/fonts.css";
+import axios from "axios";
 const supportedAPI = ["init", "message", "react", "reacttest"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
 
 /**
@@ -53,26 +54,37 @@ function apiHandler(api, params) {
       let updatedParams = params;
       let url = new URL(window.location.href);
       let openChat = url.searchParams.get("open");
-
-      if (params.targets && params.targets.length > 0) {
-        buttons = params.targets.map(target => {
-          return {
-            buttonId: target.buttonId,
-            target: document.getElementById(target.targetId)
-          };
+      const url2 = `https://eyezon.herokuapp.com/api/business/${params.businessId}/subscriptions`;
+      axios
+        .get(url2)
+        .then(function(response) {
+          if (
+            response.data.some(subscription => subscription.status === "ACTIVE")
+          ) {
+            if (params.targets && params.targets.length > 0) {
+              buttons = params.targets.map(target => {
+                return {
+                  buttonId: target.buttonId,
+                  target: document.getElementById(target.targetId)
+                };
+              });
+            }
+            if (openChat) {
+              updatedParams.initialButtonId = url.searchParams.get("buttonId");
+              react(updatedParams, true, buttons);
+            } else {
+              react(updatedParams, false, buttons);
+            }
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
         });
-      }
-      if (openChat) {
-        updatedParams.initialButtonId = url.searchParams.get("buttonId");
-        react(updatedParams, true, buttons);
-      } else {
-        react(updatedParams, false, buttons);
-      }
 
       break;
 
     case "reacttest":
-      reactTest(params, true, buttons);
+      /*reactTest(params, true, buttons);*/
 
       break;
 

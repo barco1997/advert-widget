@@ -209,9 +209,9 @@ export class MessageArea extends React.Component {
           this.state.success ||
           this.state.timerExceeded) && (
           <ConnectingText>
-            <B>Спасибо за ваш запрос</B>
+            <B>{this.props.waitingTitle}</B>
             <br />
-            Мы ответим вам в течении 2-ух минут:)
+            {this.props.waitingText}
             <br />
             {!this.state.timerExceeded && lessThan2 && !this.state.success && (
               <AwaitTimer

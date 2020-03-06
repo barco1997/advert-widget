@@ -305,9 +305,9 @@ export class Button extends React.Component {
     );
     this.setState({
       emailSentFlag: true,
-      displayMainRequest: false,
+      displayMainRequest: true,
       displayEmailRequest: false,
-      displayChat: false
+      displayChat: true
     });
   }
 
@@ -482,6 +482,7 @@ export class Button extends React.Component {
             {}
           )
           .then(function(response) {
+            console.log("TESTING NOW 1", response);
             if (response.data.count > 0) {
               //let notifPerm = ls.get("conversationPermission");
               /*if (ls.get("conversationPermission")) {
@@ -506,18 +507,28 @@ export class Button extends React.Component {
     } else {
       axios
         .post(
-          `https://eyezon.herokuapp.com/api/dialog/${ls.get(
+          /*`https://eyezon.herokuapp.com/api/dialog/${ls.get(
             "dialogId"
-          )}/messages`,
+          )}/messages`*/ `https://eyezon.herokuapp.com/api/user/${ls.get(
+            "userId"
+          )}/dialogs`,
           {}
         )
         .then(function(response) {
-          if (response.data.count > 0) {
+          console.log("TESTING NOW 2", response);
+          if (response.data.count > 0 && !response.data.data[0].isDeleted) {
+            ls.set("dialogId", response.data.data[0]._id);
             self.showChatHere();
           } else {
             ls.set("dialogId", "");
             self.showChatHere();
           }
+          /*if (response.data.count > 0) {
+            self.showChatHere();
+          } else {
+            ls.set("dialogId", "");
+            self.showChatHere();
+          }*/
         })
         .catch(function(error) {
           ls.set("dialogId", "");

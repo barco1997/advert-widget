@@ -4,21 +4,21 @@ import styled from "styled-components";
 const Wrapper = styled.input`
   &&& {
     max-width: ${props =>
-      props.maxWidth ? props.maxWidth : "220px"} !important;
-    height: ${props => (props.height ? props.height : "36.55px")} !important;
-    width: 100vw !important;
+      props.maxWidth ? props.maxWidth : "380px"} !important;
+    height: ${props => (props.height ? props.height : "40px")} !important;
+    width: 100% !important;
     font-family: "Montserrat" !important;
-    font-size: 12px !important;
-    line-height: 15px !important;
+    font-size: 14px !important;
+    line-height: 24px !important;
     color: #000000 !important;
-    padding-left: 23.08px !important;
-    background: #f5f5f5 !important;
+    padding-left: 12px !important;
+    background: #ffffff !important;
     border: ${props =>
-      props.noOutline ? "0px" : "0.5px solid #e5e5e5"} !important;
+      props.noOutline ? "0px" : "1px solid #E5E5E5"} !important;
 
     box-sizing: border-box !important;
     border-radius: ${props =>
-      props.borderRadius ? props.borderRadius : "4px"} !important;
+      props.borderRadius ? props.borderRadius : "5px"} !important;
     margin-bottom: ${props => (props.extraMargin ? "4px" : "0px")} !important;
     &::-webkit-input-placeholder {
       color: rgba(0, 0, 0, 0.2) !important;
@@ -33,6 +33,7 @@ const ExtraWrapper = styled.div`
   &&& {
     display: flex !important;
     position: relative !important;
+    width: calc(100% - 48px) !important;
   }
 `;
 const Helper = styled.div`

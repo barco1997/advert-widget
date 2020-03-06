@@ -15,7 +15,7 @@ const Text = styled.div`
     display: flex !important;
     height: 16px !important;
     margin-left: 5px !important;
-    margin-top: 2px !important;
+    margin-top: 3px !important;
     font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: 600 !important;

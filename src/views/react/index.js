@@ -5,10 +5,10 @@ import html from "./index.html";
 import App from "./components/App";
 import Firebase, { FirebaseContext } from "./components/Firebase";
 import { load } from "./constants";
-import CriticalInfo from "./components/CriticalInfo";
-import FooterLogo from "./components/FooterLogo";
-import BlurredButton from "./components/BlurredButton";
-import RateCall from "./components/RateCall";
+//import CriticalInfo from "./components/CriticalInfo";
+//import FooterLogo from "./components/FooterLogo";
+//import BlurredButton from "./components/BlurredButton";
+//import RateCall from "./components/RateCall";
 //import * as fms from "./firebase-messaging-sw.js";
 
 const Wrapper = styled.div`
@@ -106,7 +106,7 @@ export function react(params, ifOpened, buttons, eyezonGlobal) {
   );
 }
 
-export function reactTest(params, ifOpened, buttons, eyezonGlobal) {
+/*export function reactTest(params, ifOpened, buttons, eyezonGlobal) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
   body = document.getElementsByTagName("body")[0];
@@ -124,7 +124,7 @@ export function reactTest(params, ifOpened, buttons, eyezonGlobal) {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register(
-        /*"https://witheyezon.com/eyezonsite*/ "./firebase-messaging-sw.js"
+         "./firebase-messaging-sw.js"
       )
       .then(function(registration) {
         console.log("Registration successful, scope is:", registration.scope);
@@ -135,10 +135,10 @@ export function reactTest(params, ifOpened, buttons, eyezonGlobal) {
   }
 
   ReactDOM.render(
-    /*<FirebaseContext.Provider value={new Firebase()}>*/
+    
     <Wrapper>
-      <CriticalInfo />
+      <RateCall />
     </Wrapper>,
-    /*</FirebaseContext.Provider>*/ document.getElementById("root")
+    document.getElementById("root")
   );
-}
+}*/

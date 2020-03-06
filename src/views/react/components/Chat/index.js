@@ -162,7 +162,8 @@ const WindowWrapper = styled.div`
   &&& {
     display: flex !important;
     z-index: 10003 !important;
-    justify-content: center !important;
+    flex-direction: column !important;
+    align-items: center !important;
     height: 553px !important;
     max-width: 85% !important;
 
@@ -171,7 +172,7 @@ const WindowWrapper = styled.div`
       top: 0% !important;
       left: 0% !important;
       max-width: 100% !important;
-      justify-content: flex-start !important;
+      align-items: flex-start !important;
       height: auto !important;
   `};
     ${media.tablet`
@@ -1444,6 +1445,7 @@ export class Chat extends React.Component {
                       transactionLimit={this.state.transactionLimit}
                       sentHistory={this.state.sentHistory}
                       waitingText={this.props.waitingText}
+                      waitingTitle={this.props.waitingTitle}
                     />
                   )}
                   <CustomForm>

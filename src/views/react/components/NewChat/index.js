@@ -10,6 +10,7 @@ import StreamChat from "./streamchat";
 import EmailRequest from "../Button/emailrequest";
 import UnmountTracker from "../UnmountTracker";
 import StandaloneTimer from "../StandaloneTimer";
+import Disclaimer from "../Disclaimer";
 import { ReactMic } from "react-mic";
 import { withFirebase } from "../Firebase";
 import firebase from "firebase";
@@ -21,6 +22,7 @@ var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
 let SESSION_STATUS;
 let STREAM_STATUS;
 let PRELOADER_URL;
+let ROOM_EVENT;
 
 let context;
 /*if (!iOS) {
@@ -41,6 +43,7 @@ load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
     SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
     STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
     PRELOADER_URL = "https://witheyezon.com/eyezonsite/static/preloader.mp4";
+    ROOM_EVENT = Flashphoner.roomApi.events;
   })
   .catch(function(err) {
     console.error("Something went wrong!", err);
@@ -81,6 +84,17 @@ const VideoWrapper = styled.div`
   }
 `;
 
+const DisclaimerWrapper = styled.div`
+  &&& {
+    width: calc(100% - 25px) !important;
+    margin-top: 10px !important;
+    margin-left: 25px !important;
+    ${media.desktop`
+      display: none !important;
+    `};
+  }
+`;
+
 const VideoWrapperS = styled.div`
   &&& {
     position: relative !important;
@@ -100,7 +114,7 @@ const VideoWrapperS = styled.div`
     ${media.desktop`
   
   width: 100vw !important;
-  height: calc(100% - 146px) !important;
+  height: 100% !important;
   
   
   
@@ -120,8 +134,8 @@ const StreamWrapper = styled.div`
   &&& {
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
-    width: 309px !important;
-    height: 649px !important;
+    width: 496px !important;
+    height: 664px !important;
     flex-direction: column !important;
     ${media.desktop`
       top: ${props => (props.top ? props.top : "0")} !important;
@@ -162,6 +176,7 @@ const WindowWrapper = styled.div`
   &&& {
     display: flex !important;
     z-index: 10003 !important;
+    /*flex-direction: column !important;*/
     justify-content: center !important;
 
     height: 664px !important;
@@ -315,36 +330,41 @@ const ChatWrapper = styled.div`
 const InputFieldA = styled.textarea`
   &&& {
     height: ${props => (props.height ? props.height : "63px")} !important;
-    color: black !important;
+    color: ${props => (props.stream ? "#ffffff" : "black")} !important;
     flex: 1 !important;
-    width: 100% !important;
+
     opacity: ${props => (props.blocked ? "0.7" : "1")} !important;
     max-width: 100% !important;
-    background: #ffffff !important;
+    background: ${props =>
+      props.stream ? "rgba(255, 255, 255, 0.32)" : "#ffffff"} !important;
     border: 0px solid #eaeaea !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
-    /*border-radius: 4px !important;*/
-    padding: 24px 24px !important;
+    border-radius: ${props => (props.stream ? "4px" : "0px")} !important;
+    padding: ${props => (props.stream ? "13px 24px" : "24px 24px")} !important;
     padding-right: 70px !important;
     font-family: "Montserrat" !important;
     font-weight: normal !important;
     font-size: 14px !important;
+    line-height: 20px !important;
     outline: 0 !important;
     resize: none !important;
-    border-top: 1px solid #eaeaea !important;
+    border-top: ${props =>
+      props.stream ? "none" : "1px solid #eaeaea"} !important;
     margin: 0px !important;
+    width: ${props => (props.stream ? "calc(100% - 89px)" : "100%")} !important;
+    margin-left: ${props => (props.stream ? "24px" : "0px")} !important;
+    margin-right: ${props => (props.stream ? "15px" : "0px")} !important;
     word-break: break-all !important;
+    vertical-align: middle !important;
     &::placeholder {
-      color: #cacaca !important;
+      color: ${props =>
+        props.stream ? "rgba(255, 255, 255, 0.6)" : "#cacaca"} !important;
       font-weight: normal !important;
     }
     ${media.desktop`
-    font-size: 14px !important;
-    height: ${props => (props.height ? props.height : "63px")} !important;
-      width: ${props =>
-        props.stream ? "calc(100% - 20px)" : "100%"} !important;
-        margin-left: ${props => (props.stream ? "10px" : "0px")} !important;
+      font-size: 14px !important;
+      height: ${props => (props.height ? props.height : "63px")} !important;
       
   `};
   }
@@ -405,6 +425,21 @@ const SendIconWrap = styled.div`
     background: #ff2d55 !important;
     border-radius: 50% !important;
     cursor: pointer !important;
+  }
+`;
+
+const SendIconWrapS = styled.div`
+  &&& {
+    width: 36px !important;
+    height: 36px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #ff2d55 !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    margin-right: ${props => (props.stream ? "24px" : "0px")} !important;
   }
 `;
 
@@ -490,38 +525,6 @@ const CustomForm = styled.form`
   }
 `;
 
-const SendRequest = styled.button`
-  &&& {
-    width: 160px !important;
-    height: 28px !important;
-    background: #ff2d55 !important;
-    border-radius: 5px !important;
-    margin-top: 10px !important;
-    text-decoration: none !important;
-    border-width: 0px !important;
-    box-shadow: none !important;
-    -webkit-font-smoothing: antialiased !important;
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    cursor: pointer !important;
-    outline: 0 !important;
-    color: white !important;
-    font-size: 14px !important;
-    padding-top: 3px !important;
-    font-weight: normal !important;
-    font-family: "Montserrat" !important;
-    ${media.desktop`
-      width: ${props =>
-        props.stream ? "calc(100% - 26px)" : "calc(100% - 10px)"}!important;
-      height: 48px !important;
-      font-size: 16px !important;
-      margin-right: ${props => (props.stream ? "0px" : "5px")}!important;
-      margin-left: ${props => (props.stream ? "8px" : "0px")}!important;
-      margin-top: 16px !important;
-  `};
-  }
-`;
-
 const SendRow = styled.div`
   &&& {
     width: 100% !important;
@@ -600,7 +603,7 @@ const JsChatMessageContainer = styled.div`
     justify-content: flex-start !important;
 
     /*padding: 20px 0px !important;*/
-    padding-bottom: 20px !important;
+    margin-bottom: 20px !important;
     height: 100% !important;
     /*margin: 0px 24px !important;*/
     max-height: ${props =>
@@ -612,9 +615,9 @@ const JsChatMessageContainer = styled.div`
     ${media.desktop`
   width: 100% !important;
   padding: 0px 0px !important;
-  padding-bottom: 20px !important;
-  /*margin: 0px 15px !important;*/
-  margin-bottom: 0px !important;
+  /*padding-bottom: 20px !important;
+  margin: 0px 15px !important;*/
+  margin-bottom: 20px !important;
   
   `};
     ${media.android`
@@ -668,10 +671,24 @@ const TextFieldExtraS = styled.div`
   &&& {
     position: absolute !important;
     bottom: 0px !important;
-    margin-top: 20px !important;
-    ${media.android`
+    height: ${props =>
+      props.chatHeight
+        ? `calc(348px + ${props.chatHeight})`
+        : "388px"} !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    /*${media.android`
     margin-top: 10px !important;
-    `};
+    `};*/
+  }
+`;
+const InputLineStream = styled.div`
+  &&& {
+    margin-top: 20px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
   }
 `;
 
@@ -710,6 +727,22 @@ const InfoBlock = styled.div`
     background: #ff2d55 !important;
     height: 300px !important;
     width: 100% !important;
+  }
+`;
+
+const ChatWindowExpansion = styled.div`
+  &&& {
+    flex-direction: column !important;
+    align-items: center !important;
+    height: 692px !important;
+    /**** Feature ****/
+    display: ${props => (props.visible ? "flex" : "none")} !important;
+    width: ${props => (props.visible ? "496px" : "0")} !important;
+    /**** End     ****/
+    ${media.desktop`
+      height: ${props =>
+        props.height ? `${props.height}px` : "100vh"} !important;
+    `}
   }
 `;
 
@@ -780,7 +813,8 @@ export class Chat extends React.Component {
       ifTimer: false,
       audioDuration: 0,
       shouldTimerStop: false,
-      textAreaHeight: "74px"
+      textAreaHeight: "68px",
+      streamTextAreaHeight: "46px"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1265,13 +1299,16 @@ export class Chat extends React.Component {
     const value = this.state.valueStream;
     if (value.length > 0) {
       if (!this.state.awaitingConnection) {
-        this.setState({
-          messagesStream: [
-            ...this.state.messagesStream,
-            { text: value, time: new Date(), id: uuidv1() }
-          ],
-          valueStream: ""
-        });
+        this.setState(
+          {
+            messagesStream: [
+              ...this.state.messagesStream,
+              { text: value, time: new Date(), id: uuidv1() }
+            ],
+            valueStream: ""
+          },
+          () => this.textAreaAdjust(true)
+        );
 
         let obj = {
           messageText: value,
@@ -1292,20 +1329,23 @@ export class Chat extends React.Component {
 
     if (value.length > 0) {
       if (!this.state.startedFlag && !this.state.awaitingConnection) {
-        this.setState({
-          messages: [
-            ...this.state.messages,
-            {
-              text: value,
-              time: new Date(),
-              id: uuidv1(),
-              photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUserLocal}.png`
-            }
-          ],
-          value: "",
-          awaitingConnection: true,
-          lastValue: value
-        });
+        this.setState(
+          {
+            messages: [
+              ...this.state.messages,
+              {
+                text: value,
+                time: new Date(),
+                id: uuidv1(),
+                photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUserLocal}.png`
+              }
+            ],
+            value: "",
+            awaitingConnection: true,
+            lastValue: value
+          },
+          () => this.textAreaAdjust(false)
+        );
         const newObj = /*JSON.stringify(*/ {
           client: ls.get("userId"),
           title: this.props.currentTitle
@@ -1320,20 +1360,23 @@ export class Chat extends React.Component {
         ls.remove("awaitTmp");
         self.socket.emit("createDialog", newObj);
       } else if (!this.state.awaitingConnection) {
-        this.setState({
-          messages: [
-            ...this.state.messages,
-            {
-              text: value,
-              time: new Date(),
-              id: uuidv1(),
-              photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
-                "userIcon"
-              )}.png`
-            }
-          ],
-          value: ""
-        });
+        this.setState(
+          {
+            messages: [
+              ...this.state.messages,
+              {
+                text: value,
+                time: new Date(),
+                id: uuidv1(),
+                photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                  "userIcon"
+                )}.png`
+              }
+            ],
+            value: ""
+          },
+          () => this.textAreaAdjust(false)
+        );
         if (ls.get("streamInProgress")) {
           let obj = {
             messageText: value,
@@ -1490,17 +1533,31 @@ export class Chat extends React.Component {
     });
   }
 
-  textAreaAdjust() {
-    this.setState(
-      {
-        textAreaHeight: "auto"
-      },
-      () => {
-        this.setState({
-          textAreaHeight: this.mainInput.scrollHeight + "px"
-        });
-      }
-    );
+  textAreaAdjust(streamFlag) {
+    if (!streamFlag) {
+      this.setState(
+        {
+          textAreaHeight: "auto"
+        },
+        () => {
+          this.setState({
+            textAreaHeight: this.mainInput.scrollHeight + "px"
+          });
+        }
+      );
+    } else {
+      this.setState(
+        {
+          streamTextAreaHeight: "auto"
+        },
+        () => {
+          this.setState({
+            streamTextAreaHeight: this.streamInput.scrollHeight + "px"
+          });
+        }
+      );
+    }
+
     /*o.style.height = "1px";
     o.style.height = 25 + o.scrollHeight + "px";*/
   }
@@ -1531,41 +1588,45 @@ export class Chat extends React.Component {
         />
 
         <WindowWrapper>
-          <JsChatWindow
-            visible={!this.state.streamFlag}
+          <ChatWindowExpansion
             height={this.props.innerHeight}
+            visible={!this.state.streamFlag}
           >
-            <CloseWrapperA>
-              <CloseButton
-                onClick={() => {
-                  this.setState({
-                    streamFlag: false
-                  });
-                  //this.socket.emit("leaveStream", ls.get("userId"));
-                  if (
-                    !this.props.displayMainRequest &&
-                    !this.props.emailSentFlag
-                  ) {
-                    this.props.showMainRequest();
-                  } else {
-                    //this.props.closeMainRequest();
-                    this.props.destroy();
-                  }
-                  /*this.live.pause();*/
-                  if (this.loadedVideo.getInternalPlayer()) {
-                    this.loadedVideo.getInternalPlayer().pause();
-                  }
-                }}
-              />
-            </CloseWrapperA>
-            {this.props.displayMainRequest ? (
-              <EmailRequest
-                sendEmailDetails={this.props.sendEmailDetails}
-                destroy={this.props.destroy}
-              ></EmailRequest>
-            ) : (
-              <Fragment>
-                {/*<JsChatMessagePlaceholder>
+            <JsChatWindow
+              visible={!this.state.streamFlag}
+              height={this.props.innerHeight}
+            >
+              <CloseWrapperA>
+                <CloseButton
+                  onClick={() => {
+                    this.setState({
+                      streamFlag: false
+                    });
+                    //this.socket.emit("leaveStream", ls.get("userId"));
+                    if (
+                      !this.props.displayMainRequest &&
+                      !this.props.emailSentFlag
+                    ) {
+                      this.props.showMainRequest();
+                    } else {
+                      //this.props.closeMainRequest();
+                      this.props.destroy();
+                    }
+                    /*this.live.pause();*/
+                    if (this.loadedVideo.getInternalPlayer()) {
+                      this.loadedVideo.getInternalPlayer().pause();
+                    }
+                  }}
+                />
+              </CloseWrapperA>
+              {this.props.displayMainRequest ? (
+                <EmailRequest
+                  sendEmailDetails={this.props.sendEmailDetails}
+                  destroy={this.props.destroy}
+                ></EmailRequest>
+              ) : (
+                <Fragment>
+                  {/*<JsChatMessagePlaceholder>
                         <PlaceholderMessage>
                           {this.props.greetingTitle}
                           {`\n`}
@@ -1574,125 +1635,129 @@ export class Chat extends React.Component {
 
                         <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                       </JsChatMessagePlaceholder>*/}
-                <JsChatMessageContainer tHeight={this.state.textAreaHeight}>
-                  <Fragment>
-                    {!this.state.messages || this.state.messages.length == 0 ? (
-                      <InfoBlock>
-                        <InfoBlockHeader>
-                          {this.props.greetingTitle}
-                        </InfoBlockHeader>
-                        <InfoBlockText>{this.props.greetingText}</InfoBlockText>
-                      </InfoBlock>
-                    ) : (
-                      <MessageArea
-                        messages={this.state.messages}
-                        awaitingConnection={this.state.awaitingConnection}
-                        setFlv={this.handleStreamClick}
-                        handlePhoto={this.handlePhoto}
-                        handleVideo={this.handleVideo}
-                        handleStreamToVideo={this.handleStreamToVideo}
-                        strVideo={this.state.streamToVideo}
-                        manipulateVideoId={this.state.videoManipulateId}
-                        ifPauseIcon={this.state.ifPauseIcon}
-                        existingChats={this.state.existingChats}
-                        transactionLimit={this.state.transactionLimit}
-                        sentHistory={this.state.sentHistory}
-                        waitingText={this.props.waitingText}
-                        waitingTitle={this.props.waitingTitle}
-                      />
-                    )}
-                  </Fragment>
-                </JsChatMessageContainer>
-                <CustomForm>
-                  <div style={{ flexDirection: "column  !important" }}>
-                    <CartTextFieldExtra>
-                      <CartTextFieldRelative>
-                        <InputFieldA
-                          ref={item => {
-                            this.mainInput = item;
-                          }}
-                          onFocus={() => {
-                            //this.handleAndroidKeyboard(true);
-                          }}
-                          onBlur={() => {
-                            //this.handleAndroidKeyboard(false);
-                          }}
-                          height={this.state.textAreaHeight}
-                          type="text"
-                          value={this.state.value}
-                          onChange={this.handleChange}
-                          blocked={this.state.awaitingConnection}
-                          disabled={this.state.awaitingConnection}
-                          placeholder={
-                            this.state.ifTimer
-                              ? ""
-                              : this.state.awaitingConnection
-                              ? "Для продолжения диалога дождитесь ответа"
-                              : "Спросите что-нибудь ;)"
-                          }
-                          onKeyPress={event => {
-                            if (event.key === "Enter") {
-                              this.handleSubmit(event);
-                            }
-                          }}
-                          onKeyUp={this.textAreaAdjust}
+                  <JsChatMessageContainer tHeight={this.state.textAreaHeight}>
+                    <Fragment>
+                      {!this.state.messages ||
+                      this.state.messages.length == 0 ? (
+                        <InfoBlock>
+                          <InfoBlockHeader>
+                            {this.props.greetingTitle}
+                          </InfoBlockHeader>
+                          <InfoBlockText>
+                            {this.props.greetingText}
+                          </InfoBlockText>
+                        </InfoBlock>
+                      ) : (
+                        <MessageArea
+                          messages={this.state.messages}
+                          awaitingConnection={this.state.awaitingConnection}
+                          setFlv={this.handleStreamClick}
+                          handlePhoto={this.handlePhoto}
+                          handleVideo={this.handleVideo}
+                          handleStreamToVideo={this.handleStreamToVideo}
+                          strVideo={this.state.streamToVideo}
+                          manipulateVideoId={this.state.videoManipulateId}
+                          ifPauseIcon={this.state.ifPauseIcon}
+                          existingChats={this.state.existingChats}
+                          transactionLimit={this.state.transactionLimit}
+                          sentHistory={this.state.sentHistory}
+                          waitingText={this.props.waitingText}
+                          waitingTitle={this.props.waitingTitle}
                         />
-                        {this.state.ifTimer && (
-                          <AudioTimer>
-                            <TimerCircle />
-                            <Timer>
-                              <StandaloneTimer
-                                setDuration={this.setAudioDuration}
-                              />
-                            </Timer>
-                          </AudioTimer>
-                        )}
-                        {this.state.value.length < 1 && (
-                          <MicWrap
-                            onMouseDown={this.handleDown}
-                            onTouchStart={this.handleDown}
-                            onMouseUp={this.handleUp}
-                            onTouchEnd={this.handleUp}
-                            tabIndex="0"
-                          >
-                            <ImageMic
-                              src={
-                                "https://witheyezon.com/eyezonsite/static/images/mic.png"
+                      )}
+                    </Fragment>
+                  </JsChatMessageContainer>
+                  <CustomForm>
+                    <div style={{ flexDirection: "column  !important" }}>
+                      <CartTextFieldExtra>
+                        <CartTextFieldRelative>
+                          <InputFieldA
+                            rows="1"
+                            ref={item => {
+                              this.mainInput = item;
+                            }}
+                            onFocus={() => {
+                              //this.handleAndroidKeyboard(true);
+                            }}
+                            onBlur={() => {
+                              //this.handleAndroidKeyboard(false);
+                            }}
+                            height={this.state.textAreaHeight}
+                            onKeyDown={() => this.textAreaAdjust(false)}
+                            type="text"
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            blocked={this.state.awaitingConnection}
+                            disabled={this.state.awaitingConnection}
+                            placeholder={
+                              this.state.ifTimer
+                                ? ""
+                                : this.state.awaitingConnection
+                                ? "Для продолжения диалога дождитесь ответа"
+                                : "Спросите что-нибудь ;)"
+                            }
+                            onKeyPress={event => {
+                              if (event.key === "Enter") {
+                                this.handleSubmit(event);
                               }
-                            />
-                          </MicWrap>
-                        )}
-                        {this.state.value.length > 0 && (
-                          <SendIconWrap
-                            onClick={event => this.handleSubmit(event)}
-                          >
-                            <ImageSend
-                              src={
-                                "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-                              }
-                            />
-                          </SendIconWrap>
-                        )}
-                        <MicLogicHidden>
-                          <ReactMic
-                            record={this.state.ifTimer}
-                            className="sound-wave"
-                            onStop={this.onStop}
-                            onData={this.onData}
-                            strokeColor="#000000"
-                            backgroundColor="#FF4081"
+                            }}
                           />
-                        </MicLogicHidden>
-                      </CartTextFieldRelative>
-                      {/*<CartWrapper onClick={this.handleCart}>
+                          {this.state.ifTimer && (
+                            <AudioTimer>
+                              <TimerCircle />
+                              <Timer>
+                                <StandaloneTimer
+                                  setDuration={this.setAudioDuration}
+                                />
+                              </Timer>
+                            </AudioTimer>
+                          )}
+                          {this.state.value.length < 1 && (
+                            <MicWrap
+                              onMouseDown={this.handleDown}
+                              onTouchStart={this.handleDown}
+                              onMouseUp={this.handleUp}
+                              onTouchEnd={this.handleUp}
+                              tabIndex="0"
+                            >
+                              <ImageMic
+                                src={
+                                  "https://witheyezon.com/eyezonsite/static/images/mic.png"
+                                }
+                              />
+                            </MicWrap>
+                          )}
+                          {this.state.value.length > 0 && (
+                            <SendIconWrap
+                              onClick={event => this.handleSubmit(event)}
+                            >
+                              <ImageSend
+                                src={
+                                  "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
+                                }
+                              />
+                            </SendIconWrap>
+                          )}
+                          <MicLogicHidden>
+                            <ReactMic
+                              record={this.state.ifTimer}
+                              className="sound-wave"
+                              onStop={this.onStop}
+                              onData={this.onData}
+                              strokeColor="#000000"
+                              backgroundColor="#FF4081"
+                            />
+                          </MicLogicHidden>
+                        </CartTextFieldRelative>
+                        {/*<CartWrapper onClick={this.handleCart}>
                           <ImageCart
                             src={
                               "https://witheyezon.com/eyezonsite/static/images/cart.png"
                             }
                           />
                           </CartWrapper>*/}
-                    </CartTextFieldExtra>
-                    {/*<SendRow>
+                      </CartTextFieldExtra>
+                      {/*<SendRow>
                       <SendRequest onClick={this.handleSubmit}>
                         Отправить
                       </SendRequest>
@@ -1701,12 +1766,15 @@ export class Chat extends React.Component {
                         <EyezonImage src="https://www.witheyezon.com/eyezonsite/static/images/logonew2.png" />
                       </FontDisclaimer>
                     </SendRow>*/}
-                  </div>
-                </CustomForm>
-              </Fragment>
-            )}
-          </JsChatWindow>
-
+                    </div>
+                  </CustomForm>
+                </Fragment>
+              )}
+            </JsChatWindow>
+            <DisclaimerWrapper>
+              <Disclaimer />
+            </DisclaimerWrapper>
+          </ChatWindowExpansion>
           <StreamWrapper
             height={this.props.innerHeight}
             visible={this.state.streamFlag /*true*/}
@@ -1727,6 +1795,7 @@ export class Chat extends React.Component {
                 SESSION_STATUS={SESSION_STATUS}
                 STREAM_STATUS={STREAM_STATUS}
                 PRELOADER_URL={PRELOADER_URL}
+                ROOM_EVENT={ROOM_EVENT}
                 iOS={iOS}
               />
 
@@ -1743,29 +1812,37 @@ export class Chat extends React.Component {
                   }}
                 />
               </CloseWrapper>
-              <StreamChat messages={this.state.messagesStream} />
-              <ControlShader />
-              <TextFieldExtraS>
-                <InputFieldA
-                  stream
-                  type="text"
-                  value={this.state.valueStream}
-                  onChange={this.handleChangeInStream}
-                  placeholder="Спросите что-нибудь ;)"
-                  onKeyPress={event => {
-                    if (event.key === "Enter") {
-                      this.handleSubmitS();
-                    }
-                  }}
-                />
-                <SendRequest
-                  stream
-                  onClick={() => {
-                    this.handleSubmitS();
-                  }}
-                >
-                  {/*Send*/}Отправить
-                </SendRequest>
+
+              {/*<ControlShader />*/}
+              <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
+                <StreamChat messages={this.state.messagesStream} />
+                <InputLineStream>
+                  <InputFieldA
+                    rows="1"
+                    stream
+                    ref={item => {
+                      this.streamInput = item;
+                    }}
+                    type="text"
+                    value={this.state.valueStream}
+                    onChange={this.handleChangeInStream}
+                    placeholder="Спросите что-нибудь ;)"
+                    onKeyPress={event => {
+                      if (event.key === "Enter") {
+                        this.handleSubmitS();
+                      }
+                    }}
+                    height={this.state.streamTextAreaHeight}
+                    onKeyDown={() => this.textAreaAdjust(true)}
+                  />
+                  <SendIconWrapS onClick={() => this.handleSubmitS()} stream>
+                    <ImageSend
+                      src={
+                        "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
+                      }
+                    />
+                  </SendIconWrapS>
+                </InputLineStream>
               </TextFieldExtraS>
             </VideoWrapperS>
           </StreamWrapper>

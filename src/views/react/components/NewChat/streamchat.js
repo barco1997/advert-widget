@@ -11,23 +11,33 @@ const MessageContainer = styled.div`
     width: 100% !important;
     z-index: 10008 !important;
     display: flex !important;
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
+
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: /*rgba(0, 0, 0, 0.5)*/ linear-gradient(
+    /*background:  linear-gradient(
       180deg,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0.5) 100%
-    ) !important;
+    ) !important;*/
     flex: 1 !important;
-    height: 167px !important;
+    height: 300px !important;
     overflow: auto !important;
     ::-webkit-scrollbar {
       display: none !important;
     }
     -ms-overflow-style: none !important;
+
+    mix-blend-mode: hard-light !important;
+    position: relative !important;
+    &:after {
+      position: absolute !important;
+      content: "" !important;
+      left: 0px !important;
+      top: 0px !important;
+      height: 100% !important;
+      width: 100% !important;
+      background: linear-gradient(gray, transparent) !important;
+    }
   }
 `;
 
@@ -42,6 +52,7 @@ const Response = styled.div`
 
     align-items: center !important;
     color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.32) !important;
     /*-webkit-mask-image: linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0.1) 0%,
@@ -53,48 +64,25 @@ const Response = styled.div`
       rgba(255, 255, 255, 0) 100%
     ) !important;*/
     width: 188px !important;
-    padding-left: 12px !important;
-    margin-bottom: 5px !important;
-  }
-`;
-const Shader = styled.div`
-  &&& {
-    width: 100% !important;
-    z-index: 10009 !important;
-    display: flex !important;
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
-
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.5) 0%,
-      rgba(0, 0, 0, 0) 90%,
-      rgba(0, 0, 0, 0) 100%
-    ) !important;
-
-    height: 167px !important;
+    padding: 16px 13px !important;
+    margin-left: 24px !important;
+    margin-bottom: 8px !important;
+    border-radius: 5px 5px 5px 0px !important;
+    word-break: break-all !important;
   }
 `;
 
 const DoubleWrapper = styled.div`
   &&& {
-    position: absolute !important;
-    height: 167px !important;
+    height: 300px !important;
     width: 100% !important;
-    bottom: 35px !important;
-    left: 0 !important;
   }
 `;
 
 const Wrapper = styled.div`
   &&& {
-    position: relative !important;
     height: 100% !important;
     width: 100% !important;
-    top: 0 !important;
-    left: 0 !important;
-    opacity: 1 !important;
   }
 `;
 
