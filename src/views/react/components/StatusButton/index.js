@@ -23,14 +23,12 @@ const Button = styled.button`
     line-height: 24px !important;
     font-weight: 800 !important;
 
+    transition: 0.5s ease-in-out;
+
     background: ${props =>
       props.status === "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
     color: ${props =>
       props.status !== "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
-    transition: 0.5s ease-in-out;
-    &:hover {
-      background: blue;
-    }
   }
 `;
 
