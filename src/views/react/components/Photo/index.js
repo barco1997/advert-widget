@@ -9,12 +9,10 @@ const PhotoWrap = styled.div`
   &&& {
     position: relative !important;
     display: flex !important;
-    z-index: 10003 !important;
-    /*flex-direction: column !important;*/
+    z-index: 10003 !important;``
     justify-content: center !important;
 
     ${media.desktop`
-      position: absolute !important;
       max-width: 100% !important;
       justify-content: flex-start !important;
       height: auto !important;
@@ -22,7 +20,6 @@ const PhotoWrap = styled.div`
     ${media.tablet`
       height: auto !important;
       max-width: 100% !important;
-      
   `};
   }
 `;
@@ -64,13 +61,20 @@ const ClosePhotoButton = styled.button`
   }
 `;
 
+const PhotoImg = styled.img`
+  &&& {
+    height: auto !important;
+    width: 100% !important;
+  }
+`;
+
 class Photo extends React.Component {
   render() {
     const { onClose } = this.props;
     return (
       <div>
         <ClosePhotoButton onClick={onClose} />
-        <PhotoWrap>{/* <img src={Image} alt="photo" /> */}</PhotoWrap>
+        <PhotoWrap>{/* <PhotoImg src={Image} alt="photo" /> */}</PhotoWrap>
       </div>
     );
   }
