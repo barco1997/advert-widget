@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Image from "./error.svg";
+// import Image from "./error.svg";
 
 const ErrorWrap = styled.div`
   &&& {
@@ -95,7 +95,7 @@ class ConnectionsError extends React.Component {
     const { renewStream, endStream } = this.props;
     return (
       <ErrorWrap>
-        <img src={Image} alt="error" />
+        {/* <img src={Image} alt="error" /> */}
         <ErrorHeader>Соединение прервано</ErrorHeader>
         <ErrorDescription>
           Проверьте подключение к сети и попробуйте возобновить трансляцию
