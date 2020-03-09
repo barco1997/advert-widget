@@ -2,7 +2,7 @@ import React from "react";
 
 class Star extends React.Component {
   render() {
-    const { active } = this.props;
+    const { active, onClick } = this.props;
     return (
       <svg
         width="28"
@@ -14,10 +14,11 @@ class Star extends React.Component {
         <path
           d="M14.0612 1L17.9602 8.89905L26.6795 10.1735L20.3703 16.3186L21.8593 25L14.0612 20.8991L6.26306 25L7.75202 16.3186L1.44287 10.1735L10.1621 8.89905L14.0612 1Z"
           fill={active ? "#FF2D55" : "#E5E5E5"}
-          stroke="#E5E5E5"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          stroke={active ? "#FF2D55" : "#E5E5E5"}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          onClick={onClick}
         />
       </svg>
     );

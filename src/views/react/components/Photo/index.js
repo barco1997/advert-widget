@@ -29,7 +29,7 @@ const ClosePhotoButton = styled.button`
     z-index: 10004 !important;
     position: fixed !important;
     top: 40px !important;
-    right: 40px !important
+    right: 40px !important;
 
     width: 40px !important;
     height: 40px !important;
@@ -38,25 +38,25 @@ const ClosePhotoButton = styled.button`
     border: none !important;
 
     background: #ffffff !important;
-    &:after { 
-        position: absolute !important;
-        top: 14px !important;
-        left: 20px !important;
-        content: ' ' !important;
-        height: 13px !important;
-        width: 2px !important;
-        background-color: #000 !important;
-        transform: rotate(-45deg);
+    &:after {
+      position: absolute !important;
+      top: 14px !important;
+      left: 20px !important;
+      content: " " !important;
+      height: 13px !important;
+      width: 2px !important;
+      background-color: #000 !important;
+      transform: rotate(-45deg);
     }
     &:before {
-        position: absolute !important;
-        top: 14px !important;
-        left: 20px !important;
-        content: ' ' !important;
-        height: 13px !important;
-        width: 2px !important;
-        background-color: #000 !important;
-        transform: rotate(45deg);
+      position: absolute !important;
+      top: 14px !important;
+      left: 20px !important;
+      content: " " !important;
+      height: 13px !important;
+      width: 2px !important;
+      background-color: #000 !important;
+      transform: rotate(45deg);
     }
   }
 `;
