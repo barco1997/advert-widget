@@ -2,11 +2,11 @@ import React from "react";
 
 class Star extends React.Component {
   render() {
-    const { active, onClick } = this.props;
+    const { active, onClick, isLittle } = this.props;
     return (
       <svg
-        width="28"
-        height="26"
+        width={isLittle ? "9" : "28"}
+        height={isLittle ? "9" : "26"}
         viewBox="0 0 28 26"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
