@@ -26,7 +26,10 @@ const DialogWrap = styled.div`
 const DialogHeader = styled.h3`
   &&& {
     font-weight: bold !important;
-    font-size: 14px !important;
+    font-size: ${props => {
+      props.isEnd ? "14px !important" : "16px !important";
+    }};
+
     line-height: 160% !important;
 
     margin-bottom: 8px !important;
@@ -37,7 +40,9 @@ const DialogHeader = styled.h3`
 const DialogDescription = styled.p`
   &&& {
     font-weight: 500 !important;
-    font-size: 10px !important;
+    font-size: ${props =>
+      props.isEnd ? "10px !important" : "14px !important"};
+
     line-height: 160% !important;
 
     color: #888888 !important;
@@ -49,6 +54,7 @@ const DialogDescription = styled.p`
 const RowWrap = styled.div`
   &&& {
     display: flex !important;
+    align-items: center !important;
   }
 `;
 
@@ -62,17 +68,33 @@ const DialogDate = styled.span`
   }
 `;
 
+const DialogNumber = styled.div`
+  &&& {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    font-size: 10px !important;
+    line-height: 160% !important;
+
+    padding: 3px 6px !important;
+    background: #ff2d55 !important;
+    border-radius: 50% !important;
+  }
+`;
+
 class Dialog extends React.Component {
   render() {
-    const { description, title, date } = this.props;
+    const { description, title, date, isEnd } = this.props;
+
     return (
       <DialogWrap>
-        <DialogDescription>
+        <DialogDescription isEnd={isEnd}>
           Круглый пуф на металлических ножках
         </DialogDescription>
-        <DialogHeader>Покажите плес фокус с кроликом</DialogHeader>
+        <DialogHeader isEnd={isEnd}>
+          Покажите плес фокус с кроликом
+        </DialogHeader>
         <RowWrap>
-          <Stars isLittle={true} />
+          {isEnd ? <Stars isLittle={true} /> : <DialogNumber>12</DialogNumber>}
           <DialogDate>14.01.2019</DialogDate>
         </RowWrap>
       </DialogWrap>
