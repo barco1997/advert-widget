@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import { media } from "../../../../utils/media";
+
 import Stars from "../Stars";
 // import Image from "./error.svg";
 
@@ -41,6 +43,10 @@ const ReviewDescription = styled.p`
     font-size: 14px !important;
     line-height: 170% !important;
     text-align: center !important;
+
+    ${media.tablet`
+        width: 308px !important;
+    `};
 
     color: #888888 !important;
 
