@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ls from "local-storage";
 import axios from "axios";
+import { setDisplayName } from "recompose";
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const VideoElement = styled.div`
   &&& {
@@ -261,37 +262,36 @@ export class UnmountTracker extends React.Component {
       },
       () => {
         console.log("ROOM", room);
-        this.setState({
-          publish: room
-            .publish({
-              display: this.localDisplay,
-              constraints: constraints,
-              record: false,
-              receiveVideo: false,
-              receiveAudio: false
-            })
-            .on(this.props.STREAM_STATUS.FAILED, function(stream) {
-              //console.warn("Local stream failed!");
-              //setStatus("#localStatus", stream.status());
-              //onMediaStopped(room);
+        room
+          .publish({
+            display: this.localDisplay,
+            constraints: constraints,
+            record: false,
+            receiveVideo: false,
+            receiveAudio: false
+          })
+          .on(this.props.STREAM_STATUS.FAILED, function(stream) {
+            //console.warn("Local stream failed!");
+            //setStatus("#localStatus", stream.status());
+            //onMediaStopped(room);
 
-              console.log("FAILED");
-            })
-            .on(this.props.STREAM_STATUS.PUBLISHING, function(stream) {
-              //setStatus("#localStatus", stream.status());
-              //onMediaPublished(stream);\
-              console.log("SUCCESS", stream);
-              stream.unmuteAudio();
-              self.setState({
-                clientStream: stream
-              });
-            })
-            .on(this.props.STREAM_STATUS.UNPUBLISHED, function(stream) {
-              //setStatus("#localStatus", stream.status());
-              //onMediaStopped(room);
-              console.log("UNP");
-            })
-        });
+            console.log("FAILED");
+          })
+          .on(this.props.STREAM_STATUS.PUBLISHING, function(stream) {
+            //setStatus("#localStatus", stream.status());
+            //onMediaPublished(stream);\
+            console.log("SUCCESS", stream);
+            stream.unmuteAudio();
+            self.setState({
+              clientStream: stream,
+              room
+            });
+          })
+          .on(this.props.STREAM_STATUS.UNPUBLISHED, function(stream) {
+            //setStatus("#localStatus", stream.status());
+            //onMediaStopped(room);
+            console.log("UNP");
+          });
       }
     );
   }
@@ -324,31 +324,54 @@ export class UnmountTracker extends React.Component {
 
       if (this.state.clientStream) {
         console.log("mute audio", this.state.clientStream);
+        //this.state.room.leave();
+        this.state.clientStream.muteAudio();
         axios
-          .post("https://server.witheyezon.com:8444/rest-api/stream/find", {
-            name: this.state.clientStream.name()
-          })
+          .post(
+            "https://server.witheyezon.com:8444/rest-api/recorder/find_all",
+            {
+              /*name: this.state.clientStream.name()*/
+            }
+          )
           .then(response => {
             console.log("FOUND", response);
             axios
               .post(
-                "https://server.witheyezon.com:8444/rest-api/stream/stopRecording",
+                "https://server.witheyezon.com:8444/rest-api/recorder/terminate",
                 {
                   mediaSessionId: response.data[0].mediaSessionId
                 }
               )
               .then(response => {
-                //self.state.clientStream.muteAudio();
-                if (this.state.stream /*&& !this.props.iOS*/) {
+                if (self.state.stream) {
                   console.log("mute video");
 
-                  this.state.stream.stop();
+                  self.state.stream.stop();
                 }
-                if (this.state.connection) {
-                  console.log("close connect");
-                  self.state.connection.disconnect();
+                if (self.state.clientStream) {
+                  Flashphoner.getMediaDevices(null, true).then(function(list) {
+                    list.audio.forEach(function(device) {
+                      console.log(self.state.clientStream);
+                    });
+                    if (self.state.room) {
+                      self.state.room.leave();
+                    }
+                    if (self.state.connection) {
+                      console.log("close connect");
+                      self.state.connection.disconnect();
+                    }
+
+                    self.setState({
+                      stream: null,
+                      connection: null,
+                      recording: false,
+                      clientStream: null,
+                      room: null
+                    });
+                  });
                 }
               });
+            /**/
           });
 
         //this.state.clientStream.stop();
