@@ -9,7 +9,7 @@ const PhotoWrap = styled.div`
   &&& {
     position: relative !important;
     display: flex !important;
-    z-index: 10003 !important;``
+    z-index: 10003 !important;
     justify-content: center !important;
 
     ${media.desktop`
