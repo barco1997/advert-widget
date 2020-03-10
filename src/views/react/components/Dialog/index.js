@@ -18,6 +18,8 @@ const DialogWrap = styled.div`
     font-family: "Montserrat" !important;
     font-style: normal !important;
     color: #000000 !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 5px !important;
 
     padding: 16px 20px !important;
   }
