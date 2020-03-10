@@ -42,7 +42,7 @@ const coolBoxKeyframes = keyframes`
     }   
 `;
 
-const pulse = keyframes`
+export const pulse = keyframes`
     0% {
 		transform: scale(0.95);
 		box-shadow: 0 0 0 0 rgba(214, 0, 0, 0.7);

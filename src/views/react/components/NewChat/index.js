@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import axios from "axios";
 import ls from "local-storage";
 import ReactPlayer from "react-player";
@@ -12,6 +12,7 @@ import UnmountTracker from "../UnmountTracker";
 import StandaloneTimer from "../StandaloneTimer";
 import Disclaimer from "../Disclaimer";
 import { ReactMic } from "react-mic";
+import { pulse } from "../MicrophoneInput";
 import { withFirebase } from "../Firebase";
 import firebase from "firebase";
 //import { compose } from "recompose";
@@ -406,9 +407,16 @@ const MicWrap = styled.div`
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: #f2f2f2 !important;
+    background: ${props =>
+      props.isActive ? "#FF2D55 !important" : "#f2f2f2 !important"};
     border-radius: 50% !important;
     cursor: pointer !important;
+
+    ${props =>
+      props.isActive &&
+      css`
+        animation: ${pulse} 1s infinite !important;
+      `}
   }
 `;
 
@@ -452,6 +460,7 @@ const ImageMic = styled.div`
     height: 16px !important;
     position: relative !important;
     cursor: pointer !important;
+
     ${media.desktop`
     
   `};
@@ -1719,6 +1728,7 @@ export class Chat extends React.Component {
                               onMouseUp={this.handleUp}
                               onTouchEnd={this.handleUp}
                               tabIndex="0"
+                              isActive={this.state.ifTimer}
                             >
                               <ImageMic
                                 src={
