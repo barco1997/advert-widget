@@ -1,120 +1,196 @@
-import React from "react";
+import React, { Component } from "react";
+
+import Pipe from "./Pipe";
 import styled from "styled-components";
+const birdRadius = 24;
 
-const Container = styled.div`
-  &&& {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-
-    font-family: "Montserrat" !important;
-    font-style: normal !important;
-    color: #000000 !important;
-  }
+const Logo = styled.div`
+  position: relative;
+  width: 24px;
+  border: 8px solid #ff2d55;
+  height: 24px;
+  border-radius: 50%;
+  background: black;
 `;
 
-const ButtonsWrap = styled.div`
-  &&& {
-    display: flex !important;
-    justify-content: space-between !important;
-    width: 304px !important;
-
-    font-style: normal !important;
-    font-weight: 500 !important;
-    font-size: 12px !important;
-    line-height: 15px !important;
-  }
+const White = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  width: 10px;
+  height: 10px;
+  top: 0px;
+  left: 0px;
 `;
-
-const Header = styled.h3`
-  &&& {
-    font-weight: 800 !important;
-    font-size: 16px !important;
-    line-height: 140% !important;
-
-    margin-top: 5px !important;
-    margin-bottom: 22px !important;
-    padding: 0 !important;
+const getInitialPipes = (h, w) => {
+  const count = 3;
+  const pipes = [];
+  for (let i = 1; i < count; i++) {
+    const x = w + 200 + w / i;
+    pipes.push({
+      upperPipeHeight: h / 2 - 15 - Math.random() * 150,
+      bottomPipeHeight: h / 2 - 15 - Math.random() * 150,
+      x: x
+    });
   }
-`;
+  return pipes;
+};
 
-const Count = styled.span`
-  &&& {
-    font-weight: 800 !important;
-    font-size: 64px !important;
-    line-height: 100% !important;
-
-    color: #ff2d55 !important;
-    text-align: center !important;
-    letter-spacing: 0.02em !important;
-
-    margin: 0 !important;
+class Game extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      birdHeight: this.props.height / 2,
+      left: this.props.width / 2 - 20,
+      gravity: 0.8,
+      velocity: 0,
+      pipes: getInitialPipes(this.props.height, this.props.width),
+      pipeSpeed: 7,
+      score: 0
+    };
   }
-`;
 
-const Description = styled.p`
-  &&& {
-    font-weight: 600 !important;
-    font-size: 10px !important;
-    line-height: 160% !important;
-    text-align: center !important;
-
-    margin: 0 !important;
-    margin-bottom: 56px !important;
+  componentDidMount() {
+    this.interval = setInterval(() => this.update(), 15);
   }
-`;
 
-const RefreshButton = styled.button`
-  &&& {
-    border-radius: 5px !important;
-    border: none !important;
-    &:focus {
-      outline: none !important;
+  update() {
+    const birdCrashed = this.state.birdHeight > this.props.height - birdRadius * 2;
+    if (birdCrashed) {
+      clearInterval(this.interval);
+      return;
     }
 
-    background: #ff2d55 !important;
-    color: #ffffff !important;
+    const pipeWasHit = this.state.pipes.find(pipe => pipe.isHit);
 
-    padding: 12px 19px !important;
-    box-sizing: border-box;
-    box-shadow: none !important;
-
-    margin: 0 !important;
-  }
-`;
-
-const EndButton = styled.button`
-  &&& {
-    border-radius: 5px !important;
-    border: 1px solid #bebebe !important;
-    &:focus {
-      outline: none !important;
+    if (pipeWasHit) {
+      clearInterval(this.interval);
+      return;
     }
-    background: transparent !important;
-    color: #000000 !important;
 
-    padding: 12px 40px !important;
-    box-sizing: border-box;
-    box-shadow: none !important;
+    const newVelocity = (this.state.velocity + this.state.gravity) * 0.9;
+    const birdHeight = newVelocity + this.state.birdHeight;
+    const newPipes = this.state.pipes.map(pipe => {
+      const newX = pipe.x - this.state.pipeSpeed;
+      if (newX < 0) {
+        return {
+          upperPipeHeight: this.props.height / 2 - 15 - Math.random() * 150,
+          bottomPipeHeight: this.props.height / 2 - 15 - Math.random() * 150,
+          x: this.props.width - 40
+        };
+      } else {
+        let isHit = false;
+        const xDifference = this.state.left - pipe.x;
+        const hitOnX = xDifference < 10 && xDifference > 0;
+        const hitOnUpperY = birdHeight < pipe.upperPipeHeight;
+        const hitOnLowerY =
+          birdHeight + birdRadius > this.props.height - pipe.bottomPipeHeight;
+        if (hitOnX) {
+          if (hitOnUpperY || hitOnLowerY) {
+            isHit = true;
+          } else {
+            this.setState({
+              score: this.state.score + 1
+            });
+          }
+        }
 
-    margin: 0 !important;
+        return {
+          ...pipe,
+          x: newX,
+          isHit: isHit
+        };
+      }
+    });
+    this.setState({
+      velocity: newVelocity,
+      birdHeight: birdHeight,
+      pipes: newPipes
+    });
   }
-`;
 
-class Game extends React.Component {
+  moveUp = () => {
+    this.setState({
+      velocity: this.state.velocity - 25
+    });
+  };
+
+  handleTouch = e => {
+    e.preventDefault;
+    this.moveUp();
+  };
+
+  handleSpace = e => {
+    e.preventDefault;
+    if (e.keyCode == 32) {
+      this.moveUp();
+    }
+  };
+
+  componentWillMount() {
+    window.addEventListener("touchstart", this.handleTouch);
+    window.addEventListener("keydown", this.handleSpace);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("touchstart", this.handleTouch);
+    window.removeEventListener("keydown", this.handleSpace);
+  }
+
   render() {
-    const { restart, terminate, count } = this.props;
+    const left = this.state.left;
+    const birdHeight = this.state.birdHeight;
     return (
-      <Container>
-        {/* <img src={Image} alt="error" /> */}
-        <Header>Game over</Header>
-        <Count>{count}</Count>
-        <Description>Ваш счёт</Description>
-        <ButtonsWrap>
-          <RefreshButton onClick={restart}>Попробовать ещё</RefreshButton>
-          <EndButton onClick={terminate}>Закончить</EndButton>
-        </ButtonsWrap>
-      </Container>
+      <div
+        style={{
+          height: "100vh",
+          width: "100vw",
+          touchAction: "manipulation",
+          overflow: "hidden"
+        }}
+        /*onTouchStart={e => this.handleTouch(e)}*/
+      >
+        {/*<KeyHandler
+          keyEventName={KEYPRESS}
+          keyValue="s"
+          onKeyHandle={this.moveUp}
+        />*/}
+        <div
+          style={{
+            left: "20px",
+            bottom: "20px",
+            position: "absolute",
+            zIndex: "10000",
+            fontSize: "40px",
+            fontFamily: "Montserrat"
+          }}
+        >
+          <b>{this.state.score}</b>
+        </div>
+        <div style={{ left: left, top: birdHeight, position: "absolute" }}>
+          <Logo>
+            <White />
+          </Logo>
+        </div>
+        {this.state.pipes.map(pipe => {
+          const upperPipeHeight = pipe.upperPipeHeight;
+          const x = pipe.x;
+
+          const bottomPipeTop = this.props.height - pipe.bottomPipeHeight;
+          const bottomPipeHeight = pipe.bottomPipeHeight;
+
+          return (
+            <Pipe
+              key={x}
+              isHit={pipe.isHit}
+              upperPipeHeight={upperPipeHeight}
+              bottomPipeHeight={bottomPipeHeight}
+              x={x}
+              bottomPipeTop={bottomPipeTop}
+            />
+          );
+        })}
+      </div>
     );
   }
 }
