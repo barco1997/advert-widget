@@ -5,22 +5,46 @@ import styled from "styled-components";
 const birdRadius = 24;
 
 const Logo = styled.div`
-  position: relative;
-  width: 24px;
-  border: 8px solid #ff2d55;
-  height: 24px;
-  border-radius: 50%;
-  background: black;
+  &&& {
+    position: relative !important;
+    width: 24px !important;
+    border: 8px solid #ff2d55 !important;
+    height: 24px !important;
+    border-radius: 50% !important;
+    background: black !important;
+  }
+`;
+
+const ScoreWrap = styled.div`
+  &&& {
+    left: 20px !important;
+    bottom: 20px !important;
+    position: absolute !important;
+    z-index: "10009 !important";
+
+    font-size: "40px !important";
+    font-family: "Montserrat !important";
+  }
 `;
 
 const White = styled.div`
-  position: absolute;
-  border-radius: 50%;
-  background: white;
-  width: 10px;
-  height: 10px;
-  top: 0px;
-  left: 0px;
+  &&& {
+    position: absolute !important;
+    border-radius: 50% !important;
+    background: red !important;
+    width: 10px !important;
+    height: 10px !important;
+    top: 0px !important;
+    left: 0px !important;
+  }
+`;
+
+const Wrap = styled.div`
+  &&& {
+    left: ${props => `${props.pipeX}px !important;`};
+    top: ${props => `${props.lowerHeight}px !important;`};
+    position: absolute !important;
+  }
 `;
 const getInitialPipes = (h, w) => {
   const count = 3;
@@ -48,6 +72,10 @@ class Game extends Component {
       pipeSpeed: 7,
       score: 0
     };
+
+    this.moveUp = this.moveUp.bind(this);
+    this.handleTouch = this.handleTouch.bind(this);
+    this.handleSpace = this.handleSpace.bind(this);
   }
 
   componentDidMount() {
@@ -55,7 +83,8 @@ class Game extends Component {
   }
 
   update() {
-    const birdCrashed = this.state.birdHeight > this.props.height - birdRadius * 2;
+    const birdCrashed =
+      this.state.birdHeight > this.props.height - birdRadius * 2;
     if (birdCrashed) {
       clearInterval(this.interval);
       return;
@@ -109,23 +138,23 @@ class Game extends Component {
     });
   }
 
-  moveUp = () => {
+  moveUp() {
     this.setState({
       velocity: this.state.velocity - 25
     });
-  };
+  }
 
-  handleTouch = e => {
+  handleTouch(e) {
     e.preventDefault;
     this.moveUp();
-  };
+  }
 
-  handleSpace = e => {
+  handleSpace(e) {
     e.preventDefault;
     if (e.keyCode == 32) {
       this.moveUp();
     }
-  };
+  }
 
   componentWillMount() {
     window.addEventListener("touchstart", this.handleTouch);
@@ -140,13 +169,14 @@ class Game extends Component {
   render() {
     const left = this.state.left;
     const birdHeight = this.state.birdHeight;
+
     return (
       <div
         style={{
           height: "100vh",
           width: "100vw",
-          touchAction: "manipulation",
-          overflow: "hidden"
+          touchAction: "manipulation !important",
+          overflow: "hidden !important"
         }}
         /*onTouchStart={e => this.handleTouch(e)}*/
       >
@@ -155,23 +185,14 @@ class Game extends Component {
           keyValue="s"
           onKeyHandle={this.moveUp}
         />*/}
-        <div
-          style={{
-            left: "20px",
-            bottom: "20px",
-            position: "absolute",
-            zIndex: "10000",
-            fontSize: "40px",
-            fontFamily: "Montserrat"
-          }}
-        >
+        <ScoreWrap>
           <b>{this.state.score}</b>
-        </div>
-        <div style={{ left: left, top: birdHeight, position: "absolute" }}>
+        </ScoreWrap>
+        <Wrap pipeX={left} lowerHeight={birdHeight}>
           <Logo>
             <White />
           </Logo>
-        </div>
+        </Wrap>
         {this.state.pipes.map(pipe => {
           const upperPipeHeight = pipe.upperPipeHeight;
           const x = pipe.x;
