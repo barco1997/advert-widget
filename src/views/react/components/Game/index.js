@@ -1,7 +1,10 @@
 import React, { Component } from "react";
+import styled from "styled-components";
+
+import { media } from "../../../../utils/media";
 
 import Pipe from "./Pipe";
-import styled from "styled-components";
+
 const birdRadius = 24;
 
 const Logo = styled.div`
@@ -46,14 +49,17 @@ const Wrap = styled.div`
     position: absolute !important;
   }
 `;
+
 const getInitialPipes = (h, w) => {
   const count = 3;
   const pipes = [];
   for (let i = 1; i < count; i++) {
     const x = w + 200 + w / i;
     pipes.push({
-      upperPipeHeight: h / 2 - 15 - Math.random() * 150,
-      bottomPipeHeight: h / 2 - 15 - Math.random() * 150,
+      upperPipeHeight:
+        h / 2 - 15 - Math.random() * (!media.desktop ? 170 : 150),
+      bottomPipeHeight:
+        h / 2 - 15 - Math.random() * (!media.desktop ? 170 : 150),
       x: x
     });
   }
@@ -103,8 +109,14 @@ class Game extends Component {
       const newX = pipe.x - this.state.pipeSpeed;
       if (newX < 0) {
         return {
-          upperPipeHeight: this.props.height / 2 - 15 - Math.random() * 150,
-          bottomPipeHeight: this.props.height / 2 - 15 - Math.random() * 150,
+          upperPipeHeight:
+            this.props.height / 2 -
+            15 -
+            Math.random() * (!media.desktop ? 170 : 150),
+          bottomPipeHeight:
+            this.props.height / 2 -
+            15 -
+            Math.random() * (!media.desktop ? 170 : 150),
           x: this.props.width - 40
         };
       } else {
@@ -167,8 +179,8 @@ class Game extends Component {
   }
 
   render() {
-    const left = this.state.left;
-    const birdHeight = this.state.birdHeight;
+    const { score, left, birdHeight } = this.state;
+    const { height } = this.props;
 
     return (
       <div
@@ -178,15 +190,9 @@ class Game extends Component {
           touchAction: "manipulation !important",
           overflow: "hidden !important"
         }}
-        /*onTouchStart={e => this.handleTouch(e)}*/
       >
-        {/*<KeyHandler
-          keyEventName={KEYPRESS}
-          keyValue="s"
-          onKeyHandle={this.moveUp}
-        />*/}
         <ScoreWrap>
-          <b>{this.state.score}</b>
+          <b>{score}</b>
         </ScoreWrap>
         <Wrap pipeX={left} lowerHeight={birdHeight}>
           <Logo>
@@ -197,7 +203,7 @@ class Game extends Component {
           const upperPipeHeight = pipe.upperPipeHeight;
           const x = pipe.x;
 
-          const bottomPipeTop = this.props.height - pipe.bottomPipeHeight;
+          const bottomPipeTop = height - pipe.bottomPipeHeight;
           const bottomPipeHeight = pipe.bottomPipeHeight;
 
           return (

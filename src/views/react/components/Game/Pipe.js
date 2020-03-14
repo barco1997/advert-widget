@@ -1,6 +1,15 @@
 import React from "react";
 
 import styled from "styled-components";
+
+const Wrap = styled.div`
+  &&& {
+    left: ${props => `${props.pipeX}px !important;`};
+    top: ${props => `${props.lowerHeight}px !important;`};
+    position: absolute !important;
+  }
+`;
+
 const Reactangle = styled.div`
   &&& {
     border-radius: ${props =>
@@ -15,25 +24,18 @@ const Reactangle = styled.div`
   }
 `;
 
-const Wrap = styled.div`
-  &&& {
-    left: ${props => `${props.pipeX}px !important;`};
-    top: ${props => `${props.lowerHeight}px !important;`};
-    position: absolute !important;
-  }
-`;
-export default function Pipe(props) {
-  const upperPipeHeight = props.upperPipeHeight;
-  const pipeX = props.x;
-
-  const lowerHeight = props.bottomPipeTop;
-  const bottomPipeHeight = props.bottomPipeHeight;
-
-  const color = props.isHit ? "#FF2D55" : "#FF2D55";
+export default function Pipe({
+  upperPipeHeight,
+  x,
+  bottomPipeTop,
+  bottomPipeHeight,
+  isHit
+}) {
+  const color = isHit ? "#FF2D55" : "#FF2D55";
 
   return (
     <div id="pipe">
-      <Wrap pipeX={pipeX} lowerHeight={0}>
+      <Wrap pipeX={x} lowerHeight={0}>
         <Reactangle
           width={40}
           height={upperPipeHeight}
@@ -41,7 +43,7 @@ export default function Pipe(props) {
           up
         />
       </Wrap>
-      <Wrap pipeX={pipeX} lowerHeight={lowerHeight}>
+      <Wrap pipeX={x} lowerHeight={bottomPipeTop}>
         <Reactangle
           width={40}
           height={bottomPipeHeight}
