@@ -11,6 +11,7 @@ import EmailRequest from "../Button/emailrequest";
 import UnmountTracker from "../UnmountTracker";
 import StandaloneTimer from "../StandaloneTimer";
 import Disclaimer from "../Disclaimer";
+import EntryInfo from "../EntryInfo";
 import { ReactMic } from "react-mic";
 import { pulse } from "../MicrophoneInput";
 import { withFirebase } from "../Firebase";
@@ -433,6 +434,14 @@ const SendIconWrap = styled.div`
     background: #ff2d55 !important;
     border-radius: 50% !important;
     cursor: pointer !important;
+  }
+`;
+
+const EntryWrap = styled.div`
+  &&& {
+    position: absolute !important;
+    top: -22px !important;
+    left: 22px !important;
   }
 `;
 
@@ -1721,22 +1730,30 @@ export class Chat extends React.Component {
                               </Timer>
                             </AudioTimer>
                           )}
-                          {this.state.value.length < 1 && (
-                            <MicWrap
-                              onMouseDown={this.handleDown}
-                              onTouchStart={this.handleDown}
-                              onMouseUp={this.handleUp}
-                              onTouchEnd={this.handleUp}
-                              tabIndex="0"
-                              isActive={this.state.ifTimer}
-                            >
-                              <ImageMic
-                                src={
-                                  "https://witheyezon.com/eyezonsite/static/images/mic.png"
-                                }
-                              />
-                            </MicWrap>
-                          )}
+                          {this.state.value.length < 1 &&
+                            this.state.messages &&
+                            this.state.messages.length > 1 && (
+                              <MicWrap
+                                onMouseDown={this.handleDown}
+                                onTouchStart={this.handleDown}
+                                onMouseUp={this.handleUp}
+                                onTouchEnd={this.handleUp}
+                                tabIndex="0"
+                                isActive={this.state.ifTimer}
+                              >
+                                <ImageMic
+                                  src={
+                                    "https://witheyezon.com/eyezonsite/static/images/mic.png"
+                                  }
+                                />
+                              </MicWrap>
+                            )}
+                          {!this.state.messages ||
+                            (this.state.messages.length == 0 && (
+                              <EntryWrap>
+                                <EntryInfo />
+                              </EntryWrap>
+                            ))}
                           {this.state.value.length > 0 && (
                             <SendIconWrap
                               onClick={event => this.handleSubmit(event)}

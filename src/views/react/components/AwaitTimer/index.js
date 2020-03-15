@@ -73,15 +73,19 @@ class AwaitTimer extends Component {
   }
 
   render() {
-    const minutes = toTwoDigits(this.state.minutes);
-    const seconds = toTwoDigits(this.state.seconds);
-
+    //const minutes = toTwoDigits(this.state.minutes);
+    //const seconds = toTwoDigits(this.state.seconds);
+    const minuteOffset = this.state.seconds === 0 ? 2 : 1;
+    const reverseMinutes = toTwoDigits(minuteOffset - this.state.minutes);
+    const reverseSeconds = toTwoDigits(
+      this.state.seconds === 0 ? 0 : 60 - this.state.seconds
+    );
     return (
       <Wrapper>
-        <SingleChar>{minutes[0]}</SingleChar>
-        <SingleChar>{minutes[1]}</SingleChar>:
-        <SingleChar>{seconds[0]}</SingleChar>
-        <SingleChar>{seconds[1]}</SingleChar>
+        <SingleChar>{reverseMinutes[0]}</SingleChar>
+        <SingleChar>{reverseMinutes[1]}</SingleChar>:
+        <SingleChar>{reverseSeconds[0]}</SingleChar>
+        <SingleChar>{reverseSeconds[1]}</SingleChar>
       </Wrapper>
     );
   }

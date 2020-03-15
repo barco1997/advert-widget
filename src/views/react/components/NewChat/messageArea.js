@@ -29,6 +29,9 @@ const MessageContainer = styled.div`
     width: calc(100% - 30px) !important;
     margin: 0px 15px !important;
     `};
+    & > :nth-child(1) {
+      margin-top: auto !important;
+    }
   }
 `;
 

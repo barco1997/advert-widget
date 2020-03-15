@@ -1,11 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 //import Logo from "./logoeye.png";
-const Wrapper = styled.div`
+const Wrapper = styled.a`
   &&& {
     display: flex !important;
+    text-decoration: none !important;
     height: 18px !important;
     align-items: center !important;
+    cursor: pointer !important;
   }
 `;
 
@@ -32,7 +34,11 @@ const Image = styled.img`
 export class Disclaimer extends React.Component {
   render() {
     return (
-      <Wrapper>
+      <Wrapper
+        href="https://button.witheyezon.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <Text>Мы используем</Text>
         <Image
           src="https://www.witheyezon.com/eyezonsite/static/images/logoeye.png"

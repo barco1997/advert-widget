@@ -274,7 +274,8 @@ export class UnmountTracker extends React.Component {
             //console.warn("Local stream failed!");
             //setStatus("#localStatus", stream.status());
             //onMediaStopped(room);
-
+            Flashphoner.releaseLocalMedia(this.localDisplay);
+            //Flashphoner.releaseLocalMedia(this.player);
             console.log("FAILED");
           })
           .on(this.props.STREAM_STATUS.PUBLISHING, function(stream) {
@@ -290,6 +291,8 @@ export class UnmountTracker extends React.Component {
           .on(this.props.STREAM_STATUS.UNPUBLISHED, function(stream) {
             //setStatus("#localStatus", stream.status());
             //onMediaStopped(room);
+            Flashphoner.releaseLocalMedia(this.localDisplay);
+            //Flashphoner.releaseLocalMedia(this.player);
             console.log("UNP");
           });
       }
@@ -324,57 +327,27 @@ export class UnmountTracker extends React.Component {
 
       if (this.state.clientStream) {
         console.log("mute audio", this.state.clientStream);
-        //this.state.room.leave();
-        this.state.clientStream.muteAudio();
-        axios
-          .post(
-            "https://server.witheyezon.com:8444/rest-api/recorder/find_all",
-            {
-              /*name: this.state.clientStream.name()*/
-            }
-          )
-          .then(response => {
-            console.log("FOUND", response);
-            axios
-              .post(
-                "https://server.witheyezon.com:8444/rest-api/recorder/terminate",
-                {
-                  mediaSessionId: response.data[0].mediaSessionId
-                }
-              )
-              .then(response => {
-                if (self.state.stream) {
-                  console.log("mute video");
 
-                  self.state.stream.stop();
-                }
-                if (self.state.clientStream) {
-                  Flashphoner.getMediaDevices(null, true).then(function(list) {
-                    list.audio.forEach(function(device) {
-                      console.log(self.state.clientStream);
-                    });
-                    if (self.state.room) {
-                      self.state.room.leave();
-                    }
-                    if (self.state.connection) {
-                      console.log("close connect");
-                      self.state.connection.disconnect();
-                    }
+        if (self.state.stream) {
+          console.log("mute video");
 
-                    self.setState({
-                      stream: null,
-                      connection: null,
-                      recording: false,
-                      clientStream: null,
-                      room: null
-                    });
-                  });
-                }
-              });
-            /**/
-          });
+          self.state.stream.stop();
+        }
 
-        //this.state.clientStream.stop();
+        if (self.state.clientStream) {
+          console.log("mute audio");
+
+          self.state.clientStream.muteAudio();
+        }
+
+        if (self.state.room) {
+          console.log("leave room");
+          self.state.room.leave();
+        }
+        if (self.state.connection && false) {
+          console.log("close connect");
+          self.state.connection.disconnect();
+        }
       }
     }
   }

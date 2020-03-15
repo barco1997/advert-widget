@@ -18,22 +18,22 @@ const Text = styled.div`
     margin-top: 3px !important;
     font-family: "Montserrat" !important;
     font-style: normal !important;
-    font-weight: 600 !important;
-    font-size: 10px !important;
+    font-weight: normal !important;
+    font-size: 9px !important;
     line-height: 160% !important;
     color: #ababab !important;
   }
 `;
 
-export class CriticalInfo extends React.Component {
+export class EntryInfo extends React.Component {
   render() {
     return (
       <Wrapper>
         <img src={Image} alt="logo" />
-        <Text>Пожалуйста, сформулируйте свой вопрос в одном сообщении!</Text>
+        <Text>Опишите полностью ваш вопрос в одном сообщении</Text>
       </Wrapper>
     );
   }
 }
 
-export default CriticalInfo;
+export default EntryInfo;
