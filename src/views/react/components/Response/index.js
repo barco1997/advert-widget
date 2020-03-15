@@ -486,7 +486,7 @@ export class Response extends React.Component {
               )}
             </ResponseAdditional>
             <Date ifRecipient={this.props.ifRecipient}>
-              {format(this.props.date, "h:m")}
+              {format(this.props.date, "hh:mm")}
             </Date>
           </ItemStart>
         </Item>

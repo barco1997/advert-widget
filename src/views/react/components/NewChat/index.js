@@ -207,8 +207,8 @@ const AudioTimer = styled.div`
     justify-content: space-between !important;
     align-items: center !important;
     position: absolute !important;
-    top: 6px !important;
-    left: 8px !important;
+    top: calc(50% - 10px) !important;
+    left: 15px !important;
     ${media.desktop`
     top:13px !important;
   `};
