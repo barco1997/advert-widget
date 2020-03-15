@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Star from "./star.svg";
-import CheckedStar from "./checkedstar.svg";
+//import Star from "./star.svg";
+//import CheckedStar from "./checkedstar.svg";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
@@ -37,27 +37,47 @@ export class RateCall extends React.Component {
     return (
       <Wrapper>
         <ImgWrap
-          src={this.state.rating >= 0 ? CheckedStar : Star}
+          src={
+            this.state.rating >= 0
+              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
+              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+          }
           alt="logo"
           onClick={() => this.handleClick(0)}
         />
         <ImgWrap
-          src={this.state.rating >= 1 ? CheckedStar : Star}
+          src={
+            this.state.rating >= 1
+              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
+              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+          }
           alt="logo"
           onClick={() => this.handleClick(1)}
         />
         <ImgWrap
-          src={this.state.rating >= 2 ? CheckedStar : Star}
+          src={
+            this.state.rating >= 2
+              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
+              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+          }
           alt="logo"
           onClick={() => this.handleClick(2)}
         />
         <ImgWrap
-          src={this.state.rating >= 3 ? CheckedStar : Star}
+          src={
+            this.state.rating >= 3
+              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
+              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+          }
           alt="logo"
           onClick={() => this.handleClick(3)}
         />
         <ImgWrap
-          src={this.state.rating >= 4 ? CheckedStar : Star}
+          src={
+            this.state.rating >= 4
+              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
+              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+          }
           alt="logo"
           onClick={() => this.handleClick(4)}
         />

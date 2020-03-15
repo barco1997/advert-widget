@@ -6,25 +6,23 @@ const spinnAnimation = keyframes`
 100% { transform: translate(-50%,-50%) rotate(360deg); }
 `;
 
-const Button = styled.button`
+const Button = styled.div`
   &&& {
-    border-radius: 2px !important;
+    border-radius: 3px !important;
     border: none !important;
-    &:focus {
-      outline: none !important;
-    }
-    padding: 8px !important;
+
+    padding: 10px 15px !important;
     min-width: 67px;
     font-family: "Montserrat" !important;
     text-align: center !important;
     font-size: 14px !important;
-    line-height: 24px !important;
+
     font-weight: 800 !important;
     transition: 0.5s ease-in-out;
     background: ${props =>
-      props.status === "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
-    color: ${props =>
       props.status !== "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
+    color: ${props =>
+      props.status === "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
   }
 `;
 
@@ -67,7 +65,7 @@ export class StatusButton extends React.Component {
   render() {
     return (
       <Button>
-        {this.props.status === "CONNECTING" && (
+        {this.props.status === "CONNECTION" && (
           <SpinnerWrap>
             <Spinner>
               <SpinnerContent />

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Image from "./tick.svg";
+//import Image from "./tick.svg";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
@@ -58,7 +58,12 @@ export class BlurredButton extends React.Component {
         <Text selected={!this.state.selected} onClick={this.handleClick}>
           {this.props.children}
         </Text>
-        {this.state.selected && <img src={Image} alt="logo" />}
+        {this.state.selected && (
+          <img
+            src="https://www.witheyezon.com/eyezonsite/static/images/tick.svg"
+            alt="logo"
+          />
+        )}
       </Wrapper>
     );
   }

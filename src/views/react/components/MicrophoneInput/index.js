@@ -1,8 +1,8 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
 
-import Image from "./micro.svg";
-import muteMicro from "./muteMicro.svg";
+//import Image from "./micro.svg";
+//import muteMicro from "./muteMicro.svg";
 
 const MicroWrap = styled.div`
   &&& {
@@ -122,7 +122,7 @@ class MicrophoneInput extends React.Component {
       <MicroWrap isActive={isActive}>
         {!isActive && <Input placeholder="Сообщение..." />}
         <MicroButton onClick={this.handleMicro} isActive={isActive}>
-          <img src={isActive ? muteMicro : Image} />
+          {/*<img src={isActive ? "https://www.witheyezon.com/eyezonsite/static/images/muteMicro.svg" : "https://www.witheyezon.com/eyezonsite/static/images/micro.svg"} />*/}
         </MicroButton>
       </MicroWrap>
     );

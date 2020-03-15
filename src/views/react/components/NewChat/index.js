@@ -16,6 +16,7 @@ import { ReactMic } from "react-mic";
 import { pulse } from "../MicrophoneInput";
 import { withFirebase } from "../Firebase";
 import firebase from "firebase";
+import StatusButton from "../StatusButton";
 //import { compose } from "recompose";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
@@ -288,6 +289,14 @@ const CloseWrapper = styled.div`
     display: flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
+  }
+`;
+
+const StatusWrapper = styled.div`
+  &&& {
+    position: absolute !important;
+    left: 18px !important;
+    top: 14px !important;
   }
 `;
 
@@ -1839,6 +1848,9 @@ export class Chat extends React.Component {
                   }}
                 />
               </CloseWrapper>
+              <StatusWrapper>
+                <StatusButton status="LIVE" />
+              </StatusWrapper>
 
               {/*<ControlShader />*/}
               <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
