@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import html from "./index.html";
 import App from "./components/App";
-import Firebase, { FirebaseContext } from "./components/Firebase";
+//import Firebase, { FirebaseContext } from "./components/Firebase";
 import { load } from "./constants";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
@@ -33,7 +33,7 @@ let body;
     <script src="https://witheyezon.com/eyezonsite/wp3/W3Module.js"></script>
     <script src="https://witheyezon.com/eyezonsite/wp3/schema-ebml.js"></script>
     <script src="https://witheyezon.com/eyezonsite/wp3/lib-ebml.js"></script>*/
-load("https://witheyezon.com/eyezonsite/wp3/Mp3LameEncoder.min.js")
+/*load("https://witheyezon.com/eyezonsite/wp3/Mp3LameEncoder.min.js")
   .then(function() {
     console.log("Loaded Mp3LameEncoder!");
   })
@@ -60,9 +60,9 @@ load("https://witheyezon.com/eyezonsite/wp3/schema-ebml.js")
   })
   .catch(function(err) {
     console.error("Something went wrong!", err);
-  });
+  });*/
 
-export function react(params, ifOpened, buttons, eyezonGlobal) {
+export function react(params, ifOpened, buttons) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
   body = document.getElementsByTagName("body")[0];
@@ -77,10 +77,10 @@ export function react(params, ifOpened, buttons, eyezonGlobal) {
     );
   });
 
-  if ("serviceWorker" in navigator) {
+  /*if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register(
-        /*"https://witheyezon.com/eyezonsite*/ "./firebase-messaging-sw.js"
+         "./firebase-messaging-sw.js"
       )
       .then(function(registration) {
         console.log("Registration successful, scope is:", registration.scope);
@@ -88,7 +88,7 @@ export function react(params, ifOpened, buttons, eyezonGlobal) {
       .catch(function(err) {
         console.log("Service worker registration failed, error:", err);
       });
-  }
+  }*/
 
   ReactDOM.render(
     /*<FirebaseContext.Provider value={new Firebase()}>*/
@@ -100,7 +100,7 @@ export function react(params, ifOpened, buttons, eyezonGlobal) {
       ifOpened={ifOpened}
       buttons={buttons}
       eyezonGlobal={params.eyezonGlobal}
-      firebase={new Firebase()}
+      /*firebase={Firebase ? new Firebase() : null}*/
     />,
     /*</FirebaseContext.Provider>*/ document.getElementById("root")
   );

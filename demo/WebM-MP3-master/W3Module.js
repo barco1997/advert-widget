@@ -60,7 +60,10 @@ var W3Module = (function() {
   if (window.Worker) {
     const MAX_CHUNK = 30000000;
     let STEPS = 0;
-    var audioCtx = new AudioContext();
+    let audioCtx;
+    if (AudioContext) {
+      audioCtx = new AudioContext();
+    }
     let datas = [];
     let limit = 1;
     let offset = 0;

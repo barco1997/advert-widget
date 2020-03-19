@@ -476,6 +476,7 @@ export class Button extends React.Component {
 
     if (!ls.get("dialogId")) {
       if (ls.get("userId")) {
+        console.log("PATH 1");
         axios
           .post(
             `https://eyezon.herokuapp.com/api/user/${ls.get("userId")}/dialogs`,
@@ -483,7 +484,10 @@ export class Button extends React.Component {
           )
           .then(function(response) {
             console.log("TESTING NOW 1", response);
-            if (response.data.count > 0) {
+            const active = response.data.data.filter(
+              dialog => !dialog.isDeleted
+            );
+            if (response.data.count > 0 && active.length > 0) {
               //let notifPerm = ls.get("conversationPermission");
               /*if (ls.get("conversationPermission")) {
                 ls.set("conversationId", response.data.dialogs[0].port._id);
@@ -492,7 +496,7 @@ export class Button extends React.Component {
                   response.data.dialogs[0].port._id
                 );
               }*/
-              ls.set("dialogId", response.data.data[0]._id);
+              ls.set("dialogId", active[0]._id);
               self.showChatHere();
             } else {
               self.handleRegistration();
@@ -502,6 +506,7 @@ export class Button extends React.Component {
             console.log(error);
           });
       } else {
+        console.log("PATH 2");
         self.handleRegistration();
       }
     } else {
@@ -515,11 +520,15 @@ export class Button extends React.Component {
           {}
         )
         .then(function(response) {
-          console.log("TESTING NOW 2", response);
-          if (response.data.count > 0 && !response.data.data[0].isDeleted) {
-            ls.set("dialogId", response.data.data[0]._id);
+          //console.log("TESTING NOW 2", response);
+          const active = response.data.data.filter(dialog => !dialog.isDeleted);
+          if (response.data.count > 0 && active.length > 0) {
+            console.log("PATH 3", response);
+
+            ls.set("dialogId", active[0]._id);
             self.showChatHere();
           } else {
+            console.log("PATH 4", response);
             ls.set("dialogId", "");
             self.showChatHere();
           }
@@ -761,7 +770,7 @@ export class Button extends React.Component {
             sendEmailDetails={this.sendEmailDetails}
             currentTitle={this.state.currentTitle}
             socket={this.socket}
-            firebase={this.props.firebase}
+            /*firebase={this.props.firebase}*/
           />
         )}
         )}

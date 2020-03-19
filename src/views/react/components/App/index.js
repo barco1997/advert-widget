@@ -46,7 +46,7 @@ export class App extends React.Component {
       .catch(function(error) {
         console.log("INITIAL ERROR", error);
       });
-    var messaging = this.props.firebase.messagingFunc();
+    /*var messaging = this.props.firebase.messagingFunc();
     //console.log("MESS", messaging);
     messaging
       .requestPermission()
@@ -60,7 +60,7 @@ export class App extends React.Component {
       });
     navigator.serviceWorker.addEventListener("message", message =>
       console.log(message)
-    );
+    );*/
   }
 
   setNotifications(val) {
@@ -108,7 +108,7 @@ export class App extends React.Component {
           greetingTitle={this.state.greetingTitle}
           waitingTitle={this.state.waitingTitle}
           eyezonGlobal={this.props.eyezonGlobal}
-          firebase={this.props.firebase}
+          /*firebase={this.props.firebase}*/
         />
       </React.Fragment>
     );

@@ -8,16 +8,20 @@ import { media } from "../../../../utils/media";
 import { setLiveArray, getRndInteger, load } from "../../constants";
 import StreamChat from "./streamchat";
 import EmailRequest from "../Button/emailrequest";
+//import MicRecorder from "mic-recorder-to-mp3";
 import UnmountTracker from "../UnmountTracker";
 import StandaloneTimer from "../StandaloneTimer";
 import Disclaimer from "../Disclaimer";
 import EntryInfo from "../EntryInfo";
-import { ReactMic } from "react-mic";
+//import { ReactMic } from "react-mic";
 import { pulse } from "../MicrophoneInput";
-import { withFirebase } from "../Firebase";
-import firebase from "firebase";
+//import { withFirebase } from "../Firebase";
+//import firebase from "firebase";
 import StatusButton from "../StatusButton";
 //import { compose } from "recompose";
+import AudioRecorder from "audio-recorder-polyfill";
+import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
+
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -27,17 +31,10 @@ let STREAM_STATUS;
 let PRELOADER_URL;
 let ROOM_EVENT;
 
-let context;
-/*if (!iOS) {
-  context = new AudioContext();
-}*/
-let AudioContext =
-  window.AudioContext || // Default
-  window.webkitAudioContext || // Safari and old versions of Chrome
-  false;
-if (AudioContext) {
-  context = new AudioContext();
-}
+AudioRecorder.encoder = mpegEncoder;
+AudioRecorder.prototype.mimeType = "audio/mpeg";
+window.MediaRecorder = AudioRecorder;
+
 const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
 load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
@@ -356,7 +353,7 @@ const InputFieldA = styled.textarea`
     padding-right: 70px !important;
     font-family: "Montserrat" !important;
     font-weight: normal !important;
-    font-size: 14px !important;
+    font-size: 16px !important;
     line-height: 20px !important;
     outline: 0 !important;
     resize: none !important;
@@ -374,7 +371,7 @@ const InputFieldA = styled.textarea`
       font-weight: normal !important;
     }
     ${media.desktop`
-      font-size: 14px !important;
+      font-size: 16px !important;
       height: ${props => (props.height ? props.height : "63px")} !important;
       
   `};
@@ -841,7 +838,13 @@ export class Chat extends React.Component {
       audioDuration: 0,
       shouldTimerStop: false,
       textAreaHeight: "68px",
-      streamTextAreaHeight: "46px"
+      streamTextAreaHeight: "46px",
+      isRecording: false,
+      blobURL: "",
+      isBlocked: false,
+      micChecked: false,
+      isFirst: false,
+      recorder: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -872,6 +875,9 @@ export class Chat extends React.Component {
     this.handleUnload = this.handleUnload.bind(this);
     this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
     this.textAreaAdjust = this.textAreaAdjust.bind(this);
+    this.startMp3 = this.startMp3.bind(this);
+    this.stopMp3 = this.stopMp3.bind(this);
+    this.checkMedia = this.checkMedia.bind(this);
   }
 
   handleBeforeUnload(e) {
@@ -1469,6 +1475,9 @@ export class Chat extends React.Component {
   }
 
   handleUp() {
+    if (this.state.ifTimer) {
+      this.stopMp3();
+    }
     this.setState({
       ifTimer: false
     });
@@ -1476,10 +1485,82 @@ export class Chat extends React.Component {
 
   handleDown() {
     if (this.state.startedFlag && !this.state.awaitingConnection) {
-      this.setState({
-        ifTimer: true
-      });
+      if (ls.get("micChecked")) {
+        this.setState({ ifTimer: true });
+        this.startMp3();
+      } else {
+        this.checkMedia();
+      }
     }
+  }
+
+  checkMedia() {
+    let self = this;
+    if (
+      this.state.startedFlag &&
+      !this.state.awaitingConnection &&
+      !ls.get("micChecked")
+    ) {
+      navigator.getUserMedia(
+        { audio: true },
+        () => {
+          console.log("Permission Granted");
+          self.setState({ isBlocked: false, isFirst: true });
+          ls.set("micChecked", true);
+        },
+        () => {
+          console.log("Permission Denied");
+          self.setState({ isBlocked: true });
+        }
+      );
+    }
+  }
+
+  startMp3() {
+    let self = this;
+    /*if (this.state.isBlocked) {
+      console.log("Permission Denied");
+    } else {
+      Mp3Recorder.start()
+        .then(() => {
+          self.setState({ isRecording: true });
+        })
+        .catch(e => console.error(e));
+    }*/
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      self.setState({ recorder: new MediaRecorder(stream) });
+      // Set record to <audio> when recording will be finished
+      self.state.recorder.addEventListener("dataavailable", e => {
+        const blobURL = URL.createObjectURL(e.data);
+        self.setState({ blobURL, isRecording: false });
+        ls.set("blobUrl", blobURL);
+        self.onStop(e.data);
+      });
+      // Start recording
+      self.state.recorder.start();
+    });
+  }
+
+  stopMp3() {
+    /*if (!this.state.isFirst) {
+      let self = this;
+      Mp3Recorder.stop()
+        .getMp3()
+        .then(([buffer, blob]) => {
+          const blobURL = URL.createObjectURL(blob);
+          self.setState({ blobURL, isRecording: false });
+          ls.set("blobUrl", blobURL);
+          self.onStop(blob);
+        })
+        .catch(e => console.log(e));
+    } else {
+      this.setState({
+        isFirst: false
+      });
+    }*/
+    this.state.recorder.stop();
+    // Remove “recording” icon from browser tab
+    this.state.recorder.stream.getTracks().forEach(i => i.stop());
   }
 
   onData(recordedBlob) {
@@ -1488,75 +1569,43 @@ export class Chat extends React.Component {
 
   onStop(recordedBlob) {
     let self = this;
-    W3Module.convertWebmToMP3(recordedBlob.blob).then(mp4Blob => {
-      var uploadTask = self.props.firebase.putVoice(
-        ls.get("userId"),
-        mp4Blob.blob
-      );
 
-      uploadTask.on(
-        firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-        function(snapshot) {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          var progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          //console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case firebase.storage.TaskState.PAUSED: // or 'paused'
-              //console.log("Upload is paused");
-              break;
-            case firebase.storage.TaskState.RUNNING: // or 'running'
-              //console.log("Upload is running");
-              break;
+    const d = new Date();
+    let formData = new FormData();
+    const url = `https://eyezon.herokuapp.com/api/user/${ls.get(
+      "userId"
+    )}/voice`;
+
+    formData.append("voice", recordedBlob);
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+    axios.post(url, formData, config).then(response => {
+      self.setState({
+        messages: [
+          ...self.state.messages,
+          {
+            time: new Date(),
+            id: uuidv1(),
+            photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+              "userIcon"
+            )}.png`,
+            type: "audio",
+            src: response.data
           }
-        },
-        function(error) {
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
-          switch (error.code) {
-            case "storage/unauthorized":
-              // User doesn't have permission to access the object
-              break;
+        ]
+      });
 
-            case "storage/canceled":
-              // User canceled the upload
-              break;
+      let obj = {
+        dialogId: ls.get("dialogId"),
+        userId: ls.get("userId"),
+        attachmentType: "AUDIO",
+        attachmentUrl: response.data
+      };
 
-            case "storage/unknown":
-              // Unknown error occurred, inspect error.serverResponse
-              break;
-          }
-        },
-        function() {
-          // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-            //console.log("File available at", downloadURL);
-            self.setState({
-              messages: [
-                ...self.state.messages,
-                {
-                  time: new Date(),
-                  id: uuidv1(),
-                  photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
-                    "userIcon"
-                  )}.png`,
-                  type: "audio",
-                  src: downloadURL
-                }
-              ]
-            });
-
-            let obj = {
-              dialogId: ls.get("dialogId"),
-              userId: ls.get("userId"),
-              attachmentType: "AUDIO",
-              attachmentUrl: downloadURL
-            };
-
-            self.socket.emit("message", JSON.stringify(obj));
-          });
-        }
-      );
+      self.socket.emit("message", JSON.stringify(obj));
     });
   }
 
@@ -1774,7 +1823,7 @@ export class Chat extends React.Component {
                               />
                             </SendIconWrap>
                           )}
-                          <MicLogicHidden>
+                          {/*<MicLogicHidden>
                             <ReactMic
                               record={this.state.ifTimer}
                               className="sound-wave"
@@ -1783,7 +1832,7 @@ export class Chat extends React.Component {
                               strokeColor="#000000"
                               backgroundColor="#FF4081"
                             />
-                          </MicLogicHidden>
+                          </MicLogicHidden>*/}
                         </CartTextFieldRelative>
                         {/*<CartWrapper onClick={this.handleCart}>
                           <ImageCart

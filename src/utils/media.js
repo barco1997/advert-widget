@@ -15,3 +15,8 @@ export const media = Object.keys(sizes).reduce((acc, label) => {
   `;
   return acc;
 }, {});
+
+export const mediaType = Object.keys(sizes).reduce((acc, label) => {
+  acc[label] = window.matchMedia(`(max-width: ${sizes[label]}px)`).matches;
+  return acc;
+}, {});
