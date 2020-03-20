@@ -32,29 +32,48 @@ const Wrap = styled.div`
       position: absolute !important;
 
       left: ${props =>
-        props.positions === "left" ||
-        props.positions === "bottom-right" ||
-        props.positions === "bottom-left"
-          ? "35px !important"
+        props.positions === "bottom-right" || props.positions === "bottom-left"
+          ? "37px !important"
+          : props.positions === "left"
+          ? props.status === "answer"
+            ? "205px !important"
+            : "47px !important"
           : "none !important"};
       right: ${props =>
-        props.positions === "right" ? "35px !important" : "none !important"};
+        props.positions === "right" ? "47px !important" : "none !important"};
       top: ${props =>
         props.positions === "bottom" ? "3px !important" : "0 !important"};
 
-      content: "" !important;
+      content: ${props =>
+        (props.positions === "bottom-right" ||
+          props.positions === "bottom-left") &&
+        props.status !== "rest"
+          ? `'${props.count}' !important`
+          : "'' !important"};
+      font-weight: 500 !important;
+      font-size: 13px !important;
+      line-height: 16px !important;
+      color: #ffffff !important;
+      text-align: center !important;
+      letter-spacing: -0.006em !important;
 
       height: ${props =>
         props.positions === "bottom"
           ? props.status === "answer"
             ? "13px !important"
             : "7px !important"
+          : props.positions === "bottom-left" ||
+            props.positions === "bottom-right"
+          ? "16px !important"
           : "13px !important"};
       width: ${props =>
         props.positions === "bottom"
           ? props.status === "answer"
             ? "13px !important"
             : "7px !important"
+          : props.positions === "bottom-left" ||
+            props.positions === "bottom-right"
+          ? "16px !important"
           : "13px !important"};
 
       border-radius: 50% !important;
@@ -79,22 +98,25 @@ const Button = styled.button`
       props.positions === "bottom" && props.status !== "answer"
         ? "5px !important"
         : props.positions === "right"
-        ? "50% !important"
+        ? "28px !important"
         : "none !important"};
     border-top-right-radius: ${props =>
       props.positions === "bottom" && props.status !== "answer"
         ? "5px !important"
         : props.positions === "left"
-        ? "50% !important"
+        ? "28px !important"
         : "none !important"};
     border-bottom-right-radius: ${props =>
-      props.positions === "left" ? "50% !important" : "none !important"};
+      props.positions === "left" ? "28px !important" : "none !important"};
     border-bottom-left-radius: ${props =>
-      props.positions === "right" ? "50% !important" : "none !important"};
+      props.positions === "right" ? "28px !important" : "none !important"};
     border: none !important;
 
     width: ${props =>
-      props.positions === "bottom" && props.status === "answer"
+      (props.positions === "bottom" ||
+        props.positions === "left" ||
+        props.positions === "right") &&
+      props.status === "answer"
         ? "218px !important"
         : props.positions === "bottom"
         ? "144px !important"
@@ -112,8 +134,8 @@ const Button = styled.button`
           ? "4px 20px 4px 4px !important"
           : "4px 14px 4px 4px !important"
         : props.positions === "left"
-        ? "4px 4px 4px 12px !important"
-        : "9px !important"};
+        ? "4px 4px 4px 15px !important"
+        : "4px !important"};
     margin: 0 !important;
 
     box-sizing: border-box !important;
@@ -130,11 +152,19 @@ const Circle = styled.div`
     border-radius: 50% !important;
 
     width: ${props =>
-      props.status === "answer" && props.positions === 'bottom' ? "48px !important" : "16px !important"};
+      (props.status === "answer" && props.positions === "bottom") ||
+      props.positions !== "bottom"
+        ? "48px !important"
+        : "16px !important"};
     height: ${props =>
-      props.status === "answer" && props.positions === 'bottom' ? "48px !important" : "16px !important"};
+      (props.status === "answer" && props.positions === "bottom") ||
+      props.positions !== "bottom"
+        ? "48px !important"
+        : "16px !important"};
 
     background: green !important;
+    order: ${props =>
+      props.positions === "left" ? "2 !important" : "1 !important"};
   }
 `;
 
@@ -147,6 +177,8 @@ const Span = styled.span`
     line-height: 170% !important;
     color: ${props =>
       props.status === "rest" ? "#ababab !important;" : "#000000 !important"};
+    order: ${props =>
+      props.positions === "left" ? "1 !important" : "2 !important"};
   }
 `;
 
@@ -154,11 +186,13 @@ class StartButton extends React.Component {
   render() {
     const { positions, status } = this.props;
     return (
-      <Wrap positions={positions} status={status}>
+      <Wrap positions={positions} status={status} count={33}>
         <Button positions={positions} status={status}>
-          <Circle positions={positions} status={status}/>
-          {positions === "bottom" && (
-            <Span status={status}>
+          <Circle positions={positions} status={status} />
+          {(positions === "bottom" ||
+            positions === "left" ||
+            positions === "right") && (
+            <Span status={status} positions={positions}>
               {status === "rest"
                 ? "Ждём ответа"
                 : status === "answer"
