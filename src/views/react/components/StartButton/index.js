@@ -1,10 +1,68 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
+
+const bottom = keyframes`
+    0% {
+        transform: translateY(100%);
+    }
+      20% {
+        transform: translateY(80%);
+    }
+    50%{
+        transform: translateY(50%);
+    }
+    100% {
+        transform: translateY(0%);
+    }   
+`;
+
+const right = keyframes`
+    0% {
+        transform: translateX(100%);
+    }
+      20% {
+        transform: translateX(80%);
+    }
+    50%{
+        transform: translateX(50%);
+    }
+    100% {
+        transform: translateX(0%);
+    }   
+`;
+
+const left = keyframes`
+    0% {
+        transform: translateX(-100%);
+    }
+      20% {
+        transform: translateX(-80%);
+    }
+    50%{
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0%);
+    }   
+`;
 
 const Wrap = styled.div`
   &&& {
     position: absolute !important;
     z-index: 1000 !important;
+
+    ${props =>
+      props.status === "answer" &&
+      css`
+        animation: ${props.positions === "bottom"
+            ? bottom
+            : props.positions === "left"
+            ? left
+            : props.positions === "right"
+            ? right
+            : ""}
+          0.5s ease-in-out 0s !important;
+      `}
 
     bottom: ${props =>
       props.positions === "bottom-left" ||
@@ -40,7 +98,11 @@ const Wrap = styled.div`
             : "47px !important"
           : "none !important"};
       right: ${props =>
-        props.positions === "right" ? "47px !important" : "none !important"};
+        props.positions === "right"
+          ? props.status === "answer"
+            ? "205px !important"
+            : "47px !important"
+          : "none !important"};
       top: ${props =>
         props.positions === "bottom" ? "3px !important" : "0 !important"};
 
@@ -184,20 +246,26 @@ const Span = styled.span`
 
 class StartButton extends React.Component {
   render() {
-    const { positions, status } = this.props;
+    const { positions, status, count } = this.props;
     return (
-      <Wrap positions={positions} status={status} count={33}>
-        <Button positions={positions} status={status}>
+      <Wrap positions={positions} status={status} count={count}>
+        <Button
+          positions={positions}
+          status={status}
+          onClick={this.changeStatus}
+        >
           <Circle positions={positions} status={status} />
           {(positions === "bottom" ||
             positions === "left" ||
             positions === "right") && (
             <Span status={status} positions={positions}>
-              {status === "rest"
+              {status === "rest" && positions === "bottom"
                 ? "Ждём ответа"
                 : status === "answer"
                 ? "У вас новый ответ"
-                : "Новый ответ"}
+                : positions === "bottom"
+                ? "Новый ответ"
+                : ""}
             </Span>
           )}
         </Button>
