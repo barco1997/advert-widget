@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import OpaqueButton from "../OpaqueButton";
 
 const Container = styled.div`
   &&& {
@@ -83,7 +84,7 @@ const RefreshButton = styled.button`
   }
 `;
 
-const EndButton = styled.button`
+/*const EndButton = styled.button`
   &&& {
     border-radius: 5px !important;
     border: 1px solid #bebebe !important;
@@ -99,7 +100,7 @@ const EndButton = styled.button`
 
     margin: 0 !important;
   }
-`;
+`;*/
 
 class GameOver extends React.Component {
   render() {
@@ -112,7 +113,7 @@ class GameOver extends React.Component {
         <Description>Ваш счёт</Description>
         <ButtonsWrap>
           <RefreshButton onClick={restart}>Попробовать ещё</RefreshButton>
-          <EndButton onClick={terminate}>Закончить</EndButton>
+          <OpaqueButton onClick={terminate}>Закончить</OpaqueButton>
         </ButtonsWrap>
       </Container>
     );

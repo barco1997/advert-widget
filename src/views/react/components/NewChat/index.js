@@ -21,6 +21,7 @@ import StatusButton from "../StatusButton";
 //import { compose } from "recompose";
 import AudioRecorder from "audio-recorder-polyfill";
 import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
+import Game from "../Game";
 
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
@@ -91,6 +92,25 @@ const DisclaimerWrapper = styled.div`
     margin-left: 25px !important;
     ${media.desktop`
       display: none !important;
+    `};
+  }
+`;
+
+const DisclaimerWrapperMobile = styled.div`
+  &&& {
+    position: absolute !important;
+    /*right: calc(50% - 110px) !important;*/
+    top: 21px !important;
+    left: 21px !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 3px 10px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+
+    border-radius: 12px !important;
+    ${media.desktop`
+      display: flex !important;
     `};
   }
 `;
@@ -844,7 +864,8 @@ export class Chat extends React.Component {
       isBlocked: false,
       micChecked: false,
       isFirst: false,
-      recorder: null
+      recorder: null,
+      gameStarted: true
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -878,6 +899,16 @@ export class Chat extends React.Component {
     this.startMp3 = this.startMp3.bind(this);
     this.stopMp3 = this.stopMp3.bind(this);
     this.checkMedia = this.checkMedia.bind(this);
+    this.startGame = this.startGame.bind(this);
+    this.stopGame = this.stopGame.bind(this);
+  }
+
+  startGame() {
+    this.setState({ gameStarted: true });
+  }
+
+  stopGame() {
+    this.setState({ gameStarted: false });
   }
 
   handleBeforeUnload(e) {
@@ -1672,37 +1703,44 @@ export class Chat extends React.Component {
               visible={!this.state.streamFlag}
               height={this.props.innerHeight}
             >
-              <CloseWrapperA>
-                <CloseButton
-                  onClick={() => {
-                    this.setState({
-                      streamFlag: false
-                    });
-                    //this.socket.emit("leaveStream", ls.get("userId"));
-                    if (
-                      !this.props.displayMainRequest &&
-                      !this.props.emailSentFlag
-                    ) {
-                      this.props.showMainRequest();
-                    } else {
-                      //this.props.closeMainRequest();
-                      this.props.destroy();
-                    }
-                    /*this.live.pause();*/
-                    if (this.loadedVideo.getInternalPlayer()) {
-                      this.loadedVideo.getInternalPlayer().pause();
-                    }
-                  }}
-                />
-              </CloseWrapperA>
-              {this.props.displayMainRequest ? (
-                <EmailRequest
-                  sendEmailDetails={this.props.sendEmailDetails}
-                  destroy={this.props.destroy}
-                ></EmailRequest>
+              {this.state.gameStarted ? (
+                <Game height={this.props.innerHeight} width={496} />
               ) : (
                 <Fragment>
-                  {/*<JsChatMessagePlaceholder>
+                  <CloseWrapperA>
+                    <DisclaimerWrapperMobile>
+                      <Disclaimer />
+                    </DisclaimerWrapperMobile>
+                    <CloseButton
+                      onClick={() => {
+                        this.setState({
+                          streamFlag: false
+                        });
+                        //this.socket.emit("leaveStream", ls.get("userId"));
+                        if (
+                          !this.props.displayMainRequest &&
+                          !this.props.emailSentFlag
+                        ) {
+                          this.props.showMainRequest();
+                        } else {
+                          //this.props.closeMainRequest();
+                          this.props.destroy();
+                        }
+                        /*this.live.pause();*/
+                        if (this.loadedVideo.getInternalPlayer()) {
+                          this.loadedVideo.getInternalPlayer().pause();
+                        }
+                      }}
+                    />
+                  </CloseWrapperA>
+                  {this.props.displayMainRequest ? (
+                    <EmailRequest
+                      sendEmailDetails={this.props.sendEmailDetails}
+                      destroy={this.props.destroy}
+                    ></EmailRequest>
+                  ) : (
+                    <Fragment>
+                      {/*<JsChatMessagePlaceholder>
                         <PlaceholderMessage>
                           {this.props.greetingTitle}
                           {`\n`}
@@ -1711,119 +1749,121 @@ export class Chat extends React.Component {
 
                         <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
                       </JsChatMessagePlaceholder>*/}
-                  <JsChatMessageContainer tHeight={this.state.textAreaHeight}>
-                    <Fragment>
-                      {!this.state.messages ||
-                      this.state.messages.length == 0 ? (
-                        <InfoBlock>
-                          <InfoBlockHeader>
-                            {this.props.greetingTitle}
-                          </InfoBlockHeader>
-                          <InfoBlockText>
-                            {this.props.greetingText}
-                          </InfoBlockText>
-                        </InfoBlock>
-                      ) : (
-                        <MessageArea
-                          messages={this.state.messages}
-                          awaitingConnection={this.state.awaitingConnection}
-                          setFlv={this.handleStreamClick}
-                          handlePhoto={this.handlePhoto}
-                          handleVideo={this.handleVideo}
-                          handleStreamToVideo={this.handleStreamToVideo}
-                          strVideo={this.state.streamToVideo}
-                          manipulateVideoId={this.state.videoManipulateId}
-                          ifPauseIcon={this.state.ifPauseIcon}
-                          existingChats={this.state.existingChats}
-                          transactionLimit={this.state.transactionLimit}
-                          sentHistory={this.state.sentHistory}
-                          waitingText={this.props.waitingText}
-                          waitingTitle={this.props.waitingTitle}
-                        />
-                      )}
-                    </Fragment>
-                  </JsChatMessageContainer>
-                  <CustomForm>
-                    <div style={{ flexDirection: "column  !important" }}>
-                      <CartTextFieldExtra>
-                        <CartTextFieldRelative>
-                          <InputFieldA
-                            rows="1"
-                            ref={item => {
-                              this.mainInput = item;
-                            }}
-                            onFocus={() => {
-                              //this.handleAndroidKeyboard(true);
-                            }}
-                            onBlur={() => {
-                              //this.handleAndroidKeyboard(false);
-                            }}
-                            height={this.state.textAreaHeight}
-                            onKeyDown={() => this.textAreaAdjust(false)}
-                            type="text"
-                            value={this.state.value}
-                            onChange={this.handleChange}
-                            blocked={this.state.awaitingConnection}
-                            disabled={this.state.awaitingConnection}
-                            placeholder={
-                              this.state.ifTimer
-                                ? ""
-                                : this.state.awaitingConnection
-                                ? "Для продолжения диалога дождитесь ответа"
-                                : "Спросите что-нибудь ;)"
-                            }
-                            onKeyPress={event => {
-                              if (event.key === "Enter") {
-                                this.handleSubmit(event);
-                              }
-                            }}
-                          />
-                          {this.state.ifTimer && (
-                            <AudioTimer>
-                              <TimerCircle />
-                              <Timer>
-                                <StandaloneTimer
-                                  setDuration={this.setAudioDuration}
-                                />
-                              </Timer>
-                            </AudioTimer>
-                          )}
-                          {this.state.value.length < 1 &&
-                            this.state.messages &&
-                            this.state.messages.length > 1 && (
-                              <MicWrap
-                                onMouseDown={this.handleDown}
-                                onTouchStart={this.handleDown}
-                                onMouseUp={this.handleUp}
-                                onTouchEnd={this.handleUp}
-                                tabIndex="0"
-                                isActive={this.state.ifTimer}
-                              >
-                                <ImageMic
-                                  src={
-                                    "https://witheyezon.com/eyezonsite/static/images/mic.png"
-                                  }
-                                />
-                              </MicWrap>
-                            )}
+                      <JsChatMessageContainer
+                        tHeight={this.state.textAreaHeight}
+                      >
+                        <Fragment>
                           {!this.state.messages ||
-                            (this.state.messages.length == 0 && (
-                              <EntryWrap>
-                                <EntryInfo />
-                              </EntryWrap>
-                            ))}
-                          {this.state.value.length > 0 && (
-                            <SendIconWrap
-                              onClick={event => this.handleSubmit(event)}
-                            >
-                              <ImageSend
-                                src={
-                                  "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-                                }
-                              />
-                            </SendIconWrap>
+                          this.state.messages.length == 0 ? (
+                            <InfoBlock>
+                              <InfoBlockHeader>
+                                {this.props.greetingTitle}
+                              </InfoBlockHeader>
+                              <InfoBlockText>
+                                {this.props.greetingText}
+                              </InfoBlockText>
+                            </InfoBlock>
+                          ) : (
+                            <MessageArea
+                              messages={this.state.messages}
+                              awaitingConnection={this.state.awaitingConnection}
+                              setFlv={this.handleStreamClick}
+                              handlePhoto={this.handlePhoto}
+                              handleVideo={this.handleVideo}
+                              handleStreamToVideo={this.handleStreamToVideo}
+                              strVideo={this.state.streamToVideo}
+                              manipulateVideoId={this.state.videoManipulateId}
+                              ifPauseIcon={this.state.ifPauseIcon}
+                              existingChats={this.state.existingChats}
+                              transactionLimit={this.state.transactionLimit}
+                              sentHistory={this.state.sentHistory}
+                              waitingText={this.props.waitingText}
+                              waitingTitle={this.props.waitingTitle}
+                            />
                           )}
-                          {/*<MicLogicHidden>
+                        </Fragment>
+                      </JsChatMessageContainer>
+                      <CustomForm>
+                        <div style={{ flexDirection: "column  !important" }}>
+                          <CartTextFieldExtra>
+                            <CartTextFieldRelative>
+                              <InputFieldA
+                                rows="1"
+                                ref={item => {
+                                  this.mainInput = item;
+                                }}
+                                onFocus={() => {
+                                  //this.handleAndroidKeyboard(true);
+                                }}
+                                onBlur={() => {
+                                  //this.handleAndroidKeyboard(false);
+                                }}
+                                height={this.state.textAreaHeight}
+                                onKeyDown={() => this.textAreaAdjust(false)}
+                                type="text"
+                                value={this.state.value}
+                                onChange={this.handleChange}
+                                blocked={this.state.awaitingConnection}
+                                disabled={this.state.awaitingConnection}
+                                placeholder={
+                                  this.state.ifTimer
+                                    ? ""
+                                    : this.state.awaitingConnection
+                                    ? "Для продолжения диалога дождитесь ответа"
+                                    : "Спросите что-нибудь ;)"
+                                }
+                                onKeyPress={event => {
+                                  if (event.key === "Enter") {
+                                    this.handleSubmit(event);
+                                  }
+                                }}
+                              />
+                              {this.state.ifTimer && (
+                                <AudioTimer>
+                                  <TimerCircle />
+                                  <Timer>
+                                    <StandaloneTimer
+                                      setDuration={this.setAudioDuration}
+                                    />
+                                  </Timer>
+                                </AudioTimer>
+                              )}
+                              {this.state.value.length < 1 &&
+                                this.state.messages &&
+                                this.state.messages.length > 1 && (
+                                  <MicWrap
+                                    onMouseDown={this.handleDown}
+                                    onTouchStart={this.handleDown}
+                                    onMouseUp={this.handleUp}
+                                    onTouchEnd={this.handleUp}
+                                    tabIndex="0"
+                                    isActive={this.state.ifTimer}
+                                  >
+                                    <ImageMic
+                                      src={
+                                        "https://witheyezon.com/eyezonsite/static/images/mic.png"
+                                      }
+                                    />
+                                  </MicWrap>
+                                )}
+                              {!this.state.messages ||
+                                (this.state.messages.length == 0 && (
+                                  <EntryWrap>
+                                    <EntryInfo />
+                                  </EntryWrap>
+                                ))}
+                              {this.state.value.length > 0 && (
+                                <SendIconWrap
+                                  onClick={event => this.handleSubmit(event)}
+                                >
+                                  <ImageSend
+                                    src={
+                                      "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
+                                    }
+                                  />
+                                </SendIconWrap>
+                              )}
+                              {/*<MicLogicHidden>
                             <ReactMic
                               record={this.state.ifTimer}
                               className="sound-wave"
@@ -1833,16 +1873,16 @@ export class Chat extends React.Component {
                               backgroundColor="#FF4081"
                             />
                           </MicLogicHidden>*/}
-                        </CartTextFieldRelative>
-                        {/*<CartWrapper onClick={this.handleCart}>
+                            </CartTextFieldRelative>
+                            {/*<CartWrapper onClick={this.handleCart}>
                           <ImageCart
                             src={
                               "https://witheyezon.com/eyezonsite/static/images/cart.png"
                             }
                           />
                           </CartWrapper>*/}
-                      </CartTextFieldExtra>
-                      {/*<SendRow>
+                          </CartTextFieldExtra>
+                          {/*<SendRow>
                       <SendRequest onClick={this.handleSubmit}>
                         Отправить
                       </SendRequest>
@@ -1851,8 +1891,10 @@ export class Chat extends React.Component {
                         <EyezonImage src="https://www.witheyezon.com/eyezonsite/static/images/logonew2.png" />
                       </FontDisclaimer>
                     </SendRow>*/}
-                    </div>
-                  </CustomForm>
+                        </div>
+                      </CustomForm>
+                    </Fragment>
+                  )}
                 </Fragment>
               )}
             </JsChatWindow>

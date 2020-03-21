@@ -7,6 +7,16 @@ import Pipe from "./Pipe";
 
 const birdRadius = 24;
 
+const Wrapper = styled.div`
+  &&& {
+    touch-action: manipulation !important;
+    position: relative !important;
+    overflow: hidden !important;
+    height: ${props => (props.height ? props.height : "100%")} !important;
+    width: ${props => (props.width ? props.width : "100%")} !important;
+  }
+`;
+
 const Logo = styled.div`
   &&& {
     position: relative !important;
@@ -20,13 +30,13 @@ const Logo = styled.div`
 
 const ScoreWrap = styled.div`
   &&& {
-    left: 20px !important;
-    bottom: 20px !important;
+    left: 25px !important;
+    bottom: 25px !important;
     position: absolute !important;
     z-index: "10009 !important";
-
-    font-size: "40px !important";
-    font-family: "Montserrat !important";
+    font-weight: 700 !important;
+    font-size: 40px !important;
+    font-family: "Montserrat" !important;
   }
 `;
 
@@ -34,7 +44,7 @@ const White = styled.div`
   &&& {
     position: absolute !important;
     border-radius: 50% !important;
-    background: red !important;
+    background: white !important;
     width: 10px !important;
     height: 10px !important;
     top: 0px !important;
@@ -47,6 +57,36 @@ const Wrap = styled.div`
     left: ${props => `${props.pipeX}px !important;`};
     top: ${props => `${props.lowerHeight}px !important;`};
     position: absolute !important;
+  }
+`;
+
+const HeaderRow = styled.div`
+  &&& {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+  }
+`;
+
+const InitialText = styled.div`
+  &&& {
+    position: absolute !important;
+    top: 400px !important;
+    left: 100px !important;
+    width: 230px !important;
+    font-family: "Montserrat" !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-size: 14px !important;
+    line-height: 24px !important;
+    /* or 171% */
+
+    letter-spacing: 0.02em !important;
+    color: #888888 !important;
+    ${media.desktop`
+    display: none !important;
+    `};
   }
 `;
 
@@ -70,12 +110,13 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      birdHeight: this.props.height / 2,
+      birdHeight: this.props.height / 2 - 100,
       left: this.props.width / 2 - 20,
       gravity: 0.8,
       velocity: 0,
       pipes: getInitialPipes(this.props.height, this.props.width),
       pipeSpeed: 7,
+      started: false,
       score: 0
     };
 
@@ -85,23 +126,23 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => this.update(), 15);
+    //
   }
 
   update() {
     const birdCrashed =
       this.state.birdHeight > this.props.height - birdRadius * 2;
-    if (birdCrashed) {
+    if (birdCrashed || this.state.pipes.find(pipe => pipe.isHit)) {
       clearInterval(this.interval);
       return;
     }
 
-    const pipeWasHit = this.state.pipes.find(pipe => pipe.isHit);
+    //const pipeWasHit = this.state.pipes.find(pipe => pipe.isHit);
 
-    if (pipeWasHit) {
+    /*if (pipeWasHit) {
       clearInterval(this.interval);
       return;
-    }
+    }*/
 
     const newVelocity = (this.state.velocity + this.state.gravity) * 0.9;
     const birdHeight = newVelocity + this.state.birdHeight;
@@ -157,11 +198,19 @@ class Game extends Component {
   }
 
   handleTouch(e) {
+    if (!this.state.started) {
+      this.interval = setInterval(() => this.update(), 15);
+      this.setState({ started: true });
+    }
     e.preventDefault;
     this.moveUp();
   }
 
   handleSpace(e) {
+    if (!this.state.started) {
+      this.interval = setInterval(() => this.update(), 15);
+      this.setState({ started: true });
+    }
     e.preventDefault;
     if (e.keyCode == 32) {
       this.moveUp();
@@ -180,19 +229,17 @@ class Game extends Component {
 
   render() {
     const { score, left, birdHeight } = this.state;
-    const { height } = this.props;
+    const { height, width } = this.props;
 
     return (
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          touchAction: "manipulation !important",
-          overflow: "hidden !important"
-        }}
-      >
-        <ScoreWrap>
-          <b>{score}</b>
+      <Wrapper>
+        {!this.state.started && (
+          <InitialText>
+            Нажмите пробел чтобы взлететь и набирать высоту
+          </InitialText>
+        )}
+        <ScoreWrap height={height + "px"} width={width + "px"}>
+          {score}
         </ScoreWrap>
         <Wrap pipeX={left} lowerHeight={birdHeight}>
           <Logo>
@@ -217,7 +264,7 @@ class Game extends Component {
             />
           );
         })}
-      </div>
+      </Wrapper>
     );
   }
 }
