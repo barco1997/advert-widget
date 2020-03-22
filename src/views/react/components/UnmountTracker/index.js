@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ls from "local-storage";
 import axios from "axios";
+import { media } from "../../../../utils/media";
 import { setDisplayName } from "recompose";
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const VideoElement = styled.div`
@@ -10,20 +11,47 @@ const VideoElement = styled.div`
     height: 100% !important;
     border-radius: 10px !important;
     overflow: hidden !important;
+    position: relative !important;
     & > video {
       width: 100% !important;
       height: 100% !important;
       border-radius: 10px !important;
     }
+    ${media.desktop`
+      height: calc(100vw / (3 / 4)) !important;
+      border-radius: 0px !important;
+      & > video {
+      border-radius: 0px !important;
+    }
+    `}
   }
 `;
 
 const Wrapper = styled.div`
   &&& {
     width: 100% !important;
+    position: relative !important;
     height: 100% !important;
     border-radius: 10px !important;
-    position: relative !important;
+    background: #333333 !important;
+    ${media.desktop`
+    border-radius: 0px !important;
+    `}
+  }
+`;
+
+const Gradient = styled.div`
+  &&& {
+    display: none !important;
+    ${media.desktop`
+      display: flex !important;
+      background: linear-gradient(179.33deg, rgba(51, 51, 51, 0) 2.38%, #333333 89.44%) !important;
+      height: 70px !important;
+      position: absolute !important;
+      left: 0 !important;
+      bottom: 0px !important;
+      width: 100% !important;
+    `}
   }
 `;
 
@@ -188,10 +216,10 @@ export class UnmountTracker extends React.Component {
             true,
             self.props.PRELOADER_URL
           ).then(function() {
-            self.publishLocalMedia(room);
+            //self.publishLocalMedia(room); here is the place
           });
         } else {
-          self.publishLocalMedia(room);
+          //self.publishLocalMedia(room); here is the place
         }
 
         //onJoined(room);
@@ -364,7 +392,9 @@ export class UnmountTracker extends React.Component {
           ref={element => {
             this.player = element;
           }}
-        />
+        >
+          <Gradient />
+        </VideoElement>
       </Wrapper>
     );
   }

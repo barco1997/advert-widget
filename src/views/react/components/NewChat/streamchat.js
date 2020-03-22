@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 //import Response from "../Response";
 //import awaitingBox from "./awaiting.svg";
-
+import { media } from "../../../../utils/media";
 const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
@@ -37,6 +37,9 @@ const MessageContainer = styled.div`
       height: 100% !important;
       width: 100% !important;
       background: linear-gradient(gray, transparent) !important;
+      ${media.desktop`
+      background: none !important;
+      `}
     }
   }
 `;

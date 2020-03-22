@@ -2,6 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import OpaqueButton from "../OpaqueButton";
 
+const Shader = styled.div`
+  &&& {
+    display: flex !important;
+    background: rgba(255, 255, 255, 0.88) !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+`;
+
 const Container = styled.div`
   &&& {
     display: flex !important;
@@ -11,6 +22,7 @@ const Container = styled.div`
     font-family: "Montserrat" !important;
     font-style: normal !important;
     color: #000000 !important;
+    margin-bottom: 100px !important;
   }
 `;
 
@@ -104,18 +116,20 @@ const RefreshButton = styled.button`
 
 class GameOver extends React.Component {
   render() {
-    const { restart, terminate, count } = this.props;
+    const { restart, stopGame, count } = this.props;
     return (
-      <Container>
-        {/* <img src={Image} alt="error" /> */}
-        <Header>Game over</Header>
-        <Count>{count}</Count>
-        <Description>Ваш счёт</Description>
-        <ButtonsWrap>
-          <RefreshButton onClick={restart}>Попробовать ещё</RefreshButton>
-          <OpaqueButton onClick={terminate}>Закончить</OpaqueButton>
-        </ButtonsWrap>
-      </Container>
+      <Shader>
+        <Container>
+          {/* <img src={Image} alt="error" /> */}
+          <Header>Game over</Header>
+          <Count>{count}</Count>
+          <Description>Ваш счёт</Description>
+          <ButtonsWrap>
+            <RefreshButton onClick={restart}>Попробовать ещё</RefreshButton>
+            <OpaqueButton onClick={stopGame}>Закончить</OpaqueButton>
+          </ButtonsWrap>
+        </Container>
+      </Shader>
     );
   }
 }

@@ -865,7 +865,7 @@ export class Chat extends React.Component {
       micChecked: false,
       isFirst: false,
       recorder: null,
-      gameStarted: true
+      gameStarted: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1126,6 +1126,9 @@ export class Chat extends React.Component {
       });
       this.socket.on("received", data => {
         self.socket.emit("readMessage", ls.get("dialogId"));
+        if (self.state.gameStarted) {
+          self.stopGame();
+        }
         if (data.userId !== storedId) {
           if (!ls.get("dialogId")) {
             ls.set("dialogId", data._id);
@@ -1704,7 +1707,11 @@ export class Chat extends React.Component {
               height={this.props.innerHeight}
             >
               {this.state.gameStarted ? (
-                <Game height={this.props.innerHeight} width={496} />
+                <Game
+                  height={this.props.innerHeight}
+                  width={496}
+                  stopGame={this.stopGame}
+                />
               ) : (
                 <Fragment>
                   <CloseWrapperA>
@@ -1779,6 +1786,7 @@ export class Chat extends React.Component {
                               sentHistory={this.state.sentHistory}
                               waitingText={this.props.waitingText}
                               waitingTitle={this.props.waitingTitle}
+                              startGame={this.startGame}
                             />
                           )}
                         </Fragment>

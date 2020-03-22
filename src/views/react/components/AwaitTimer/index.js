@@ -52,11 +52,16 @@ class AwaitTimer extends Component {
   setTime() {
     this.setState(
       {
-        minutes: this.state.minutes + Math.floor((this.state.seconds + 1) / 60),
+        minutes:
+          this.state.minutes < 2
+            ? this.state.minutes + Math.floor((this.state.seconds + 1) / 60)
+            : this.state.minutes,
         seconds:
-          this.state.seconds +
-          1 -
-          60 * Math.floor((this.state.seconds + 1) / 60)
+          this.state.minutes < 2
+            ? this.state.seconds +
+              1 -
+              60 * Math.floor((this.state.seconds + 1) / 60)
+            : this.state.seconds
       },
       () => {
         if (this.state.minutes === 2) {

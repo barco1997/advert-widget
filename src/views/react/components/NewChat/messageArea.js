@@ -8,6 +8,7 @@ import AwaitTimer from "../AwaitTimer";
 import moment from "moment";
 import ls from "local-storage";
 import { media } from "../../../../utils/media";
+import OpaqueButton from "../OpaqueButton";
 const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
@@ -103,6 +104,20 @@ const Late = styled.div`
     font-size: 25px !important;
     line-height: 32px !important;
     color: #000000 !important;
+  }
+`;
+
+const StartGameWrapper = styled.div`
+  &&& {
+    display: flex !important;
+    align-items: center !important;
+  }
+`;
+
+const ButtonWrap = styled.div`
+  &&& {
+    margin-left: 20px !important;
+    margin-bottom: 12px !important;
   }
 `;
 
@@ -223,27 +238,34 @@ export class MessageArea extends React.Component {
             {this.props.waitingText}
             <br />
             {!this.state.timerExceeded && lessThan2 && !this.state.success && (
-              <AwaitTimer
-                exceedFunc={() => {
-                  this.setState({
-                    timerExceeded: true
-                  });
-                }}
-                startSec={
-                  this.state.timestamp &&
-                  moment().diff(
-                    moment(this.state.timestamp, moment.ISO_8601),
-                    "seconds"
-                  ) % 60
-                }
-                startMin={
-                  this.state.timestamp &&
-                  moment().diff(
-                    moment(this.state.timestamp, moment.ISO_8601),
-                    "minutes"
-                  )
-                }
-              />
+              <StartGameWrapper>
+                <AwaitTimer
+                  exceedFunc={() => {
+                    this.setState({
+                      timerExceeded: true
+                    });
+                  }}
+                  startSec={
+                    this.state.timestamp &&
+                    moment().diff(
+                      moment(this.state.timestamp, moment.ISO_8601),
+                      "seconds"
+                    ) % 60
+                  }
+                  startMin={
+                    this.state.timestamp &&
+                    moment().diff(
+                      moment(this.state.timestamp, moment.ISO_8601),
+                      "minutes"
+                    )
+                  }
+                />
+                <ButtonWrap>
+                  <OpaqueButton onClick={this.props.startGame}>
+                    Играть
+                  </OpaqueButton>
+                </ButtonWrap>
+              </StartGameWrapper>
             )}
             {/*<div>
             <AwaitingBoxWrapper>
