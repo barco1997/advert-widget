@@ -25,7 +25,16 @@ export class App extends React.Component {
   }
   componentDidMount() {
     //get amount of notifications
-
+    document.querySelectorAll("button").forEach(function(item) {
+      item.addEventListener("focus", function() {
+        this.blur();
+      });
+    });
+    window.addEventListener("keydown", function(e) {
+      if (e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+      }
+    });
     let self = this;
     const buttonId = this.props.buttonId;
     const userId = ls.get("userId");

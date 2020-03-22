@@ -449,6 +449,7 @@ export class Button extends React.Component {
   }
 
   handleClick(e, buttonId, title) {
+    console.log("EVENT", e);
     this.closeRequest();
     if (title) {
       this.setState({
@@ -725,6 +726,7 @@ export class Button extends React.Component {
             color={this.props.color}
             toggle={isOpen}
             onClick={event => this.handleClick(event, this.props.buttonId)}
+
             /*onMouseEnter={() => this.handleMouseEnter()}
             onMouseLeave={() => this.handleMouseLeave()}*/
           >
@@ -772,7 +774,6 @@ export class Button extends React.Component {
             socket={this.socket}
             /*firebase={this.props.firebase}*/
           />
-        )}
         )}
       </ButtonReqWrapper>
     );

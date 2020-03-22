@@ -102,7 +102,7 @@ export function react(params, ifOpened, buttons) {
       eyezonGlobal={params.eyezonGlobal}
       /*firebase={Firebase ? new Firebase() : null}*/
     />,
-    /*</FirebaseContext.Provider>*/ document.getElementById("root")
+    /*</FirebaseContext.Provider>*/ document.getElementById("eyezonRoot")
   );
 }
 
