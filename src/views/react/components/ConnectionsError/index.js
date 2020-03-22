@@ -68,6 +68,9 @@ const RefreshButton = styled.button`
     box-sizing: border-box;
     box-shadow: none !important;
 
+    -webkit-appearance: none !important;
+    opacity: 1 !important;
+
     margin: 0 !important;
   }
 `;
@@ -85,6 +88,9 @@ const EndButton = styled.button`
     padding: 12px 34px !important;
     box-sizing: border-box;
     box-shadow: none !important;
+
+    -webkit-appearance: none !important;
+    opacity: 1 !important;
 
     margin: 0 !important;
   }

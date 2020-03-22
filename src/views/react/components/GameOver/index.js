@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import OpaqueButton from "../OpaqueButton";
 
 const Shader = styled.div`
   &&& {
@@ -92,11 +91,14 @@ const RefreshButton = styled.button`
     box-sizing: border-box;
     box-shadow: none !important;
 
+    -webkit-appearance: none !important;
+    opacity: 1 !important;
+
     margin: 0 !important;
   }
 `;
 
-/*const EndButton = styled.button`
+const EndButton = styled.button`
   &&& {
     border-radius: 5px !important;
     border: 1px solid #bebebe !important;
@@ -110,9 +112,12 @@ const RefreshButton = styled.button`
     box-sizing: border-box;
     box-shadow: none !important;
 
+    -webkit-appearance: none !important;
+    opacity: 1 !important;
+
     margin: 0 !important;
   }
-`;*/
+`;
 
 class GameOver extends React.Component {
   render() {
