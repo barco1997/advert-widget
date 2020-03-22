@@ -69,6 +69,7 @@ const RefreshButton = styled.button`
     box-shadow: none !important;
 
     -webkit-appearance: none !important;
+    opacity: 1 !important;
 
     margin: 0 !important;
   }
@@ -89,6 +90,7 @@ const EndButton = styled.button`
     box-shadow: none !important;
 
     -webkit-appearance: none !important;
+    opacity: 1 !important;
 
     margin: 0 !important;
   }
