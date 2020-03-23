@@ -5,7 +5,6 @@ const Wrapper = styled.div`
   &&& {
     display: flex !important;
     flex-direction: column !important;
-    border: 1px solid red !important;
   }
 `;
 const NotifyButtonWrapper = styled.div`
