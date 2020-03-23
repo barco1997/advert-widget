@@ -5,6 +5,7 @@ import html from "./index.html";
 import App from "./components/App";
 //import Firebase, { FirebaseContext } from "./components/Firebase";
 import { load } from "./constants";
+import NotifyButton from "./components/NotifyButton";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
 //import BlurredButton from "./components/BlurredButton";
@@ -14,7 +15,6 @@ import { load } from "./constants";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
-    background: rgba(0, 0, 0, 0.2) !important;
     border: 2px solid red !important;
     width: 500px !important;
     height: 500px !important;

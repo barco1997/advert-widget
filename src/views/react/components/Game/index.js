@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 import { media } from "../../../../utils/media";
-
+import AwaitTimer from "../AwaitTimer";
+import moment from "moment";
+import ls from "local-storage";
 import Pipe from "./Pipe";
-
+import OpaqueButton from "../OpaqueButton";
+import GameOver from "../GameOver";
 const birdRadius = 24;
 
 const Wrapper = styled.div`
@@ -65,7 +68,79 @@ const HeaderRow = styled.div`
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
+    width: calc(100% - 20px) !important;
+    padding: 10px !important;
+    z-index: 20000 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+`;
+
+const ExtraPos = styled.div`
+  &&& {
+    margin: 0px 20px !important;
+    margin-bottom: 12px !important;
+  }
+`;
+
+const CloseButton = styled.span`
+  &&& {
+    position: relative !important;
+    margin-bottom: 12px !important;
+    height: 30px !important;
+    width: 30px !important;
+    background: rgba(171, 171, 171, 0.16) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    margin-right: 15px !important;
+
+    &:hover {
+      background: rgba(171, 171, 171, 0.26) !important;
+    }
+    &:before,
+    &:after {
+      position: absolute !important;
+
+      content: " " !important;
+      height: 12px !important;
+      width: 2px !important;
+      border-radius: 1px !important;
+      background-color: #4e4e4e !important;
+    }
+    &:before {
+      transform: rotate(45deg) !important;
+    }
+    &:after {
+      transform: rotate(-45deg) !important;
+    }
+    ${media.desktop`
+    
+      
+      
+  `};
+  }
+`;
+
+const CloseWrapper = styled.div`
+  &&& {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    margin-left: auto !important;
+  }
+`;
+
+const GameOverWrapper = styled.div`
+  &&& {
+    position: absolute !important;
+    top: 0px !important;
+    left: 0px !important;
+    height: 100% !important;
     width: 100% !important;
+    z-index: 19000 !important;
   }
 `;
 
@@ -110,23 +185,41 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      birdHeight: this.props.height / 2 - 100,
+      birdHeight: this.props.height / 2 - 120,
       left: this.props.width / 2 - 20,
       gravity: 0.8,
       velocity: 0,
       pipes: getInitialPipes(this.props.height, this.props.width),
       pipeSpeed: 7,
       started: false,
-      score: 0
+      over: false,
+      score: 0,
+      timestamp: ls.get("awaitTmp") || null,
+      timerExceeded: false
     };
 
     this.moveUp = this.moveUp.bind(this);
     this.handleTouch = this.handleTouch.bind(this);
     this.handleSpace = this.handleSpace.bind(this);
+    this.restart = this.restart.bind(this);
   }
 
   componentDidMount() {
     //
+  }
+
+  restart() {
+    this.setState({
+      birdHeight: this.props.height / 2 - 120,
+      left: this.props.width / 2 - 20,
+      gravity: 0.8,
+      velocity: 0,
+      pipes: getInitialPipes(this.props.height, this.props.width),
+      pipeSpeed: 7,
+      started: false,
+      over: false,
+      score: 0
+    });
   }
 
   update() {
@@ -134,6 +227,7 @@ class Game extends Component {
       this.state.birdHeight > this.props.height - birdRadius * 2;
     if (birdCrashed || this.state.pipes.find(pipe => pipe.isHit)) {
       clearInterval(this.interval);
+      this.setState({ over: true });
       return;
     }
 
@@ -233,14 +327,54 @@ class Game extends Component {
 
     return (
       <Wrapper>
+        {this.state.over && (
+          <GameOverWrapper>
+            <GameOver
+              count={score}
+              stopGame={this.props.stopGame}
+              restart={this.restart}
+            />
+          </GameOverWrapper>
+        )}
+        <HeaderRow>
+          <AwaitTimer
+            exceedFunc={() => {
+              this.setState({
+                timerExceeded: true
+              });
+            }}
+            startSec={
+              this.state.timestamp &&
+              moment().diff(
+                moment(this.state.timestamp, moment.ISO_8601),
+                "seconds"
+              ) % 60
+            }
+            startMin={
+              this.state.timestamp &&
+              moment().diff(
+                moment(this.state.timestamp, moment.ISO_8601),
+                "minutes"
+              )
+            }
+          />
+          <ExtraPos>
+            <OpaqueButton onClick={this.props.stopGame}>Закончить</OpaqueButton>
+          </ExtraPos>
+          <CloseWrapper>
+            <CloseButton onClick={this.props.stopGame} />
+          </CloseWrapper>
+        </HeaderRow>
         {!this.state.started && (
           <InitialText>
             Нажмите пробел чтобы взлететь и набирать высоту
           </InitialText>
         )}
-        <ScoreWrap height={height + "px"} width={width + "px"}>
-          {score}
-        </ScoreWrap>
+        {!this.state.over && (
+          <ScoreWrap height={height + "px"} width={width + "px"}>
+            {score}
+          </ScoreWrap>
+        )}
         <Wrap pipeX={left} lowerHeight={birdHeight}>
           <Logo color={this.props.color}>
             <White />

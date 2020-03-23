@@ -14,7 +14,7 @@ import StandaloneTimer from "../StandaloneTimer";
 import Disclaimer from "../Disclaimer";
 import EntryInfo from "../EntryInfo";
 //import { ReactMic } from "react-mic";
-import { pulse } from "../MicrophoneInput";
+import MicrophoneInput, { pulse } from "../MicrophoneInput";
 //import { withFirebase } from "../Firebase";
 //import firebase from "firebase";
 import StatusButton from "../StatusButton";
@@ -26,7 +26,8 @@ import Game from "../Game";
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+let isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 let SESSION_STATUS;
 let STREAM_STATUS;
 let PRELOADER_URL;
@@ -370,7 +371,7 @@ const InputFieldA = styled.textarea`
     overflow: hidden !important;
     border-radius: ${props => (props.stream ? "4px" : "0px")} !important;
     padding: ${props => (props.stream ? "13px 24px" : "24px 24px")} !important;
-    padding-right: 70px !important;
+    padding-right: ${props => (props.stream ? "24px" : "70px")} !important;
     font-family: "Montserrat" !important;
     font-weight: normal !important;
     font-size: 16px !important;
@@ -468,21 +469,6 @@ const EntryWrap = styled.div`
     position: absolute !important;
     top: -22px !important;
     left: 22px !important;
-  }
-`;
-
-const SendIconWrapS = styled.div`
-  &&& {
-    width: 36px !important;
-    height: 36px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: ${props => `${props.color} !important`};
-    border-radius: 50% !important;
-    cursor: pointer !important;
-    margin-right: ${props => (props.stream ? "24px" : "0px")} !important;
   }
 `;
 
@@ -865,7 +851,8 @@ export class Chat extends React.Component {
       micChecked: false,
       isFirst: false,
       recorder: null,
-      gameStarted: true
+      gameStarted: false,
+      audioStreamStatus: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1084,7 +1071,20 @@ export class Chat extends React.Component {
     let self = this;
 
     if (ls.get("userId")) {
-      this.socket = this.props.socket;
+      //this.socket = this.props.socket;
+      this.socket = io("https://eyezon.herokuapp.com", {
+        transports: ["websocket"],
+        upgrade: false
+      });
+      this.socket.on("connect", () => {
+        self.socket.emit("enterSocket", ls.get("userId"));
+        if (ls.get("dialogId")) {
+          self.socket.emit("enterDialog", ls.get("dialogId"));
+        }
+      });
+      this.socket.on("disconnect", () => {
+        self.socket.open();
+      });
       /*this.socket = io("https://eyezon.herokuapp.com/", {
         transports: ["websocket"],
         upgrade: false
@@ -1126,6 +1126,9 @@ export class Chat extends React.Component {
       });
       this.socket.on("received", data => {
         self.socket.emit("readMessage", ls.get("dialogId"));
+        if (self.state.gameStarted) {
+          self.stopGame();
+        }
         if (data.userId !== storedId) {
           if (!ls.get("dialogId")) {
             ls.set("dialogId", data._id);
@@ -1704,7 +1707,11 @@ export class Chat extends React.Component {
               height={this.props.innerHeight}
             >
               {this.state.gameStarted ? (
-                <Game height={this.props.innerHeight} width={496} />
+                <Game
+                  height={this.props.innerHeight}
+                  width={496}
+                  stopGame={this.stopGame}
+                />
               ) : (
                 <Fragment>
                   <CloseWrapperA color={this.props.color}>
@@ -1779,6 +1786,7 @@ export class Chat extends React.Component {
                               sentHistory={this.state.sentHistory}
                               waitingText={this.props.waitingText}
                               waitingTitle={this.props.waitingTitle}
+                              startGame={this.startGame}
                             />
                           )}
                         </Fragment>
@@ -1926,6 +1934,7 @@ export class Chat extends React.Component {
                 PRELOADER_URL={PRELOADER_URL}
                 ROOM_EVENT={ROOM_EVENT}
                 iOS={iOS}
+                audioStreamStatus={this.state.audioStreamStatus}
               />
 
               <CloseWrapper>
@@ -1947,18 +1956,24 @@ export class Chat extends React.Component {
 
               {/*<ControlShader />*/}
               <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
-                <StreamChat messages={this.state.messagesStream} />
+                <StreamChat
+                  messages={this.state.messagesStream}
+                  isSafari={isSafari}
+                />
                 <InputLineStream>
-                  <InputFieldA
+                  <MicrophoneInput
                     rows="1"
                     stream
-                    ref={item => {
+                    /*ref={item => {
+                      this.streamInput = item;
+                    }}*/
+                    setStreamInput={item => {
                       this.streamInput = item;
                     }}
                     type="text"
                     value={this.state.valueStream}
                     onChange={this.handleChangeInStream}
-                    placeholder="Спросите что-нибудь ;)"
+                    placeholder="Сообщение..."
                     onKeyPress={event => {
                       if (event.key === "Enter") {
                         this.handleSubmitS();
@@ -1966,18 +1981,35 @@ export class Chat extends React.Component {
                     }}
                     height={this.state.streamTextAreaHeight}
                     onKeyDown={() => this.textAreaAdjust(true)}
+                    handleSubmitS={this.handleSubmitS}
+                    audioToggle={() =>
+                      this.setState({
+                        audioStreamStatus: !this.state.audioStreamStatus
+                      })
+                    }
                   />
-                  <SendIconWrapS
-                    color={this.props.color}
-                    onClick={() => this.handleSubmitS()}
-                    stream
-                  >
-                    <ImageSend
-                      src={
-                        "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-                      }
-                    />
-                  </SendIconWrapS>
+                  {/*{this.state.valueStream.length > 0 && (
+                    <SendIconWrapS color={this.props.color} onClick={() => this.handleSubmitS()} stream>
+                      <ImageSend
+                        src={
+                          "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
+                        }
+                      />
+                    </SendIconWrapS>
+                  )}
+                  {this.state.valueStream.length < 1 && (
+                    <MicWrap
+                      tabIndex="0"
+                      isActive={false}
+                      onClick={() => this.setState({ audioStreamStatus: true })}
+                    >
+                      <ImageMic
+                        src={
+                          "https://witheyezon.com/eyezonsite/static/images/mic.png"
+                        }
+                      />
+                    </MicWrap>
+                      )}*/}
                 </InputLineStream>
               </TextFieldExtraS>
             </VideoWrapperS>
