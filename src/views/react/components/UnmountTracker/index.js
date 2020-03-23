@@ -69,7 +69,8 @@ export class UnmountTracker extends React.Component {
       connection: null,
       recording: false,
       clientStream: null,
-      room: null
+      room: null,
+      initialRoom: null
     };
 
     this.playStream = this.playStream.bind(this);
@@ -206,22 +207,24 @@ export class UnmountTracker extends React.Component {
         } else {
           //addMessage("chat", " room is empty");
         }
-        if (
-          isSafari ||
-          self.props.iOS ||
-          Flashphoner.getMediaProviders()[0] === "MSE"
-        ) {
-          Flashphoner.playFirstVideo(
-            self.localDisplay,
-            true,
-            self.props.PRELOADER_URL
-          ).then(function() {
-            //self.publishLocalMedia(room); here is the place
-          });
-        } else {
-          //self.publishLocalMedia(room); here is the place
-        }
-
+        if (self.props.audioStreamStatus) {
+          if (
+            isSafari ||
+            self.props.iOS ||
+            Flashphoner.getMediaProviders()[0] === "MSE"
+          ) {
+            Flashphoner.playFirstVideo(
+              self.localDisplay,
+              true,
+              self.props.PRELOADER_URL
+            ).then(function() {
+              self.publishLocalMedia(room);
+            });
+          } else {
+            self.publishLocalMedia(room);
+          }
+        } //here is the place
+        self.setState({ initialRoom: room });
         //onJoined(room);
       })
       .on(this.props.ROOM_EVENT.JOINED, function(participant) {
@@ -328,6 +331,38 @@ export class UnmountTracker extends React.Component {
   }
   componentDidUpdate(prevProps) {
     let self = this;
+    if (
+      this.props.audioStreamStatus &&
+      this.props.audioStreamStatus !== prevProps.audioStreamStatus
+    ) {
+      if (this.state.initialRoom && !this.state.recording) {
+        if (
+          isSafari ||
+          self.props.iOS ||
+          Flashphoner.getMediaProviders()[0] === "MSE"
+        ) {
+          Flashphoner.playFirstVideo(
+            self.localDisplay,
+            true,
+            self.props.PRELOADER_URL
+          ).then(function() {
+            self.publishLocalMedia(self.state.initialRoom);
+          });
+        } else {
+          self.publishLocalMedia(self.state.initialRoom);
+        }
+      } else if (this.state.recording) {
+        self.state.clientStream.unmuteAudio();
+      }
+    }
+    if (
+      !this.props.audioStreamStatus &&
+      this.props.audioStreamStatus !== prevProps.audioStreamStatus
+    ) {
+      if (this.state.recording) {
+        self.state.clientStream.muteAudio();
+      }
+    }
     if (this.props.visible && this.props.visible !== prevProps.visible) {
       console.log("IOS", this.props.iOS);
       if (
@@ -352,6 +387,8 @@ export class UnmountTracker extends React.Component {
       if (this.props.unmountFunction) {
         this.props.unmountFunction();
       }
+
+      self.setState({ recording: false });
 
       if (this.state.clientStream) {
         console.log("mute audio", this.state.clientStream);

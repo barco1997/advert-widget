@@ -36,7 +36,10 @@ const MessageContainer = styled.div`
       top: 0px !important;
       height: 100% !important;
       width: 100% !important;
-      background: linear-gradient(gray, transparent) !important;
+      background: ${props =>
+        props.safari
+          ? "none"
+          : "linear-gradient(gray, transparent)"} !important;
       ${media.desktop`
       background: none !important;
       `}
@@ -135,6 +138,7 @@ export class StreamChat extends React.Component {
             ref={c => {
               this.messageList = c;
             }}
+            safari={this.props.isSafari}
           >
             {this.state.messages.map(message => (
               <Response key={message.id || uuidv1()}>{message.text}</Response>
