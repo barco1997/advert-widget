@@ -62,7 +62,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
   }
@@ -122,7 +122,7 @@ export class EmailRequest extends React.Component {
     return (
       <TextWrap>
         <MainBlock>
-          <InfoBlock>
+          <InfoBlock color={this.props.color}>
             <InfoBlockHeader>Не пропустите ответ</InfoBlockHeader>
             <InfoBlockText>
               Чтобы узнать, что вам ответили, включите уведомления или оставьте

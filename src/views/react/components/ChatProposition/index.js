@@ -67,7 +67,7 @@ const Date = styled.time`
     font-size: 12px !important;
     border-radius: 10px !important;
     padding: 1px 12px !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
   }
 `;
 
@@ -135,7 +135,7 @@ export class Response extends React.Component {
           )}
         </ItemStart>
         <ItemEnd>
-          <Date>{this.props.messagesCount}</Date>
+          <Date color={this.props.color}>{this.props.messagesCount}</Date>
         </ItemEnd>
       </Item>
     );

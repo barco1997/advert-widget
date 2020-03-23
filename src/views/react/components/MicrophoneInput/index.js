@@ -135,7 +135,7 @@ const ImageSend = styled.div`
 const MicroButton = styled.div`
   &&& {
     background: ${props =>
-      props.isActive ? "#FF2D55 !important" : "#f2f2f2 !important"};
+      props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
     border-radius: 50% !important;
     margin-right: ${props => (props.isActive ? "0px" : "18px")} !important;
     &:focus {
@@ -204,7 +204,7 @@ class MicrophoneInput extends React.Component {
           />
         )}
         {this.props.value.length < 1 && (
-          <MicroButton onClick={this.handleMicro} isActive={isActive}>
+          <MicroButton onClick={this.handleMicro} isActive={isActive} color={this.props.color}>
             <img
               src={
                 isActive

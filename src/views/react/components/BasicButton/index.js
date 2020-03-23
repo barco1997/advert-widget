@@ -23,7 +23,7 @@ const Wrapper = styled.button`
 
     cursor: pointer !important;
     background: ${props =>
-      props.isClicked ? "#FF4165" : "#FF2D55"} !important;
+      props.isClicked ? "#FF4165" : props.color} !important;
     &:hover {
       background: #ff4165 !important;
     }
@@ -60,6 +60,7 @@ export class BasicButton extends React.Component {
         isClicked={this.state.isClicked}
         onClick={this.handleClick}
         onBlur={this.handleBlur}
+        color={this.props.color}
       >
         {this.props.children}
       </Wrapper>

@@ -324,7 +324,7 @@ const CloseWrapperA = styled.div`
     right: 0px !important;*/
     width: 100% !important;
     height: 64px !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     display: flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
@@ -436,7 +436,7 @@ const MicWrap = styled.div`
     align-items: center !important;
     justify-content: center !important;
     background: ${props =>
-      props.isActive ? "#FF2D55 !important" : "#f2f2f2 !important"};
+      props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
     border-radius: 50% !important;
     cursor: pointer !important;
 
@@ -458,7 +458,7 @@ const SendIconWrap = styled.div`
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     border-radius: 50% !important;
     cursor: pointer !important;
   }
@@ -754,7 +754,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     height: 300px !important;
     width: 100% !important;
   }
@@ -1714,7 +1714,7 @@ export class Chat extends React.Component {
                 />
               ) : (
                 <Fragment>
-                  <CloseWrapperA>
+                  <CloseWrapperA color={this.props.color}>
                     <DisclaimerWrapperMobile>
                       <Disclaimer />
                     </DisclaimerWrapperMobile>
@@ -1762,7 +1762,7 @@ export class Chat extends React.Component {
                         <Fragment>
                           {!this.state.messages ||
                           this.state.messages.length == 0 ? (
-                            <InfoBlock>
+                            <InfoBlock color={this.props.color}>
                               <InfoBlockHeader>
                                 {this.props.greetingTitle}
                               </InfoBlockHeader>
@@ -1846,6 +1846,7 @@ export class Chat extends React.Component {
                                     onTouchEnd={this.handleUp}
                                     tabIndex="0"
                                     isActive={this.state.ifTimer}
+                                    color={this.props.color}
                                   >
                                     <ImageMic
                                       src={
@@ -1863,6 +1864,7 @@ export class Chat extends React.Component {
                               {this.state.value.length > 0 && (
                                 <SendIconWrap
                                   onClick={event => this.handleSubmit(event)}
+                                  color={this.props.color}
                                 >
                                   <ImageSend
                                     src={
@@ -1987,7 +1989,7 @@ export class Chat extends React.Component {
                     }
                   />
                   {/*{this.state.valueStream.length > 0 && (
-                    <SendIconWrapS onClick={() => this.handleSubmitS()} stream>
+                    <SendIconWrapS color={this.props.color} onClick={() => this.handleSubmitS()} stream>
                       <ImageSend
                         src={
                           "https://witheyezon.com/eyezonsite/static/images/Subtract.png"

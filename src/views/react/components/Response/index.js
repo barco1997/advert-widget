@@ -80,7 +80,7 @@ const ExtraStream = styled.div`
     flex-direction: row !important;
     align-items: flex-start !important;
     padding: 15px !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     border-radius: 5px 5px 5px 0px !important;
 
     ${media.desktop`
@@ -433,7 +433,7 @@ export class Response extends React.Component {
                   </Title>
                 )}
               {this.props.flv && this.state.typeVar === "stream" && (
-                <ExtraStream>
+                <ExtraStream color={this.props.color}>
                   {this.props.description && (
                     <SummaryTopStream>
                       {this.props.description} начал прямую трансляцию

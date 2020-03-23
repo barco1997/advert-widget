@@ -38,13 +38,13 @@ const ButtonExtra = styled.div`
     padding-top: 4px !important;
     font-family: "Montserrat" !important;
     font-size: 13px !important;
-    color: #ff2d55 !important;
+    color: ${props => `${props.color} !important`};
   }
 `;
 
 const ControlButton = ({ children, action }) => (
   <Button onClick={action}>
-    <ButtonExtra>{children}</ButtonExtra>
+    <ButtonExtra color={this.props.color}>{children}</ButtonExtra>
   </Button>
 );
 

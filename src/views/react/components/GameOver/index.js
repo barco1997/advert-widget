@@ -56,7 +56,7 @@ const Count = styled.span`
     font-size: 64px !important;
     line-height: 100% !important;
 
-    color: #ff2d55 !important;
+    color: ${props => `${props.color} !important`};
     text-align: center !important;
     letter-spacing: 0.02em !important;
 
@@ -84,7 +84,7 @@ const RefreshButton = styled.button`
       outline: none !important;
     }
 
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     color: #ffffff !important;
 
     padding: 12px 19px !important;
@@ -127,10 +127,12 @@ class GameOver extends React.Component {
         <Container>
           {/* <img src={Image} alt="error" /> */}
           <Header>Game over</Header>
-          <Count>{count}</Count>
+          <Count color={this.props.color}>{count}</Count>
           <Description>Ваш счёт</Description>
           <ButtonsWrap>
-            <RefreshButton onClick={restart}>Попробовать ещё</RefreshButton>
+            <RefreshButton onClick={restart} color={this.props.color}>
+              Попробовать ещё
+            </RefreshButton>
             <OpaqueButton onClick={stopGame}>Закончить</OpaqueButton>
           </ButtonsWrap>
         </Container>
