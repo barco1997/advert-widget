@@ -79,7 +79,7 @@ const Input = styled.input`
 const MicroButton = styled.button`
   &&& {
     background: ${props =>
-      props.isActive ? "#FF2D55 !important" : "#f2f2f2 !important"};
+      props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
     border-radius: 50% !important;
     padding: 11px 15px !important;
     &:focus {
@@ -121,7 +121,11 @@ class MicrophoneInput extends React.Component {
     return (
       <MicroWrap isActive={isActive}>
         {!isActive && <Input placeholder="Сообщение..." />}
-        <MicroButton onClick={this.handleMicro} isActive={isActive}>
+        <MicroButton
+          onClick={this.handleMicro}
+          isActive={isActive}
+          color={this.props.color}
+        >
           {/*<img src={isActive ? "https://www.witheyezon.com/eyezonsite/static/images/muteMicro.svg" : "https://www.witheyezon.com/eyezonsite/static/images/micro.svg"} />*/}
         </MicroButton>
       </MicroWrap>

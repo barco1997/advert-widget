@@ -20,7 +20,7 @@ const Reactangle = styled.div`
       props.height ? `${props.height}px !important;` : "0px !important;"};
 
     width: 40px !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
   }
 `;
 
@@ -29,25 +29,28 @@ export default function Pipe({
   x,
   bottomPipeTop,
   bottomPipeHeight,
-  isHit
+  isHit,
+  color
 }) {
-  const color = isHit ? "#FF2D55" : "#FF2D55";
+  const colors = isHit ? color : "#FF2D55";
 
   return (
     <div id="pipe">
       <Wrap pipeX={x} lowerHeight={0}>
         <Reactangle
+          color={color}
           width={40}
           height={upperPipeHeight}
-          fill={{ color: color }}
+          fill={{ color: colors }}
           up
         />
       </Wrap>
       <Wrap pipeX={x} lowerHeight={bottomPipeTop}>
         <Reactangle
+          color={color}
           width={40}
           height={bottomPipeHeight}
-          fill={{ color: color }}
+          fill={{ color: colors }}
         />
       </Wrap>
     </div>

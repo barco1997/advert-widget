@@ -78,7 +78,7 @@ const DialogNumber = styled.div`
     line-height: 160% !important;
 
     padding: 3px 6px !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     border-radius: 50% !important;
   }
 `;
@@ -96,7 +96,11 @@ class Dialog extends React.Component {
           Покажите плес фокус с кроликом
         </DialogHeader>
         <RowWrap>
-          {isEnd ? <Stars isLittle={true} /> : <DialogNumber>12</DialogNumber>}
+          {isEnd ? (
+            <Stars isLittle={true} />
+          ) : (
+            <DialogNumber color={this.props.color}>12</DialogNumber>
+          )}
           <DialogDate>14.01.2019</DialogDate>
         </RowWrap>
       </DialogWrap>

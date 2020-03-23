@@ -21,7 +21,7 @@ const Logo = styled.div`
   &&& {
     position: relative !important;
     width: 24px !important;
-    border: 8px solid #ff2d55 !important;
+    border: ${props => `8px solid ${props.color} !important`};
     height: 24px !important;
     border-radius: 50% !important;
     background: black !important;
@@ -242,7 +242,7 @@ class Game extends Component {
           {score}
         </ScoreWrap>
         <Wrap pipeX={left} lowerHeight={birdHeight}>
-          <Logo>
+          <Logo color={this.props.color}>
             <White />
           </Logo>
         </Wrap>

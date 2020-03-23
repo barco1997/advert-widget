@@ -138,7 +138,7 @@ const NotificationWrapper = styled.div`
     right: -7px !important;
     border-radius: 50% !important;
     color: white !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     font-size: 10px !important;
     display: flex !important;
     justify-content: center !important;
@@ -256,7 +256,8 @@ export class Button extends React.Component {
       displayEmailRequest: false,
       emailSentFlag: false,
       displayMainRequest: false,
-      currentTitle: null
+      currentTitle: null,
+      color: "#ff2d55"
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -731,7 +732,7 @@ export class Button extends React.Component {
             onMouseLeave={() => this.handleMouseLeave()}*/
           >
             {this.props.notifications > 0 && (
-              <NotificationWrapper>
+              <NotificationWrapper color={this.props.color}>
                 {this.props.notifications}
               </NotificationWrapper>
             )}

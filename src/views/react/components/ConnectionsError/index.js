@@ -61,7 +61,7 @@ const RefreshButton = styled.button`
       outline: none !important;
     }
 
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     color: #ffffff !important;
 
     padding: 12px 30px !important;
@@ -107,7 +107,9 @@ class ConnectionsError extends React.Component {
           Проверьте подключение к сети и попробуйте возобновить трансляцию
         </ErrorDescription>
         <ButtonsWrap>
-          <RefreshButton onClick={renewStream}>Возобновить</RefreshButton>
+          <RefreshButton onClick={renewStream} color={this.props.color}>
+            Возобновить
+          </RefreshButton>
           <EndButton onClick={endStream}>Завершить</EndButton>
         </ButtonsWrap>
       </ErrorWrap>

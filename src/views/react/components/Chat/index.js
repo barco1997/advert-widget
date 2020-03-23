@@ -432,7 +432,7 @@ const SendRequest = styled.button`
   &&& {
     width: 160px !important;
     height: 28px !important;
-    background: #ff2d55 !important;
+    background: ${props => `${props.color} !important`};
     border-radius: 5px !important;
     margin-top: 10px !important;
     text-decoration: none !important;
@@ -1520,7 +1520,10 @@ export class Chat extends React.Component {
                         </CartWrapper>
                       </CartTextFieldExtra>
                       <SendRow>
-                        <SendRequest onClick={this.handleSubmit}>
+                        <SendRequest
+                          onClick={this.handleSubmit}
+                          color={this.props.color}
+                        >
                           {/*Send*/}Отправить
                         </SendRequest>
                         <FontDisclaimer>

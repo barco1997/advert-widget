@@ -20,9 +20,9 @@ const Button = styled.div`
     font-weight: 800 !important;
     transition: 0.5s ease-in-out;
     background: ${props =>
-      props.status !== "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
+      props.status !== "LIVE" ? props.color : "#FFFFFF"} !important;
     color: ${props =>
-      props.status === "LIVE" ? "#FF2D55" : "#FFFFFF"} !important;
+      props.status === "LIVE" ? props.color : "#FFFFFF"} !important;
   }
 `;
 
@@ -51,7 +51,7 @@ const SpinnerContent = styled.div`
     position: absolute !important;
     width: 11px !important;
     height: 11px !important;
-    border: 2px solid #ff2d55 !important;
+    border: ${props => `2px solid ${props.color} !important`};
     border-top-color: transparent !important;
     border-radius: 50% !important;
     animation: ${spinnAnimation} 1s linear infinite !important;
@@ -64,7 +64,7 @@ const SpinnerContent = styled.div`
 export class StatusButton extends React.Component {
   render() {
     return (
-      <Button>
+      <Button color={this.props.color} status={this.props.status}>
         {this.props.status === "CONNECTION" && (
           <SpinnerWrap>
             <Spinner>

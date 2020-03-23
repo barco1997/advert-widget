@@ -3,45 +3,81 @@ import styled, { keyframes, css } from "styled-components";
 
 const bottom = keyframes`
     0% {
+      -webkit-transform: translateY(100%);
+        -moz-transform: translateY(100%);
+        -ms-transform: translateY(100%);
         transform: translateY(100%);
     }
       20% {
+        -webkit-transform: translateY(80%);
+        -moz-transform: translateY(80%);
+        -ms-transform: translateY(80%);
         transform: translateY(80%);
     }
     50%{
+      -webkit-transform: translateY(50%);
+        -moz-transform: translateY(50%);
+        -ms-transform: translateY(50%);
         transform: translateY(50%);
     }
     100% {
+      -webkit-transform: translateY(0%);
+        -moz-transform: translateY(0%);
+        -ms-transform: translateY(0%);
         transform: translateY(0%);
     }   
 `;
 
 const right = keyframes`
     0% {
+      -webkit-transform: translateX(100%);
+        -moz-transform: translateX(100%);
+        -ms-transform: translateX(100%);
         transform: translateX(100%);
     }
       20% {
+        -webkit-transform: translateX(80%);
+        -moz-transform: translateX(80%);
+        -ms-transform: translateX(80%);
         transform: translateX(80%);
     }
     50%{
+            -webkit-transform: translateX(50%);
+        -moz-transform: translateX(50%);
+        -ms-transform: translateX(50%);
         transform: translateX(50%);
     }
     100% {
+      -webkit-transform: translateX(0%);
+        -moz-transform: translateX(0%);
+        -ms-transform: translateX(0%);
         transform: translateX(0%);
     }   
 `;
 
 const left = keyframes`
     0% {
+      -webkit-transform: translateX(-100%);
+        -moz-transform: translateX(-100%);
+        -ms-transform: translateX(-100%);
         transform: translateX(-100%);
     }
       20% {
+        -webkit-transform: translateX(-80%);
+        -moz-transform: translateX(-80%);
+        -ms-transform: translateX(-80%);
         transform: translateX(-80%);
     }
     50%{
+      -webkit-transform: translateX(-50%);
+        -moz-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
         transform: translateX(-50%);
     }
     100% {
+      -webkit-transform: translateX(0%);
+        -moz-transform: translateX(0%);
+        -ms-transform: translateX(0%);
         transform: translateX(0%);
     }   
 `;
@@ -54,6 +90,30 @@ const Wrap = styled.div`
     ${props =>
       props.status === "answer" &&
       css`
+        -webkit-animation: ${props.positions === "bottom"
+            ? bottom
+            : props.positions === "left"
+            ? left
+            : props.positions === "right"
+            ? right
+            : ""}
+          0.5s ease-in-out 0s !important;
+        -moz-animation: ${props.positions === "bottom"
+            ? bottom
+            : props.positions === "left"
+            ? left
+            : props.positions === "right"
+            ? right
+            : ""}
+          0.5s ease-in-out 0s !important;
+        -ms-animation: ${props.positions === "bottom"
+            ? bottom
+            : props.positions === "left"
+            ? left
+            : props.positions === "right"
+            ? right
+            : ""}
+          0.5s ease-in-out 0s !important;
         animation: ${props.positions === "bottom"
             ? bottom
             : props.positions === "left"
