@@ -242,7 +242,7 @@ class Game extends Component {
     const birdHeight = newVelocity + this.state.birdHeight;
     const newPipes = this.state.pipes.map(pipe => {
       const newX = pipe.x - this.state.pipeSpeed;
-      if (newX < -6) {
+      if (newX < -28) {
         return {
           upperPipeHeight:
             this.props.height / 2 -
