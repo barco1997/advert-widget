@@ -195,12 +195,15 @@ export class LeaveEmail extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
-  handleChange(field, value) {
+  handleChange(e, field) {
     this.setState({
-      [field]: value
+      [field]: e.currentTarget.value
     });
   }
   handleClick() {
+    if (this.state.tosend === 1) {
+      this.props.sendEmailDetails(this.state.value, "Клиент");
+    }
     this.setState({
       tosend: this.state.tosend + 1
     });
@@ -227,7 +230,12 @@ export class LeaveEmail extends React.Component {
               </NotifyButtonWrapper>
             )}
             {this.state.tosend === 1 && (
-              <Email type="text" placeholder="Адрес электронной почты" />
+              <Email
+                type="text"
+                placeholder="Адрес электронной почты"
+                value={this.state.value}
+                onChange={e => this.handleChange(e, "value")}
+              />
             )}
             {this.state.tosend === 1 && (
               <Button onClick={this.handleClick}>OK</Button>
