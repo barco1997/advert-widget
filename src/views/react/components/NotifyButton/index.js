@@ -170,7 +170,9 @@ export class NotifyButton extends React.Component {
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
-        <BlurredButton>Включить уведомления</BlurredButton>
+        <BlurredButton onClick={this.props.notificationPermission}>
+          Включить уведомления
+        </BlurredButton>
       </Wrapper>
     );
   }

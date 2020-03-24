@@ -61,7 +61,8 @@ export class App extends React.Component {
           requestFieldText: response.data.requestFieldText,
           mainText: response.data.mainText,
           askedUserData: response.data.askedUserData,
-          miniGame: response.data.miniGame
+          miniGame: response.data.miniGame,
+          position: response.data.position.toLowerCase()
         });
       })
       .catch(function(error) {
@@ -135,6 +136,7 @@ export class App extends React.Component {
           miniGame={this.state.miniGame}
           countdown={this.state.countdown}
           timerFlag={this.state.countdown !== 0}
+          position={this.state.position}
           /*firebase={this.props.firebase}*/
         />
       </React.Fragment>

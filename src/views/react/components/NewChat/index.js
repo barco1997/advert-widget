@@ -1711,6 +1711,7 @@ export class Chat extends React.Component {
                   height={this.props.innerHeight}
                   width={496}
                   stopGame={this.stopGame}
+                  color={this.props.color}
                 />
               ) : (
                 <Fragment>
@@ -1744,6 +1745,7 @@ export class Chat extends React.Component {
                     <LeaveEmail
                       sendEmailDetails={this.props.sendEmailDetails}
                       destroy={this.props.destroy}
+                      notificationPermission={this.props.notificationPermission}
                     />
                   ) : (
                     <Fragment>
@@ -1790,6 +1792,10 @@ export class Chat extends React.Component {
                               color={this.props.color}
                               miniGame={this.props.miniGame}
                               timerFlag={this.props.timerFlag}
+                              sendEmailDetails={this.props.sendEmailDetails}
+                              notificationPermission={
+                                this.props.notificationPermission
+                              }
                             />
                           )}
                         </Fragment>

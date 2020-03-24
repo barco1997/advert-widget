@@ -423,20 +423,22 @@ export class Button extends React.Component {
 
   notificationPermission() {
     let self = this;
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "default") {
-      self.setState({
-        notificationMessageToggle: true
-      });
-      Notification.requestPermission(function(permission) {
-        if (permission === "granted") {
-          //ls.set("notificationPermission", true);
-        }
+    if (!iOS) {
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+      } else if (Notification.permission === "default") {
         self.setState({
-          notificationMessageToggle: false
+          notificationMessageToggle: true
         });
-      });
+        Notification.requestPermission(function(permission) {
+          if (permission === "granted") {
+            //ls.set("notificationPermission", true);
+          }
+          self.setState({
+            notificationMessageToggle: false
+          });
+        });
+      }
     }
   }
 
@@ -462,9 +464,9 @@ export class Button extends React.Component {
       });
     }
     //e.preventDefault();
-    if (!iOS) {
+    /*if (!iOS) {
       this.notificationPermission();
-    }
+    }*/
     if (ls.get("dialogId")) {
       this.socket.emit("readMessage", ls.get("dialogId"));
     }
@@ -727,7 +729,7 @@ export class Button extends React.Component {
             onClick={event => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
             status="rest"
-            positions="left"
+            positions="bottom"
             count={this.props.notifications}
           />
         )}
@@ -758,6 +760,7 @@ export class Button extends React.Component {
             countdown={this.props.countdown}
             miniGame={this.props.miniGame}
             timerFlag={this.props.timerFlag}
+            notificationPermission={this.notificationPermission}
             /*firebase={this.props.firebase}*/
           />
         )}
