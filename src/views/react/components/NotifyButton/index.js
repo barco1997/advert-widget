@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-//import Image from "./tick.svg";
 const Wrapper = styled.div`
   &&& {
     display: flex !important;
@@ -64,7 +63,7 @@ const Email = styled.input`
 
     font-family: "Montserrat" !important;
     font-style: normal !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     font-size: 14px !important;
     line-height: 160% !important;
     color: #cacaca !important;
@@ -117,17 +116,50 @@ const Text = styled.div`
 export class NotifyButton extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      tosend: 0
+    };
     this.handleClick = this.handleClick.bind(this);
+    this.handleEmail = this.handleEmail(this);
   }
-  handleClick() {}
+  handleClick() {
+    this.setState({
+      tosend: 2
+    });
+    this.props.onClick();
+  }
+  handleEmail() {
+    this.setState({
+      tosend: 1
+    });
+    console.log(this.state.tosend);
+  }
   render() {
     return (
       <Wrapper>
         <TextWrapper>{this.props.text}</TextWrapper>
         <MiddleWrapper>
-          <Email type="text" placeholder="Адрес электронной почты" />
-          <Button onClick={this.props.onClick}>OK</Button>
+          {this.state.tosend === 0 && (
+            <NotifyButtonWrapper onClick={this.handleEmail}>
+              <Text>Получить ссылку на Email</Text>
+            </NotifyButtonWrapper>
+          )}
+          {this.state.tosend === 1 && (
+            <Email type="text" placeholder="Адрес электронной почты" />
+          )}
+          {this.state.tosend === 1 && (
+            <Button onClick={this.handleClick}>OK</Button>
+          )}
+
+          {this.state.tosend === 2 && (
+            <NotifyButtonWrapper>
+              <Text>Уведомление на Email</Text>
+              <img
+                src="https://www.witheyezon.com/eyezonsite/static/images/tick.svg"
+                alt="logo"
+              />
+            </NotifyButtonWrapper>
+          )}
         </MiddleWrapper>
         <NotifyButtonWrapper
           onClick={this.handleClick}
