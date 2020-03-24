@@ -1,8 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import FormField from "../FormField";
-import BasicButton from "../BasicButton";
-import WhiteButton from "../WhiteButton";
 import { media } from "../../../../utils/media";
 import BlurredButton from "../BlurredButton";
 
@@ -99,24 +96,6 @@ const InfoBlockText = styled.div`
 `;
 
 export class NoStreamersView extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      tosend: 0
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleChange(field, value) {
-    this.setState({
-      [field]: value
-    });
-  }
-  handleClick() {
-    this.setState({
-      tosend: this.state.tosend + 1
-    });
-  }
   render() {
     return (
       <TextWrap>
