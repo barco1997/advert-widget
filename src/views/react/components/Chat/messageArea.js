@@ -203,6 +203,7 @@ export class MessageArea extends React.Component {
             id={this.state.messages[0].id}
             ifPauseIcon={this.state.messages[0].ifPauseIcon}
             transactionLimit={this.props.transactionLimit}
+            color={this.props.color}
           />
         )}
         {(this.state.awaitingConnection ||
@@ -276,6 +277,7 @@ export class MessageArea extends React.Component {
               id={message.id}
               ifPauseIcon={message.ifPauseIcon}
               transactionLimit={this.props.transactionLimit}
+              color={this.props.color}
             />
           ))}
       </MessageContainer>

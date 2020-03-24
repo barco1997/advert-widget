@@ -1787,6 +1787,7 @@ export class Chat extends React.Component {
                               waitingText={this.props.waitingText}
                               waitingTitle={this.props.waitingTitle}
                               startGame={this.startGame}
+                              color={this.props.color}
                             />
                           )}
                         </Fragment>
@@ -1951,7 +1952,7 @@ export class Chat extends React.Component {
                 />
               </CloseWrapper>
               <StatusWrapper>
-                <StatusButton status="LIVE" />
+                <StatusButton status="LIVE" color={this.props.color} />
               </StatusWrapper>
 
               {/*<ControlShader />*/}

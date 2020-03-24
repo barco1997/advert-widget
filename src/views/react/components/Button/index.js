@@ -773,6 +773,7 @@ export class Button extends React.Component {
             sendEmailDetails={this.sendEmailDetails}
             currentTitle={this.state.currentTitle}
             socket={this.socket}
+            color={this.state.color}
             /*firebase={this.props.firebase}*/
           />
         )}

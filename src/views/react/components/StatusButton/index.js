@@ -20,9 +20,9 @@ const Button = styled.div`
     font-weight: 800 !important;
     transition: 0.5s ease-in-out;
     background: ${props =>
-      props.status !== "LIVE" ? props.color : "#FFFFFF"} !important;
-    color: ${props =>
       props.status === "LIVE" ? props.color : "#FFFFFF"} !important;
+    color: ${props =>
+      props.status !== "LIVE" ? props.color : "#FFFFFF"} !important;
   }
 `;
 
