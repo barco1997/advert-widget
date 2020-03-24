@@ -305,7 +305,7 @@ export class Button extends React.Component {
     );
     this.setState({
       emailSentFlag: true,
-      displayMainRequest: true,
+      displayMainRequest: false,
       displayEmailRequest: false,
       displayChat: true
     });
@@ -728,8 +728,8 @@ export class Button extends React.Component {
           <StartButton
             onClick={event => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
-            status="rest"
-            positions="bottom"
+            status={this.props.notifications.length > 0 ? "answer" : "rest"}
+            positions="right"
             count={this.props.notifications}
           />
         )}

@@ -119,7 +119,7 @@ export class NotifyButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tosend: 0,
+      tosend: props.displayMainRequest ? 0 : 2,
       value: ""
     };
     this.handleClick = this.handleClick.bind(this);
@@ -170,7 +170,10 @@ export class NotifyButton extends React.Component {
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
-        <BlurredButton onClick={this.props.notificationPermission}>
+        <BlurredButton
+          onClick={this.props.notificationPermission}
+          selected={Notification.permission === "granted"}
+        >
           Включить уведомления
         </BlurredButton>
       </Wrapper>

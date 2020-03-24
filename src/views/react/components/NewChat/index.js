@@ -1793,6 +1793,7 @@ export class Chat extends React.Component {
                               miniGame={this.props.miniGame}
                               timerFlag={this.props.timerFlag}
                               sendEmailDetails={this.props.sendEmailDetails}
+                              displayMainRequest={this.props.displayMainRequest}
                               notificationPermission={
                                 this.props.notificationPermission
                               }
