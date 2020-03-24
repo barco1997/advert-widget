@@ -57,7 +57,7 @@ const InfoBlock = styled.div`
     flex-direction: column !important;
     justify-content: flex-end !important;
     background: ${props => `${props.color} !important`};
-    height: 370px !important;
+    height: 320px !important;
     width: 100% !important;
   }
 `;
@@ -136,8 +136,8 @@ const Text = styled.div`
     font-weight: 600 !important;
     font-size: 12px !important;
     line-height: 15px !important;
-    color: ${props => (props.isActive ? "#333333" : "#ababab")} !important;
-    text-shadow: ${props => (props.isActive ? "none" : "none")} !important;
+    color: ${props => (props.black ? "#333333" : "#ababab")} !important;
+    text-shadow: ${props => (props.black ? "none" : "none")} !important;
     margin-right: 10px !important;
     cursor: pointer !important;
 
@@ -190,7 +190,7 @@ export class LeaveEmail extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      notifyEmail: false
+      tosend: 0
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -202,7 +202,7 @@ export class LeaveEmail extends React.Component {
   }
   handleClick() {
     this.setState({
-      notifyEmail: true
+      tosend: this.state.tosend + 1
     });
   }
   render() {
@@ -221,13 +221,19 @@ export class LeaveEmail extends React.Component {
         </MainBlock>
         <ButtonBlock>
           <EmailWrapper>
-            {!this.state.notifyEmail && (
+            {this.state.tosend === 0 && (
+              <NotifyButtonWrapper onClick={this.handleClick}>
+                <Text black={true}>Получить ссылку на Email</Text>
+              </NotifyButtonWrapper>
+            )}
+            {this.state.tosend === 1 && (
               <Email type="text" placeholder="Адрес электронной почты" />
             )}
-            {!this.state.notifyEmail && (
+            {this.state.tosend === 1 && (
               <Button onClick={this.handleClick}>OK</Button>
             )}
-            {this.state.notifyEmail && (
+
+            {this.state.tosend === 2 && (
               <NotifyButtonWrapper>
                 <Text>Уведомление на Email</Text>
                 <img

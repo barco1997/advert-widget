@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import BlurredButton from "../BlurredButton";
 
 const Wrapper = styled.div`
   &&& {
@@ -100,8 +101,8 @@ const Text = styled.div`
     font-weight: 600 !important;
     font-size: 12px !important;
     line-height: 15px !important;
-    color: ${props => (props.isActive ? "#333333" : "#ababab")} !important;
-    text-shadow: ${props => (props.isActive ? "none" : "none")} !important;
+    color: ${props => (props.black ? "#333333" : "#ababab")} !important;
+    text-shadow: ${props => (props.black ? "none" : "none")} !important;
     margin-right: 10px !important;
     cursor: pointer !important;
 
@@ -136,7 +137,7 @@ export class NotifyButton extends React.Component {
         <MiddleWrapper>
           {this.state.tosend === 0 && (
             <NotifyButtonWrapper onClick={this.handleClick}>
-              <Text>Получить ссылку на Email</Text>
+              <Text black={true}>Получить ссылку на Email</Text>
             </NotifyButtonWrapper>
           )}
           {this.state.tosend === 1 && (
@@ -156,22 +157,13 @@ export class NotifyButton extends React.Component {
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
-        <NotifyButtonWrapper
-          onClick={this.handleClick}
-          width={this.props.width}
+        <BlurredButton
+          onClick={() =>
+            this.props.sendEmailDetails(this.state.email, this.state.name)
+          }
         >
-          <Text isActive={!this.props.isActive} onClick={this.handleClick}>
-            {this.props.isActive
-              ? this.props.activeText
-              : this.props.inactiveText}
-          </Text>
-          {this.props.isActive && (
-            <img
-              src="https://www.witheyezon.com/eyezonsite/static/images/tick.svg"
-              alt="logo"
-            />
-          )}
-        </NotifyButtonWrapper>
+          Включить уведомления
+        </BlurredButton>
       </Wrapper>
     );
   }

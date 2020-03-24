@@ -93,7 +93,7 @@ export function react(params, ifOpened, buttons) {
 
   ReactDOM.render(
     /*<FirebaseContext.Provider value={new Firebase()}>*/
-    <App
+    /*<App
       color={params.color}
       button={params.buttonOnTop}
       businessId={params.businessId}
@@ -101,8 +101,11 @@ export function react(params, ifOpened, buttons) {
       ifOpened={ifOpened}
       buttons={buttons}
       eyezonGlobal={params.eyezonGlobal}
-      /*firebase={Firebase ? new Firebase() : null}*/
-    />,
+      /*firebase={Firebase ? new Firebase() : null}
+    />*/
+    <Wrapper>
+      <NotifyButton />
+    </Wrapper>,
     /*</FirebaseContext.Provider>*/ document.getElementById("eyezonRoot")
   );
 }
