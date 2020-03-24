@@ -119,11 +119,20 @@ export class NotifyButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tosend: 0
+      tosend: 0,
+      value: ""
     };
     this.handleClick = this.handleClick.bind(this);
   }
+  handleChange(e, field) {
+    this.setState({
+      [field]: e.currentTarget.value
+    });
+  }
   handleClick() {
+    if (this.state.tosend === 1) {
+      this.props.sendEmailDetails(this.state.value, "Клиент");
+    }
     this.setState({
       tosend: this.state.tosend + 1
     });
@@ -141,7 +150,12 @@ export class NotifyButton extends React.Component {
             </NotifyButtonWrapper>
           )}
           {this.state.tosend === 1 && (
-            <Email type="text" placeholder="Адрес электронной почты" />
+            <Email
+              type="text"
+              placeholder="Адрес электронной почты"
+              value={this.state.value}
+              onChange={e => this.handleChange(e, "value")}
+            />
           )}
           {this.state.tosend === 1 && (
             <Button onClick={this.handleClick}>OK</Button>
@@ -157,13 +171,7 @@ export class NotifyButton extends React.Component {
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
-        <BlurredButton
-          onClick={() =>
-            this.props.sendEmailDetails(this.state.email, this.state.name)
-          }
-        >
-          Включить уведомления
-        </BlurredButton>
+        <BlurredButton>Включить уведомления</BlurredButton>
       </Wrapper>
     );
   }
