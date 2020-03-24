@@ -1744,7 +1744,7 @@ export class Chat extends React.Component {
                     <LeaveEmail
                       sendEmailDetails={this.props.sendEmailDetails}
                       destroy={this.props.destroy}
-                    ></LeaveEmail>
+                    />
                   ) : (
                     <Fragment>
                       {/*<JsChatMessagePlaceholder>

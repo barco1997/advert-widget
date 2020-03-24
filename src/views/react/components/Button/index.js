@@ -39,7 +39,6 @@ const ButtonReqWrapper = styled.div`
   &&& {
     width: 100% !important;
     display: flex !important;
-    position: relative !important;
   }
 `;
 
@@ -726,16 +725,11 @@ export class Button extends React.Component {
         {this.props.button && (
           <StartButton
             onClick={event => this.handleClick(event, this.props.buttonId)}
-          >
-            {this.props.notifications > 0 && (
-              <NotificationWrapper
-                color={this.props.color}
-                status="rest"
-                positions="bottom"
-                count={this.props.notifications}
-              />
-            )}
-          </StartButton>
+            color={this.props.color}
+            status="rest"
+            positions="bottom"
+            count={this.props.notifications}
+          />
         )}
         {/*this.state.displayMessage && (
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
