@@ -46,6 +46,11 @@ export class BlurredButton extends React.Component {
     };
     this.handleClick = this.handleClick.bind(this);
   }
+  componentDidMount() {
+    this.setState({
+      selected: this.props.selected
+    });
+  }
   handleClick() {
     this.setState({
       selected: true
@@ -54,7 +59,10 @@ export class BlurredButton extends React.Component {
   }
   render() {
     return (
-      <Wrapper onClick={this.handleClick} width={this.props.width}>
+      <Wrapper
+        onClick={this.state.selected && this.handleClick}
+        width={this.props.width}
+      >
         <Text selected={!this.state.selected} onClick={this.handleClick}>
           {this.props.children}
         </Text>
