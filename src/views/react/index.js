@@ -7,6 +7,7 @@ import App from "./components/App";
 import { load } from "./constants";
 import NotifyButton from "./components/NotifyButton";
 import LeaveEmail from "./components/LeaveEmail";
+import GetDetailsView from "./components/GetDetailsView";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
 //import BlurredButton from "./components/BlurredButton";
@@ -17,7 +18,7 @@ const Wrapper = styled.div`
   &&& {
     display: flex !important;
     border: 2px solid red !important;
-    width: 800px !important;
+    width: 500px !important;
     height: 900px !important;
     z-index: 3 !important;
     position: absolute !important;

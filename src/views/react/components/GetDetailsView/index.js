@@ -106,7 +106,18 @@ export class GetDetailsView extends React.Component {
     this.state = {
       name: "",
       email: "",
-      phone: ""
+      phone: "",
+      isName:
+        this.props.requestedData === "NAME" ||
+        this.props.requestedData === "EMAIL&NAME"
+          ? true
+          : false,
+      isEmail:
+        this.props.requestedData === "EMAIL" ||
+        this.props.requestedData === "EMAIL&NAME"
+          ? true
+          : false,
+      isPhone: this.props.requestedData === "PHONE" ? true : false
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -127,19 +138,18 @@ export class GetDetailsView extends React.Component {
               интересно.
             </InfoBlockText>
             <FieldWrapper>
-              {this.state.requestedData === "EMAIL" ||
-                ("EMAIL&NAME" && (
-                  <PositionWrapper marginBottom="6px">
-                    <FormField
-                      placeholder="Адрес электронной почты"
-                      value={this.state.email}
-                      onChange={event =>
-                        this.handleChange("email", event.target.value)
-                      }
-                    />
-                  </PositionWrapper>
-                ))}
-              {this.state.requestedData === "PHONE" && (
+              {this.state.isEmail && (
+                <PositionWrapper marginBottom="6px">
+                  <FormField
+                    placeholder="Адрес электронной почты"
+                    value={this.state.email}
+                    onChange={event =>
+                      this.handleChange("email", event.target.value)
+                    }
+                  />
+                </PositionWrapper>
+              )}
+              {this.state.isPhone && (
                 <PositionWrapper marginBottom="6px">
                   <FormField
                     placeholder="Номер телефона"
@@ -150,18 +160,17 @@ export class GetDetailsView extends React.Component {
                   />
                 </PositionWrapper>
               )}
-              {this.state.requestedData === "NAME" ||
-                ("EMAIL&NAME" && (
-                  <PositionWrapper marginBottom="6px">
-                    <FormField
-                      placeholder="имя"
-                      value={this.state.name}
-                      onChange={event =>
-                        this.handleChange("name", event.target.value)
-                      }
-                    />
-                  </PositionWrapper>
-                ))}
+              {this.state.isName && (
+                <PositionWrapper marginBottom="6px">
+                  <FormField
+                    placeholder="имя"
+                    value={this.state.name}
+                    onChange={event =>
+                      this.handleChange("name", event.target.value)
+                    }
+                  />
+                </PositionWrapper>
+              )}
             </FieldWrapper>
           </InfoBlock>
         </MainBlock>
@@ -169,5 +178,9 @@ export class GetDetailsView extends React.Component {
     );
   }
 }
+
+GetDetailsView.defaultProps = {
+  requestedData: "NAME"
+};
 
 export default GetDetailsView;
