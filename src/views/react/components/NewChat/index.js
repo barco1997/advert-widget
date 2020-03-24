@@ -1740,7 +1740,7 @@ export class Chat extends React.Component {
                       }}
                     />
                   </CloseWrapperA>
-                  {/*this.props.displayMainRequest*/ true ? (
+                  {this.props.displayMainRequest ? (
                     <LeaveEmail
                       sendEmailDetails={this.props.sendEmailDetails}
                       destroy={this.props.destroy}

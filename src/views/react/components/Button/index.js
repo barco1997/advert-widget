@@ -11,6 +11,7 @@ import { setConversationIdValue } from "../../constants";
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
+import StartButton from "../StartButton";
 //import { FirebaseContext } from "../Firebase/index";
 //const messageSound = require("https://witheyezon.com/eyezonsite/static/not.mp3");
 //import disableScroll from "disable-scroll";
@@ -107,7 +108,7 @@ const ButtonWrapper = styled.button`
     bottom: 130px !important;
     margin: 0 0 0 0 !important;
 
-    background: ${props => (props.color ? props.color : "white  !important")};
+    background: white !important;
 
     border: solid 1px #dddddd !important;
     border-radius: 28px !important;
@@ -723,32 +724,18 @@ export class Button extends React.Component {
           </ApiOverlay>
         )}
         {this.props.button && (
-          <ButtonWrapper
-            color={this.props.color}
-            toggle={isOpen}
+          <StartButton
             onClick={event => this.handleClick(event, this.props.buttonId)}
-
-            /*onMouseEnter={() => this.handleMouseEnter()}
-            onMouseLeave={() => this.handleMouseLeave()}*/
           >
             {this.props.notifications > 0 && (
-              <NotificationWrapper color={this.props.color}>
-                {this.props.notifications}
-              </NotificationWrapper>
+              <NotificationWrapper
+                color={this.props.color}
+                status="rest"
+                positions="bottom"
+                count={this.props.notifications}
+              />
             )}
-
-            <JsButtonImageWrapper>
-              <JsButtonImage src="https://witheyezon.com/eyezonsite/static/images/image.png" />
-              {/* <LoadingCircle loadingFlag />*/}
-            </JsButtonImageWrapper>
-            <JsButtonText toggle={isOpen}>
-              <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
-              <JsButtonInfo>
-                Уточните все интересующие вас вопросы на онлайн трансляции с
-                нашим сотрудником
-              </JsButtonInfo>
-            </JsButtonText>
-          </ButtonWrapper>
+          </StartButton>
         )}
         {/*this.state.displayMessage && (
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
@@ -786,3 +773,27 @@ export class Button extends React.Component {
 }
 
 export default Button;
+{
+  /*<ButtonWrapper
+            color={this.props.color}
+            toggle={isOpen}
+            onClick={event => this.handleClick(event, this.props.buttonId)}
+          >
+            {this.props.notifications > 0 && (
+              <NotificationWrapper color={this.props.color}>
+                {this.props.notifications}
+              </NotificationWrapper>
+            )}
+
+            <JsButtonImageWrapper>
+              <JsButtonImage src="https://witheyezon.com/eyezonsite/static/images/image.png" />
+            </JsButtonImageWrapper>
+            <JsButtonText toggle={isOpen}>
+              <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
+              <JsButtonInfo>
+                Уточните все интересующие вас вопросы на онлайн трансляции с
+                нашим сотрудником
+              </JsButtonInfo>
+            </JsButtonText>
+            </ButtonWrapper>*/
+}

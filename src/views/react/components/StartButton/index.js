@@ -284,7 +284,9 @@ const Circle = styled.div`
         ? "48px !important"
         : "16px !important"};
 
-    background: green !important;
+    background: ${props =>
+      props.src ? `url(${props.src})` : "green"} !important;
+    background-size: contain !important;
     order: ${props =>
       props.positions === "left" ? "2 !important" : "1 !important"};
   }
@@ -312,9 +314,13 @@ class StartButton extends React.Component {
         <Button
           positions={positions}
           status={status}
-          onClick={this.changeStatus}
+          onClick={this.props.onClick}
         >
-          <Circle positions={positions} status={status} />
+          <Circle
+            positions={positions}
+            status={status}
+            src="https://witheyezon.com/eyezonsite/static/images/image.png"
+          />
           {(positions === "bottom" ||
             positions === "left" ||
             positions === "right") && (
