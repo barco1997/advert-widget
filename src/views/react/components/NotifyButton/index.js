@@ -120,27 +120,21 @@ export class NotifyButton extends React.Component {
       tosend: 0
     };
     this.handleClick = this.handleClick.bind(this);
-    this.handleEmail = this.handleEmail(this);
   }
   handleClick() {
     this.setState({
-      tosend: 2
+      tosend: this.state.tosend + 1
     });
     this.props.onClick();
   }
-  handleEmail() {
-    this.setState({
-      tosend: 1
-    });
-    console.log(this.state.tosend);
-  }
+
   render() {
     return (
       <Wrapper>
         <TextWrapper>{this.props.text}</TextWrapper>
         <MiddleWrapper>
           {this.state.tosend === 0 && (
-            <NotifyButtonWrapper onClick={this.handleEmail}>
+            <NotifyButtonWrapper onClick={this.handleClick}>
               <Text>Получить ссылку на Email</Text>
             </NotifyButtonWrapper>
           )}
