@@ -7,8 +7,6 @@ import App from "./components/App";
 import { load } from "./constants";
 import NotifyButton from "./components/NotifyButton";
 import LeaveEmail from "./components/LeaveEmail";
-import NoStreamersView from "./components/NoStreamersView";
-import NoStreamersFirst from "./components/NoStreamersFirst";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
 //import BlurredButton from "./components/BlurredButton";
@@ -19,8 +17,8 @@ const Wrapper = styled.div`
   &&& {
     display: flex !important;
     border: 2px solid red !important;
-    width: 500px !important;
-    height: 800px !important;
+    width: 800px !important;
+    height: 900px !important;
     z-index: 3 !important;
     position: absolute !important;
     top: 50px !important;
@@ -106,7 +104,7 @@ export function react(params, ifOpened, buttons) {
       /*firebase={Firebase ? new Firebase() : null}
     />*/
     <Wrapper>
-      <NoStreamersFirst />
+      <NotifyButton />
     </Wrapper>,
     /*</FirebaseContext.Provider>*/ document.getElementById("eyezonRoot")
   );

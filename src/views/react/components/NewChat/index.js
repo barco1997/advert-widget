@@ -7,7 +7,7 @@ import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
 import { setLiveArray, getRndInteger, load } from "../../constants";
 import StreamChat from "./streamchat";
-import EmailRequest from "../Button/emailrequest";
+import LeaveEmail from "../LeaveEmail";
 //import MicRecorder from "mic-recorder-to-mp3";
 import UnmountTracker from "../UnmountTracker";
 import StandaloneTimer from "../StandaloneTimer";
@@ -1740,11 +1740,11 @@ export class Chat extends React.Component {
                       }}
                     />
                   </CloseWrapperA>
-                  {this.props.displayMainRequest ? (
-                    <EmailRequest
+                  {/*this.props.displayMainRequest*/ true ? (
+                    <LeaveEmail
                       sendEmailDetails={this.props.sendEmailDetails}
                       destroy={this.props.destroy}
-                    ></EmailRequest>
+                    ></LeaveEmail>
                   ) : (
                     <Fragment>
                       {/*<JsChatMessagePlaceholder>
