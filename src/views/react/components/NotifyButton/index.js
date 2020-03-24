@@ -136,7 +136,6 @@ export class NotifyButton extends React.Component {
     this.setState({
       tosend: this.state.tosend + 1
     });
-    this.props.onClick();
   }
 
   render() {
