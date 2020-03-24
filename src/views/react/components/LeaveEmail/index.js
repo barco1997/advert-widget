@@ -190,7 +190,8 @@ export class LeaveEmail extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      tosend: 0
+      tosend: 0,
+      value: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -251,28 +252,7 @@ export class LeaveEmail extends React.Component {
               </NotifyButtonWrapper>
             )}
           </EmailWrapper>
-          <BlurredButton
-            onClick={() =>
-              this.props.sendEmailDetails(this.state.email, this.state.name)
-            }
-          >
-            Включить уведомления
-          </BlurredButton>
-
-          {/*<PositionWrapper margin="0px">
-            <BasicButton
-              onClick={() =>
-                this.props.sendEmailDetails(this.state.email, this.state.name)
-              }
-            >
-              Отправить
-            </BasicButton>
-          </PositionWrapper>
-          <PositionWrapper margin="15px 0px 0px 0px">
-            <WhiteButton onClick={() => this.props.destroy()}>
-              Нет, спасибо
-            </WhiteButton>
-            </PositionWrapper>*/}
+          <BlurredButton>Включить уведомления</BlurredButton>
         </ButtonBlock>
       </TextWrap>
     );
