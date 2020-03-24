@@ -256,8 +256,7 @@ export class Button extends React.Component {
       displayEmailRequest: false,
       emailSentFlag: false,
       displayMainRequest: false,
-      currentTitle: null,
-      color: "#ff2d55"
+      currentTitle: null
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -332,6 +331,7 @@ export class Button extends React.Component {
 
   componentDidMount() {
     let self = this;
+
     if (this.props.eyezonGlobal)
       this.props.eyezonGlobal.function = (buttonId, title) =>
         this.handleClick(null, buttonId, title);
@@ -773,7 +773,10 @@ export class Button extends React.Component {
             sendEmailDetails={this.sendEmailDetails}
             currentTitle={this.state.currentTitle}
             socket={this.socket}
-            color={this.state.color}
+            color={this.props.color}
+            countdown={this.props.countdown}
+            miniGame={this.props.miniGame}
+            timerFlag={this.props.timerFlag}
             /*firebase={this.props.firebase}*/
           />
         )}

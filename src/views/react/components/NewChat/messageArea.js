@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Response from "../Response";
 //import awaitingBox from "./awaiting.svg";
 import ChatProposition from "../ChatProposition";
+import NotifyButton from "../NotifyButton";
 import AwaitTimer from "../AwaitTimer";
 import moment from "moment";
 import ls from "local-storage";
@@ -116,8 +117,9 @@ const StartGameWrapper = styled.div`
 
 const ButtonWrap = styled.div`
   &&& {
-    margin-left: 20px !important;
+    margin-left: ${props => (props.noTimer ? "0px" : "20px")} !important;
     margin-bottom: 12px !important;
+    margin-top: ${props => (props.noTimer ? "10px" : "0px")} !important;
   }
 `;
 
@@ -200,6 +202,8 @@ export class MessageArea extends React.Component {
       this.state.timestamp &&
       moment().diff(moment(this.state.timestamp, moment.ISO_8601), "minutes") <
         2;
+    const ifTimer =
+      !this.state.timerExceeded && lessThan2 && !this.state.success;
     return (
       <MessageContainer
         ref={c => {
@@ -238,8 +242,9 @@ export class MessageArea extends React.Component {
             <br />
             {this.props.waitingText}
             <br />
-            {!this.state.timerExceeded && lessThan2 && !this.state.success && (
-              <StartGameWrapper>
+
+            <StartGameWrapper>
+              {this.props.timerFlag && ifTimer && (
                 <AwaitTimer
                   exceedFunc={() => {
                     this.setState({
@@ -261,13 +266,19 @@ export class MessageArea extends React.Component {
                     )
                   }
                 />
-                <ButtonWrap>
-                  <OpaqueButton onClick={this.props.startGame}>
-                    Играть
-                  </OpaqueButton>
-                </ButtonWrap>
-              </StartGameWrapper>
-            )}
+              )}
+              {this.props.miniGame &&
+                (this.props.timerFlag
+                  ? ifTimer
+                  : this.state.awaitingConnection) && (
+                  <ButtonWrap noTimer={!this.props.timerFlag}>
+                    <OpaqueButton onClick={this.props.startGame}>
+                      Играть
+                    </OpaqueButton>
+                  </ButtonWrap>
+                )}
+            </StartGameWrapper>
+
             {/*<div>
             <AwaitingBoxWrapper>
               <PlaceholderMessage>{this.props.waitingText}</PlaceholderMessage>
@@ -275,13 +286,12 @@ export class MessageArea extends React.Component {
           </div>*/}
           </ConnectingText>
         )}
-        {!this.state.awaitingConnection && this.state.success && (
-          <Result>Успели!</Result>
-        )}
-        {(this.state.awaitingConnection || this.state.timerExceeded) &&
-          (this.state.timerExceeded || !lessThan2) && (
-            <Late>Задержка с ответом...</Late>
-          )}
+        {this.props.timerFlag &&
+          !this.state.awaitingConnection &&
+          this.state.success && <Result>Успели!</Result>}
+        {this.props.timerFlag &&
+          (this.state.awaitingConnection || this.state.timerExceeded) &&
+          (this.state.timerExceeded || !lessThan2) && <NotifyButton />}
 
         {this.state.messages
           .slice(1, this.state.messages.length)

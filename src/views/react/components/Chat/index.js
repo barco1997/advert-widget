@@ -1447,6 +1447,8 @@ export class Chat extends React.Component {
                       waitingText={this.props.waitingText}
                       waitingTitle={this.props.waitingTitle}
                       color={this.props.color}
+                      miniGame={this.props.miniGame}
+                      timerFlag={this.props.timerFlag}
                     />
                   )}
                   <CustomForm>

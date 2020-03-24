@@ -12,6 +12,12 @@ export class App extends React.Component {
     this.state = {
       notifications: 0,
       notificationStatus: false,
+      countdown: 0,
+      requestFieldText: "String",
+      mainText: "String",
+      color: "#ff2d55",
+      askedUserData: "EMAIL",
+      miniGame: false,
       greetingTitle: "Не стесняйтесь, спросите!",
       greetingText: "Наши сотрудники с радостью ответят на все ваши вопросы",
       waitingText:
@@ -49,7 +55,13 @@ export class App extends React.Component {
           greetingText: response.data.greetingText,
           greetingTitle: response.data.greetingTitle,
           waitingText: response.data.waitingText,
-          waitingTitle: response.data.waitingTitle
+          waitingTitle: response.data.waitingTitle,
+          color: response.data.chatColor,
+          countdown: response.data.countdown,
+          requestFieldText: response.data.requestFieldText,
+          mainText: response.data.mainText,
+          askedUserData: response.data.askedUserData,
+          miniGame: response.data.miniGame
         });
       })
       .catch(function(error) {
@@ -112,11 +124,17 @@ export class App extends React.Component {
           notifications={this.state.notifications}
           setNotifications={this.setNotifications}
           decrementNotifications={this.decrementNotifications}
+          mainText={this.state.mainText}
+          requestFieldText={this.state.requestFieldText}
           greetingText={this.state.greetingText}
           waitingText={this.state.waitingText}
           greetingTitle={this.state.greetingTitle}
           waitingTitle={this.state.waitingTitle}
           eyezonGlobal={this.props.eyezonGlobal}
+          color={this.state.color}
+          miniGame={this.state.miniGame}
+          countdown={this.state.countdown}
+          timerFlag={this.state.countdown !== 0}
           /*firebase={this.props.firebase}*/
         />
       </React.Fragment>

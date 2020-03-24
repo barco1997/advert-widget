@@ -1788,6 +1788,8 @@ export class Chat extends React.Component {
                               waitingTitle={this.props.waitingTitle}
                               startGame={this.startGame}
                               color={this.props.color}
+                              miniGame={this.props.miniGame}
+                              timerFlag={this.props.timerFlag}
                             />
                           )}
                         </Fragment>

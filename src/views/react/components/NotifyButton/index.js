@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+
 //import Image from "./tick.svg";
 const Wrapper = styled.div`
   &&& {
@@ -153,7 +154,7 @@ NotifyButton.defaultProps = {
   inactiveText: "Включить уведомления ",
   activeText: "Уведомления включены ",
   text:
-    "ваплавшуов ваофукшь валофа валфук вофуко валфкош аьв ваовсм ушсьтс у слау в9суа вамзвлс алвазцы у0цаь хвалы всо ушсьтс у слау в9суа вамзвлс алвазцы у0цаь хвалы всо"
+    "К сожалению, сотрудники не успевают ответить, включите уведомления браузера или оставьте электронную почту, и мы вам пришлем ссылку на трансляцию"
 };
 
 export default NotifyButton;
