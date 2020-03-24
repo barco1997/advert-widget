@@ -8,6 +8,7 @@ import { load } from "./constants";
 import NotifyButton from "./components/NotifyButton";
 import LeaveEmail from "./components/LeaveEmail";
 import NoStreamersView from "./components/NoStreamersView";
+import NoStreamersFirst from "./components/NoStreamersFirst";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
 //import BlurredButton from "./components/BlurredButton";
@@ -105,7 +106,7 @@ export function react(params, ifOpened, buttons) {
       /*firebase={Firebase ? new Firebase() : null}
     />*/
     <Wrapper>
-      <NoStreamersView />
+      <NoStreamersFirst />
     </Wrapper>,
     /*</FirebaseContext.Provider>*/ document.getElementById("eyezonRoot")
   );
