@@ -84,8 +84,33 @@ const left = keyframes`
 
 const Wrap = styled.div`
   &&& {
-    position: absolute !important;
+    position: fixed !important;
     z-index: 1000 !important;
+
+    cursor: pointer !important;
+
+    border-radius: ${props =>
+      props.positions === "bottom-left" || props.positions === "bottom-right"
+        ? "50% !important"
+        : props.status === "answer" && props.positions === "bottom"
+        ? "28px !important"
+        : "none !important"};
+    border-top-left-radius: ${props =>
+      props.positions === "bottom" && props.status !== "answer"
+        ? "15px !important"
+        : props.positions === "right"
+        ? "28px !important"
+        : "none !important"};
+    border-top-right-radius: ${props =>
+      props.positions === "bottom" && props.status !== "answer"
+        ? "15px !important"
+        : props.positions === "left"
+        ? "28px !important"
+        : "none !important"};
+    border-bottom-right-radius: ${props =>
+      props.positions === "left" ? "28px !important" : "none !important"};
+    border-bottom-left-radius: ${props =>
+      props.positions === "right" ? "28px !important" : "none !important"};
 
     ${props =>
       props.status === "answer" &&
@@ -131,6 +156,8 @@ const Wrap = styled.div`
         ? "24px !important"
         : props.positions === "bottom"
         ? "0 !important"
+        : props.positions === "left" || props.positions === "right"
+        ? "calc(50% - 12px) !important"
         : "none !important"};
 
     left: ${props =>
@@ -138,6 +165,10 @@ const Wrap = styled.div`
         ? "24px !important"
         : props.positions === "left"
         ? "0 !important"
+        : props.positions === "bottom"
+        ? props.status === "answer"
+          ? "calc(50% - 109px) !important"
+          : "calc(50% - 72px) !important"
         : "none !important"};
     right: ${props =>
       props.positions === "bottom-right"
@@ -151,17 +182,17 @@ const Wrap = styled.div`
 
       left: ${props =>
         props.positions === "bottom-right" || props.positions === "bottom-left"
-          ? "37px !important"
+          ? "47px !important"
           : props.positions === "left"
           ? props.status === "answer"
             ? "205px !important"
-            : "47px !important"
+            : "52px !important"
           : "none !important"};
       right: ${props =>
         props.positions === "right"
           ? props.status === "answer"
             ? "205px !important"
-            : "47px !important"
+            : "52px !important"
           : "none !important"};
       top: ${props =>
         props.positions === "bottom" ? "3px !important" : "0 !important"};
@@ -204,12 +235,23 @@ const Wrap = styled.div`
         props.status !== "rest"
           ? "#ff204a !important"
           : "transparent !important"};
+
     }
+    box-shadow: ${props =>
+      props.positions === "bottom"
+        ? "0px 10px 16px rgba(99, 114, 130, 0.08), 0px 9px 64px rgba(99, 114, 130, 0.12), 0px 24px 40px rgba(99, 114, 130, 0.1) !important"
+        : "0px 4px 16px rgba(99, 114, 130, 0.18) !important"};
+        background: transparent !important;
   }
 `;
 
 const Button = styled.button`
   &&& {
+    cursor: pointer !important;
+
+    background: #ffffff !important;
+    border: none !important;
+
     border-radius: ${props =>
       props.positions === "bottom-left" || props.positions === "bottom-right"
         ? "50% !important"
@@ -218,13 +260,13 @@ const Button = styled.button`
         : "none !important"};
     border-top-left-radius: ${props =>
       props.positions === "bottom" && props.status !== "answer"
-        ? "5px !important"
+        ? "15px !important"
         : props.positions === "right"
         ? "28px !important"
         : "none !important"};
     border-top-right-radius: ${props =>
       props.positions === "bottom" && props.status !== "answer"
-        ? "5px !important"
+        ? "15px !important"
         : props.positions === "left"
         ? "28px !important"
         : "none !important"};
@@ -232,7 +274,6 @@ const Button = styled.button`
       props.positions === "left" ? "28px !important" : "none !important"};
     border-bottom-left-radius: ${props =>
       props.positions === "right" ? "28px !important" : "none !important"};
-    border: none !important;
 
     width: ${props =>
       (props.positions === "bottom" ||
@@ -257,6 +298,9 @@ const Button = styled.button`
           : "4px 14px 4px 4px !important"
         : props.positions === "left"
         ? "4px 4px 4px 15px !important"
+        : props.positions === "bottom-left" ||
+          props.positions === "bottom-right"
+        ? "9px !important"
         : "4px !important"};
     margin: 0 !important;
 
@@ -272,6 +316,7 @@ const Button = styled.button`
 const Circle = styled.div`
   &&& {
     border-radius: 50% !important;
+    cursor: pointer !important;
 
     width: ${props =>
       (props.status === "answer" && props.positions === "bottom") ||
@@ -294,6 +339,7 @@ const Circle = styled.div`
 
 const Span = styled.span`
   &&& {
+    cursor: pointer !important;
     font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: 600 !important;

@@ -701,14 +701,14 @@ export class Button extends React.Component {
           src="https://witheyezon.com/eyezonsite/static/not.mp3"
           hidden="hidden"
         ></audio>
-        {this.state.displayEmailRequest && (
+        {/*this.state.displayEmailRequest && (
           <MinReqWrapper>
             <MinEmailRequest
               closeRequest={this.closeRequest}
               sendEmailDetails={this.sendEmailDetails}
             />
           </MinReqWrapper>
-        )}
+        )*/}
         <NotificationMessageWrapper
           toggle={this.state.notificationMessageToggle}
         >
@@ -727,7 +727,7 @@ export class Button extends React.Component {
             onClick={event => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
             status="rest"
-            positions="bottom"
+            positions="left"
             count={this.props.notifications}
           />
         )}
