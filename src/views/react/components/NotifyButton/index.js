@@ -5,6 +5,7 @@ const Wrapper = styled.div`
   &&& {
     display: flex !important;
     flex-direction: column !important;
+    margin-top: 8px !important;
   }
 `;
 const NotifyButtonWrapper = styled.div`
