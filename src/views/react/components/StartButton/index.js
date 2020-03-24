@@ -84,8 +84,10 @@ const left = keyframes`
 
 const Wrap = styled.div`
   &&& {
-    position: absolute !important;
+    position: fixed !important;
     z-index: 1000 !important;
+
+    cursor: pointer !important;
 
     ${props =>
       props.status === "answer" &&
@@ -138,6 +140,8 @@ const Wrap = styled.div`
         ? "24px !important"
         : props.positions === "left"
         ? "0 !important"
+        : props.positions === "bottom"
+        ? "calc(50% - 72px) !important"
         : "none !important"};
     right: ${props =>
       props.positions === "bottom-right"
@@ -204,12 +208,20 @@ const Wrap = styled.div`
         props.status !== "rest"
           ? "#ff204a !important"
           : "transparent !important"};
+
     }
+    box-shadow: ${props =>
+      props.positions === "bottom"
+        ? "0px 10px 16px rgba(99, 114, 130, 0.08), 0px 9px 64px rgba(99, 114, 130, 0.12), 0px 24px 40px rgba(99, 114, 130, 0.1) !important"
+        : "0px 4px 16px rgba(99, 114, 130, 0.18) !important"};
+        background: #ffffff !important;
   }
 `;
 
 const Button = styled.button`
   &&& {
+    cursor: pointer !important;
+
     border-radius: ${props =>
       props.positions === "bottom-left" || props.positions === "bottom-right"
         ? "50% !important"
@@ -218,13 +230,13 @@ const Button = styled.button`
         : "none !important"};
     border-top-left-radius: ${props =>
       props.positions === "bottom" && props.status !== "answer"
-        ? "5px !important"
+        ? "15px !important"
         : props.positions === "right"
         ? "28px !important"
         : "none !important"};
     border-top-right-radius: ${props =>
       props.positions === "bottom" && props.status !== "answer"
-        ? "5px !important"
+        ? "15px !important"
         : props.positions === "left"
         ? "28px !important"
         : "none !important"};
@@ -272,6 +284,7 @@ const Button = styled.button`
 const Circle = styled.div`
   &&& {
     border-radius: 50% !important;
+    cursor: pointer !important;
 
     width: ${props =>
       (props.status === "answer" && props.positions === "bottom") ||
@@ -294,6 +307,7 @@ const Circle = styled.div`
 
 const Span = styled.span`
   &&& {
+    cursor: pointer !important;
     font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: 600 !important;
