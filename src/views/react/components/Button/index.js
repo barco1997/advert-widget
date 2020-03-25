@@ -727,9 +727,9 @@ export class Button extends React.Component {
           <StartButton
             onClick={event => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
-            status={this.props.notifications > 0 || true ? "answer" : "rest"}
+            status={this.props.notifications > 0 ? "answer" : "rest"}
             positions={this.props.position}
-            count={/*this.props.notifications*/ 10}
+            count={this.props.notifications}
           />
         )}
         {/*this.state.displayMessage && (

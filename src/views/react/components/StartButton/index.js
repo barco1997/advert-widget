@@ -179,7 +179,9 @@ const Wrap = styled.div`
 
     &:after {
       position: absolute !important;
-
+      display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
       left: ${props =>
         props.positions === "BOTTOM_RIGHT" || props.positions === "BOTTOM_LEFT"
           ? "47px !important"
@@ -207,7 +209,7 @@ const Wrap = styled.div`
           : "'' !important"};
       font-weight: 500 !important;
       font-size: 13px !important;
-      line-height: 16px !important;
+      line-height: 13px !important;
       color: #ffffff !important;
       text-align: center !important;
       vertical-align: middle !important;
