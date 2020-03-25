@@ -1764,6 +1764,7 @@ export class Chat extends React.Component {
                       sendEmailDetails={this.props.sendEmailDetails}
                       destroy={this.props.destroy}
                       notificationPermission={this.props.notificationPermission}
+                      color={this.props.color}
                     />
                   ) : (
                     <Fragment>
@@ -1791,6 +1792,7 @@ export class Chat extends React.Component {
                                 greetingTitle={this.props.greetingTitle}
                                 greetingText={this.props.greetingText}
                                 requestedData={this.props.askedUserData}
+                                color={this.props.color}
                               />
                               {/*<InfoBlock color={this.props.color}>
                               <InfoBlockHeader>

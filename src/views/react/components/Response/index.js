@@ -102,7 +102,7 @@ const Title = styled.h4`
     color: ${props => (props.ifRecipient ? "white" : "black")} !important;
     background: ${props =>
       props.ifRecipient
-        ? "linear-gradient(100.96deg, #FF2D55 0%, #FF2D79 100%)"
+        ? /*"linear-gradient(100.96deg, #FF2D55 0%, #FF2D79 100%)"*/ props.color
         : "#ECECEC"} !important;
     margin: 0 !important;
     width: auto !important;
@@ -428,7 +428,10 @@ export class Response extends React.Component {
                   this.state.typeVar === "video" ||
                   this.state.typeVar === "audio"
                 ) && (
-                  <Title ifRecipient={this.props.ifRecipient}>
+                  <Title
+                    ifRecipient={this.props.ifRecipient}
+                    color={this.props.color}
+                  >
                     {this.props.title}
                   </Title>
                 )}
