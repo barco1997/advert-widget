@@ -195,7 +195,9 @@ const Wrap = styled.div`
             : "52px !important"
           : "none !important"};
       top: ${props =>
-        props.positions === "BOTTOM_CENTER" ? "3px !important" : "0 !important"};
+        props.positions === "BOTTOM_CENTER"
+          ? "3px !important"
+          : "0 !important"};
 
       content: ${props =>
         (props.positions === "BOTTOM_RIGHT" ||
@@ -208,6 +210,7 @@ const Wrap = styled.div`
       line-height: 16px !important;
       color: #ffffff !important;
       text-align: center !important;
+      vertical-align: middle !important;
       letter-spacing: -0.006em !important;
 
       height: ${props =>
@@ -217,7 +220,7 @@ const Wrap = styled.div`
             : "7px !important"
           : props.positions === "BOTTOM_LEFT" ||
             props.positions === "BOTTOM_RIGHT"
-          ? "16px !important"
+          ? "18px !important"
           : "13px !important"};
       width: ${props =>
         props.positions === "BOTTOM_CENTER"
@@ -226,7 +229,7 @@ const Wrap = styled.div`
             : "7px !important"
           : props.positions === "BOTTOM_LEFT" ||
             props.positions === "BOTTOM_RIGHT"
-          ? "16px !important"
+          ? "18px !important"
           : "13px !important"};
 
       border-radius: 50% !important;
