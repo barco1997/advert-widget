@@ -295,7 +295,7 @@ export class MessageArea extends React.Component {
             <NotifyButton
               sendEmailDetails={this.props.sendEmailDetails}
               notificationPermission={this.props.notificationPermission}
-              displayMainRequest={this.props.displayMainRequest}
+              emailSentFlag={this.props.emailSentFlag}
             />
           )}
 

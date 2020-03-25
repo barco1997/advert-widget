@@ -22,6 +22,7 @@ import StatusButton from "../StatusButton";
 import AudioRecorder from "audio-recorder-polyfill";
 import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
 import Game from "../Game";
+import GetDetailsView from "../GetDetailsView";
 
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
@@ -41,7 +42,7 @@ const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
 load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
   .then(function() {
-    console.log("Loaded!");
+    console.log("Loaded flashphoner!");
     SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
     STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
     PRELOADER_URL = "https://witheyezon.com/eyezonsite/static/preloader.mp4";
@@ -852,10 +853,14 @@ export class Chat extends React.Component {
       isFirst: false,
       recorder: null,
       gameStarted: false,
-      audioStreamStatus: false
+      audioStreamStatus: false,
+      nameRequested: "",
+      emailRequested: "",
+      phoneRequested: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeInput = this.handleChangeInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitS = this.handleSubmitS.bind(this);
     this.loadInitialMessages = this.loadInitialMessages.bind(this);
@@ -865,7 +870,7 @@ export class Chat extends React.Component {
     this.handleStreamToVideo = this.handleStreamToVideo.bind(this);
 
     this.notifyMe = this.notifyMe.bind(this);
-    this.notificationPermission = this.notificationPermission.bind(this);
+    /*this.notificationPermission = this.notificationPermission.bind(this);*/
     this.handleChangeInStream = this.handleChangeInStream.bind(this);
     this.handleChangeOrientation = this.handleChangeOrientation.bind(this);
     this.orientationChanged = this.orientationChanged.bind(this);
@@ -1048,7 +1053,7 @@ export class Chat extends React.Component {
     }
   }
 
-  notificationPermission() {
+  /*notificationPermission() {
     let self = this;
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
@@ -1065,7 +1070,7 @@ export class Chat extends React.Component {
         });
       });
     }
-  }
+  }*/
 
   componentWillMount() {
     let self = this;
@@ -1426,6 +1431,16 @@ export class Chat extends React.Component {
         }; /*)*/
         ls.remove("awaitTmp");
         self.socket.emit("createDialog", newObj);
+        if (self.props.askedUserData !== "NONE") {
+          const dataToSend = {
+            id: ls.get("userId"),
+            name: this.state.nameRequested,
+            phone: this.state.phoneRequested,
+            email: this.state.emailRequested
+          };
+
+          self.socket.emit("fillClientData", JSON.stringify(dataToSend));
+        }
       } else if (!this.state.awaitingConnection) {
         this.setState(
           {
@@ -1538,12 +1553,10 @@ export class Chat extends React.Component {
       navigator.getUserMedia(
         { audio: true },
         () => {
-          console.log("Permission Granted");
           self.setState({ isBlocked: false, isFirst: true });
           ls.set("micChecked", true);
         },
         () => {
-          console.log("Permission Denied");
           self.setState({ isBlocked: true });
         }
       );
@@ -1671,6 +1684,11 @@ export class Chat extends React.Component {
     /*o.style.height = "1px";
     o.style.height = 25 + o.scrollHeight + "px";*/
   }
+  handleChangeInput(field, value) {
+    this.setState({
+      [field]: value
+    });
+  }
 
   render() {
     //console.log("PROPS", this.props.firebase.putVoice);
@@ -1764,14 +1782,25 @@ export class Chat extends React.Component {
                         <Fragment>
                           {!this.state.messages ||
                           this.state.messages.length == 0 ? (
-                            <InfoBlock color={this.props.color}>
+                            <React.Fragment>
+                              <GetDetailsView
+                                handleChange={this.handleChangeInput}
+                                name={this.state.nameRequested}
+                                phone={this.state.phoneRequested}
+                                email={this.state.emailRequested}
+                                greetingTitle={this.props.greetingTitle}
+                                greetingText={this.props.greetingText}
+                                requestedData={this.props.askedUserData}
+                              />
+                              {/*<InfoBlock color={this.props.color}>
                               <InfoBlockHeader>
                                 {this.props.greetingTitle}
                               </InfoBlockHeader>
                               <InfoBlockText>
                                 {this.props.greetingText}
                               </InfoBlockText>
-                            </InfoBlock>
+                          </InfoBlock>*/}
+                            </React.Fragment>
                           ) : (
                             <MessageArea
                               messages={this.state.messages}
@@ -1797,6 +1826,7 @@ export class Chat extends React.Component {
                               notificationPermission={
                                 this.props.notificationPermission
                               }
+                              emailSentFlag={this.props.emailSentFlag}
                             />
                           )}
                         </Fragment>
@@ -1931,11 +1961,11 @@ export class Chat extends React.Component {
               <UnmountTracker
                 mountFunction={() => {
                   this.socket.emit("enterStream", ls.get("dialogId"));
-                  console.log("enter stream");
+                  //console.log("enter stream");
                 }}
                 unmountFunction={() => {
                   this.socket.emit("leaveStream", ls.get("dialogId"));
-                  console.log("left stream");
+                  //console.log("left stream");
                 }}
                 dialogId={ls.get("dialogId")}
                 visible={this.state.streamFlag /*true*/}

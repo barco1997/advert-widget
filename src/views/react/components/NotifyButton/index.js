@@ -119,7 +119,7 @@ export class NotifyButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tosend: props.displayMainRequest ? 0 : 2,
+      tosend: props.emailSentFlag ? 2 : 0,
       value: ""
     };
     this.handleClick = this.handleClick.bind(this);

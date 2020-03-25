@@ -452,7 +452,7 @@ export class Button extends React.Component {
   }
 
   handleClick(e, buttonId, title) {
-    console.log("EVENT", e);
+    //console.log("EVENT", e);
     this.closeRequest();
     if (title) {
       this.setState({
@@ -480,14 +480,14 @@ export class Button extends React.Component {
 
     if (!ls.get("dialogId")) {
       if (ls.get("userId")) {
-        console.log("PATH 1");
+        //console.log("PATH 1");
         axios
           .post(
             `https://eyezon.herokuapp.com/api/user/${ls.get("userId")}/dialogs`,
             {}
           )
           .then(function(response) {
-            console.log("TESTING NOW 1", response);
+            //console.log("TESTING NOW 1", response);
             const active = response.data.data.filter(
               dialog => !dialog.isDeleted
             );
@@ -510,7 +510,7 @@ export class Button extends React.Component {
             console.log(error);
           });
       } else {
-        console.log("PATH 2");
+        // console.log("PATH 2");
         self.handleRegistration();
       }
     } else {
@@ -527,12 +527,12 @@ export class Button extends React.Component {
           //console.log("TESTING NOW 2", response);
           const active = response.data.data.filter(dialog => !dialog.isDeleted);
           if (response.data.count > 0 && active.length > 0) {
-            console.log("PATH 3", response);
+            // console.log("PATH 3", response);
 
             ls.set("dialogId", active[0]._id);
             self.showChatHere();
           } else {
-            console.log("PATH 4", response);
+            // console.log("PATH 4", response);
             ls.set("dialogId", "");
             self.showChatHere();
           }
@@ -692,8 +692,7 @@ export class Button extends React.Component {
   }
 
   render() {
-    const isOpen = this.state.toggle;
-
+    //console.log("POSITION", this.props.position);
     return (
       <ButtonReqWrapper>
         <audio
@@ -729,7 +728,7 @@ export class Button extends React.Component {
             onClick={event => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
             status={this.props.notifications.length > 0 ? "answer" : "rest"}
-            positions="right"
+            positions={this.props.position}
             count={this.props.notifications}
           />
         )}
@@ -761,6 +760,7 @@ export class Button extends React.Component {
             miniGame={this.props.miniGame}
             timerFlag={this.props.timerFlag}
             notificationPermission={this.notificationPermission}
+            askedUserData={this.props.askedUserData}
             /*firebase={this.props.firebase}*/
           />
         )}
