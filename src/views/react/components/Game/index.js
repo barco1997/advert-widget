@@ -333,6 +333,7 @@ class Game extends Component {
               count={score}
               stopGame={this.props.stopGame}
               restart={this.restart}
+              color={this.props.color}
             />
           </GameOverWrapper>
         )}
@@ -395,6 +396,7 @@ class Game extends Component {
               bottomPipeHeight={bottomPipeHeight}
               x={x}
               bottomPipeTop={bottomPipeTop}
+              color={this.props.color}
             />
           );
         })}

@@ -305,7 +305,7 @@ export class Button extends React.Component {
     );
     this.setState({
       emailSentFlag: true,
-      displayMainRequest: true,
+      displayMainRequest: false,
       displayEmailRequest: false,
       displayChat: true
     });
@@ -423,20 +423,22 @@ export class Button extends React.Component {
 
   notificationPermission() {
     let self = this;
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "default") {
-      self.setState({
-        notificationMessageToggle: true
-      });
-      Notification.requestPermission(function(permission) {
-        if (permission === "granted") {
-          //ls.set("notificationPermission", true);
-        }
+    if (!iOS) {
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+      } else if (Notification.permission === "default") {
         self.setState({
-          notificationMessageToggle: false
+          notificationMessageToggle: true
         });
-      });
+        Notification.requestPermission(function(permission) {
+          if (permission === "granted") {
+            //ls.set("notificationPermission", true);
+          }
+          self.setState({
+            notificationMessageToggle: false
+          });
+        });
+      }
     }
   }
 
@@ -450,7 +452,7 @@ export class Button extends React.Component {
   }
 
   handleClick(e, buttonId, title) {
-    console.log("EVENT", e);
+    //console.log("EVENT", e);
     this.closeRequest();
     if (title) {
       this.setState({
@@ -462,9 +464,9 @@ export class Button extends React.Component {
       });
     }
     //e.preventDefault();
-    if (!iOS) {
+    /*if (!iOS) {
       this.notificationPermission();
-    }
+    }*/
     if (ls.get("dialogId")) {
       this.socket.emit("readMessage", ls.get("dialogId"));
     }
@@ -478,14 +480,14 @@ export class Button extends React.Component {
 
     if (!ls.get("dialogId")) {
       if (ls.get("userId")) {
-        console.log("PATH 1");
+        //console.log("PATH 1");
         axios
           .post(
             `https://eyezon.herokuapp.com/api/user/${ls.get("userId")}/dialogs`,
             {}
           )
           .then(function(response) {
-            console.log("TESTING NOW 1", response);
+            //console.log("TESTING NOW 1", response);
             const active = response.data.data.filter(
               dialog => !dialog.isDeleted
             );
@@ -508,7 +510,7 @@ export class Button extends React.Component {
             console.log(error);
           });
       } else {
-        console.log("PATH 2");
+        // console.log("PATH 2");
         self.handleRegistration();
       }
     } else {
@@ -525,12 +527,12 @@ export class Button extends React.Component {
           //console.log("TESTING NOW 2", response);
           const active = response.data.data.filter(dialog => !dialog.isDeleted);
           if (response.data.count > 0 && active.length > 0) {
-            console.log("PATH 3", response);
+            // console.log("PATH 3", response);
 
             ls.set("dialogId", active[0]._id);
             self.showChatHere();
           } else {
-            console.log("PATH 4", response);
+            // console.log("PATH 4", response);
             ls.set("dialogId", "");
             self.showChatHere();
           }
@@ -690,8 +692,7 @@ export class Button extends React.Component {
   }
 
   render() {
-    const isOpen = this.state.toggle;
-
+    //console.log("POSITION", this.props.position);
     return (
       <ButtonReqWrapper>
         <audio
@@ -726,8 +727,8 @@ export class Button extends React.Component {
           <StartButton
             onClick={event => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
-            status="rest"
-            positions="left"
+            status={this.props.notifications.length > 0 ? "answer" : "rest"}
+            positions={this.props.position}
             count={this.props.notifications}
           />
         )}
@@ -758,6 +759,8 @@ export class Button extends React.Component {
             countdown={this.props.countdown}
             miniGame={this.props.miniGame}
             timerFlag={this.props.timerFlag}
+            notificationPermission={this.notificationPermission}
+            askedUserData={this.props.askedUserData}
             /*firebase={this.props.firebase}*/
           />
         )}

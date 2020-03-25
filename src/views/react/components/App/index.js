@@ -50,7 +50,7 @@ export class App extends React.Component {
       .get(url)
       .then(function(response) {
         //let notificationCount = ls.get("notificationCount");
-        console.log("RESP", response);
+        //console.log("RESP", response);
         self.setState({
           greetingText: response.data.greetingText,
           greetingTitle: response.data.greetingTitle,
@@ -61,11 +61,12 @@ export class App extends React.Component {
           requestFieldText: response.data.requestFieldText,
           mainText: response.data.mainText,
           askedUserData: response.data.askedUserData,
-          miniGame: response.data.miniGame
+          miniGame: response.data.miniGame,
+          position: response.data.position.toLowerCase().replace(/_/gi, "-")
         });
       })
       .catch(function(error) {
-        console.log("INITIAL ERROR", error);
+        console.log(error);
       });
     /*var messaging = this.props.firebase.messagingFunc();
     //console.log("MESS", messaging);
@@ -135,6 +136,8 @@ export class App extends React.Component {
           miniGame={this.state.miniGame}
           countdown={this.state.countdown}
           timerFlag={this.state.countdown !== 0}
+          position={this.state.position}
+          askedUserData={this.state.askedUserData}
           /*firebase={this.props.firebase}*/
         />
       </React.Fragment>

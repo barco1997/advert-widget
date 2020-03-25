@@ -291,7 +291,13 @@ export class MessageArea extends React.Component {
           this.state.success && <Result>Успели!</Result>}
         {this.props.timerFlag &&
           (this.state.awaitingConnection || this.state.timerExceeded) &&
-          (this.state.timerExceeded || !lessThan2) && <NotifyButton />}
+          (this.state.timerExceeded || !lessThan2) && (
+            <NotifyButton
+              sendEmailDetails={this.props.sendEmailDetails}
+              notificationPermission={this.props.notificationPermission}
+              emailSentFlag={this.props.emailSentFlag}
+            />
+          )}
 
         {this.state.messages
           .slice(1, this.state.messages.length)

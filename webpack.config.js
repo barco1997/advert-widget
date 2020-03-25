@@ -21,7 +21,7 @@ module.exports = env => {
       entry: SRC,
 
       output: {
-        filename: "widget.js",
+        filename: "eyezonwidget.js",
         path: path.resolve(bundleOutputDir)
       },
       devServer: {
