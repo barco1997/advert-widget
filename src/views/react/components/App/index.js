@@ -62,7 +62,8 @@ export class App extends React.Component {
           mainText: response.data.mainText,
           askedUserData: response.data.askedUserData,
           miniGame: response.data.miniGame,
-          position: response.data.position.toLowerCase().replace(/_/gi, "-")
+          position:
+            response.data.position /*.toLowerCase().replace(/_/gi, "-")*/
         });
       })
       .catch(function(error) {
