@@ -246,6 +246,7 @@ export class MessageArea extends React.Component {
             <StartGameWrapper>
               {this.props.timerFlag && ifTimer && (
                 <AwaitTimer
+                  limit={this.props.countdown / 1000}
                   exceedFunc={() => {
                     this.setState({
                       timerExceeded: true

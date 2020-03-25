@@ -41,7 +41,8 @@ class AwaitTimer extends Component {
     this.state = {
       delay: 1000,
       minutes: this.props.startMin ? this.props.startMin : 0,
-      seconds: this.props.startSec ? this.props.startSec : 0
+      seconds: this.props.startSec ? this.props.startSec : 0,
+      totalSeconds: (this.props.startMin || 0) * 60 + (this.props.startSec || 0)
     };
     this.setTime = this.setTime.bind(this);
   }
@@ -52,19 +53,27 @@ class AwaitTimer extends Component {
   setTime() {
     this.setState(
       {
+        totalSeconds:
+          this.state.totalSeconds < this.props.limit
+            ? this.state.totalSeconds + 1
+            : this.state
+                .totalSeconds /*,
         minutes:
-          this.state.minutes < 2
+          this.state.totalSeconds < this.props.limit
             ? this.state.minutes + Math.floor((this.state.seconds + 1) / 60)
             : this.state.minutes,
         seconds:
-          this.state.minutes < 2
+          this.state.totalSeconds < this.props.limit
             ? this.state.seconds +
               1 -
               60 * Math.floor((this.state.seconds + 1) / 60)
-            : this.state.seconds
+            : this.state.seconds*/
       },
       () => {
-        if (this.state.minutes === 2) {
+        /*this.setState({
+          totalSeconds: this.state.minutes * 60 + this.state.seconds
+        });*/
+        if (this.state.totalSeconds >= this.props.limit) {
           this.props.exceedFunc();
         }
       }
@@ -78,19 +87,20 @@ class AwaitTimer extends Component {
   }
 
   render() {
-    //const minutes = toTwoDigits(this.state.minutes);
-    //const seconds = toTwoDigits(this.state.seconds);
-    const minuteOffset = this.state.seconds === 0 ? 2 : 1;
+    const left = this.props.limit - this.state.totalSeconds;
+    const minutes = toTwoDigits(Math.floor(left / 60));
+    const seconds = toTwoDigits(left - 60 * Math.floor(left / 60));
+    /*const minuteOffset = this.state.seconds === 0 ? 2 : 1;
     const reverseMinutes = toTwoDigits(minuteOffset - this.state.minutes);
     const reverseSeconds = toTwoDigits(
       this.state.seconds === 0 ? 0 : 60 - this.state.seconds
-    );
+    );*/
     return (
       <Wrapper>
-        <SingleChar>{reverseMinutes[0]}</SingleChar>
-        <SingleChar>{reverseMinutes[1]}</SingleChar>:
-        <SingleChar>{reverseSeconds[0]}</SingleChar>
-        <SingleChar>{reverseSeconds[1]}</SingleChar>
+        <SingleChar>{minutes[0]}</SingleChar>
+        <SingleChar>{minutes[1]}</SingleChar>:
+        <SingleChar>{seconds[0]}</SingleChar>
+        <SingleChar>{seconds[1]}</SingleChar>
       </Wrapper>
     );
   }

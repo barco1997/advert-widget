@@ -1827,6 +1827,7 @@ export class Chat extends React.Component {
                                 this.props.notificationPermission
                               }
                               emailSentFlag={this.props.emailSentFlag}
+                              countdown={this.props.countdown}
                             />
                           )}
                         </Fragment>
