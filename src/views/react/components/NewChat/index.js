@@ -1692,6 +1692,7 @@ export class Chat extends React.Component {
 
   render() {
     //console.log("PROPS", this.props.firebase.putVoice);
+    //console.log("COUNTDOWN", this.props.countdown);
     return (
       <ChatWrapper
         displayFlag={this.state.displayFlag}
@@ -1730,6 +1731,7 @@ export class Chat extends React.Component {
                   width={496}
                   stopGame={this.stopGame}
                   color={this.props.color}
+                  countdown={this.props.countdown}
                 />
               ) : (
                 <Fragment>

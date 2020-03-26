@@ -358,6 +358,7 @@ class Game extends Component {
                 "minutes"
               )
             }
+            limit={this.props.countdown / 1000}
           />
           <ExtraPos>
             <OpaqueButton onClick={this.props.stopGame}>Закончить</OpaqueButton>
