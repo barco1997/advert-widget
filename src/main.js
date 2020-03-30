@@ -22,7 +22,7 @@ function app(window) {
     for (var i = 0; i < queue.length; i++) {
       if (queue[i][0].toLowerCase() == "init") {
         configurations = extendObject(configurations, queue[i][1]);
-        console.log("JS-Widget started", configurations);
+        //console.log("JS-Widget started", configurations);
       } else apiHandler(queue[i][0], queue[i][1]);
     }
   }
@@ -43,7 +43,7 @@ function apiHandler(api, params) {
   if (supportedAPI.indexOf(api) === -1)
     throw Error(`Method ${api} is not supported`);
 
-  console.log(`Handling API call ${api}`, params);
+  //console.log(`Handling API call ${api}`, params);
 
   switch (api) {
     // TODO: add API implementation
@@ -78,7 +78,7 @@ function apiHandler(api, params) {
           }
         })
         .catch(function(error) {
-          console.log(error);
+          //console.log(error);
         });
 
       break;

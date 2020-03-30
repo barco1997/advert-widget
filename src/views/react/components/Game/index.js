@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { media } from "../../../../utils/media";
+import { media, mediaType } from "../../../../utils/media";
 import AwaitTimer from "../AwaitTimer";
 import moment from "moment";
 import ls from "local-storage";
@@ -9,7 +9,7 @@ import Pipe from "./Pipe";
 import OpaqueButton from "../OpaqueButton";
 import GameOver from "../GameOver";
 const birdRadius = 24;
-
+const mediaOffset = mediaType.desktop ? 150 : 170;
 const Wrapper = styled.div`
   &&& {
     touch-action: manipulation !important;
@@ -171,10 +171,8 @@ const getInitialPipes = (h, w) => {
   for (let i = 1; i < count; i++) {
     const x = w + 200 + w / i;
     pipes.push({
-      upperPipeHeight:
-        h / 2 - 15 - Math.random() * (!media.desktop ? 170 : 150),
-      bottomPipeHeight:
-        h / 2 - 15 - Math.random() * (!media.desktop ? 170 : 150),
+      upperPipeHeight: h / 2 - 15 - Math.random() * mediaOffset,
+      bottomPipeHeight: h / 2 - 15 - Math.random() * mediaOffset,
       x: x
     });
   }
@@ -245,13 +243,9 @@ class Game extends Component {
       if (newX < -28) {
         return {
           upperPipeHeight:
-            this.props.height / 2 -
-            15 -
-            Math.random() * (!media.desktop ? 170 : 150),
+            this.props.height / 2 - 15 - Math.random() * mediaOffset,
           bottomPipeHeight:
-            this.props.height / 2 -
-            15 -
-            Math.random() * (!media.desktop ? 170 : 150),
+            this.props.height / 2 - 15 - Math.random() * mediaOffset,
           x: this.props.width - 40
         };
       } else {

@@ -104,17 +104,9 @@ export class GetDetailsView extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      isName:
-        this.props.requestedData === "NAME" ||
-        this.props.requestedData === "EMAIL&NAME"
-          ? true
-          : false,
-      isEmail:
-        this.props.requestedData === "EMAIL" ||
-        this.props.requestedData === "EMAIL&NAME"
-          ? true
-          : false,
-      isPhone: this.props.requestedData === "PHONE" ? true : false
+      isName: this.props.requestedData.includes("NAME"),
+      isEmail: this.props.requestedData.includes("EMAIL"),
+      isPhone: this.props.requestedData.includes("PHONE")
     };
   }
 

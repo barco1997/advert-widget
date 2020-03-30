@@ -42,7 +42,7 @@ const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
 load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
   .then(function() {
-    console.log("Loaded flashphoner!");
+    //console.log("Loaded flashphoner!");
     SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
     STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
     PRELOADER_URL = "https://witheyezon.com/eyezonsite/static/preloader.mp4";
@@ -413,19 +413,6 @@ const ImageCart = styled.div`
   }
 `;
 
-const EyezonImage = styled.div`
-  &&& {
-    background: url(${props => props.src}) !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
-    width: 67px !important;
-    height: 16px !important;
-    cursor: pointer !important;
-    margin: 0px 6px !important;
-    margin-bottom: 1px !important;
-  }
-`;
-
 const MicWrap = styled.div`
   &&& {
     position: absolute !important;
@@ -505,32 +492,6 @@ const ImageSend = styled.div`
   }
 `;
 
-const MicLogicHidden = styled.div`
-  &&& {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    position: absolute !important;
-  }
-`;
-
-const CartWrapper = styled.div`
-  &&& {
-    border-radius: 50% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 38px !important;
-    height: 35px !important;
-    background: #f5f5f5 !important;
-    margin-left: 15px !important;
-    cursor: pointer !important;
-    ${media.tablet`
-    width: 44px !important;
-    height: 44px !important;
-  `};
-  }
-`;
-
 const Image = styled.div`
   &&& {
     background: url(${props => props.src}) !important;
@@ -552,31 +513,6 @@ const CustomForm = styled.form`
     height: 63px !important;
     ${media.desktop`
     height: auto !important;
-  `};
-  }
-`;
-
-const SendRow = styled.div`
-  &&& {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: flex-end !important;
-  }
-`;
-
-const FontDisclaimer = styled.div`
-  &&& {
-    font-family: "Montserrat" !important;
-    font-style: normal !important;
-    font-weight: normal !important;
-    font-size: 13px !important;
-
-    color: #9f9f9f !important;
-    display: flex !important;
-    align-items: flex-end !important;
-    ${media.desktop`
-      display: none !important; 
   `};
   }
 `;
@@ -656,47 +592,6 @@ const JsChatMessageContainer = styled.div`
   `};
   }
 `;
-const JsChatMessagePlaceholder = styled.div`
-  &&& {
-    width: 100% !important;
-    font-size: 13px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    color: rgba(0, 0, 0, 0.5) !important;
-    flex: 1 !important;
-    & > :first-child {
-      margin-top: -20px !important;
-    }
-  }
-`;
-const JsChatEmpty = styled.img`
-  &&& {
-    margin-top: 60px !important;
-    width: 176px !important;
-    height: 72px !important;
-  }
-`;
-
-const PlaceholderMessage = styled.div`
-  &&& {
-    white-space: pre-line !important;
-    display: block !important;
-    text-align: center !important;
-    line-height: 1.3 !important;
-    font-size: 14px !important;
-  }
-`;
-
-const TextFieldExtra = styled.div`
-  &&& {
-    margin-top: 20px !important;
-    ${media.android`
-    margin-top: 10px !important;
-    `};
-  }
-`;
 
 const TextFieldExtraS = styled.div`
   &&& {
@@ -738,29 +633,6 @@ const CartTextFieldRelative = styled.div`
   }
 `;
 
-const ControlShader = styled.div`
-  &&& {
-    position: absolute !important;
-    pointer-events: none !important;
-    background: rgba(0, 0, 0, 0.5) !important;
-    height: 35px !important;
-    width: 100% !important;
-    bottom: 0px !important;
-    left: 0 !important;
-  }
-`;
-
-const InfoBlock = styled.div`
-  &&& {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
-    height: 300px !important;
-    width: 100% !important;
-  }
-`;
-
 const ChatWindowExpansion = styled.div`
   &&& {
     flex-direction: column !important;
@@ -774,42 +646,6 @@ const ChatWindowExpansion = styled.div`
       height: ${props =>
         props.height ? `${props.height}px` : "100vh"} !important;
     `}
-  }
-`;
-
-const InfoBlockHeader = styled.div`
-  &&& {
-    font-family: "Montserrat" !important;
-    font-style: normal !important;
-    font-weight: bold !important;
-    font-size: 24px !important;
-    line-height: 140% !important;
-    /* identical to box height, or 34px */
-
-    display: flex !important;
-    align-items: flex-end !important;
-    letter-spacing: 0.02em !important;
-
-    /* Primary / white - background */
-    margin: 0px 24px !important;
-    color: #ffffff !important;
-  }
-`;
-
-const InfoBlockText = styled.div`
-  &&& {
-    font-family: "Montserrat" !important;
-
-    font-style: normal !important;
-    font-weight: normal !important;
-    font-size: 14px !important;
-    line-height: 170% !important;
-    /* or 24px */
-
-    /* Primary / white - background */
-
-    color: #ffffff !important;
-    margin: 16px 24px !important;
   }
 `;
 
@@ -883,7 +719,7 @@ export class Chat extends React.Component {
     this.handleUp = this.handleUp.bind(this);
     this.handleDown = this.handleDown.bind(this);
     this.setAudioDuration = this.setAudioDuration.bind(this);
-    this.onData = this.onData.bind(this);
+
     this.onStop = this.onStop.bind(this);
     this.handleUnload = this.handleUnload.bind(this);
     this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
@@ -1053,25 +889,6 @@ export class Chat extends React.Component {
     }
   }
 
-  /*notificationPermission() {
-    let self = this;
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "default") {
-      self.setState({
-        notificationMessageToggle: true
-      });
-      Notification.requestPermission(function(permission) {
-        if (permission === "granted") {
-          ls.set("notificationPermission", true);
-        }
-        self.setState({
-          notificationMessageToggle: false
-        });
-      });
-    }
-  }*/
-
   componentWillMount() {
     let self = this;
 
@@ -1116,7 +933,7 @@ export class Chat extends React.Component {
           })
           .then(function(response) {})
           .catch(function(error) {
-            console.log(error);
+            //console.log(error);
           });
       });
       this.socket.on("streamToVideo", data => {
@@ -1269,7 +1086,7 @@ export class Chat extends React.Component {
               self.loadInitialMessages(editedMessages);
             })
             .catch(function(error) {
-              console.log(error);
+              //console.log(error);
             });
         }
       }
@@ -1300,7 +1117,7 @@ export class Chat extends React.Component {
       })
       .then(function(response) {})
       .catch(function(error) {
-        console.log(error);
+        //console.log(error);
       });
   }
 
@@ -1518,7 +1335,7 @@ export class Chat extends React.Component {
           "https://witheyezon.com/eyezonsite/static/media-provider.swf"
       });
     } catch (e) {
-      console.log("Your browser doesn't support webrtc or flash");
+      //console.log("Your browser doesn't support webrtc or flash");
       return;
     }
   }
@@ -1565,15 +1382,7 @@ export class Chat extends React.Component {
 
   startMp3() {
     let self = this;
-    /*if (this.state.isBlocked) {
-      console.log("Permission Denied");
-    } else {
-      Mp3Recorder.start()
-        .then(() => {
-          self.setState({ isRecording: true });
-        })
-        .catch(e => console.error(e));
-    }*/
+
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       self.setState({ recorder: new MediaRecorder(stream) });
       // Set record to <audio> when recording will be finished
@@ -1589,29 +1398,9 @@ export class Chat extends React.Component {
   }
 
   stopMp3() {
-    /*if (!this.state.isFirst) {
-      let self = this;
-      Mp3Recorder.stop()
-        .getMp3()
-        .then(([buffer, blob]) => {
-          const blobURL = URL.createObjectURL(blob);
-          self.setState({ blobURL, isRecording: false });
-          ls.set("blobUrl", blobURL);
-          self.onStop(blob);
-        })
-        .catch(e => console.log(e));
-    } else {
-      this.setState({
-        isFirst: false
-      });
-    }*/
     this.state.recorder.stop();
     // Remove “recording” icon from browser tab
     this.state.recorder.stream.getTracks().forEach(i => i.stop());
-  }
-
-  onData(recordedBlob) {
-    //console.log("chunk of real-time data is: ", recordedBlob);
   }
 
   onStop(recordedBlob) {
@@ -1770,15 +1559,6 @@ export class Chat extends React.Component {
                     />
                   ) : (
                     <Fragment>
-                      {/*<JsChatMessagePlaceholder>
-                        <PlaceholderMessage>
-                          {this.props.greetingTitle}
-                          {`\n`}
-                          {this.props.greetingText}
-                        </PlaceholderMessage>
-
-                        <JsChatEmpty src="https://witheyezon.com/eyezonsite/static/images/empty.png" />
-                      </JsChatMessagePlaceholder>*/}
                       <JsChatMessageContainer
                         tHeight={this.state.textAreaHeight}
                       >
@@ -1796,14 +1576,6 @@ export class Chat extends React.Component {
                                 requestedData={this.props.askedUserData}
                                 color={this.props.color}
                               />
-                              {/*<InfoBlock color={this.props.color}>
-                              <InfoBlockHeader>
-                                {this.props.greetingTitle}
-                              </InfoBlockHeader>
-                              <InfoBlockText>
-                                {this.props.greetingText}
-                              </InfoBlockText>
-                          </InfoBlock>*/}
                             </React.Fragment>
                           ) : (
                             <MessageArea
@@ -1918,34 +1690,8 @@ export class Chat extends React.Component {
                                   />
                                 </SendIconWrap>
                               )}
-                              {/*<MicLogicHidden>
-                            <ReactMic
-                              record={this.state.ifTimer}
-                              className="sound-wave"
-                              onStop={this.onStop}
-                              onData={this.onData}
-                              strokeColor="#000000"
-                              backgroundColor="#FF4081"
-                            />
-                          </MicLogicHidden>*/}
                             </CartTextFieldRelative>
-                            {/*<CartWrapper onClick={this.handleCart}>
-                          <ImageCart
-                            src={
-                              "https://witheyezon.com/eyezonsite/static/images/cart.png"
-                            }
-                          />
-                          </CartWrapper>*/}
                           </CartTextFieldExtra>
-                          {/*<SendRow>
-                      <SendRequest onClick={this.handleSubmit}>
-                        Отправить
-                      </SendRequest>
-                      <FontDisclaimer>
-                        мы используем
-                        <EyezonImage src="https://www.witheyezon.com/eyezonsite/static/images/logonew2.png" />
-                      </FontDisclaimer>
-                    </SendRow>*/}
                         </div>
                       </CustomForm>
                     </Fragment>
@@ -1988,9 +1734,7 @@ export class Chat extends React.Component {
                     this.setState({
                       streamFlag: false
                     });
-                    //this.socket.emit("leaveStream", ls.get("userId"));
-                    /*this.live.pause();
-                    flvPlayer.destroy();*/
+
                     ls.set("streamInProgress", false);
                   }}
                 />
@@ -1999,7 +1743,6 @@ export class Chat extends React.Component {
                 <StatusButton status="LIVE" color={this.props.color} />
               </StatusWrapper>
 
-              {/*<ControlShader />*/}
               <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
                 <StreamChat
                   messages={this.state.messagesStream}
@@ -2033,28 +1776,6 @@ export class Chat extends React.Component {
                       })
                     }
                   />
-                  {/*{this.state.valueStream.length > 0 && (
-                    <SendIconWrapS color={this.props.color} onClick={() => this.handleSubmitS()} stream>
-                      <ImageSend
-                        src={
-                          "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-                        }
-                      />
-                    </SendIconWrapS>
-                  )}
-                  {this.state.valueStream.length < 1 && (
-                    <MicWrap
-                      tabIndex="0"
-                      isActive={false}
-                      onClick={() => this.setState({ audioStreamStatus: true })}
-                    >
-                      <ImageMic
-                        src={
-                          "https://witheyezon.com/eyezonsite/static/images/mic.png"
-                        }
-                      />
-                    </MicWrap>
-                      )}*/}
                 </InputLineStream>
               </TextFieldExtraS>
             </VideoWrapperS>

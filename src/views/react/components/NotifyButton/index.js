@@ -170,12 +170,14 @@ export class NotifyButton extends React.Component {
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
-        <BlurredButton
-          onClick={this.props.notificationPermission}
-          selected={Notification.permission === "granted"}
-        >
-          Включить уведомления
-        </BlurredButton>
+        {"Notification" in window && (
+          <BlurredButton
+            onClick={this.props.notificationPermission}
+            selected={Notification.permission === "granted"}
+          >
+            Включить уведомления
+          </BlurredButton>
+        )}
       </Wrapper>
     );
   }

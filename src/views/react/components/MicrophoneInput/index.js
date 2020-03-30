@@ -178,7 +178,7 @@ class MicrophoneInput extends React.Component {
         this.props.audioToggle();
       },
       () => {
-        console.log("record failed");
+        //console.log("record failed");
       }
     );
   }

@@ -348,7 +348,7 @@ export class Button extends React.Component {
           self.props.setNotifications(response.data.count);
         })
         .catch(function(error) {
-          console.log(error);
+          //console.log(error);
         });
       axios
         .get(url2)
@@ -358,7 +358,7 @@ export class Button extends React.Component {
           });
         })
         .catch(function(error) {
-          console.log(error);
+          //console.log(error);
         });
     }
   }
@@ -507,7 +507,7 @@ export class Button extends React.Component {
             }
           })
           .catch(function(error) {
-            console.log(error);
+            //console.log(error);
           });
       } else {
         // console.log("PATH 2");
@@ -546,7 +546,7 @@ export class Button extends React.Component {
         .catch(function(error) {
           ls.set("dialogId", "");
           self.showChatHere();
-          console.log(error);
+          //console.log(error);
         });
     }
     const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
@@ -556,7 +556,7 @@ export class Button extends React.Component {
       })
       .then(function(response) {})
       .catch(function(error) {
-        console.log(error);
+        //console.log(error);
       });
   }
 
