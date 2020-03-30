@@ -252,7 +252,14 @@ export class LeaveEmail extends React.Component {
               </NotifyButtonWrapper>
             )}
           </EmailWrapper>
-          <BlurredButton>Включить уведомления</BlurredButton>
+          {"Notification" in window && (
+            <BlurredButton
+              onClick={this.props.notificationPermission}
+              selected={Notification.permission === "granted"}
+            >
+              Включить уведомления
+            </BlurredButton>
+          )}
         </ButtonBlock>
       </TextWrap>
     );

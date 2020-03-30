@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { media } from "../../../../utils/media";
+import { media, mediaType } from "../../../../utils/media";
 import AwaitTimer from "../AwaitTimer";
 import moment from "moment";
 import ls from "local-storage";
@@ -9,7 +9,7 @@ import Pipe from "./Pipe";
 import OpaqueButton from "../OpaqueButton";
 import GameOver from "../GameOver";
 const birdRadius = 24;
-
+const mediaOffset = mediaType.desktop ? 150 : 170;
 const Wrapper = styled.div`
   &&& {
     touch-action: manipulation !important;
@@ -171,10 +171,8 @@ const getInitialPipes = (h, w) => {
   for (let i = 1; i < count; i++) {
     const x = w + 200 + w / i;
     pipes.push({
-      upperPipeHeight:
-        h / 2 - 15 - Math.random() * (!media.desktop ? 170 : 150),
-      bottomPipeHeight:
-        h / 2 - 15 - Math.random() * (!media.desktop ? 170 : 150),
+      upperPipeHeight: h / 2 - 15 - Math.random() * mediaOffset,
+      bottomPipeHeight: h / 2 - 15 - Math.random() * mediaOffset,
       x: x
     });
   }
@@ -242,16 +240,12 @@ class Game extends Component {
     const birdHeight = newVelocity + this.state.birdHeight;
     const newPipes = this.state.pipes.map(pipe => {
       const newX = pipe.x - this.state.pipeSpeed;
-      if (newX < -6) {
+      if (newX < -28) {
         return {
           upperPipeHeight:
-            this.props.height / 2 -
-            15 -
-            Math.random() * (!media.desktop ? 170 : 150),
+            this.props.height / 2 - 15 - Math.random() * mediaOffset,
           bottomPipeHeight:
-            this.props.height / 2 -
-            15 -
-            Math.random() * (!media.desktop ? 170 : 150),
+            this.props.height / 2 - 15 - Math.random() * mediaOffset,
           x: this.props.width - 40
         };
       } else {
@@ -333,6 +327,7 @@ class Game extends Component {
               count={score}
               stopGame={this.props.stopGame}
               restart={this.restart}
+              color={this.props.color}
             />
           </GameOverWrapper>
         )}
@@ -357,6 +352,7 @@ class Game extends Component {
                 "minutes"
               )
             }
+            limit={this.props.countdown / 1000}
           />
           <ExtraPos>
             <OpaqueButton onClick={this.props.stopGame}>Закончить</OpaqueButton>
@@ -395,6 +391,7 @@ class Game extends Component {
               bottomPipeHeight={bottomPipeHeight}
               x={x}
               bottomPipeTop={bottomPipeTop}
+              color={this.props.color}
             />
           );
         })}

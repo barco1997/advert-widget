@@ -13,7 +13,7 @@ const TextWrap = styled.div`
 
     width: 100% !important;
     height: 100% !important;
-    justify-content: center !important;
+
     align-items: center !important;
     position: relative !important;
     ${media.tablet`
@@ -108,47 +108,30 @@ export class GetDetailsView extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      name: "",
-      email: "",
-      phone: "",
-      isName:
-        this.props.requestedData === "NAME" ||
-        this.props.requestedData === "EMAIL&NAME"
-          ? true
-          : false,
-      isEmail:
-        this.props.requestedData === "EMAIL" ||
-        this.props.requestedData === "EMAIL&NAME"
-          ? true
-          : false,
-      isPhone: this.props.requestedData === "PHONE" ? true : false
+      isName: this.props.requestedData.includes("NAME"),
+      isEmail: this.props.requestedData.includes("EMAIL"),
+      isPhone: this.props.requestedData.includes("PHONE")
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(field, value) {
-    this.setState({
-      [field]: value
-    });
-  }
   render() {
     return (
       <TextWrap>
         <MainBlock>
           <InfoBlock color={this.props.color || "#ff2d55"}>
-            <InfoBlockHeader>Не стесняйтесь, спросите!</InfoBlockHeader>
-            <InfoBlockText>
-              Наши сотрудники с радостью покажут и расскажут всё, что вам
-              интересно.
-            </InfoBlockText>
+            <InfoBlockHeader>{this.props.greetingTitle}</InfoBlockHeader>
+            <InfoBlockText>{this.props.greetingText}</InfoBlockText>
             <FieldWrapper>
               {this.state.isEmail && (
                 <PositionWrapper>
                   <FormField
                     placeholder="Адрес электронной почты"
-                    value={this.state.email}
+                    value={this.props.email}
                     onChange={event =>
-                      this.handleChange("email", event.target.value)
+                      this.props.handleChange(
+                        "emailRequested",
+                        event.target.value
+                      )
                     }
                   />
                 </PositionWrapper>
@@ -157,9 +140,12 @@ export class GetDetailsView extends React.Component {
                 <PositionWrapper>
                   <FormField
                     placeholder="Номер телефона"
-                    value={this.state.phone}
+                    value={this.props.phone}
                     onChange={event =>
-                      this.handleChange("phone", event.target.value)
+                      this.props.handleChange(
+                        "phoneRequested",
+                        event.target.value
+                      )
                     }
                   />
                 </PositionWrapper>
@@ -168,9 +154,12 @@ export class GetDetailsView extends React.Component {
                 <PositionWrapper>
                   <FormField
                     placeholder="имя"
-                    value={this.state.name}
+                    value={this.props.name}
                     onChange={event =>
-                      this.handleChange("name", event.target.value)
+                      this.props.handleChange(
+                        "nameRequested",
+                        event.target.value
+                      )
                     }
                   />
                 </PositionWrapper>

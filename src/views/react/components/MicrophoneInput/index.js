@@ -178,7 +178,7 @@ class MicrophoneInput extends React.Component {
         this.props.audioToggle();
       },
       () => {
-        console.log("FAIL");
+        //console.log("record failed");
       }
     );
   }
@@ -204,7 +204,11 @@ class MicrophoneInput extends React.Component {
           />
         )}
         {this.props.value.length < 1 && (
-          <MicroButton onClick={this.handleMicro} isActive={isActive} color={this.props.color}>
+          <MicroButton
+            onClick={this.handleMicro}
+            isActive={isActive}
+            color={this.props.color}
+          >
             <img
               src={
                 isActive

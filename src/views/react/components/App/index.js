@@ -5,6 +5,7 @@ import axios from "axios";
 import ls from "local-storage";
 import Button from "../Button";
 //import { messaging } from "./fcm-init";
+const userLang = navigator.language || navigator.userLanguage;
 
 export class App extends React.Component {
   constructor(props, context) {
@@ -46,27 +47,48 @@ export class App extends React.Component {
     const userId = ls.get("userId");
 
     const url = `https://eyezon.herokuapp.com/api/button/${buttonId}`;
-    axios
-      .get(url)
-      .then(function(response) {
+    const lang_url = "https://eyezon.herokuapp.com/api/language";
+    axios.get(lang_url).then(function(languages) {
+      axios.get(url).then(function(response) {
         //let notificationCount = ls.get("notificationCount");
-        console.log("RESP", response);
+        //console.log("RESP", response);
+        const languageId = userLang.toLowerCase().includes("en")
+          ? languages.data.find(element => element.value === "EN")._id
+          : languages.data.find(element => element.value === "RU")._id;
+
+        const localisedTextArray = response.data.languageSpecificFields.filter(
+          element => element.language === languageId
+        );
         self.setState({
-          greetingText: response.data.greetingText,
-          greetingTitle: response.data.greetingTitle,
-          waitingText: response.data.waitingText,
-          waitingTitle: response.data.waitingTitle,
+          requestFieldText:
+            localisedTextArray.find(
+              element => element.field === "requestFieldText"
+            ).value || "requestFieldText",
+          mainText:
+            localisedTextArray.find(element => element.field === "mainText")
+              .value || "mainText",
+          greetingText:
+            localisedTextArray.find(element => element.field === "greetingText")
+              .value || "greetingText",
+          greetingTitle:
+            localisedTextArray.find(
+              element => element.field === "greetingTitle"
+            ).value || "greetingTitle",
+          waitingText:
+            localisedTextArray.find(element => element.field === "waitingText")
+              .value || "waitingText",
+          waitingTitle:
+            localisedTextArray.find(element => element.field === "waitingTitle")
+              .value || "waitingTitle",
           color: response.data.chatColor,
           countdown: response.data.countdown,
-          requestFieldText: response.data.requestFieldText,
-          mainText: response.data.mainText,
           askedUserData: response.data.askedUserData,
-          miniGame: response.data.miniGame
+          miniGame: response.data.miniGame,
+          position:
+            response.data.position /*.toLowerCase().replace(/_/gi, "-")*/
         });
-      })
-      .catch(function(error) {
-        console.log("INITIAL ERROR", error);
       });
+    });
     /*var messaging = this.props.firebase.messagingFunc();
     //console.log("MESS", messaging);
     messaging
@@ -135,6 +157,8 @@ export class App extends React.Component {
           miniGame={this.state.miniGame}
           countdown={this.state.countdown}
           timerFlag={this.state.countdown !== 0}
+          position={this.state.position}
+          askedUserData={this.state.askedUserData}
           /*firebase={this.props.firebase}*/
         />
       </React.Fragment>

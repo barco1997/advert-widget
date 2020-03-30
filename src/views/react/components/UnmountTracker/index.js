@@ -91,7 +91,7 @@ export class UnmountTracker extends React.Component {
   }*/
 
   componentWillUnmount() {
-    console.log("UNDOING");
+    //console.log("UNDOING");
     if (this.props.unmountFunction) {
       this.props.unmountFunction();
     }
@@ -134,7 +134,7 @@ export class UnmountTracker extends React.Component {
 
   start() {
     let self = this;
-    console.log("Create new session with url");
+    //console.log("Create new session with url");
     Flashphoner.createSession({
       urlServer: "wss://server.witheyezon.com:8443"
     })
@@ -142,7 +142,7 @@ export class UnmountTracker extends React.Component {
         //setStatus(session.status());
         //session connected, start playback
         if (self.props.mountFunction) {
-          console.log("Trying to mount");
+          //console.log("Trying to mount");
           self.props.mountFunction();
         }
         self.playStream(session, self.props.dialogId);
@@ -186,7 +186,7 @@ export class UnmountTracker extends React.Component {
       .join({ name: self.props.dialogId })
       .on(this.props.ROOM_EVENT.STATE, function(room) {
         var participants = room.getParticipants();
-        console.log("Current participants in the room: ", participants);
+        //console.log("Current participants in the room: ", participants);
         /*if (participants.length >= _participants) {
           console.warn("Current room is full");
           $("#failedInfo").text("Current room is full.");
@@ -265,7 +265,7 @@ export class UnmountTracker extends React.Component {
           //setStatus(stream.status());
           //onStarted(stream);
           if (self.props.mountFunction) {
-            console.log("Trying to mount");
+            //console.log("Trying to mount");
             self.props.mountFunction();
           }
           if (self.props.iOS) {
@@ -281,7 +281,7 @@ export class UnmountTracker extends React.Component {
   }
 
   publishLocalMedia(room) {
-    console.log("ROOM", room);
+    //console.log("ROOM", room);
     let self = this;
     var constraints = {
       audio: true,
@@ -292,7 +292,7 @@ export class UnmountTracker extends React.Component {
         recording: true
       },
       () => {
-        console.log("ROOM", room);
+        //console.log("ROOM", room);
         room
           .publish({
             display: this.localDisplay,
@@ -307,12 +307,12 @@ export class UnmountTracker extends React.Component {
             //onMediaStopped(room);
             Flashphoner.releaseLocalMedia(this.localDisplay);
             //Flashphoner.releaseLocalMedia(this.player);
-            console.log("FAILED");
+            //console.log("FAILED");
           })
           .on(this.props.STREAM_STATUS.PUBLISHING, function(stream) {
             //setStatus("#localStatus", stream.status());
             //onMediaPublished(stream);\
-            console.log("SUCCESS", stream);
+            //console.log("SUCCESS", stream);
             stream.unmuteAudio();
             self.setState({
               clientStream: stream,
@@ -324,7 +324,7 @@ export class UnmountTracker extends React.Component {
             //onMediaStopped(room);
             Flashphoner.releaseLocalMedia(this.localDisplay);
             //Flashphoner.releaseLocalMedia(this.player);
-            console.log("UNP");
+            //console.log("UNP");
           });
       }
     );
@@ -364,13 +364,13 @@ export class UnmountTracker extends React.Component {
       }
     }
     if (this.props.visible && this.props.visible !== prevProps.visible) {
-      console.log("IOS", this.props.iOS);
+      //console.log("IOS", this.props.iOS);
       if (
         isSafari ||
         this.props.iOS ||
         Flashphoner.getMediaProviders()[0] === "MSE"
       ) {
-        console.log("IOS or IOS mobile");
+        //console.log("IOS or IOS mobile");
         Flashphoner.playFirstVideo(
           self.player,
           false,
@@ -391,26 +391,26 @@ export class UnmountTracker extends React.Component {
       self.setState({ recording: false });
 
       if (this.state.clientStream) {
-        console.log("mute audio", this.state.clientStream);
+        //console.log("mute audio", this.state.clientStream);
 
         if (self.state.stream) {
-          console.log("mute video");
+          //console.log("mute video");
 
           self.state.stream.stop();
         }
 
         if (self.state.clientStream) {
-          console.log("mute audio");
+          //console.log("mute audio");
 
           self.state.clientStream.muteAudio();
         }
 
         if (self.state.room) {
-          console.log("leave room");
+          //console.log("leave room");
           self.state.room.leave();
         }
         if (self.state.connection && false) {
-          console.log("close connect");
+          //console.log("close connect");
           self.state.connection.disconnect();
         }
       }

@@ -60,7 +60,7 @@ export class BlurredButton extends React.Component {
   render() {
     return (
       <Wrapper
-        onClick={this.state.selected && this.handleClick}
+        onClick={this.state.selected ? this.handleClick : null}
         width={this.props.width}
       >
         <Text selected={!this.state.selected} onClick={this.handleClick}>
