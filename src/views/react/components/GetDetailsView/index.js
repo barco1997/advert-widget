@@ -25,8 +25,12 @@ const TextWrap = styled.div`
 const PositionWrapper = styled.div`
   &&& {
     display: flex !important;
-    margin-bottom: ${props => props.marginBottom || "0px"} !important;
+    margin-bottom: 8px !important;
     width: 100% !important;
+
+    ${media.desktop`
+      margin-bottom: 16px !important;
+    `};
   }
 `;
 const FieldWrapper = styled.div`
@@ -35,7 +39,7 @@ const FieldWrapper = styled.div`
     flex-direction: column !important;
 
     width: 100% !important;
-    margin: 16px 0px 10px 18px !important;
+    margin: 0px 0px 10px 18px !important;
   }
 `;
 
@@ -139,7 +143,7 @@ export class GetDetailsView extends React.Component {
             </InfoBlockText>
             <FieldWrapper>
               {this.state.isEmail && (
-                <PositionWrapper marginBottom="6px">
+                <PositionWrapper>
                   <FormField
                     placeholder="Адрес электронной почты"
                     value={this.state.email}
@@ -150,7 +154,7 @@ export class GetDetailsView extends React.Component {
                 </PositionWrapper>
               )}
               {this.state.isPhone && (
-                <PositionWrapper marginBottom="6px">
+                <PositionWrapper>
                   <FormField
                     placeholder="Номер телефона"
                     value={this.state.phone}
@@ -161,7 +165,7 @@ export class GetDetailsView extends React.Component {
                 </PositionWrapper>
               )}
               {this.state.isName && (
-                <PositionWrapper marginBottom="6px">
+                <PositionWrapper>
                   <FormField
                     placeholder="имя"
                     value={this.state.name}
@@ -180,7 +184,7 @@ export class GetDetailsView extends React.Component {
 }
 
 GetDetailsView.defaultProps = {
-  requestedData: "NAME"
+  requestedData: "EMAIL&NAME"
 };
 
 export default GetDetailsView;
