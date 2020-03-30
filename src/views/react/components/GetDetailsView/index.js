@@ -95,6 +95,7 @@ const InfoBlockText = styled.div`
     font-weight: normal !important;
     font-size: 14px !important;
     line-height: 170% !important;
+    max-width: 380px !important;
     /* or 24px */
 
     /* Primary / white - background */
