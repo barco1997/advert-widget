@@ -39,7 +39,7 @@ const FieldWrapper = styled.div`
     flex-direction: column !important;
 
     width: 100% !important;
-    margin: 0px 0px 10px 18px !important;
+    margin: 0px 0px 8px 18px !important;
   }
 `;
 
