@@ -433,6 +433,10 @@ const MicWrap = styled.div`
       css`
         animation: ${pulse} 1s infinite !important;
       `}
+
+    ${media.desktop`
+      
+  `};
   }
 `;
 
@@ -449,6 +453,10 @@ const SendIconWrap = styled.div`
     background: ${props => `${props.color} !important`};
     border-radius: 50% !important;
     cursor: pointer !important;
+    ${media.desktop`
+    width: 42px !important;
+    height: 42px !important;
+  `};
   }
 `;
 
@@ -471,7 +479,8 @@ const ImageMic = styled.div`
     cursor: pointer !important;
 
     ${media.desktop`
-    
+      width: 10px !important;
+      height: 16px !important;
   `};
   }
 `;
@@ -487,7 +496,9 @@ const ImageSend = styled.div`
     position: relative !important;
     cursor: pointer !important;
     ${media.desktop`
-    
+    width: 22.5px !important;
+    margin-left: 3px !important;
+    height: 20px !important;
   `};
   }
 `;
@@ -940,7 +951,8 @@ export class Chat extends React.Component {
         this.setState({
           streamToVideo: data.messageId,
           streamFlag: false,
-          messagesStream: []
+          messagesStream: [],
+          audioStreamStatus: false
         });
         /*this.live.pause();
         flvPlayer.destroy();*/
@@ -1372,6 +1384,7 @@ export class Chat extends React.Component {
         () => {
           self.setState({ isBlocked: false, isFirst: true });
           ls.set("micChecked", true);
+          self.startMp3();
         },
         () => {
           self.setState({ isBlocked: true });
@@ -1639,6 +1652,7 @@ export class Chat extends React.Component {
                                 }
                                 onKeyPress={event => {
                                   if (event.key === "Enter") {
+                                    event.preventDefault();
                                     this.handleSubmit(event);
                                   }
                                 }}
@@ -1764,6 +1778,7 @@ export class Chat extends React.Component {
                     placeholder="Сообщение..."
                     onKeyPress={event => {
                       if (event.key === "Enter") {
+                        event.preventDefault();
                         this.handleSubmitS();
                       }
                     }}
