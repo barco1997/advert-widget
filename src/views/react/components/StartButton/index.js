@@ -85,7 +85,7 @@ const left = keyframes`
 const Wrap = styled.div`
   &&& {
     position: fixed !important;
-    z-index: 1000 !important;
+    z-index: 9000 !important;
 
     cursor: pointer !important;
 
@@ -293,7 +293,6 @@ const Button = styled.button`
     &:focus {
       outline: none !important;
     }
-    background: transparent !important;
     color: #ffffff !important;
 
     padding: ${props =>
