@@ -24,6 +24,7 @@ import AudioRecorder from "audio-recorder-polyfill";
 import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
 import Game from "../Game";
 import GetDetailsView from "../GetDetailsView";
+import NoStreamerComponent from "../NoStreamerComponent";
 
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
@@ -783,7 +784,8 @@ export class Chat extends React.Component {
       nameRequested: "",
       emailRequested: "",
       phoneRequested: "",
-      prepareToUnmountStream: false
+      prepareToUnmountStream: false,
+      noStreamerFlag: true
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1677,16 +1679,26 @@ export class Chat extends React.Component {
                           {!this.state.messages ||
                           this.state.messages.length == 0 ? (
                             <React.Fragment>
-                              <GetDetailsView
-                                handleChange={this.handleChangeInput}
-                                name={this.state.nameRequested}
-                                phone={this.state.phoneRequested}
-                                email={this.state.emailRequested}
-                                greetingTitle={this.props.greetingTitle}
-                                greetingText={this.props.greetingText}
-                                requestedData={this.props.askedUserData}
-                                color={this.props.color}
-                              />
+                              {!this.state.noStreamerFlag ? (
+                                <GetDetailsView
+                                  handleChange={this.handleChangeInput}
+                                  name={this.state.nameRequested}
+                                  phone={this.state.phoneRequested}
+                                  email={this.state.emailRequested}
+                                  greetingTitle={this.props.greetingTitle}
+                                  greetingText={this.props.greetingText}
+                                  requestedData={this.props.askedUserData}
+                                  color={this.props.color}
+                                />
+                              ) : (
+                                <NoStreamerComponent
+                                  receivedDetails={true}
+                                  color={this.props.color}
+                                  notificationPermission={
+                                    this.props.notificationPermission
+                                  }
+                                />
+                              )}
                             </React.Fragment>
                           ) : (
                             <MessageArea
