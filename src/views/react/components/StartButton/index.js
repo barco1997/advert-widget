@@ -390,4 +390,9 @@ class StartButton extends React.Component {
   }
 }
 
+StartButton.defaultProps = {
+  positions: "BOTTOM_RIGHT",
+  status: "rest"
+};
+
 export default StartButton;
