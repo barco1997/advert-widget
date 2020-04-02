@@ -76,6 +76,7 @@ const VideoWrapper = styled.div`
       props.windowHeight < props.height &&
       `
       top: 0% !important;
+      left: 0% !important;
       width: 100vw !important;
       height: 100vh !important;
       position: fixed !important;
@@ -90,6 +91,7 @@ const VideoWrapper = styled.div`
 
     ${media.desktop`
   top: 0% !important;
+  left: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
   position: fixed !important;
@@ -151,6 +153,13 @@ const VideoWrapperS = styled.div`
     }
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
+
+    ${props =>
+      props.windowHeight < props.height &&
+      `
+      width: 100vw !important;
+  height: 100% !important;
+  `}
     ${media.desktop`
   
   width: 100vw !important;
@@ -214,6 +223,7 @@ const PhotoWrapper = styled.div`
       props.windowHeight < props.height &&
       `
       top: 0% !important;
+      left: 0% !important;
       width: 100vw !important;
       height: 100vh !important;
       position: fixed !important;
@@ -227,6 +237,7 @@ const PhotoWrapper = styled.div`
 
     ${media.desktop`
   top: 0% !important;
+  left: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
   position: fixed !important;
@@ -1816,6 +1827,8 @@ export class Chat extends React.Component {
                 visible={
                   /*this.state.streamFlag */ !this.state.prepareToUnmountStream
                 }
+                height={634}
+                windowHeight={this.props.innerHeight}
               >
                 <Stream
                   mountFunction={() => {
