@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { media } from "../../../../utils/media";
+import NotifyButtonAndEmail from "../NotifyButtonAndEmail";
 
 const TextWrap = styled.div`
   &&& {
@@ -24,7 +25,7 @@ const MainBlock = styled.div`
     flex-direction: column !important;
     justify-content: flex-end !important;
     width: 100% !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 24px !important;
 
     ${media.tablet`
     margin-top: 0px !important;
@@ -98,6 +99,7 @@ export class NoStreamerComponent extends React.Component {
             </InfoBlockText>
           </InfoBlock>
         </MainBlock>
+        <NotifyButtonAndEmail />
       </TextWrap>
     );
   }

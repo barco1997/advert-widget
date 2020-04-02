@@ -6,7 +6,6 @@ const Wrapper = styled.div`
   &&& {
     display: flex !important;
     flex-direction: column !important;
-    margin-top: 16px !important;
   }
 `;
 const NotifyButtonWrapper = styled.div`
@@ -27,7 +26,7 @@ const NotifyButtonWrapper = styled.div`
 const MiddleWrapper = styled.div`
   &&& {
     display: flex !important;
-    margin: 8px 0px !important;
+    margin: 0px 0px 8px 0px !important;
     width: 327px !important;
     height: 40px !important;
     justify-content: space-between !important;
