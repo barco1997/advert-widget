@@ -71,8 +71,27 @@ const VideoWrapper = styled.div`
     }
     display: ${props =>
       props.visible ? "block !important" : "none !important"};
+
+    ${props =>
+      props.windowHeight < props.height &&
+      `
+      top: 0% !important;
+      left: 0% !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      position: fixed !important;
+      border-radius: 0px !important;
+      margin-left: 0px !important;
+      background: black !important;
+      & > video {
+        width: 100% !important;
+      height: 100% !important;
+      border-radius: 0px !important;
+  `}
+
     ${media.desktop`
   top: 0% !important;
+  left: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
   position: fixed !important;
@@ -134,6 +153,13 @@ const VideoWrapperS = styled.div`
     }
     display: ${props =>
       props.visible ? "flex !important" : "none !important"};
+
+    ${props =>
+      props.windowHeight < props.height &&
+      `
+      width: 100vw !important;
+  height: 100% !important;
+  `}
     ${media.desktop`
   
   width: 100vw !important;
@@ -160,8 +186,20 @@ const StreamWrapper = styled.div`
     width: 496px !important;
     height: 664px !important;
     flex-direction: column !important;
+
+    ${props =>
+      props.height < 634 &&
+      `
+      top: ${props.top ? props.top : "0"} !important;
+      left: 0 !important;
+      background: white !important;
+      position: fixed !important;
+      width: 100vw !important;
+      height: ${props.height ? `${props.height}px` : "auto"} !important;
+  `}
     ${media.desktop`
       top: ${props => (props.top ? props.top : "0")} !important;
+      left: 0 !important;
       background: white !important;
       position: fixed !important;
       width: 100vw !important;
@@ -180,8 +218,26 @@ const PhotoWrapper = styled.div`
     overflow: hidden !important;
     display: ${props =>
       props.visible ? "block !important" : "none !important"};
+
+    ${props =>
+      props.windowHeight < props.height &&
+      `
+      top: 0% !important;
+      left: 0% !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      position: fixed !important;
+      border-radius: 0px !important;
+      margin-left: 0px !important;
+      & > div {
+        width: 100% !important;
+      height: 100% !important;
+      border-radius: 0px !important;
+  `}
+
     ${media.desktop`
   top: 0% !important;
+  left: 0% !important;
   width: 100vw !important;
   height: 100vh !important;
   position: fixed !important;
@@ -205,6 +261,17 @@ const WindowWrapper = styled.div`
     height: 664px !important;
     max-width: 85% !important;
 
+    ${props =>
+      props.windowHeight < props.height &&
+      `
+      position: absolute !important;
+      top: 0% !important;
+      /* left: 0% !important; */
+      max-width: 100% !important;
+      justify-content: flex-start !important;
+      height: auto !important;
+  `}
+
     ${media.desktop`
       position: absolute !important;
       top: 0% !important;
@@ -214,9 +281,7 @@ const WindowWrapper = styled.div`
       height: auto !important;
   `};
     ${media.tablet`
-      
       max-width: 100% !important;
-      
   `};
   }
 `;
@@ -553,10 +618,18 @@ const JsChatWindow = styled.div`
     position: relative !important;
     box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25) !important;
     border-radius: 6px !important;
+    ${props =>
+      props.height < 634 &&
+      `
+      height: ${props.height ? `${props.height}px` : "100%"} !important;
+      width: 100vw !important;
+      border-radius: 0px !important;
+  `}
     ${media.desktop`
-  height: ${props => (props.height ? `${props.height}px` : "100%")} !important;
-  width: 100vw !important;
-  border-radius: 0px !important;
+      height: ${props =>
+        props.height ? `${props.height}px` : "100%"} !important;
+      width: 100vw !important;
+      border-radius: 0px !important;
   & > :first-child {
     
     /*margin-top: 40px !important;*/
@@ -1543,7 +1616,7 @@ export class Chat extends React.Component {
           }}
         />
 
-        <WindowWrapper>
+        <WindowWrapper height={634} windowHeight={this.props.innerHeight}>
           <ChatWindowExpansion
             height={this.props.innerHeight}
             visible={!this.state.streamFlag}
@@ -1754,6 +1827,8 @@ export class Chat extends React.Component {
                 visible={
                   /*this.state.streamFlag */ !this.state.prepareToUnmountStream
                 }
+                height={634}
+                windowHeight={this.props.innerHeight}
               >
                 <Stream
                   mountFunction={() => {
@@ -1832,7 +1907,11 @@ export class Chat extends React.Component {
               </VideoWrapperS>
             </StreamWrapper>
           )}
-          <VideoWrapper visible={this.state.videoSrc && !this.state.streamFlag}>
+          <VideoWrapper
+            visible={this.state.videoSrc && !this.state.streamFlag}
+            height={634}
+            windowHeight={this.props.innerHeight}
+          >
             <ReactPlayer
               url={this.state.videoSrc}
               playing={this.state.ifPauseIcon}
@@ -1868,7 +1947,11 @@ export class Chat extends React.Component {
               />
             </CloseWrapper>
           </VideoWrapper>
-          <PhotoWrapper visible={this.state.photoSrc}>
+          <PhotoWrapper
+            visible={this.state.photoSrc}
+            height={634}
+            windowHeight={this.props.innerHeight}
+          >
             <Image src={this.state.photoSrc}>
               <CloseWrapper>
                 <CloseButton
