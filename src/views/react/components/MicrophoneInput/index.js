@@ -15,6 +15,7 @@ const MicroWrap = styled.div`
     font-family: "Montserrat" !important;
     font-style: normal !important;
     color: #000000 !important;
+    user-select: none !important;
   }
 `;
 
@@ -159,6 +160,7 @@ const MicroButton = styled.div`
       css`
         animation: ${pulse} 1s infinite !important;
       `}
+      user-select: none  !important;
   }
 `;
 

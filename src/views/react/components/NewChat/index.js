@@ -213,15 +213,16 @@ const WindowWrapper = styled.div`
       height: auto !important;
   `};
     ${media.tablet`
-
+      
       max-width: 100% !important;
-    
+      
   `};
   }
 `;
 
 const AudioTimer = styled.div`
   &&& {
+    user-select: none !important;
     width: 62px !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -415,6 +416,8 @@ const ImageCart = styled.div`
 
 const MicWrap = styled.div`
   &&& {
+    user-select: none !important;
+
     position: absolute !important;
     width: 36px !important;
     height: 36px !important;
@@ -470,6 +473,8 @@ const EntryWrap = styled.div`
 
 const ImageMic = styled.div`
   &&& {
+    user-select: none !important;
+
     background: url(${props => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;
