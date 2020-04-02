@@ -207,15 +207,15 @@ const WindowWrapper = styled.div`
     ${media.desktop`
       position: absolute !important;
       top: 0% !important;
-      left: 0% !important;
+      /* left: 0% !important; */
       max-width: 100% !important;
       justify-content: flex-start !important;
       height: auto !important;
   `};
     ${media.tablet`
-      
+
       max-width: 100% !important;
-      
+    
   `};
   }
 `;
@@ -351,9 +351,9 @@ const ChatWrapper = styled.div`
     justify-content: center !important;
     align-items: center !important;
     font-family: "Montserrat" !important;
-    ${media.tablet`
+    /* ${media.tablet`
     justify-content: flex-start !important;
-  `};
+  `}; */
   }
 `;
 
