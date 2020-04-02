@@ -219,7 +219,7 @@ const MinReqWrapper = styled.div`
 
 const disableScroll = () => {
   //document.body.classList.add("unscrollable");
-  if (ifMobile) {
+  if (ifMobile || window.innerHeight < 634) {
     const scrollY = document.documentElement.style.getPropertyValue(
       "--scroll-y"
     );
@@ -231,7 +231,7 @@ const disableScroll = () => {
 
 const enableScroll = () => {
   //document.body.classList.remove("unscrollable");
-  if (ifMobile) {
+  if (ifMobile || window.innerHeight < 634) {
     const body = document.body;
     const scrollY = body.style.top;
     body.style.position = "";
