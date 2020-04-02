@@ -208,7 +208,7 @@ const WindowWrapper = styled.div`
     ${media.desktop`
       position: absolute !important;
       top: 0% !important;
-      left: 0% !important;
+      /* left: 0% !important; */
       max-width: 100% !important;
       justify-content: flex-start !important;
       height: auto !important;
@@ -223,6 +223,7 @@ const WindowWrapper = styled.div`
 
 const AudioTimer = styled.div`
   &&& {
+    user-select: none !important;
     width: 62px !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -352,9 +353,9 @@ const ChatWrapper = styled.div`
     justify-content: center !important;
     align-items: center !important;
     font-family: "Montserrat" !important;
-    ${media.tablet`
+    /* ${media.tablet`
     justify-content: flex-start !important;
-  `};
+  `}; */
   }
 `;
 
@@ -416,6 +417,8 @@ const ImageCart = styled.div`
 
 const MicWrap = styled.div`
   &&& {
+    user-select: none !important;
+
     position: absolute !important;
     width: 36px !important;
     height: 36px !important;
@@ -471,6 +474,8 @@ const EntryWrap = styled.div`
 
 const ImageMic = styled.div`
   &&& {
+    user-select: none !important;
+
     background: url(${props => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;

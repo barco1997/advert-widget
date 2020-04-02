@@ -8,6 +8,8 @@ import styled from "styled-components";
 /*****************************************************************************/
 const Wrapper = styled.span`
   display: inline-block;
+
+  user-select: none !important;
 `;
 
 const toTwoDigits = num => {
