@@ -7,6 +7,7 @@ import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
 import { setLiveArray, getRndInteger, load } from "../../constants";
 import StreamChat from "./streamchat";
+import Stream from "../Stream";
 import LeaveEmail from "../LeaveEmail";
 //import MicRecorder from "mic-recorder-to-mp3";
 import UnmountTracker from "../UnmountTracker";
@@ -770,7 +771,8 @@ export class Chat extends React.Component {
       audioStreamStatus: false,
       nameRequested: "",
       emailRequested: "",
-      phoneRequested: ""
+      phoneRequested: "",
+      prepareToUnmountStream: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -807,6 +809,7 @@ export class Chat extends React.Component {
     this.checkMedia = this.checkMedia.bind(this);
     this.startGame = this.startGame.bind(this);
     this.stopGame = this.stopGame.bind(this);
+    this.handleReadyStreamUnmount = this.handleReadyStreamUnmount.bind(this);
   }
 
   startGame() {
@@ -1559,6 +1562,18 @@ export class Chat extends React.Component {
     });
   }
 
+  /*componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.prepareToUnmountStream &&
+      !prevState.prepareToUnmountStream
+    ) {
+      this.setState({ prepareToUnmountStream: false, streamFlag: false });
+    }
+  }*/
+  handleReadyStreamUnmount() {
+    this.setState({ prepareToUnmountStream: false, streamFlag: false });
+  }
+
   render() {
     //console.log("PROPS", this.props.firebase.putVoice);
     //console.log("COUNTDOWN", this.props.countdown);
@@ -1569,19 +1584,24 @@ export class Chat extends React.Component {
       >
         <JsChatOverlay
           onClick={() => {
+            if (!this.state.streamFlag) {
+              if (!this.props.displayMainRequest && !this.props.emailSentFlag) {
+                this.props.showMainRequest();
+              } else {
+                //this.props.closeMainRequest();
+                this.props.destroy();
+              }
+              /*this.live.pause();*/
+              if (this.loadedVideo.getInternalPlayer()) {
+                this.loadedVideo.getInternalPlayer().pause();
+              }
+            }
             this.setState({
-              streamFlag: false
+              prepareToUnmountStream:
+                this.state.streamFlag && !this.state.prepareToUnmountStream
+                  ? true
+                  : false
             });
-            if (!this.props.displayMainRequest && !this.props.emailSentFlag) {
-              this.props.showMainRequest();
-            } else {
-              //this.props.closeMainRequest();
-              this.props.destroy();
-            }
-            /*this.live.pause();*/
-            if (this.loadedVideo.getInternalPlayer()) {
-              this.loadedVideo.getInternalPlayer().pause();
-            }
           }}
         />
 
@@ -1784,84 +1804,96 @@ export class Chat extends React.Component {
               <Disclaimer />
             </DisclaimerWrapper>
           </ChatWindowExpansion>
-          <StreamWrapper
-            height={this.props.innerHeight}
-            visible={this.state.streamFlag /*true*/}
-            top={this.state.androidOffset}
-          >
-            <VideoWrapperS visible={this.state.streamFlag /*true*/}>
-              <UnmountTracker
-                mountFunction={() => {
-                  this.socket.emit("enterStream", ls.get("dialogId"));
-                  //console.log("enter stream");
-                }}
-                unmountFunction={() => {
-                  this.socket.emit("leaveStream", ls.get("dialogId"));
-                  //console.log("left stream");
-                }}
-                dialogId={ls.get("dialogId")}
-                visible={this.state.streamFlag /*true*/}
-                SESSION_STATUS={SESSION_STATUS}
-                STREAM_STATUS={STREAM_STATUS}
-                PRELOADER_URL={PRELOADER_URL}
-                ROOM_EVENT={ROOM_EVENT}
-                iOS={iOS}
-                audioStreamStatus={this.state.audioStreamStatus}
-              />
-
-              <CloseWrapper>
-                <CloseButton
-                  onClick={() => {
-                    this.setState({
-                      streamFlag: false
-                    });
-
-                    ls.set("streamInProgress", false);
+          {this.state.streamFlag && (
+            <StreamWrapper
+              height={this.props.innerHeight}
+              visible={
+                /*this.state.streamFlag */ !this.state.prepareToUnmountStream
+              }
+              top={this.state.androidOffset}
+            >
+              <VideoWrapperS
+                visible={
+                  /*this.state.streamFlag */ !this.state.prepareToUnmountStream
+                }
+              >
+                <Stream
+                  mountFunction={() => {
+                    this.socket.emit("enterStream", ls.get("dialogId"));
+                    //console.log("enter stream");
                   }}
+                  unmountFunction={() => {
+                    this.socket.emit("leaveStream", ls.get("dialogId"));
+                    //console.log("left stream");
+                  }}
+                  dialogId={ls.get("dialogId")}
+                  visible={
+                    /*this.state.streamFlag */ !this.state
+                      .prepareToUnmountStream
+                  }
+                  SESSION_STATUS={SESSION_STATUS}
+                  STREAM_STATUS={STREAM_STATUS}
+                  PRELOADER_URL={PRELOADER_URL}
+                  ROOM_EVENT={ROOM_EVENT}
+                  iOS={iOS}
+                  audioStreamStatus={this.state.audioStreamStatus}
+                  handleReadyStreamUnmount={this.handleReadyStreamUnmount}
                 />
-              </CloseWrapper>
-              <StatusWrapper>
-                <StatusButton status="LIVE" color={this.props.color} />
-              </StatusWrapper>
 
-              <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
-                <StreamChat
-                  messages={this.state.messagesStream}
-                  isSafari={isSafari}
-                />
-                <InputLineStream>
-                  <MicrophoneInput
-                    rows="1"
-                    stream
-                    /*ref={item => {
+                <CloseWrapper>
+                  <CloseButton
+                    onClick={() => {
+                      this.setState({
+                        prepareToUnmountStream: true
+                      });
+
+                      ls.set("streamInProgress", false);
+                    }}
+                  />
+                </CloseWrapper>
+                <StatusWrapper>
+                  <StatusButton status="LIVE" color={this.props.color} />
+                </StatusWrapper>
+
+                <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
+                  <StreamChat
+                    messages={this.state.messagesStream}
+                    isSafari={isSafari}
+                  />
+                  <InputLineStream>
+                    <MicrophoneInput
+                      rows="1"
+                      stream
+                      /*ref={item => {
                       this.streamInput = item;
                     }}*/
-                    setStreamInput={item => {
-                      this.streamInput = item;
-                    }}
-                    type="text"
-                    value={this.state.valueStream}
-                    onChange={this.handleChangeInStream}
-                    placeholder="Сообщение..."
-                    onKeyPress={event => {
-                      if (event.key === "Enter") {
-                        event.preventDefault();
-                        this.handleSubmitS();
+                      setStreamInput={item => {
+                        this.streamInput = item;
+                      }}
+                      type="text"
+                      value={this.state.valueStream}
+                      onChange={this.handleChangeInStream}
+                      placeholder="Сообщение..."
+                      onKeyPress={event => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          this.handleSubmitS();
+                        }
+                      }}
+                      height={this.state.streamTextAreaHeight}
+                      onKeyDown={() => this.textAreaAdjust(true)}
+                      handleSubmitS={this.handleSubmitS}
+                      audioToggle={() =>
+                        this.setState({
+                          audioStreamStatus: !this.state.audioStreamStatus
+                        })
                       }
-                    }}
-                    height={this.state.streamTextAreaHeight}
-                    onKeyDown={() => this.textAreaAdjust(true)}
-                    handleSubmitS={this.handleSubmitS}
-                    audioToggle={() =>
-                      this.setState({
-                        audioStreamStatus: !this.state.audioStreamStatus
-                      })
-                    }
-                  />
-                </InputLineStream>
-              </TextFieldExtraS>
-            </VideoWrapperS>
-          </StreamWrapper>
+                    />
+                  </InputLineStream>
+                </TextFieldExtraS>
+              </VideoWrapperS>
+            </StreamWrapper>
+          )}
           <VideoWrapper
             visible={this.state.videoSrc && !this.state.streamFlag}
             height={634}
