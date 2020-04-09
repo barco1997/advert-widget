@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { media } from "../../../../utils/media";
+import NotifyButtonAndEmail from "../NotifyButtonAndEmail";
 
 const TextWrap = styled.div`
   &&& {
@@ -24,7 +25,6 @@ const MainBlock = styled.div`
     flex-direction: column !important;
     justify-content: flex-end !important;
     width: 100% !important;
-    margin-bottom: 10px !important;
 
     ${media.tablet`
     margin-top: 0px !important;
@@ -59,6 +59,15 @@ const InfoBlockHeader = styled.div`
     /* Primary / white - background */
     margin: 0px 24px !important;
     color: #ffffff !important;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  &&& {
+    display: flex !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+    padding-left: 25px !important;
   }
 `;
 
@@ -97,6 +106,9 @@ export class NoStreamerComponent extends React.Component {
                 : "Вы можете оставить свой запрос, включите уведомления, оставьте свой e-mail и как появятся стримеры мы ответим вам."}
             </InfoBlockText>
           </InfoBlock>
+          <ButtonWrapper>
+            <NotifyButtonAndEmail />
+          </ButtonWrapper>
         </MainBlock>
       </TextWrap>
     );
