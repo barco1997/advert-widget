@@ -794,7 +794,7 @@ export class Chat extends React.Component {
       emailRequested: "",
       phoneRequested: "",
       prepareToUnmountStream: false,
-      noStreamerFlag: true,
+      noStreamerFlag: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
