@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      var eyezonGlobal = { function: null, reset: null };
+      (function(w, d, s, o, f, js, fjs) {
+        w["JS-Widget"] = o;
+        w[o] =
+          w[o] ||
+          function() {
+            (w[o].q = w[o].q || []).push(arguments);
+          };
+        (js = d.createElement(s)), (fjs = d.getElementsByTagName(s)[0]);
+        js.id = o;
+        js.src = f;
+        js.async = 1;
+        fjs.parentNode.insertBefore(js, fjs);
+      })(window, document, "script", "mw", "./eyezonwidget.js");
+      window.onload = mw("install_eyezon", {
+        buttonOnTop: true,
+        businessId: "5e81cf421cb513002ed6f39e",
+        initialButtonId: "5e81cf891cb513002ed6f3ab",
+        targets: [
+          { buttonId: "5e81cf891cb513002ed6f3ab", targetId: "eyezonButton" }
+        ],
+        eyezonGlobal: eyezonGlobal
+      });
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
@@ -26,32 +51,6 @@
     
     
     
-    <script>
-      var eyezonGlobal = { function: null };
-      (function(w, d, s, o, f, js, fjs) {
-        w["JS-Widget"] = o;
-        w[o] =
-          w[o] ||
-          function() {
-            (w[o].q = w[o].q || []).push(arguments);
-          };
-        (js = d.createElement(s)), (fjs = d.getElementsByTagName(s)[0]);
-        js.id = o;
-        js.src = f;
-        js.async = 1;
-        fjs.parentNode.insertBefore(js, fjs);
-      })(window, document, "script", "mw", "./eyezonwidget.js");
-      mw("init", { someConfiguration: 42 });
-      mw("react", {
-        color: "white",
-        buttonOnTop: true,
-        businessId: "5e81cf421cb513002ed6f39e",
-        initialButtonId: "5e81cf891cb513002ed6f3ab",
-        targets: [
-          { buttonId: "5e81cf891cb513002ed6f3ab", targetId: "eyezonButton" }
-        ],
-        eyezonGlobal: eyezonGlobal
-      });
-    </script>
+    
   </body>
 </html>

@@ -7,14 +7,17 @@ import { Chat } from "../NewChat";
 import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
-import { setConversationIdValue } from "../../constants";
+
 import { media } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
-//import { FirebaseContext } from "../Firebase/index";
-//const messageSound = require("https://witheyezon.com/eyezonsite/static/not.mp3");
-//import disableScroll from "disable-scroll";
+import {
+  staticUrl,
+  socketUrl,
+  setConversationIdValue,
+  apiBaseUrl,
+} from "../../constants";
 
 const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
@@ -48,7 +51,8 @@ const NotificationMessageWrapper = styled.div`
     left: 0px !important;
     top: 135px !important;
     z-index: 20000 !important;
-    display: ${props => (props.toggle ? "flex !important" : "none !important")};
+    display: ${(props) =>
+      props.toggle ? "flex !important" : "none !important"};
     flex-direction: column !important;
   }
 `;
@@ -113,14 +117,14 @@ const ButtonWrapper = styled.button`
     border-radius: 28px !important;
     display: flex !important;
     flex-wrap: nowrap !important;
-    width: ${props =>
+    width: ${(props) =>
       props.toggle ? "278px  !important" : "42px  !important"}; /*58*/
     min-width: 42px !important;
     height: 51px !important; /*56*/
 
     align-items: center !important;
 
-    transition: ${props =>
+    transition: ${(props) =>
       props.toggle
         ? "width 120ms linear !important"
         : "width 180ms linear !important"};
@@ -138,7 +142,7 @@ const NotificationWrapper = styled.div`
     right: -7px !important;
     border-radius: 50% !important;
     color: white !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     font-size: 10px !important;
     display: flex !important;
     justify-content: center !important;
@@ -175,12 +179,12 @@ const JsButtonImage = styled.img`
 const JsButtonText = styled.div`
   &&& {
     display: flex !important;
-    transition: ${props =>
+    transition: ${(props) =>
       props.toggle
         ? "opacity 1s ease-in !important"
         : "opacity 100ms linear !important"};
 
-    opacity: ${props => (props.toggle ? "1 !important" : "0 !important")};
+    opacity: ${(props) => (props.toggle ? "1 !important" : "0 !important")};
     height: 34px !important;
 
     flex-direction: column !important;
@@ -219,25 +223,23 @@ const MinReqWrapper = styled.div`
 
 const disableScroll = () => {
   //document.body.classList.add("unscrollable");
-  if (ifMobile || window.innerHeight < 634) {
-    const scrollY = document.documentElement.style.getPropertyValue(
-      "--scroll-y"
-    );
-    const body = document.body;
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}`;
-  }
+  //if (ifMobile || window.innerHeight < 634) {
+  const scrollY = document.documentElement.style.getPropertyValue("--scroll-y");
+  const body = document.body;
+  body.style.position = "fixed";
+  body.style.top = `-${scrollY}`;
+  //}
 };
 
 const enableScroll = () => {
   //document.body.classList.remove("unscrollable");
-  if (ifMobile || window.innerHeight < 634) {
-    const body = document.body;
-    const scrollY = body.style.top;
-    body.style.position = "";
-    body.style.top = "";
-    window.scrollTo(0, parseInt(scrollY || "0") * -1);
-  }
+  //if (ifMobile || window.innerHeight < 634) {
+  const body = document.body;
+  const scrollY = body.style.top;
+  body.style.position = "";
+  body.style.top = "";
+  window.scrollTo(0, parseInt(scrollY || "0") * -1);
+  //}
 };
 
 export class Button extends React.Component {
@@ -256,7 +258,7 @@ export class Button extends React.Component {
       displayEmailRequest: false,
       emailSentFlag: false,
       displayMainRequest: false,
-      currentTitle: null
+      currentTitle: null,
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -278,19 +280,19 @@ export class Button extends React.Component {
 
   closeRequest() {
     this.setState({
-      displayEmailRequest: false
+      displayEmailRequest: false,
     });
   }
 
   closeMainRequest() {
     this.setState({
-      displayMainRequest: false
+      displayMainRequest: false,
     });
   }
 
   showMainRequest() {
     this.setState({
-      displayMainRequest: true
+      displayMainRequest: true,
     });
   }
 
@@ -300,14 +302,14 @@ export class Button extends React.Component {
       JSON.stringify({
         id: ls.get("userId"),
         name,
-        email
+        email,
       })
     );
     this.setState({
       emailSentFlag: true,
       displayMainRequest: false,
       displayEmailRequest: false,
-      displayChat: true
+      displayChat: true,
     });
   }
 
@@ -319,7 +321,7 @@ export class Button extends React.Component {
       const mongoObjectId =
         ((new Date().getTime() / 1000) | 0).toString(16) +
         "xxxxxxxxxxxxxxxx"
-          .replace(/[x]/g, function() {
+          .replace(/[x]/g, function () {
             return ((Math.random() * 16) | 0).toString(16);
           })
           .toLowerCase();
@@ -336,28 +338,26 @@ export class Button extends React.Component {
       this.props.eyezonGlobal.function = (buttonId, title) =>
         this.handleClick(null, buttonId, title);
     if (ls.get("userId")) {
-      const url = `https://eyezon.herokuapp.com/api/button/${
-        this.props.buttonId
-      }/unread/${ls.get("userId")}`;
-      const url2 = `https://eyezon.herokuapp.com/api/client/${ls.get(
+      const url = `${apiBaseUrl}/button/${this.props.buttonId}/unread/${ls.get(
         "userId"
       )}`;
+      const url2 = `${apiBaseUrl}/client/${ls.get("userId")}`;
       axios
         .get(url)
-        .then(function(response) {
+        .then(function (response) {
           self.props.setNotifications(response.data.count);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           //console.log(error);
         });
       axios
         .get(url2)
-        .then(function(response) {
+        .then(function (response) {
           self.setState({
-            emailSentFlag: true
+            emailSentFlag: true,
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           //console.log(error);
         });
     }
@@ -367,8 +367,8 @@ export class Button extends React.Component {
     // Проверка поддержки браузером уведомлений
 
     let options = {
-      icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
-      data: href
+      icon: `${staticUrl}/static/images/favicon.png`,
+      data: href,
     };
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
@@ -378,7 +378,7 @@ export class Button extends React.Component {
       // Если разрешено, то создаем уведомление
       var notification = new Notification(message, options);
 
-      notification.onclick = function(event) {
+      notification.onclick = function (event) {
         var new_window = window.open("", "_blank"); //open empty window(tab)
         if (event.target.data.includes("?open=true")) {
           let str = event.target.data;
@@ -399,11 +399,11 @@ export class Button extends React.Component {
     }
     // В противном случае, запрашиваем разрешение
     else if (Notification.permission !== "denied") {
-      Notification.requestPermission(function(permission) {
+      Notification.requestPermission(function (permission) {
         // Если пользователь разрешил, то создаем уведомление
         if (permission === "granted") {
           var notification = new Notification(message, options);
-          notification.onclick = function(event) {
+          notification.onclick = function (event) {
             var new_window = window.open("", "_blank"); //open empty window(tab)
             if (event.target.data.includes("?open=true")) {
               new_window.location.href = event.target.data;
@@ -428,14 +428,14 @@ export class Button extends React.Component {
         alert("This browser does not support desktop notification");
       } else if (Notification.permission === "default") {
         self.setState({
-          notificationMessageToggle: true
+          notificationMessageToggle: true,
         });
-        Notification.requestPermission(function(permission) {
+        Notification.requestPermission(function (permission) {
           if (permission === "granted") {
             //ls.set("notificationPermission", true);
           }
           self.setState({
-            notificationMessageToggle: false
+            notificationMessageToggle: false,
           });
         });
       }
@@ -456,11 +456,11 @@ export class Button extends React.Component {
     this.closeRequest();
     if (title) {
       this.setState({
-        currentTitle: title
+        currentTitle: title,
       });
     } else {
       this.setState({
-        currentTitle: null
+        currentTitle: null,
       });
     }
     //e.preventDefault();
@@ -475,21 +475,18 @@ export class Button extends React.Component {
     self.props.setNotifications(0);
     self.setState({
       buttonId: buttonId,
-      apiLoading: true
+      apiLoading: true,
     });
 
     if (!ls.get("dialogId")) {
       if (ls.get("userId")) {
         //console.log("PATH 1");
         axios
-          .post(
-            `https://eyezon.herokuapp.com/api/user/${ls.get("userId")}/dialogs`,
-            {}
-          )
-          .then(function(response) {
+          .post(`${apiBaseUrl}/user/${ls.get("userId")}/dialogs`, {})
+          .then(function (response) {
             //console.log("TESTING NOW 1", response);
             const active = response.data.data.filter(
-              dialog => !dialog.isDeleted
+              (dialog) => !dialog.isDeleted
             );
             if (response.data.count > 0 && active.length > 0) {
               //let notifPerm = ls.get("conversationPermission");
@@ -506,7 +503,7 @@ export class Button extends React.Component {
               self.handleRegistration();
             }
           })
-          .catch(function(error) {
+          .catch(function (error) {
             //console.log(error);
           });
       } else {
@@ -515,17 +512,12 @@ export class Button extends React.Component {
       }
     } else {
       axios
-        .post(
-          /*`https://eyezon.herokuapp.com/api/dialog/${ls.get(
-            "dialogId"
-          )}/messages`*/ `https://eyezon.herokuapp.com/api/user/${ls.get(
-            "userId"
-          )}/dialogs`,
-          {}
-        )
-        .then(function(response) {
+        .post(`${apiBaseUrl}/user/${ls.get("userId")}/dialogs`, {})
+        .then(function (response) {
           //console.log("TESTING NOW 2", response);
-          const active = response.data.data.filter(dialog => !dialog.isDeleted);
+          const active = response.data.data.filter(
+            (dialog) => !dialog.isDeleted
+          );
           if (response.data.count > 0 && active.length > 0) {
             // console.log("PATH 3", response);
 
@@ -543,19 +535,19 @@ export class Button extends React.Component {
             self.showChatHere();
           }*/
         })
-        .catch(function(error) {
+        .catch(function (error) {
           ls.set("dialogId", "");
           self.showChatHere();
           //console.log(error);
         });
     }
-    const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+    const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
     axios
       .post(url, {
-        eventType: "CLICK"
+        eventType: "CLICK",
       })
-      .then(function(response) {})
-      .catch(function(error) {
+      .then(function (response) {})
+      .catch(function (error) {
         //console.log(error);
       });
   }
@@ -566,10 +558,10 @@ export class Button extends React.Component {
     let self = this;
 
     //if (ls.get("userId")) {
-    this.socket = io("https://eyezon.herokuapp.com", {
+    this.socket = io(socketUrl, {
       /*query: "token=" + ls.get("token"),*/
       transports: ["websocket"],
-      upgrade: false
+      upgrade: false,
     });
     this.socket.on("connect", () => {
       this.joinDialogue();
@@ -577,7 +569,7 @@ export class Button extends React.Component {
     this.socket.on("disconnect", () => {
       this.socket.open();
     });
-    this.socket.on("received", data => {
+    this.socket.on("received", (data) => {
       /**feature */
       if (data.user !== ls.get("userId")) {
         this.notificationSound.play();
@@ -596,7 +588,7 @@ export class Button extends React.Component {
           !this.state.displayChat
         ) {
           self.setState({
-            displayEmailRequest: true
+            displayEmailRequest: true,
           });
         }
         if (!iOS) {
@@ -612,9 +604,9 @@ export class Button extends React.Component {
 
     if (this.props.buttons) {
       this.props.buttons.map(
-        button =>
+        (button) =>
           button.target &&
-          button.target.addEventListener("click", event =>
+          button.target.addEventListener("click", (event) =>
             self.handleClick(event, button.buttonId)
           )
       );
@@ -624,7 +616,7 @@ export class Button extends React.Component {
       }
       if (this.props.buttons.length + b_count > 1) {
         this.setState({
-          multiButton: true
+          multiButton: true,
         });
       }
     }
@@ -637,13 +629,13 @@ export class Button extends React.Component {
 
   handleMouseLeave() {
     this.setState({
-      toggle: false
+      toggle: false,
     });
   }
 
   handleMouseEnter() {
     this.setState({
-      toggle: false
+      toggle: false,
     });
   }
 
@@ -655,26 +647,26 @@ export class Button extends React.Component {
       displayChat: false,
       initializeChat: false,
       innerHeight: window.innerHeight,
-      displayMainRequest: false
+      displayMainRequest: false,
     });
     enableScroll();
     //}
   }
   showChat() {
+    disableScroll();
     this.setState({
       displayChat: true,
       displayMessage: false,
       initializeChat: true,
-      apiLoading: false
+      apiLoading: false,
     });
-    disableScroll();
   }
 
   showMessageHere() {
     this.setState({
       displayMessage: true,
       displayChat: false,
-      toggle: false
+      toggle: false,
     });
   }
 
@@ -684,7 +676,7 @@ export class Button extends React.Component {
         displayChat: true,
         displayMessage: false,
         toggle: false,
-        apiLoading: false
+        apiLoading: false,
       });
     });
     disableScroll();
@@ -696,10 +688,10 @@ export class Button extends React.Component {
     return (
       <ButtonReqWrapper>
         <audio
-          ref={element => {
+          ref={(element) => {
             this.notificationSound = element;
           }}
-          src="https://witheyezon.com/eyezonsite/static/not.mp3"
+          src={`${staticUrl}/static/not.mp3`}
           hidden="hidden"
         ></audio>
         {/*this.state.displayEmailRequest && (
@@ -713,7 +705,9 @@ export class Button extends React.Component {
         <NotificationMessageWrapper
           toggle={this.state.notificationMessageToggle}
         >
-          <NotificationMessageArrow src="https://witheyezon.com/eyezonsite/static/images/arrow2.svg" />
+          <NotificationMessageArrow
+            src={`${staticUrl}/static/images/arrow2.svg`}
+          />
           <NotificationMessageText>
             Включи уведомления, если хочешь получить ответ
           </NotificationMessageText>
@@ -725,7 +719,7 @@ export class Button extends React.Component {
         )}
         {this.props.button && (
           <StartButton
-            onClick={event => this.handleClick(event, this.props.buttonId)}
+            onClick={(event) => this.handleClick(event, this.props.buttonId)}
             color={this.props.color}
             status={this.props.notifications > 0 ? "answer" : "rest"}
             positions={this.props.position}
@@ -770,27 +764,3 @@ export class Button extends React.Component {
 }
 
 export default Button;
-{
-  /*<ButtonWrapper
-            color={this.props.color}
-            toggle={isOpen}
-            onClick={event => this.handleClick(event, this.props.buttonId)}
-          >
-            {this.props.notifications > 0 && (
-              <NotificationWrapper color={this.props.color}>
-                {this.props.notifications}
-              </NotificationWrapper>
-            )}
-
-            <JsButtonImageWrapper>
-              <JsButtonImage src="https://witheyezon.com/eyezonsite/static/images/image.png" />
-            </JsButtonImageWrapper>
-            <JsButtonText toggle={isOpen}>
-              <JsButtonHeader>Запросить трансляцию</JsButtonHeader>
-              <JsButtonInfo>
-                Уточните все интересующие вас вопросы на онлайн трансляции с
-                нашим сотрудником
-              </JsButtonInfo>
-            </JsButtonText>
-            </ButtonWrapper>*/
-}

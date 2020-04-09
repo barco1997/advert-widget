@@ -1,13 +1,14 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
-import { media } from "../../../../utils/media";
+import { media, mediaType } from "../../../../utils/media";
+import { staticUrl } from "../../constants";
 //import Image from "./micro.svg";
 //import muteMicro from "./muteMicro.svg";
 
 const MicroWrap = styled.div`
   &&& {
     display: flex !important;
-    justify-content: ${props =>
+    justify-content: ${(props) =>
       props.isActive ? "center !important" : "space-between !important"};
 
     width: 500px !important;
@@ -30,7 +31,7 @@ const SendIconWrapS = styled.div`
     background: #ff2d55 !important;
     border-radius: 50% !important;
     cursor: pointer !important;
-    margin-right: ${props => (props.stream ? "18px" : "0px")} !important;
+    margin-right: ${(props) => (props.stream ? "18px" : "0px")} !important;
   }
 `;
 
@@ -77,49 +78,51 @@ export const pulse = keyframes`
 
 const Input = styled.textarea`
   &&& {
-    height: ${props => (props.height ? props.height : "63px")} !important;
-    color: ${props => (props.stream ? "#ffffff" : "black")} !important;
+    height: ${(props) => (props.height ? props.height : "63px")} !important;
+    color: ${(props) => (props.stream ? "#ffffff" : "black")} !important;
     flex: 1 !important;
 
-    opacity: ${props => (props.blocked ? "0.7" : "1")} !important;
+    opacity: ${(props) => (props.blocked ? "0.7" : "1")} !important;
     max-width: 100% !important;
-    background: ${props =>
+    background: ${(props) =>
       props.stream ? "rgba(255, 255, 255, 0.32)" : "#ffffff"} !important;
     border: 0px solid #eaeaea !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
-    border-radius: ${props => (props.stream ? "4px" : "0px")} !important;
-    padding: ${props => (props.stream ? "13px 24px" : "24px 24px")} !important;
-    padding-right: ${props => (props.stream ? "24px" : "70px")} !important;
+    border-radius: ${(props) => (props.stream ? "4px" : "0px")} !important;
+    padding: ${(props) =>
+      props.stream ? "13px 24px" : "24px 24px"} !important;
+    padding-right: ${(props) => (props.stream ? "24px" : "70px")} !important;
     font-family: "Montserrat" !important;
     font-weight: normal !important;
     font-size: 16px !important;
     line-height: 20px !important;
     outline: 0 !important;
     resize: none !important;
-    border-top: ${props =>
+    border-top: ${(props) =>
       props.stream ? "none" : "1px solid #eaeaea"} !important;
     margin: 0px !important;
-    width: ${props => (props.stream ? "calc(100% - 89px)" : "100%")} !important;
-    margin-left: ${props => (props.stream ? "24px" : "0px")} !important;
-    margin-right: ${props => (props.stream ? "15px" : "0px")} !important;
+    width: ${(props) =>
+      props.stream ? "calc(100% - 89px)" : "100%"} !important;
+    margin-left: ${(props) => (props.stream ? "24px" : "0px")} !important;
+    margin-right: ${(props) => (props.stream ? "15px" : "0px")} !important;
     word-break: break-all !important;
     vertical-align: middle !important;
     &::placeholder {
-      color: ${props =>
+      color: ${(props) =>
         props.stream ? "rgba(255, 255, 255, 0.6)" : "#cacaca"} !important;
       font-weight: normal !important;
     }
     ${media.desktop`
       font-size: 16px !important;
-      height: ${props => (props.height ? props.height : "63px")} !important;
+      height: ${(props) => (props.height ? props.height : "63px")} !important;
       
   `};
   }
 `;
 const ImageSend = styled.div`
   &&& {
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;
     width: 18px !important;
@@ -135,10 +138,10 @@ const ImageSend = styled.div`
 
 const MicroButton = styled.div`
   &&& {
-    background: ${props =>
+    background: ${(props) =>
       props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
     border-radius: 50% !important;
-    margin-right: ${props => (props.isActive ? "0px" : "18px")} !important;
+    margin-right: ${(props) => (props.isActive ? "0px" : "18px")} !important;
     &:focus {
       outline: none !important;
     }
@@ -150,12 +153,12 @@ const MicroButton = styled.div`
     box-shadow: none !important;
     border: none !important;
 
-    ${props =>
+    ${(props) =>
       props.isActive &&
       css`
         animation: ${coolBoxKeyframes} 2s ease-in-out 0s !important;
       `}
-    ${props =>
+    ${(props) =>
       props.isActive &&
       css`
         animation: ${pulse} 1s infinite !important;
@@ -168,7 +171,7 @@ class MicrophoneInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isActive: false
+      isActive: props.audioStreamStatus ? props.audioStreamStatus : false,
     };
 
     this.handleMicro = this.handleMicro.bind(this);
@@ -181,6 +184,13 @@ class MicrophoneInput extends React.Component {
       },
       () => {
         //console.log("record failed");
+        !mediaType.desktop
+          ? alert(
+              "Для использования микрофона во время прямой трансляции, разрешите доступ к микрофону в левом верхнем углу браузера и/или проверьте его наличие на вашем устройстве и перезагрузите страницу"
+            )
+          : alert(
+              "Для использования микрофона во время прямой трансляции, перезагрузите страницу и разрешите доступ к микрофону"
+            );
       }
     );
   }
@@ -193,7 +203,7 @@ class MicrophoneInput extends React.Component {
           <Input
             rows="1"
             stream
-            ref={item => {
+            ref={(item) => {
               this.props.setStreamInput(item);
             }}
             type="text"
@@ -214,19 +224,15 @@ class MicrophoneInput extends React.Component {
             <img
               src={
                 isActive
-                  ? "https://www.witheyezon.com/eyezonsite/static/images/muteMicro.svg"
-                  : "https://www.witheyezon.com/eyezonsite/static/images/micro.svg"
+                  ? `${staticUrl}/static/images/muteMicro.svg`
+                  : `${staticUrl}/static/images/micro.svg`
               }
             />
           </MicroButton>
         )}
         {this.props.value.length > 0 && (
           <SendIconWrapS onClick={() => this.props.handleSubmitS()} stream>
-            <ImageSend
-              src={
-                "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-              }
-            />
+            <ImageSend src={`${staticUrl}/static/images/Subtract.png`} />
           </SendIconWrapS>
         )}
       </MicroWrap>

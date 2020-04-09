@@ -5,6 +5,7 @@ import BasicButton from "../BasicButton";
 import WhiteButton from "../WhiteButton";
 import { media } from "../../../../utils/media";
 import BlurredButton from "../BlurredButton";
+import { staticUrl } from "../../constants";
 
 const TextWrap = styled.div`
   &&& {
@@ -56,7 +57,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     height: 320px !important;
     width: 100% !important;
   }
@@ -116,7 +117,7 @@ const Button = styled.div`
 const NotifyButtonWrapper = styled.div`
   &&& {
     display: flex !important;
-    width: ${props => (props.width ? props.width : "327px")} !important;
+    width: ${(props) => (props.width ? props.width : "327px")} !important;
     height: 40px !important;
     justify-content: center !important;
     align-items: center !important;
@@ -136,8 +137,8 @@ const Text = styled.div`
     font-weight: 600 !important;
     font-size: 12px !important;
     line-height: 15px !important;
-    color: ${props => (props.black ? "#333333" : "#ababab")} !important;
-    text-shadow: ${props => (props.black ? "none" : "none")} !important;
+    color: ${(props) => (props.black ? "#333333" : "#ababab")} !important;
+    text-shadow: ${(props) => (props.black ? "none" : "none")} !important;
     margin-right: 10px !important;
     cursor: pointer !important;
 
@@ -191,14 +192,14 @@ export class LeaveEmail extends React.Component {
     super(props, context);
     this.state = {
       tosend: 0,
-      value: ""
+      value: "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
   handleChange(e, field) {
     this.setState({
-      [field]: e.currentTarget.value
+      [field]: e.currentTarget.value,
     });
   }
   handleClick() {
@@ -206,7 +207,7 @@ export class LeaveEmail extends React.Component {
       this.props.sendEmailDetails(this.state.value, "Клиент");
     }
     this.setState({
-      tosend: this.state.tosend + 1
+      tosend: this.state.tosend + 1,
     });
   }
   render() {
@@ -235,7 +236,7 @@ export class LeaveEmail extends React.Component {
                 type="text"
                 placeholder="Адрес электронной почты"
                 value={this.state.value}
-                onChange={e => this.handleChange(e, "value")}
+                onChange={(e) => this.handleChange(e, "value")}
               />
             )}
             {this.state.tosend === 1 && (
@@ -245,10 +246,7 @@ export class LeaveEmail extends React.Component {
             {this.state.tosend === 2 && (
               <NotifyButtonWrapper>
                 <Text>Уведомление на Email</Text>
-                <img
-                  src="https://www.witheyezon.com/eyezonsite/static/images/tick.svg"
-                  alt="logo"
-                />
+                <img src={`${staticUrl}/static/images/tick.svg`} alt="logo" />
               </NotifyButtonWrapper>
             )}
           </EmailWrapper>

@@ -7,10 +7,10 @@
 import React from "react";
 //import PropTypes from "prop-types";
 import styled from "styled-components";
-
+import { staticUrl } from "../../constants";
 const Image = styled.div`
   &&& {
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;
     width: 8px !important;
@@ -22,7 +22,7 @@ const Image = styled.div`
 const ButtonWrapper = styled.div`
   &&& {
     text-decoration: none !important;
-    background: ${props =>
+    background: ${(props) =>
       props.watched
         ? "rgba(255, 45, 85, 0.5) !important"
         : "#FFFFFF !important"};
@@ -48,7 +48,7 @@ export class Button extends React.Component {
     super(props, context);
     this.state = {
       wasWatched: false,
-      id: this.props.id
+      id: this.props.id,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -56,14 +56,14 @@ export class Button extends React.Component {
   handleClick() {
     this.props.setFlv(this.state.id);
     this.setState({
-      wasWatched: true
+      wasWatched: true,
     });
   }
 
   render() {
     return (
       <ButtonWrapper onClick={() => this.handleClick()}>
-        <Image src="https://witheyezon.com/eyezonsite/static/images/Vector.png" />
+        <Image src={`${staticUrl}/static/images/Vector.png`} />
         <Child>{this.props.children}</Child>
       </ButtonWrapper>
     );

@@ -4,6 +4,7 @@ import React from "react";
 import axios from "axios";
 import ls from "local-storage";
 import Button from "../Button";
+import { apiBaseUrl } from "../../constants";
 //import { messaging } from "./fcm-init";
 const userLang = navigator.language || navigator.userLanguage;
 
@@ -11,6 +12,7 @@ export class App extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
+      readyToRender: false,
       notifications: 0,
       notificationStatus: false,
       countdown: 0,
@@ -24,68 +26,83 @@ export class App extends React.Component {
       waitingText:
         "вы можете свернуть окно и продолжить пользоваться\n сайтом, вам придет уведомление.",
       waitingTitle:
-        "Пока кто-то из нашей команды готовиться ответить на ваше сообщение, "
+        "Пока кто-то из нашей команды готовиться ответить на ваше сообщение, ",
     };
     this.setNotifications = this.setNotifications.bind(this);
     this.incrementNotifications = this.incrementNotifications.bind(this);
     this.decrementNotifications = this.decrementNotifications.bind(this);
+    //this.blurFunc = this.blurFunc.bind(this);
+    this.keydownFunc = this.keydownFunc.bind(this);
+  }
+
+  /*blurFunc() {
+    this.blur();
+  }*/
+  keydownFunc(e) {
+    if (e.keyCode == 32 && e.target == document.body) {
+      e.preventDefault();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.keydownFunc);
   }
   componentDidMount() {
     //get amount of notifications
-    document.querySelectorAll("button").forEach(function(item) {
-      item.addEventListener("focus", function() {
+    document.querySelectorAll("button").forEach(function (item) {
+      item.addEventListener("focus", function () {
         this.blur();
       });
     });
-    window.addEventListener("keydown", function(e) {
-      if (e.keyCode == 32 && e.target == document.body) {
-        e.preventDefault();
-      }
-    });
+    window.addEventListener("keydown", this.keydownFunc);
     let self = this;
     const buttonId = this.props.buttonId;
     const userId = ls.get("userId");
 
-    const url = `https://eyezon.herokuapp.com/api/button/${buttonId}`;
-    const lang_url = "https://eyezon.herokuapp.com/api/language";
-    axios.get(lang_url).then(function(languages) {
-      axios.get(url).then(function(response) {
+    const url = `${apiBaseUrl}/button/${buttonId}`;
+    const lang_url = `${apiBaseUrl}/language`;
+    axios.get(lang_url).then(function (languages) {
+      axios.get(url).then(function (response) {
         //let notificationCount = ls.get("notificationCount");
         //console.log("RESP", response);
         const languageId = userLang.toLowerCase().includes("en")
-          ? languages.data.find(element => element.value === "EN")._id
-          : languages.data.find(element => element.value === "RU")._id;
+          ? languages.data.find((element) => element.value === "EN")._id
+          : languages.data.find((element) => element.value === "RU")._id;
 
         const localisedTextArray = response.data.languageSpecificFields.filter(
-          element => element.language === languageId
+          (element) => element.language === languageId
         );
         self.setState({
+          readyToRender: true,
           requestFieldText:
             localisedTextArray.find(
-              element => element.field === "requestFieldText"
+              (element) => element.field === "requestFieldText"
             ).value || "requestFieldText",
           mainText:
-            localisedTextArray.find(element => element.field === "mainText")
+            localisedTextArray.find((element) => element.field === "mainText")
               .value || "mainText",
           greetingText:
-            localisedTextArray.find(element => element.field === "greetingText")
-              .value || "greetingText",
+            localisedTextArray.find(
+              (element) => element.field === "greetingText"
+            ).value || "greetingText",
           greetingTitle:
             localisedTextArray.find(
-              element => element.field === "greetingTitle"
+              (element) => element.field === "greetingTitle"
             ).value || "greetingTitle",
           waitingText:
-            localisedTextArray.find(element => element.field === "waitingText")
-              .value || "waitingText",
+            localisedTextArray.find(
+              (element) => element.field === "waitingText"
+            ).value || "waitingText",
           waitingTitle:
-            localisedTextArray.find(element => element.field === "waitingTitle")
-              .value || "waitingTitle",
+            localisedTextArray.find(
+              (element) => element.field === "waitingTitle"
+            ).value || "waitingTitle",
           color: response.data.chatColor,
           countdown: response.data.countdown,
           askedUserData: response.data.askedUserData,
           miniGame: response.data.miniGame,
           position:
-            response.data.position /*.toLowerCase().replace(/_/gi, "-")*/
+            response.data.position /*.toLowerCase().replace(/_/gi, "-")*/,
         });
       });
     });
@@ -111,11 +128,11 @@ export class App extends React.Component {
     if (val > 0) {
       this.setState({
         notifications: val,
-        notificationStatus: true
+        notificationStatus: true,
       });
     } else {
       this.setState({
-        notifications: val
+        notifications: val,
       });
     }
   }
@@ -123,44 +140,45 @@ export class App extends React.Component {
     const val = this.state.notifications;
     this.setState({
       notifications: val + 1,
-      notificationStatus: true
+      notificationStatus: true,
     });
   }
   decrementNotifications() {
     const val = this.state.notifications > 0 ? this.state.notifications : 1;
     this.setState({
-      notifications: val - 1
+      notifications: val - 1,
     });
   }
   render() {
     return (
       <React.Fragment>
-        <Button
-          color={this.props.color}
-          businessId={this.props.businessId}
-          buttonId={this.props.buttonId}
-          ifOpened={this.props.ifOpened}
-          button={this.props.button || this.state.notificationStatus}
-          buttons={this.props.buttons}
-          incrementNotifications={this.incrementNotifications}
-          notifications={this.state.notifications}
-          setNotifications={this.setNotifications}
-          decrementNotifications={this.decrementNotifications}
-          mainText={this.state.mainText}
-          requestFieldText={this.state.requestFieldText}
-          greetingText={this.state.greetingText}
-          waitingText={this.state.waitingText}
-          greetingTitle={this.state.greetingTitle}
-          waitingTitle={this.state.waitingTitle}
-          eyezonGlobal={this.props.eyezonGlobal}
-          color={this.state.color}
-          miniGame={this.state.miniGame}
-          countdown={this.state.countdown}
-          timerFlag={this.state.countdown !== 0}
-          position={this.state.position}
-          askedUserData={this.state.askedUserData}
-          /*firebase={this.props.firebase}*/
-        />
+        {this.state.readyToRender && (
+          <Button
+            businessId={this.props.businessId}
+            buttonId={this.props.buttonId}
+            ifOpened={this.props.ifOpened}
+            button={this.props.button || this.state.notificationStatus}
+            buttons={this.props.buttons}
+            incrementNotifications={this.incrementNotifications}
+            notifications={this.state.notifications}
+            setNotifications={this.setNotifications}
+            decrementNotifications={this.decrementNotifications}
+            mainText={this.state.mainText}
+            requestFieldText={this.state.requestFieldText}
+            greetingText={this.state.greetingText}
+            waitingText={this.state.waitingText}
+            greetingTitle={this.state.greetingTitle}
+            waitingTitle={this.state.waitingTitle}
+            eyezonGlobal={this.props.eyezonGlobal}
+            color={this.state.color}
+            miniGame={this.state.miniGame}
+            countdown={this.state.countdown}
+            timerFlag={this.state.countdown !== 0}
+            position={this.state.position}
+            askedUserData={this.state.askedUserData}
+            /*firebase={this.props.firebase}*/
+          />
+        )}
       </React.Fragment>
     );
   }

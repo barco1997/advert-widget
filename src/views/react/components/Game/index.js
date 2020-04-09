@@ -313,6 +313,7 @@ class Game extends Component {
   componentWillUnmount() {
     window.removeEventListener("touchstart", this.handleTouch);
     window.removeEventListener("keydown", this.handleSpace);
+    clearInterval(this.interval);
   }
 
   render() {

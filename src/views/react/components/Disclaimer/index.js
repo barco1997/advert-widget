@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { staticUrl } from "../../constants";
+import { fromRenderProps } from "recompose";
 //import Logo from "./logoeye.png";
 const Wrapper = styled.a`
   &&& {
@@ -40,10 +42,7 @@ export class Disclaimer extends React.Component {
         rel="noopener noreferrer"
       >
         <Text>Мы используем</Text>
-        <Image
-          src="https://www.witheyezon.com/eyezonsite/static/images/logoeye.png"
-          alt="logo"
-        />
+        <Image src={`${staticUrl}/static/images/logoeye.png`} alt="logo" />
       </Wrapper>
     );
   }
