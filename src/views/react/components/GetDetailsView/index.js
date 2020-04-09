@@ -62,7 +62,8 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) =>
+      `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
   }
@@ -111,7 +112,7 @@ export class GetDetailsView extends React.Component {
     this.state = {
       isName: this.props.requestedData.includes("NAME"),
       isEmail: this.props.requestedData.includes("EMAIL"),
-      isPhone: this.props.requestedData.includes("PHONE")
+      isPhone: this.props.requestedData.includes("PHONE"),
     };
   }
 
@@ -128,7 +129,7 @@ export class GetDetailsView extends React.Component {
                   <FormField
                     placeholder="Адрес электронной почты"
                     value={this.props.email}
-                    onChange={event =>
+                    onChange={(event) =>
                       this.props.handleChange(
                         "emailRequested",
                         event.target.value
@@ -142,7 +143,7 @@ export class GetDetailsView extends React.Component {
                   <FormField
                     placeholder="Номер телефона"
                     value={this.props.phone}
-                    onChange={event =>
+                    onChange={(event) =>
                       this.props.handleChange(
                         "phoneRequested",
                         event.target.value
@@ -156,7 +157,7 @@ export class GetDetailsView extends React.Component {
                   <FormField
                     placeholder="имя"
                     value={this.props.name}
-                    onChange={event =>
+                    onChange={(event) =>
                       this.props.handleChange(
                         "nameRequested",
                         event.target.value
@@ -174,7 +175,7 @@ export class GetDetailsView extends React.Component {
 }
 
 GetDetailsView.defaultProps = {
-  requestedData: "EMAIL&NAME"
+  requestedData: "EMAIL&NAME",
 };
 
 export default GetDetailsView;
