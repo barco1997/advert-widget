@@ -7,7 +7,7 @@ import { media } from "../../../../utils/media";
 const MicroWrap = styled.div`
   &&& {
     display: flex !important;
-    justify-content: ${props =>
+    justify-content: ${(props) =>
       props.isActive ? "center !important" : "space-between !important"};
 
     width: 500px !important;
@@ -30,7 +30,7 @@ const SendIconWrapS = styled.div`
     background: #ff2d55 !important;
     border-radius: 50% !important;
     cursor: pointer !important;
-    margin-right: ${props => (props.stream ? "18px" : "0px")} !important;
+    margin-right: ${(props) => (props.stream ? "18px" : "0px")} !important;
   }
 `;
 
@@ -77,49 +77,51 @@ export const pulse = keyframes`
 
 const Input = styled.textarea`
   &&& {
-    height: ${props => (props.height ? props.height : "63px")} !important;
-    color: ${props => (props.stream ? "#ffffff" : "black")} !important;
+    height: ${(props) => (props.height ? props.height : "63px")} !important;
+    color: ${(props) => (props.stream ? "#ffffff" : "black")} !important;
     flex: 1 !important;
 
-    opacity: ${props => (props.blocked ? "0.7" : "1")} !important;
+    opacity: ${(props) => (props.blocked ? "0.7" : "1")} !important;
     max-width: 100% !important;
-    background: ${props =>
+    background: ${(props) =>
       props.stream ? "rgba(255, 255, 255, 0.32)" : "#ffffff"} !important;
     border: 0px solid #eaeaea !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
-    border-radius: ${props => (props.stream ? "4px" : "0px")} !important;
-    padding: ${props => (props.stream ? "13px 24px" : "24px 24px")} !important;
-    padding-right: ${props => (props.stream ? "24px" : "70px")} !important;
+    border-radius: ${(props) => (props.stream ? "4px" : "0px")} !important;
+    padding: ${(props) =>
+      props.stream ? "13px 24px" : "24px 24px"} !important;
+    padding-right: ${(props) => (props.stream ? "24px" : "70px")} !important;
     font-family: "Montserrat" !important;
     font-weight: normal !important;
     font-size: 16px !important;
     line-height: 20px !important;
     outline: 0 !important;
     resize: none !important;
-    border-top: ${props =>
+    border-top: ${(props) =>
       props.stream ? "none" : "1px solid #eaeaea"} !important;
     margin: 0px !important;
-    width: ${props => (props.stream ? "calc(100% - 89px)" : "100%")} !important;
-    margin-left: ${props => (props.stream ? "24px" : "0px")} !important;
-    margin-right: ${props => (props.stream ? "15px" : "0px")} !important;
+    width: ${(props) =>
+      props.stream ? "calc(100% - 89px)" : "100%"} !important;
+    margin-left: ${(props) => (props.stream ? "24px" : "0px")} !important;
+    margin-right: ${(props) => (props.stream ? "15px" : "0px")} !important;
     word-break: break-all !important;
     vertical-align: middle !important;
     &::placeholder {
-      color: ${props =>
+      color: ${(props) =>
         props.stream ? "rgba(255, 255, 255, 0.6)" : "#cacaca"} !important;
       font-weight: normal !important;
     }
     ${media.desktop`
       font-size: 16px !important;
-      height: ${props => (props.height ? props.height : "63px")} !important;
+      height: ${(props) => (props.height ? props.height : "63px")} !important;
       
   `};
   }
 `;
 const ImageSend = styled.div`
   &&& {
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;
     width: 18px !important;
@@ -133,12 +135,59 @@ const ImageSend = styled.div`
   }
 `;
 
+const HintWrap = styled.div`
+  &&& {
+    z-index: 10010 !important;
+    position: absolute !important;
+    top: -85px !important;
+    right: 0px !important;
+    width: 240px !important;
+
+    background: #ffffff !important;
+    padding: 14px !important;
+    border-radius: 5px 5px 0px 5px !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    line-height: 160% !important;
+    color: #090909 !important;
+  }
+`;
+
+const CloseButton = styled.span`
+  &&& {
+    cursor: pointer !important;
+    position: absolute !important;
+    top: 0px !important;
+    right: 0px !important;
+    &:after {
+      position: absolute !important;
+      top: 14px !important;
+      left: -20px !important;
+      content: " " !important;
+      height: 12px !important;
+      width: 2px !important;
+      background-color: #000 !important;
+      transform: rotate(-45deg);
+    }
+    &:before {
+      position: absolute !important;
+      top: 14px !important;
+      left: -20px !important;
+      content: " " !important;
+      height: 12px !important;
+      width: 2px !important;
+      background-color: #000 !important;
+      transform: rotate(45deg);
+    }
+  }
+`;
+
 const MicroButton = styled.div`
   &&& {
-    background: ${props =>
+    background: ${(props) =>
       props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
     border-radius: 50% !important;
-    margin-right: ${props => (props.isActive ? "0px" : "18px")} !important;
+    margin-right: ${(props) => (props.isActive ? "0px" : "18px")} !important;
     &:focus {
       outline: none !important;
     }
@@ -149,13 +198,14 @@ const MicroButton = styled.div`
     justify-content: center !important;
     box-shadow: none !important;
     border: none !important;
+    position: relative !important;
 
-    ${props =>
+    ${(props) =>
       props.isActive &&
       css`
         animation: ${coolBoxKeyframes} 2s ease-in-out 0s !important;
       `}
-    ${props =>
+    ${(props) =>
       props.isActive &&
       css`
         animation: ${pulse} 1s infinite !important;
@@ -168,15 +218,17 @@ class MicrophoneInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isActive: false
+      isActive: false,
+      isShowHint: true,
     };
 
     this.handleMicro = this.handleMicro.bind(this);
+    this.handleHint = this.handleHint.bind(this);
   }
   handleMicro() {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(
       () => {
-        this.setState({ isActive: !this.state.isActive });
+        this.setState({ isActive: !this.state.isActive, isShowHint: false });
         this.props.audioToggle();
       },
       () => {
@@ -185,15 +237,20 @@ class MicrophoneInput extends React.Component {
     );
   }
 
+  handleHint(e) {
+    e.stopPropagation();
+    this.setState({ isShowHint: false });
+  }
+
   render() {
-    const { isActive } = this.state;
+    const { isActive, isShowHint } = this.state;
     return (
       <MicroWrap isActive={isActive}>
         {!isActive && (
           <Input
             rows="1"
             stream
-            ref={item => {
+            ref={(item) => {
               this.props.setStreamInput(item);
             }}
             type="text"
@@ -211,6 +268,12 @@ class MicrophoneInput extends React.Component {
             isActive={isActive}
             color={this.props.color}
           >
+            {this.props.isHint && isShowHint && (
+              <HintWrap onClick={(e) => e.stopPropagation()}>
+                Вы можете говорить с продавцом. Просто включите микрофон.
+                <CloseButton onClick={this.handleHint} />
+              </HintWrap>
+            )}
             <img
               src={
                 isActive

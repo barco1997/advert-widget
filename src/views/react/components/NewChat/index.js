@@ -1913,6 +1913,7 @@ export class Chat extends React.Component {
                           audioStreamStatus: !this.state.audioStreamStatus
                         })
                       }
+                      isHint={true}
                     />
                   </InputLineStream>
                 </TextFieldExtraS>
