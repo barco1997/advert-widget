@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import BlurredButton from "../BlurredButton";
+import { staticUrl } from "../../constants";
 
 const Wrapper = styled.div`
   &&& {
@@ -12,7 +13,7 @@ const Wrapper = styled.div`
 const NotifyButtonWrapper = styled.div`
   &&& {
     display: flex !important;
-    width: ${props => (props.width ? props.width : "327px")} !important;
+    width: ${(props) => (props.width ? props.width : "327px")} !important;
     height: 40px !important;
     justify-content: center !important;
     align-items: center !important;
@@ -101,8 +102,8 @@ const Text = styled.div`
     font-weight: 600 !important;
     font-size: 12px !important;
     line-height: 15px !important;
-    color: ${props => (props.black ? "#333333" : "#ababab")} !important;
-    text-shadow: ${props => (props.black ? "none" : "none")} !important;
+    color: ${(props) => (props.black ? "#333333" : "#ababab")} !important;
+    text-shadow: ${(props) => (props.black ? "none" : "none")} !important;
     margin-right: 10px !important;
     cursor: pointer !important;
 
@@ -120,13 +121,13 @@ export class NotifyButton extends React.Component {
     super(props);
     this.state = {
       tosend: props.emailSentFlag ? 2 : 0,
-      value: ""
+      value: "",
     };
     this.handleClick = this.handleClick.bind(this);
   }
   handleChange(e, field) {
     this.setState({
-      [field]: e.currentTarget.value
+      [field]: e.currentTarget.value,
     });
   }
   handleClick() {
@@ -134,7 +135,7 @@ export class NotifyButton extends React.Component {
       this.props.sendEmailDetails(this.state.value, "Клиент");
     }
     this.setState({
-      tosend: this.state.tosend + 1
+      tosend: this.state.tosend + 1,
     });
   }
 
@@ -153,7 +154,7 @@ export class NotifyButton extends React.Component {
               type="text"
               placeholder="Адрес электронной почты"
               value={this.state.value}
-              onChange={e => this.handleChange(e, "value")}
+              onChange={(e) => this.handleChange(e, "value")}
             />
           )}
           {this.state.tosend === 1 && (
@@ -163,10 +164,7 @@ export class NotifyButton extends React.Component {
           {this.state.tosend === 2 && (
             <NotifyButtonWrapper>
               <Text>Уведомление на Email</Text>
-              <img
-                src="https://www.witheyezon.com/eyezonsite/static/images/tick.svg"
-                alt="logo"
-              />
+              <img src={`${staticUrl}/static/images/tick.svg`} alt="logo" />
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
@@ -187,7 +185,7 @@ NotifyButton.defaultProps = {
   inactiveText: "Включить уведомления ",
   activeText: "Уведомления включены ",
   text:
-    "К сожалению, сотрудники не успевают ответить, включите уведомления браузера или оставьте электронную почту, и мы вам пришлем ссылку на трансляцию"
+    "Сотрудник не сможет показать товар сразу, но запишет видео и пришлёт на почту или в чат. Выбери, что тебе удобнее.",
 };
 
 export default NotifyButton;

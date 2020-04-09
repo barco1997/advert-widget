@@ -3,7 +3,14 @@ import "./views/global/style.css";
 import { react /*, reactTest*/ } from "./views/react";
 import "./fonts/fonts.css";
 import axios from "axios";
-const supportedAPI = ["init", "message", "react", "reacttest"]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
+import { apiBaseUrl } from "./views/react/constants";
+const supportedAPI = [
+  "init",
+  "message",
+  "react",
+  "reacttest",
+  "install_eyezon",
+]; // enlist all methods supported by API (e.g. `mw('event', 'user-login');`)
 
 /**
     The main entry of the application
@@ -11,7 +18,7 @@ const supportedAPI = ["init", "message", "react", "reacttest"]; // enlist all me
 function app(window) {
   // set default configurations
   let configurations = {
-    someDefaultConfiguration: false
+    someDefaultConfiguration: false,
   };
 
   // all methods that were called till now and stored in queue
@@ -47,25 +54,26 @@ function apiHandler(api, params) {
 
   switch (api) {
     // TODO: add API implementation
-    case "message":
-      break;
-    case "react":
+
+    case "install_eyezon":
       let buttons;
       let updatedParams = params;
       let url = new URL(window.location.href);
       let openChat = url.searchParams.get("open");
-      const url2 = `https://eyezon.herokuapp.com/api/business/${params.businessId}/subscriptions`;
+      const url2 = `${apiBaseUrl}/business/${params.businessId}/subscriptions`;
       axios
         .get(url2)
-        .then(function(response) {
+        .then(function (response) {
           if (
-            response.data.some(subscription => subscription.status === "ACTIVE")
+            response.data.some(
+              (subscription) => subscription.status === "ACTIVE"
+            )
           ) {
             if (params.targets && params.targets.length > 0) {
-              buttons = params.targets.map(target => {
+              buttons = params.targets.map((target) => {
                 return {
                   buttonId: target.buttonId,
-                  target: document.getElementById(target.targetId)
+                  target: document.getElementById(target.targetId),
                 };
               });
             }
@@ -77,7 +85,7 @@ function apiHandler(api, params) {
             }
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           //console.log(error);
         });
 

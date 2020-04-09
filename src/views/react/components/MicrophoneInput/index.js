@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
-import { media } from "../../../../utils/media";
+import { media, mediaType } from "../../../../utils/media";
+import { staticUrl } from "../../constants";
 //import Image from "./micro.svg";
 //import muteMicro from "./muteMicro.svg";
 
@@ -218,7 +219,7 @@ class MicrophoneInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isActive: false,
+      isActive: props.audioStreamStatus ? props.audioStreamStatus : false,
       isShowHint: true,
     };
 
@@ -233,6 +234,13 @@ class MicrophoneInput extends React.Component {
       },
       () => {
         //console.log("record failed");
+        !mediaType.desktop
+          ? alert(
+              "Для использования микрофона во время прямой трансляции, разрешите доступ к микрофону в левом верхнем углу браузера и/или проверьте его наличие на вашем устройстве и перезагрузите страницу"
+            )
+          : alert(
+              "Для использования микрофона во время прямой трансляции, перезагрузите страницу и разрешите доступ к микрофону"
+            );
       }
     );
   }
@@ -277,19 +285,15 @@ class MicrophoneInput extends React.Component {
             <img
               src={
                 isActive
-                  ? "https://www.witheyezon.com/eyezonsite/static/images/muteMicro.svg"
-                  : "https://www.witheyezon.com/eyezonsite/static/images/micro.svg"
+                  ? `${staticUrl}/static/images/muteMicro.svg`
+                  : `${staticUrl}/static/images/micro.svg`
               }
             />
           </MicroButton>
         )}
         {this.props.value.length > 0 && (
           <SendIconWrapS onClick={() => this.props.handleSubmitS()} stream>
-            <ImageSend
-              src={
-                "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-              }
-            />
+            <ImageSend src={`${staticUrl}/static/images/Subtract.png`} />
           </SendIconWrapS>
         )}
       </MicroWrap>

@@ -11,6 +11,7 @@ import { media } from "../../../../utils/media";
 //import plus from "./plus.png";
 //import minus from "./minus.png";
 //import ControlButton from "./button";
+import { staticUrl } from "../../constants";
 import axios from "axios";
 
 const Item = styled.li`
@@ -56,8 +57,8 @@ const Icon = styled.div`
 const ItemStart = styled.div`
   &&& {
     display: flex !important;
-    margin-left: ${props => (props.ifRecipient ? "auto" : "3px")} !important;
-    margin-right: ${props => (props.ifRecipient ? "0" : "auto")} !important;
+    margin-left: ${(props) => (props.ifRecipient ? "auto" : "3px")} !important;
+    margin-right: ${(props) => (props.ifRecipient ? "0" : "auto")} !important;
     flex-direction: column !important;
     justify-content: center !important;
   }
@@ -69,7 +70,7 @@ const ResponseAdditional = styled.div`
 
     align-items: flex-end !important;
 
-    flex-direction: ${props =>
+    flex-direction: ${(props) =>
       props.ifRecipient ? "row-reverse" : "row"} !important;
     flex-wrap: nowrap !important;
   }
@@ -80,7 +81,7 @@ const ExtraStream = styled.div`
     flex-direction: row !important;
     align-items: flex-start !important;
     padding: 15px !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     border-radius: 5px 5px 5px 0px !important;
 
     ${media.desktop`
@@ -99,14 +100,14 @@ const Title = styled.h4`
     font-size: 14px !important;
     word-break: break-all !important;
     font-weight: normal !important;
-    color: ${props => (props.ifRecipient ? "white" : "black")} !important;
-    background: ${props =>
+    color: ${(props) => (props.ifRecipient ? "white" : "black")} !important;
+    background: ${(props) =>
       props.ifRecipient
         ? /*"linear-gradient(100.96deg, #FF2D55 0%, #FF2D79 100%)"*/ props.color
         : "#ECECEC"} !important;
     margin: 0 !important;
     width: auto !important;
-    border-radius: ${props =>
+    border-radius: ${(props) =>
       props.ifRecipient ? "5px 5px 0px 5px" : "5px 5px 5px 0px"} !important;
     ${media.desktop`
     
@@ -145,7 +146,7 @@ const VideoA = styled.div`
     width: 270px !important;
     cursor: pointer;
     border-radius: 10px 10px 10px 0px !important;
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     display: flex !important;
@@ -221,7 +222,7 @@ const Date = styled.time`
     opacity: 0.2 !important;
     /*margin: 0px 10px !important;*/
     margin-top: 5px !important;
-    justify-content: ${props =>
+    justify-content: ${(props) =>
       props.ifRecipient ? "flex-end" : "flex-start"} !important;
     font-size: 12px !important;
   }
@@ -248,7 +249,7 @@ export class Response extends React.Component {
       pauseIcon: this.props.ifPauseIcon ? true : false,
       plusToggled: false,
       repointLimit: 50,
-      repointValue: 1
+      repointValue: 1,
     };
 
     this.setItems = this.setItems.bind(this);
@@ -256,7 +257,7 @@ export class Response extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handlePlus = this.handlePlus.bind(this);
     this.handleMinus = this.handleMinus.bind(this);
-    this.handleSend = this.handleSend.bind(this);
+    //this.handleSend = this.handleSend.bind(this);
     //this.played = this.played.bind(this);
     //this.paused = this.paused.bind(this);
   }
@@ -266,7 +267,7 @@ export class Response extends React.Component {
 
     if (rep <= 10 && rep <= this.state.repointLimit) {
       this.setState({
-        repointValue: rep
+        repointValue: rep,
       });
     }
   }
@@ -275,36 +276,36 @@ export class Response extends React.Component {
     const rep = this.state.repointValue - 1;
     if (rep > 0) {
       this.setState({
-        repointValue: rep
+        repointValue: rep,
       });
     } else if (rep === 0) {
       this.setState({
-        plusToggled: false
+        plusToggled: false,
       });
     }
   }
 
-  handleSend() {
+  /*handleSend() {
     let self = this;
     const val = this.state.repointValue;
     self.setState({
-      plusToggled: false
+      plusToggled: false,
     });
     if (val <= self.state.repointLimit) {
       axios
         .patch(`https://api.eyezon.app/messages/${this.props.id}/${val}`)
-        .then(function(response) {
+        .then(function (response) {
           self.setState({
             repointLimit: self.state.repointLimit - val,
-            repointValue: 1
+            repointValue: 1,
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           //console.log(error);
         });
     } else {
     }
-  }
+  }*/
 
   /*componentWillMount() {
     if (this.state.typeVar === "stream" && this.props.src) {
@@ -314,7 +315,7 @@ export class Response extends React.Component {
   }*/
   componentDidMount() {
     this.setState({
-      repointLimit: this.props.transactionLimit
+      repointLimit: this.props.transactionLimit,
     });
   }
 
@@ -342,18 +343,18 @@ export class Response extends React.Component {
   setItems(type, src) {
     this.setState({
       typeVar: type,
-      src: src
+      src: src,
     });
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.ifPauseIcon) {
       this.setState({
-        pauseIcon: true
+        pauseIcon: true,
       });
     } else if (this.props.ifPauseIcon && !nextProps.ifPauseIcon) {
       this.setState({
-        pauseIcon: false
+        pauseIcon: false,
       });
     }
     if (this.state.typeVar === "stream" && nextProps.type === "video") {
@@ -363,7 +364,7 @@ export class Response extends React.Component {
 
   setSrc(props) {
     this.setState({
-      src: props
+      src: props,
     });
   }
 
@@ -384,10 +385,7 @@ export class Response extends React.Component {
         <Item>
           <Icon>
             <img
-              src={
-                this.props.icon ||
-                "https://witheyezon.com/eyezonsite/static/images/logo.png"
-              }
+              src={this.props.icon || `${staticUrl}/static/images/logo.png`}
               alt="item type"
             />
           </Icon>
@@ -471,8 +469,8 @@ export class Response extends React.Component {
                     <PlayIcon
                       src={
                         this.state.pauseIcon
-                          ? "https://witheyezon.com/eyezonsite/static/images/pauseIcon.svg"
-                          : "https://witheyezon.com/eyezonsite/static/images/playIcon.svg"
+                          ? `${staticUrl}/static/images/pauseIcon.svg`
+                          : `${staticUrl}/static/images/playIcon.svg`
                       }
                     />
                   </VideoA>

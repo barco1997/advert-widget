@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { staticUrl } from "../../constants";
 //import Star from "./star.svg";
 //import CheckedStar from "./checkedstar.svg";
 const Wrapper = styled.div`
@@ -24,13 +25,13 @@ export class RateCall extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rating: 0
+      rating: 0,
     };
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick(e) {
     this.setState({
-      rating: e
+      rating: e,
     });
   }
   render() {
@@ -39,8 +40,8 @@ export class RateCall extends React.Component {
         <ImgWrap
           src={
             this.state.rating >= 0
-              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
-              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+              ? `${staticUrl}/static/images/checkedstar.svg`
+              : `${staticUrl}/static/images/star.svg`
           }
           alt="logo"
           onClick={() => this.handleClick(0)}
@@ -48,8 +49,8 @@ export class RateCall extends React.Component {
         <ImgWrap
           src={
             this.state.rating >= 1
-              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
-              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+              ? `${staticUrl}/static/images/checkedstar.svg`
+              : `${staticUrl}/static/images/star.svg`
           }
           alt="logo"
           onClick={() => this.handleClick(1)}
@@ -57,8 +58,8 @@ export class RateCall extends React.Component {
         <ImgWrap
           src={
             this.state.rating >= 2
-              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
-              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+              ? `${staticUrl}/static/images/checkedstar.svg`
+              : `${staticUrl}/static/images/star.svg`
           }
           alt="logo"
           onClick={() => this.handleClick(2)}
@@ -66,8 +67,8 @@ export class RateCall extends React.Component {
         <ImgWrap
           src={
             this.state.rating >= 3
-              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
-              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+              ? `${staticUrl}/static/images/checkedstar.svg`
+              : `${staticUrl}/static/images/star.svg`
           }
           alt="logo"
           onClick={() => this.handleClick(3)}
@@ -75,8 +76,8 @@ export class RateCall extends React.Component {
         <ImgWrap
           src={
             this.state.rating >= 4
-              ? "https://www.witheyezon.com/eyezonsite/static/images/checkedstar.svg"
-              : "https://www.witheyezon.com/eyezonsite/static/images/star.svg"
+              ? `${staticUrl}/static/images/checkedstar.svg`
+              : `${staticUrl}/static/images/star.svg`
           }
           alt="logo"
           onClick={() => this.handleClick(4)}

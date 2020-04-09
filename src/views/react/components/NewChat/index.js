@@ -5,7 +5,14 @@ import ls from "local-storage";
 import ReactPlayer from "react-player";
 import { MessageArea } from "./messageArea";
 import { media } from "../../../../utils/media";
-import { setLiveArray, getRndInteger, load } from "../../constants";
+import {
+  setLiveArray,
+  getRndInteger,
+  load,
+  staticUrl,
+  socketUrl,
+  apiBaseUrl,
+} from "../../constants";
 import StreamChat from "./streamchat";
 import Stream from "../Stream";
 import LeaveEmail from "../LeaveEmail";
@@ -42,15 +49,15 @@ window.MediaRecorder = AudioRecorder;
 
 const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
-load("https://witheyezon.com/eyezonsite/static/flashphoner.js")
-  .then(function() {
+load(`${staticUrl}/static/flashphoner.js`)
+  .then(function () {
     //console.log("Loaded flashphoner!");
     SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
     STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
-    PRELOADER_URL = "https://witheyezon.com/eyezonsite/static/preloader.mp4";
+    PRELOADER_URL = `${staticUrl}/static/preloader.mp4`;
     ROOM_EVENT = Flashphoner.roomApi.events;
   })
-  .catch(function(err) {
+  .catch(function (err) {
     console.error("Something went wrong!", err);
   });
 
@@ -70,10 +77,10 @@ const VideoWrapper = styled.div`
       width: 100% !important;
       height: 100% !important;
     }
-    display: ${props =>
+    display: ${(props) =>
       props.visible ? "block !important" : "none !important"};
 
-    ${props =>
+    ${(props) =>
       props.windowHeight < props.height &&
       `
       top: 0% !important;
@@ -152,10 +159,10 @@ const VideoWrapperS = styled.div`
       width: 496px !important;
       height: 664px !important;
     }
-    display: ${props =>
+    display: ${(props) =>
       props.visible ? "flex !important" : "none !important"};
 
-    ${props =>
+    ${(props) =>
       props.windowHeight < props.height &&
       `
       width: 100vw !important;
@@ -182,13 +189,13 @@ const VideoWrapperS = styled.div`
 
 const StreamWrapper = styled.div`
   &&& {
-    display: ${props =>
+    display: ${(props) =>
       props.visible ? "flex !important" : "none !important"};
     width: 496px !important;
     height: 664px !important;
     flex-direction: column !important;
 
-    ${props =>
+    ${(props) =>
       props.height < 634 &&
       `
       top: ${props.top ? props.top : "0"} !important;
@@ -199,12 +206,12 @@ const StreamWrapper = styled.div`
       height: ${props.height ? `${props.height}px` : "auto"} !important;
   `}
     ${media.desktop`
-      top: ${props => (props.top ? props.top : "0")} !important;
+      top: ${(props) => (props.top ? props.top : "0")} !important;
       left: 0 !important;
       background: white !important;
       position: fixed !important;
       width: 100vw !important;
-      height: ${props =>
+      height: ${(props) =>
         props.height ? `${props.height}px` : "auto"} !important;
     `};
   }
@@ -217,10 +224,10 @@ const PhotoWrapper = styled.div`
     margin-left: 50px !important;
     border-radius: 10px !important;
     overflow: hidden !important;
-    display: ${props =>
+    display: ${(props) =>
       props.visible ? "block !important" : "none !important"};
 
-    ${props =>
+    ${(props) =>
       props.windowHeight < props.height &&
       `
       top: 0% !important;
@@ -262,7 +269,7 @@ const WindowWrapper = styled.div`
     height: 664px !important;
     max-width: 85% !important;
 
-    ${props =>
+    ${(props) =>
       props.windowHeight < props.height &&
       `
       position: absolute !important;
@@ -393,7 +400,7 @@ const CloseWrapperA = styled.div`
     right: 0px !important;*/
     width: 100% !important;
     height: 64px !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     display: flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
@@ -412,9 +419,9 @@ const ChatWrapper = styled.div`
     height: 100vh !important;
     position: fixed !important;
     left: 0 !important;
-    top: ${props => (props.top ? props.top : "0")} !important;
+    top: ${(props) => (props.top ? props.top : "0")} !important;
     z-index: 10000 !important;
-    display: ${props =>
+    display: ${(props) =>
       props.displayFlag ? "flex !important" : "none !important"};
     justify-content: center !important;
     align-items: center !important;
@@ -427,42 +434,44 @@ const ChatWrapper = styled.div`
 
 const InputFieldA = styled.textarea`
   &&& {
-    height: ${props => (props.height ? props.height : "63px")} !important;
-    color: ${props => (props.stream ? "#ffffff" : "black")} !important;
+    height: ${(props) => (props.height ? props.height : "63px")} !important;
+    color: ${(props) => (props.stream ? "#ffffff" : "black")} !important;
     flex: 1 !important;
 
-    opacity: ${props => (props.blocked ? "0.7" : "1")} !important;
+    opacity: ${(props) => (props.blocked ? "0.7" : "1")} !important;
     max-width: 100% !important;
-    background: ${props =>
+    background: ${(props) =>
       props.stream ? "rgba(255, 255, 255, 0.32)" : "#ffffff"} !important;
     border: 0px solid #eaeaea !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
-    border-radius: ${props => (props.stream ? "4px" : "0px")} !important;
-    padding: ${props => (props.stream ? "13px 24px" : "24px 24px")} !important;
-    padding-right: ${props => (props.stream ? "24px" : "70px")} !important;
+    border-radius: ${(props) => (props.stream ? "4px" : "0px")} !important;
+    padding: ${(props) =>
+      props.stream ? "13px 24px" : "24px 24px"} !important;
+    padding-right: ${(props) => (props.stream ? "24px" : "70px")} !important;
     font-family: "Montserrat" !important;
     font-weight: normal !important;
     font-size: 16px !important;
     line-height: 20px !important;
     outline: 0 !important;
     resize: none !important;
-    border-top: ${props =>
+    border-top: ${(props) =>
       props.stream ? "none" : "1px solid #eaeaea"} !important;
     margin: 0px !important;
-    width: ${props => (props.stream ? "calc(100% - 89px)" : "100%")} !important;
-    margin-left: ${props => (props.stream ? "24px" : "0px")} !important;
-    margin-right: ${props => (props.stream ? "15px" : "0px")} !important;
+    width: ${(props) =>
+      props.stream ? "calc(100% - 89px)" : "100%"} !important;
+    margin-left: ${(props) => (props.stream ? "24px" : "0px")} !important;
+    margin-right: ${(props) => (props.stream ? "15px" : "0px")} !important;
     word-break: break-all !important;
     vertical-align: middle !important;
     &::placeholder {
-      color: ${props =>
+      color: ${(props) =>
         props.stream ? "rgba(255, 255, 255, 0.6)" : "#cacaca"} !important;
       font-weight: normal !important;
     }
     ${media.desktop`
       font-size: 16px !important;
-      height: ${props => (props.height ? props.height : "63px")} !important;
+      height: ${(props) => (props.height ? props.height : "63px")} !important;
       
   `};
   }
@@ -470,7 +479,7 @@ const InputFieldA = styled.textarea`
 
 const ImageCart = styled.div`
   &&& {
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     margin-top: 4px;
@@ -493,12 +502,12 @@ const MicWrap = styled.div`
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: ${props =>
+    background: ${(props) =>
       props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
     border-radius: 50% !important;
     cursor: pointer !important;
 
-    ${props =>
+    ${(props) =>
       props.isActive &&
       css`
         animation: ${pulse} 1s infinite !important;
@@ -520,7 +529,7 @@ const SendIconWrap = styled.div`
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     border-radius: 50% !important;
     cursor: pointer !important;
     ${media.desktop`
@@ -542,7 +551,7 @@ const ImageMic = styled.div`
   &&& {
     user-select: none !important;
 
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;
     width: 10px !important;
@@ -559,7 +568,7 @@ const ImageMic = styled.div`
 
 const ImageSend = styled.div`
   &&& {
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: contain !important;
     width: 18px !important;
@@ -577,7 +586,7 @@ const ImageSend = styled.div`
 
 const Image = styled.div`
   &&& {
-    background: url(${props => props.src}) !important;
+    background: url(${(props) => props.src}) !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     width: 496px !important;
@@ -603,7 +612,7 @@ const CustomForm = styled.form`
 const JsChatWindow = styled.div`
   &&& {
    display: flex !important;
-     /*display: ${props =>
+     /*display: ${(props) =>
        props.visible ? "flex !important" : "none !important"};
        width: 542px !important;*/
     justify-content: flex-start !important;
@@ -612,14 +621,14 @@ const JsChatWindow = styled.div`
     background: #fff !important;
       /**** Feature ****/
     overflow: hidden !important;
-    width: ${props => (props.visible ? "496px" : "0")} !important;
+    width: ${(props) => (props.visible ? "496px" : "0")} !important;
       /**** End     ****/
     
     height: 664px !important;
     position: relative !important;
     box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25) !important;
     border-radius: 6px !important;
-    ${props =>
+    ${(props) =>
       props.height < 634 &&
       `
       height: ${props.height ? `${props.height}px` : "100%"} !important;
@@ -627,7 +636,7 @@ const JsChatWindow = styled.div`
       border-radius: 0px !important;
   `}
     ${media.desktop`
-      height: ${props =>
+      height: ${(props) =>
         props.height ? `${props.height}px` : "100%"} !important;
       width: 100vw !important;
       border-radius: 0px !important;
@@ -664,7 +673,7 @@ const JsChatMessageContainer = styled.div`
     margin-bottom: 20px !important;
     height: 100% !important;
     /*margin: 0px 24px !important;*/
-    max-height: ${props =>
+    max-height: ${(props) =>
       props.tHeight
         ? `calc(100% - ${props.tHeight} - 82px)`
         : "calc(100% - 145px)"} !important;
@@ -688,7 +697,7 @@ const TextFieldExtraS = styled.div`
   &&& {
     position: absolute !important;
     bottom: 0px !important;
-    height: ${props =>
+    height: ${(props) =>
       props.chatHeight
         ? `calc(348px + ${props.chatHeight})`
         : "388px"} !important;
@@ -730,11 +739,11 @@ const ChatWindowExpansion = styled.div`
     align-items: center !important;
     height: 692px !important;
     /**** Feature ****/
-    display: ${props => (props.visible ? "flex" : "none")} !important;
-    width: ${props => (props.visible ? "496px" : "0")} !important;
+    display: ${(props) => (props.visible ? "flex" : "none")} !important;
+    width: ${(props) => (props.visible ? "496px" : "0")} !important;
     /**** End     ****/
     ${media.desktop`
-      height: ${props =>
+      height: ${(props) =>
         props.height ? `${props.height}px` : "100vh"} !important;
     `}
   }
@@ -780,12 +789,12 @@ export class Chat extends React.Component {
       isFirst: false,
       recorder: null,
       gameStarted: false,
-      audioStreamStatus: false,
+      audioStreamStatus: iOS ? true : false,
       nameRequested: "",
       emailRequested: "",
       phoneRequested: "",
       prepareToUnmountStream: false,
-      noStreamerFlag: true
+      noStreamerFlag: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -850,13 +859,13 @@ export class Chat extends React.Component {
 
   setAudioDuration(val) {
     this.setState({
-      audioDuration: val
+      audioDuration: val,
     });
   }
 
   orientationChanged() {
     const timeout = 120;
-    return new window.Promise(function(resolve) {
+    return new window.Promise(function (resolve) {
       const go = (i, height0) => {
         window.innerHeight != height0 || i >= timeout
           ? resolve()
@@ -869,7 +878,7 @@ export class Chat extends React.Component {
   handleResize() {
     if (isAndroid) {
       this.setState({
-        androidOffset: `-${this.props.innerHeight - window.innerHeight}px`
+        androidOffset: `-${this.props.innerHeight - window.innerHeight}px`,
       });
     }
   }
@@ -892,17 +901,17 @@ export class Chat extends React.Component {
             text: value,
             time: new Date(),
             id: uuidv1(),
-            photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUserLocal}.png`
-          }
+            photo: `${staticUrl}/static/images/user${rndUserLocal}.png`,
+          },
         ],
-        value: ""
+        value: "",
       });
       if (ls.get("streamInProgress")) {
         let obj = {
           messageText: value,
           dialogId: ls.get("dialogId"),
           userId: ls.get("userId"),
-          type: "DIALOG"
+          type: "DIALOG",
         };
 
         self.socket.emit("message", JSON.stringify(obj));
@@ -911,7 +920,7 @@ export class Chat extends React.Component {
           messageText: value,
           dialogId: ls.get("dialogId"),
           userId: ls.get("userId"),
-          type: "DIALOG"
+          type: "DIALOG",
         };
 
         self.socket.emit("message", JSON.stringify(obj));
@@ -930,8 +939,8 @@ export class Chat extends React.Component {
   notifyMe(message, href, buttonId) {
     // Проверка поддержки браузером уведомлений
     let options = {
-      icon: "https://witheyezon.com/eyezonsite/static/images/favicon.png",
-      data: href
+      icon: `${staticUrl}/static/images/favicon.png`,
+      data: href,
     };
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
@@ -940,7 +949,7 @@ export class Chat extends React.Component {
     else if (Notification.permission === "granted") {
       // Если разрешено, то создаем уведомление
       var notification = new Notification(message, options);
-      notification.onclick = function(event) {
+      notification.onclick = function (event) {
         var new_window = window.open("", "_blank"); //open empty window(tab)
         if (event.target.data.includes("?open=true")) {
           let str = event.target.data;
@@ -961,11 +970,11 @@ export class Chat extends React.Component {
     }
     // В противном случае, запрашиваем разрешение
     else if (Notification.permission !== "denied") {
-      Notification.requestPermission(function(permission) {
+      Notification.requestPermission(function (permission) {
         // Если пользователь разрешил, то создаем уведомление
         if (permission === "granted") {
           var notification = new Notification(message, options);
-          notification.onclick = function(event) {
+          notification.onclick = function (event) {
             var new_window = window.open("", "_blank"); //open empty window(tab)
             if (event.target.data.includes("?open=true")) {
               new_window.location.href = event.target.data;
@@ -988,9 +997,9 @@ export class Chat extends React.Component {
 
     if (ls.get("userId")) {
       //this.socket = this.props.socket;
-      this.socket = io("https://eyezon.herokuapp.com", {
+      this.socket = io(socketUrl, {
         transports: ["websocket"],
-        upgrade: false
+        upgrade: false,
       });
       this.socket.on("connect", () => {
         self.socket.emit("enterSocket", ls.get("userId"));
@@ -1001,47 +1010,35 @@ export class Chat extends React.Component {
       this.socket.on("disconnect", () => {
         self.socket.open();
       });
-      /*this.socket = io("https://eyezon.herokuapp.com/", {
-        transports: ["websocket"],
-        upgrade: false
-      });*/
-      /*this.socket.on("connect", () => {
-        self.socket.emit("enterSocket", ls.get("userId"));
-        if (ls.get("dialogId")) {
-          self.socket.emit("enterDialog", ls.get("dialogId"));
-        }
-      });
-      this.socket.on("disconnect", () => {
-        //this.socket.open();
-      });*/
-      this.socket.on("dialogCreated", id => {
+
+      this.socket.on("dialogCreated", (id) => {
         ls.set("dialogId", id);
         self.socket.emit("enterDialog", id);
         self.props.joinDialogue();
         ls.set("adminIcon", rndAdmin);
         ls.set("userIcon", rndUser);
-        const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+        const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
         axios
           .post(url, {
-            eventType: "SENDED_REQUESTS"
+            eventType: "SENDED_REQUESTS",
           })
-          .then(function(response) {})
-          .catch(function(error) {
+          .then(function (response) {})
+          .catch(function (error) {
             //console.log(error);
           });
       });
-      this.socket.on("streamToVideo", data => {
+      this.socket.on("streamToVideo", (data) => {
         this.setState({
           streamToVideo: data.messageId,
-          streamFlag: false,
+          prepareToUnmountStream: true,
           messagesStream: [],
-          audioStreamStatus: false
+          audioStreamStatus: iOS ? true : false,
         });
         /*this.live.pause();
         flvPlayer.destroy();*/
         ls.set("streamInProgress", false);
       });
-      this.socket.on("received", data => {
+      this.socket.on("received", (data) => {
         self.socket.emit("readMessage", ls.get("dialogId"));
         if (self.state.gameStarted) {
           self.stopGame();
@@ -1086,10 +1083,8 @@ export class Chat extends React.Component {
                 time: new Date(),
                 photo:
                   data.user === ls.get("userId")
-                    ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
-                        "userIcon"
-                      )}.png`
-                    : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
+                    ? `${staticUrl}/static/images/user${ls.get("userIcon")}.png`
+                    : `${staticUrl}/static/images/admin${ls.get(
                         "adminIcon"
                       )}.png`,
                 user: data.user === ls.get("userId") ? "Вы" : "Админ",
@@ -1099,16 +1094,16 @@ export class Chat extends React.Component {
 
                 src: source,
                 thumb: thumbnail,
-                id: data._id
-              }
+                id: data._id,
+              },
             ],
             awaitingConnection: false,
-            startedFlag: true
+            startedFlag: true,
           });
         }
       });
 
-      this.socket.on("streamEvent", data => {
+      this.socket.on("streamEvent", (data) => {
         if (data.type === "MESSAGE") {
           this.setState({
             messagesStream: [
@@ -1116,12 +1111,11 @@ export class Chat extends React.Component {
               {
                 text: data.content,
                 time: new Date(),
-                photo:
-                  "https://witheyezon.com/eyezonsite/static/images/logo.png",
+                photo: `${staticUrl}/static/images/logo.png`,
                 user: "Streamer",
-                id: uuidv1()
-              }
-            ]
+                id: uuidv1(),
+              },
+            ],
           });
         }
       });
@@ -1137,27 +1131,22 @@ export class Chat extends React.Component {
       if (ls.get("dialogId")) {
         if (this.state.firstTimeFlag) {
           axios
-            .post(
-              `https://eyezon.herokuapp.com/api/dialog/${ls.get(
-                "dialogId"
-              )}/messages`,
-              {}
-            )
-            .then(function(response) {
+            .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
+            .then(function (response) {
               const messages = response.data.data;
 
               const editedMessages = messages
-                .filter(msg => !(msg.type && msg.type === "STREAM"))
-                .map(message => ({
+                .filter((msg) => !(msg.type && msg.type === "STREAM"))
+                .map((message) => ({
                   text: message.messageText,
                   time: message.createdAt,
 
                   photo:
                     message.user === ls.get("userId")
-                      ? `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                      ? `${staticUrl}/static/images/user${ls.get(
                           "userIcon"
                         )}.png`
-                      : `https://witheyezon.com/eyezonsite/static/images/admin${ls.get(
+                      : `${staticUrl}/static/images/admin${ls.get(
                           "adminIcon"
                         )}.png`,
                   user: message.user === ls.get("userId") ? "Вы" : "Админ",
@@ -1175,12 +1164,12 @@ export class Chat extends React.Component {
                     message.attachment && message.attachment.type === "STREAM"
                       ? message.attachment.src
                       : "",
-                  id: message._id
+                  id: message._id,
                 }));
 
               self.loadInitialMessages(editedMessages);
             })
-            .catch(function(error) {
+            .catch(function (error) {
               //console.log(error);
             });
         }
@@ -1203,15 +1192,15 @@ export class Chat extends React.Component {
     this.setState({
       streamLink: id,
       streamFlag: true,
-      photoSrc: null
+      photoSrc: null,
     });
-    const url = `https://eyezon.herokuapp.com/api/button/${this.props.buttonId}/event`;
+    const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
     axios
       .post(url, {
-        eventType: "STREAMS_COUNT"
+        eventType: "STREAMS_COUNT",
       })
-      .then(function(response) {})
-      .catch(function(error) {
+      .then(function (response) {})
+      .catch(function (error) {
         //console.log(error);
       });
   }
@@ -1227,7 +1216,7 @@ export class Chat extends React.Component {
     this.setState({
       photoSrc: src,
       streamFlag: false,
-      videoSrc: null
+      videoSrc: null,
     });
   }
 
@@ -1241,19 +1230,19 @@ export class Chat extends React.Component {
       photoSrc: null,
       streamFlag: false,
       videoManipulateId: videoManipulateId,
-      ifPauseIcon: !ifPsI
+      ifPauseIcon: !ifPsI,
     });
   }
 
   handleStreamToVideo() {
     this.setState({
-      streamToVideo: null
+      streamToVideo: null,
     });
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      displayFlag: nextProps.displayChat
+      displayFlag: nextProps.displayChat,
     });
   }
 
@@ -1275,7 +1264,7 @@ export class Chat extends React.Component {
       firstTimeFlag: false,
       startedFlag: flag ? true : false,
       existingChats: [],
-      awaitingConnection: flagOne ? true : false
+      awaitingConnection: flagOne ? true : false,
     });
   }
   handleSubmitS() {
@@ -1287,9 +1276,9 @@ export class Chat extends React.Component {
           {
             messagesStream: [
               ...this.state.messagesStream,
-              { text: value, time: new Date(), id: uuidv1() }
+              { text: value, time: new Date(), id: uuidv1() },
             ],
-            valueStream: ""
+            valueStream: "",
           },
           () => this.textAreaAdjust(true)
         );
@@ -1298,7 +1287,7 @@ export class Chat extends React.Component {
           messageText: value,
           dialogId: ls.get("dialogId"),
           userId: ls.get("userId"),
-          type: "STREAM"
+          type: "STREAM",
         };
 
         self.socket.emit("messageOnStream", JSON.stringify(obj));
@@ -1321,12 +1310,12 @@ export class Chat extends React.Component {
                 text: value,
                 time: new Date(),
                 id: uuidv1(),
-                photo: `https://witheyezon.com/eyezonsite/static/images/user${rndUserLocal}.png`
-              }
+                photo: `${staticUrl}/static/images/user${rndUserLocal}.png`,
+              },
             ],
             value: "",
             awaitingConnection: true,
-            lastValue: value
+            lastValue: value,
           },
           () => this.textAreaAdjust(false)
         );
@@ -1339,7 +1328,7 @@ export class Chat extends React.Component {
             : value,
           websiteUrl: currentUrl,
           button: self.props.buttonId,
-          description: value
+          description: value,
         }; /*)*/
         ls.remove("awaitTmp");
         self.socket.emit("createDialog", newObj);
@@ -1348,7 +1337,7 @@ export class Chat extends React.Component {
             id: ls.get("userId"),
             name: this.state.nameRequested,
             phone: this.state.phoneRequested,
-            email: this.state.emailRequested
+            email: this.state.emailRequested,
           };
 
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
@@ -1362,12 +1351,12 @@ export class Chat extends React.Component {
                 text: value,
                 time: new Date(),
                 id: uuidv1(),
-                photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
+                photo: `${staticUrl}/static/images/user${ls.get(
                   "userIcon"
-                )}.png`
-              }
+                )}.png`,
+              },
             ],
-            value: ""
+            value: "",
           },
           () => this.textAreaAdjust(false)
         );
@@ -1376,7 +1365,7 @@ export class Chat extends React.Component {
             messageText: value,
             dialogId: ls.get("dialogId"),
             userId: ls.get("userId"),
-            type: "DIALOG"
+            type: "DIALOG",
           };
 
           self.socket.emit("message", JSON.stringify(obj));
@@ -1385,7 +1374,7 @@ export class Chat extends React.Component {
             messageText: value,
             dialogId: ls.get("dialogId"),
             userId: ls.get("userId"),
-            type: "DIALOG"
+            type: "DIALOG",
           };
 
           self.socket.emit("message", JSON.stringify(obj));
@@ -1396,7 +1385,7 @@ export class Chat extends React.Component {
   }
   handleChangeOrientation() {
     let self = this;
-    this.orientationChanged().then(function() {
+    this.orientationChanged().then(function () {
       /*self.setState({
         innerHeight: window.innerHeight
       });*/
@@ -1415,7 +1404,7 @@ export class Chat extends React.Component {
   }
   handleAndroidKeyboard(value) {
     this.setState({
-      androidOffset: value ? `-${200}px` : `${0}px`
+      androidOffset: value ? `-${200}px` : `${0}px`,
     });
   }
   componentDidMount() {
@@ -1426,8 +1415,7 @@ export class Chat extends React.Component {
     window.addEventListener("resize", this.handleResize);
     try {
       Flashphoner.init({
-        flashMediaProviderSwfLocation:
-          "https://witheyezon.com/eyezonsite/static/media-provider.swf"
+        flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
       });
     } catch (e) {
       //console.log("Your browser doesn't support webrtc or flash");
@@ -1440,7 +1428,7 @@ export class Chat extends React.Component {
       this.stopMp3();
     }
     this.setState({
-      ifTimer: false
+      ifTimer: false,
     });
   }
 
@@ -1479,10 +1467,10 @@ export class Chat extends React.Component {
   startMp3() {
     let self = this;
 
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       self.setState({ recorder: new MediaRecorder(stream) });
       // Set record to <audio> when recording will be finished
-      self.state.recorder.addEventListener("dataavailable", e => {
+      self.state.recorder.addEventListener("dataavailable", (e) => {
         const blobURL = URL.createObjectURL(e.data);
         self.setState({ blobURL, isRecording: false });
         ls.set("blobUrl", blobURL);
@@ -1496,7 +1484,7 @@ export class Chat extends React.Component {
   stopMp3() {
     this.state.recorder.stop();
     // Remove “recording” icon from browser tab
-    this.state.recorder.stream.getTracks().forEach(i => i.stop());
+    this.state.recorder.stream.getTracks().forEach((i) => i.stop());
   }
 
   onStop(recordedBlob) {
@@ -1504,37 +1492,33 @@ export class Chat extends React.Component {
 
     const d = new Date();
     let formData = new FormData();
-    const url = `https://eyezon.herokuapp.com/api/user/${ls.get(
-      "userId"
-    )}/voice`;
+    const url = `${apiBaseUrl}/user/${ls.get("userId")}/voice`;
 
     formData.append("voice", recordedBlob);
     const config = {
       headers: {
-        "content-type": "multipart/form-data"
-      }
+        "content-type": "multipart/form-data",
+      },
     };
-    axios.post(url, formData, config).then(response => {
+    axios.post(url, formData, config).then((response) => {
       self.setState({
         messages: [
           ...self.state.messages,
           {
             time: new Date(),
             id: uuidv1(),
-            photo: `https://witheyezon.com/eyezonsite/static/images/user${ls.get(
-              "userIcon"
-            )}.png`,
+            photo: `${staticUrl}/static/images/user${ls.get("userIcon")}.png`,
             type: "audio",
-            src: response.data
-          }
-        ]
+            src: response.data,
+          },
+        ],
       });
 
       let obj = {
         dialogId: ls.get("dialogId"),
         userId: ls.get("userId"),
         attachmentType: "AUDIO",
-        attachmentUrl: response.data
+        attachmentUrl: response.data,
       };
 
       self.socket.emit("message", JSON.stringify(obj));
@@ -1545,22 +1529,22 @@ export class Chat extends React.Component {
     if (!streamFlag) {
       this.setState(
         {
-          textAreaHeight: "auto"
+          textAreaHeight: "auto",
         },
         () => {
           this.setState({
-            textAreaHeight: this.mainInput.scrollHeight + "px"
+            textAreaHeight: this.mainInput.scrollHeight + "px",
           });
         }
       );
     } else {
       this.setState(
         {
-          streamTextAreaHeight: "auto"
+          streamTextAreaHeight: "auto",
         },
         () => {
           this.setState({
-            streamTextAreaHeight: this.streamInput.scrollHeight + "px"
+            streamTextAreaHeight: this.streamInput.scrollHeight + "px",
           });
         }
       );
@@ -1571,7 +1555,7 @@ export class Chat extends React.Component {
   }
   handleChangeInput(field, value) {
     this.setState({
-      [field]: value
+      [field]: value,
     });
   }
 
@@ -1613,7 +1597,7 @@ export class Chat extends React.Component {
               prepareToUnmountStream:
                 this.state.streamFlag && !this.state.prepareToUnmountStream
                   ? true
-                  : false
+                  : false,
             });
           }}
         />
@@ -1644,7 +1628,7 @@ export class Chat extends React.Component {
                     <CloseButton
                       onClick={() => {
                         this.setState({
-                          streamFlag: false
+                          streamFlag: false,
                         });
                         //this.socket.emit("leaveStream", ls.get("userId"));
                         if (
@@ -1737,7 +1721,7 @@ export class Chat extends React.Component {
                             <CartTextFieldRelative>
                               <InputFieldA
                                 rows="1"
-                                ref={item => {
+                                ref={(item) => {
                                   this.mainInput = item;
                                 }}
                                 onFocus={() => {
@@ -1760,7 +1744,7 @@ export class Chat extends React.Component {
                                     ? "Для продолжения диалога дождитесь ответа"
                                     : "Спросите что-нибудь ;)"
                                 }
-                                onKeyPress={event => {
+                                onKeyPress={(event) => {
                                   if (event.key === "Enter") {
                                     event.preventDefault();
                                     this.handleSubmit(event);
@@ -1790,9 +1774,7 @@ export class Chat extends React.Component {
                                     color={this.props.color}
                                   >
                                     <ImageMic
-                                      src={
-                                        "https://witheyezon.com/eyezonsite/static/images/mic.png"
-                                      }
+                                      src={`${staticUrl}/static/images/mic.png`}
                                     />
                                   </MicWrap>
                                 )}
@@ -1804,13 +1786,11 @@ export class Chat extends React.Component {
                                 ))}
                               {this.state.value.length > 0 && (
                                 <SendIconWrap
-                                  onClick={event => this.handleSubmit(event)}
+                                  onClick={(event) => this.handleSubmit(event)}
                                   color={this.props.color}
                                 >
                                   <ImageSend
-                                    src={
-                                      "https://witheyezon.com/eyezonsite/static/images/Subtract.png"
-                                    }
+                                    src={`${staticUrl}/static/images/Subtract.png`}
                                   />
                                 </SendIconWrap>
                               )}
@@ -1845,10 +1825,14 @@ export class Chat extends React.Component {
                 <Stream
                   mountFunction={() => {
                     this.socket.emit("enterStream", ls.get("dialogId"));
+
                     //console.log("enter stream");
                   }}
                   unmountFunction={() => {
                     this.socket.emit("leaveStream", ls.get("dialogId"));
+                    this.setState({
+                      audioStreamStatus: iOS ? true : false,
+                    });
                     //console.log("left stream");
                   }}
                   dialogId={ls.get("dialogId")}
@@ -1863,13 +1847,19 @@ export class Chat extends React.Component {
                   iOS={iOS}
                   audioStreamStatus={this.state.audioStreamStatus}
                   handleReadyStreamUnmount={this.handleReadyStreamUnmount}
+                  revertMic={() => this.setState({ audioStreamStatus: false })}
+                  forceMic={(callbackFunc) =>
+                    this.setState({ audioStreamStatus: true }, () =>
+                      callbackFunc()
+                    )
+                  }
                 />
 
                 <CloseWrapper>
                   <CloseButton
                     onClick={() => {
                       this.setState({
-                        prepareToUnmountStream: true
+                        prepareToUnmountStream: true,
                       });
 
                       ls.set("streamInProgress", false);
@@ -1892,14 +1882,14 @@ export class Chat extends React.Component {
                       /*ref={item => {
                       this.streamInput = item;
                     }}*/
-                      setStreamInput={item => {
+                      setStreamInput={(item) => {
                         this.streamInput = item;
                       }}
                       type="text"
                       value={this.state.valueStream}
                       onChange={this.handleChangeInStream}
                       placeholder="Сообщение..."
-                      onKeyPress={event => {
+                      onKeyPress={(event) => {
                         if (event.key === "Enter") {
                           event.preventDefault();
                           this.handleSubmitS();
@@ -1908,9 +1898,11 @@ export class Chat extends React.Component {
                       height={this.state.streamTextAreaHeight}
                       onKeyDown={() => this.textAreaAdjust(true)}
                       handleSubmitS={this.handleSubmitS}
+                      iOS={iOS}
+                      audioStreamStatus={this.state.audioStreamStatus}
                       audioToggle={() =>
                         this.setState({
-                          audioStreamStatus: !this.state.audioStreamStatus
+                          audioStreamStatus: !this.state.audioStreamStatus,
                         })
                       }
                       isHint={true}
@@ -1931,17 +1923,17 @@ export class Chat extends React.Component {
               width="100%"
               height="100%"
               controls
-              ref={video => {
+              ref={(video) => {
                 this.loadedVideo = video;
               }}
               onPause={() => {
                 this.setState({
-                  ifPauseIcon: false
+                  ifPauseIcon: false,
                 });
               }}
               onPlay={() => {
                 this.setState({
-                  ifPauseIcon: true
+                  ifPauseIcon: true,
                 });
                 /*this.live.pause();*/
               }}
@@ -1951,7 +1943,7 @@ export class Chat extends React.Component {
                 onClick={() => {
                   this.setState({
                     videoSrc: null,
-                    ifPauseIcon: false
+                    ifPauseIcon: false,
                   });
                   if (this.loadedVideo.getInternalPlayer()) {
                     this.loadedVideo.getInternalPlayer().pause();
@@ -1970,7 +1962,7 @@ export class Chat extends React.Component {
                 <CloseButton
                   onClick={() => {
                     this.setState({
-                      photoSrc: null
+                      photoSrc: null,
                     });
                   }}
                 />

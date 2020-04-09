@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
-
+import { staticUrl } from "../../constants";
 const bottom = keyframes`
     0% {
       -webkit-transform: translateY(100%);
@@ -89,30 +89,30 @@ const Wrap = styled.div`
 
     cursor: pointer !important;
 
-    border-radius: ${props =>
+    border-radius: ${(props) =>
       props.positions === "BOTTOM_LEFT" || props.positions === "BOTTOM_RIGHT"
         ? "50% !important"
         : props.status === "answer" && props.positions === "BOTTOM_CENTER"
         ? "28px !important"
         : "none !important"};
-    border-top-left-radius: ${props =>
+    border-top-left-radius: ${(props) =>
       props.positions === "BOTTOM_CENTER" && props.status !== "answer"
         ? "15px !important"
         : props.positions === "MID_RIGHT"
         ? "28px !important"
         : "none !important"};
-    border-top-right-radius: ${props =>
+    border-top-right-radius: ${(props) =>
       props.positions === "BOTTOM_CENTER" && props.status !== "answer"
         ? "15px !important"
         : props.positions === "MID_LEFT"
         ? "28px !important"
         : "none !important"};
-    border-bottom-right-radius: ${props =>
+    border-bottom-right-radius: ${(props) =>
       props.positions === "MID_LEFT" ? "28px !important" : "none !important"};
-    border-bottom-left-radius: ${props =>
+    border-bottom-left-radius: ${(props) =>
       props.positions === "MID_RIGHT" ? "28px !important" : "none !important"};
 
-    ${props =>
+    ${(props) =>
       props.status === "answer" &&
       css`
         -webkit-animation: ${props.positions === "BOTTOM_CENTER"
@@ -149,7 +149,7 @@ const Wrap = styled.div`
           0.5s ease-in-out 0s !important;
       `}
 
-    bottom: ${props =>
+    bottom: ${(props) =>
       props.positions === "BOTTOM_LEFT" ||
       props.positions === "BOTTOM_RIGHT" ||
       (props.positions === "BOTTOM_CENTER" && props.status === "answer")
@@ -160,7 +160,7 @@ const Wrap = styled.div`
         ? "calc(50% - 12px) !important"
         : "none !important"};
 
-    left: ${props =>
+    left: ${(props) =>
       props.positions === "BOTTOM_LEFT"
         ? "24px !important"
         : props.positions === "MID_LEFT"
@@ -170,7 +170,7 @@ const Wrap = styled.div`
           ? "calc(50% - 109px) !important"
           : "calc(50% - 72px) !important"
         : "none !important"};
-    right: ${props =>
+    right: ${(props) =>
       props.positions === "BOTTOM_RIGHT"
         ? "24px !important"
         : props.positions === "MID_RIGHT"
@@ -182,7 +182,7 @@ const Wrap = styled.div`
       display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-      left: ${props =>
+      left: ${(props) =>
         props.positions === "BOTTOM_RIGHT" || props.positions === "BOTTOM_LEFT"
           ? "47px !important"
           : props.positions === "MID_LEFT"
@@ -190,18 +190,18 @@ const Wrap = styled.div`
             ? "205px !important"
             : "52px !important"
           : "none !important"};
-      right: ${props =>
+      right: ${(props) =>
         props.positions === "MID_RIGHT"
           ? props.status === "answer"
             ? "205px !important"
             : "52px !important"
           : "none !important"};
-      top: ${props =>
+      top: ${(props) =>
         props.positions === "BOTTOM_CENTER"
           ? "3px !important"
           : "0 !important"};
 
-      content: ${props =>
+      content: ${(props) =>
         (props.positions === "BOTTOM_RIGHT" ||
           props.positions === "BOTTOM_LEFT") &&
         props.status !== "rest"
@@ -215,7 +215,7 @@ const Wrap = styled.div`
       vertical-align: middle !important;
       letter-spacing: -0.006em !important;
 
-      height: ${props =>
+      height: ${(props) =>
         props.positions === "BOTTOM_CENTER"
           ? props.status === "answer"
             ? "13px !important"
@@ -224,7 +224,7 @@ const Wrap = styled.div`
             props.positions === "BOTTOM_RIGHT"
           ? "18px !important"
           : "13px !important"};
-      width: ${props =>
+      width: ${(props) =>
         props.positions === "BOTTOM_CENTER"
           ? props.status === "answer"
             ? "13px !important"
@@ -236,13 +236,13 @@ const Wrap = styled.div`
 
       border-radius: 50% !important;
 
-      background: ${props =>
+      background: ${(props) =>
         props.status !== "rest"
           ? "#ff204a !important"
           : "transparent !important"};
 
     }
-    box-shadow: ${props =>
+    box-shadow: ${(props) =>
       props.positions === "BOTTOM_CENTER"
         ? "0px 10px 16px rgba(99, 114, 130, 0.08), 0px 9px 64px rgba(99, 114, 130, 0.12), 0px 24px 40px rgba(99, 114, 130, 0.1) !important"
         : "0px 4px 16px rgba(99, 114, 130, 0.18) !important"};
@@ -257,30 +257,30 @@ const Button = styled.button`
     background: #ffffff !important;
     border: none !important;
 
-    border-radius: ${props =>
+    border-radius: ${(props) =>
       props.positions === "BOTTOM_LEFT" || props.positions === "BOTTOM_RIGHT"
         ? "50% !important"
         : props.status === "answer" && props.positions === "BOTTOM_CENTER"
         ? "28px !important"
         : "none !important"};
-    border-top-left-radius: ${props =>
+    border-top-left-radius: ${(props) =>
       props.positions === "BOTTOM_CENTER" && props.status !== "answer"
         ? "15px !important"
         : props.positions === "MID_RIGHT"
         ? "28px !important"
         : "none !important"};
-    border-top-right-radius: ${props =>
+    border-top-right-radius: ${(props) =>
       props.positions === "BOTTOM_CENTER" && props.status !== "answer"
         ? "15px !important"
         : props.positions === "MID_LEFT"
         ? "28px !important"
         : "none !important"};
-    border-bottom-right-radius: ${props =>
+    border-bottom-right-radius: ${(props) =>
       props.positions === "MID_LEFT" ? "28px !important" : "none !important"};
-    border-bottom-left-radius: ${props =>
+    border-bottom-left-radius: ${(props) =>
       props.positions === "MID_RIGHT" ? "28px !important" : "none !important"};
 
-    width: ${props =>
+    width: ${(props) =>
       (props.positions === "BOTTOM_CENTER" ||
         props.positions === "MID_LEFT" ||
         props.positions === "MID_RIGHT") &&
@@ -295,7 +295,7 @@ const Button = styled.button`
     }
     color: #ffffff !important;
 
-    padding: ${props =>
+    padding: ${(props) =>
       props.positions === "BOTTOM_CENTER" || props.positions === "MID_RIGHT"
         ? props.positions === "BOTTOM_CENTER" && props.status === "answer"
           ? "4px 20px 4px 4px !important"
@@ -322,21 +322,21 @@ const Circle = styled.div`
     border-radius: 50% !important;
     cursor: pointer !important;
 
-    width: ${props =>
+    width: ${(props) =>
       (props.status === "answer" && props.positions === "BOTTOM_CENTER") ||
       props.positions !== "BOTTOM_CENTER"
         ? "48px !important"
         : "16px !important"};
-    height: ${props =>
+    height: ${(props) =>
       (props.status === "answer" && props.positions === "BOTTOM_CENTER") ||
       props.positions !== "BOTTOM_CENTER"
         ? "48px !important"
         : "16px !important"};
 
-    background: ${props =>
+    background: ${(props) =>
       props.src ? `url(${props.src})` : "green"} !important;
     background-size: contain !important;
-    order: ${props =>
+    order: ${(props) =>
       props.positions === "MID_LEFT" ? "2 !important" : "1 !important"};
   }
 `;
@@ -349,9 +349,9 @@ const Span = styled.span`
     font-weight: 600 !important;
     font-size: 14px !important;
     line-height: 170% !important;
-    color: ${props =>
+    color: ${(props) =>
       props.status === "rest" ? "#ababab !important;" : "#000000 !important"};
-    order: ${props =>
+    order: ${(props) =>
       props.positions === "MID_LEFT" ? "1 !important" : "2 !important"};
   }
 `;
@@ -369,7 +369,7 @@ class StartButton extends React.Component {
           <Circle
             positions={positions}
             status={status}
-            src="https://witheyezon.com/eyezonsite/static/images/image.png"
+            src={`${staticUrl}/static/images/image.png`}
           />
           {(positions === "BOTTOM_CENTER" ||
             positions === "MID_LEFT" ||
@@ -392,7 +392,7 @@ class StartButton extends React.Component {
 
 StartButton.defaultProps = {
   positions: "BOTTOM_RIGHT",
-  status: "rest"
+  status: "rest",
 };
 
 export default StartButton;

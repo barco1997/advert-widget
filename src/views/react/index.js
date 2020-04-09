@@ -95,7 +95,6 @@ export function react(params, ifOpened, buttons) {
   ReactDOM.render(
     /*<FirebaseContext.Provider value={new Firebase()}>*/
     <App
-      color={params.color}
       button={params.buttonOnTop}
       businessId={params.businessId}
       buttonId={params.initialButtonId}

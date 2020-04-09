@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import FormField from "../FormField";
 import BasicButton from "../BasicButton";
-
+import { staticUrl } from "../../constants";
 const ChatWrap = styled.div`
   &&& {
     display: flex !important;
@@ -27,8 +27,8 @@ const Heading = styled.div`
     font-size: 14px !important;
     line-height: 140% !important;
     font-family: "Montserrat" !important;
-    color: ${props => props.color || "#000000"} !important;
-    margin-top: ${props => props.marginTop || "24px"}!important;
+    color: ${(props) => props.color || "#000000"} !important;
+    margin-top: ${(props) => props.marginTop || "24px"}!important;
     justify-content: center !important;
     text-align: center !important;
   }
@@ -41,16 +41,17 @@ const Text = styled.div`
     line-height: 140% !important;
     font-family: "Mont" !important;
     color: #979797 !important;
-    margin-top: ${props => props.marginTop || "24px"}!important;
+    margin-top: ${(props) => props.marginTop || "24px"}!important;
   }
 `;
 
 const PositionWrapper = styled.div`
   &&& {
     display: flex !important;
-    margin-top: ${props => props.marginTop || "0px"}!important;
-    margin-bottom: ${props => props.marginBottom || "0px"}!important;
-    justify-content: ${props => props.justifyContent || "flex-start"}!important;
+    margin-top: ${(props) => props.marginTop || "0px"}!important;
+    margin-bottom: ${(props) => props.marginBottom || "0px"}!important;
+    justify-content: ${(props) =>
+      props.justifyContent || "flex-start"}!important;
   }
 `;
 
@@ -69,20 +70,20 @@ export class MinEmailRequest extends React.Component {
     super(props, context);
     this.state = {
       email: "",
-      name: ""
+      name: "",
     };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(field, value) {
     this.setState({
-      [field]: value
+      [field]: value,
     });
   }
   render() {
     return (
       <ChatWrap>
         <Close
-          src="https://witheyezon.com/eyezonsite/static/images/close.svg"
+          src={`${staticUrl}/static/images/close.svg`}
           onClick={this.props.closeRequest}
         />
         <Heading marginTop="6px">Не пропустите ответ!</Heading>
@@ -97,7 +98,7 @@ export class MinEmailRequest extends React.Component {
             maxWidth="248px"
             noOutline="true"
             value={this.state.email}
-            onChange={event => this.handleChange("email", event.target.value)}
+            onChange={(event) => this.handleChange("email", event.target.value)}
           />
         </PositionWrapper>
 
@@ -108,7 +109,7 @@ export class MinEmailRequest extends React.Component {
             maxWidth="248px"
             noOutline="true"
             value={this.state.name}
-            onChange={event => this.handleChange("name", event.target.value)}
+            onChange={(event) => this.handleChange("name", event.target.value)}
           />
         </PositionWrapper>
         <PositionWrapper
