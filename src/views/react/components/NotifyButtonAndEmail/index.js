@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 const NotifyButtonWrapper = styled.div`
   &&& {
     display: flex !important;
-    width: ${props => (props.width ? props.width : "327px")} !important;
+    width: ${(props) => (props.width ? props.width : "327px")} !important;
     height: 40px !important;
     justify-content: center !important;
     align-items: center !important;
@@ -82,8 +82,8 @@ const Text = styled.div`
     font-weight: 600 !important;
     font-size: 12px !important;
     line-height: 15px !important;
-    color: ${props => (props.black ? "#333333" : "#ababab")} !important;
-    text-shadow: ${props => (props.black ? "none" : "none")} !important;
+    color: ${(props) => (props.black ? "#333333" : "#ababab")} !important;
+    text-shadow: ${(props) => (props.black ? "none" : "none")} !important;
     margin-right: 10px !important;
     cursor: pointer !important;
 
@@ -101,22 +101,28 @@ export class NotifyButtonAndEmail extends React.Component {
     super(props);
     this.state = {
       tosend: props.emailSentFlag ? 2 : 0,
-      value: ""
+      value: "",
     };
     this.handleClick = this.handleClick.bind(this);
   }
   handleChange(e, field) {
     this.setState({
-      [field]: e.currentTarget.value
+      [field]: e.currentTarget.value,
     });
   }
   handleClick() {
-    if (this.state.tosend === 1) {
-      this.props.sendEmailDetails(this.state.value, "Клиент");
+    const { value } = this.state;
+    const re = /\S+@\S+\.\S+/;
+    if (re.test(value) && this.state.tosend === 1) {
+      this.props.sendEmailDetails(value, "Клиент");
+      this.setState({
+        tosend: this.state.tosend + 1,
+      });
+    } else if (this.state.tosend !== 1) {
+      this.setState({
+        tosend: this.state.tosend + 1,
+      });
     }
-    this.setState({
-      tosend: this.state.tosend + 1
-    });
   }
 
   render() {
@@ -133,7 +139,7 @@ export class NotifyButtonAndEmail extends React.Component {
               type="text"
               placeholder="Адрес электронной почты"
               value={this.state.value}
-              onChange={e => this.handleChange(e, "value")}
+              onChange={(e) => this.handleChange(e, "value")}
             />
           )}
           {this.state.tosend === 1 && (
