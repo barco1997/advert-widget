@@ -131,12 +131,18 @@ export class NotifyButton extends React.Component {
     });
   }
   handleClick() {
-    if (this.state.tosend === 1) {
-      this.props.sendEmailDetails(this.state.value, "Клиент");
+    const { value } = this.state;
+    const re = /\S+@\S+\.\S+/;
+    if (re.test(value) && this.state.tosend === 1) {
+      this.props.sendEmailDetails(value, "Клиент");
+      this.setState({
+        tosend: this.state.tosend + 1,
+      });
+    } else if (this.state.tosend !== 1) {
+      this.setState({
+        tosend: this.state.tosend + 1,
+      });
     }
-    this.setState({
-      tosend: this.state.tosend + 1,
-    });
   }
 
   render() {
