@@ -1300,6 +1300,7 @@ export class Chat extends React.Component {
     const rndUserLocal = ls.get("userIcon") ? ls.get("userIcon") : rndUser;
 
     if (value.length > 0) {
+      ls.set("noStreamerFlag", this.props.noStreamerFlag);
       if (!this.state.startedFlag && !this.state.awaitingConnection) {
         this.setState(
           {
@@ -1661,7 +1662,7 @@ export class Chat extends React.Component {
                       >
                         <Fragment>
                           {!this.state.messages ||
-                          this.state.messages.length == 0 ? (
+                          this.state.messages.length < 2 ? (
                             <React.Fragment>
                               {!this.props.noStreamerFlag ? (
                                 <GetDetailsView
@@ -1676,7 +1677,7 @@ export class Chat extends React.Component {
                                 />
                               ) : (
                                 <NoStreamerComponent
-                                  receivedDetails={true}
+                                  receivedDetails={ls.get("noStreamerFlag")}
                                   color={this.props.color}
                                   notificationPermission={
                                     this.props.notificationPermission
@@ -1786,13 +1787,16 @@ export class Chat extends React.Component {
                                   </MicWrap>
                                 )}
                               {!this.state.messages ||
-                                (this.state.messages.length == 0 && (
-                                  <EntryWrap>
-                                    <EntryInfo
-                                      noStreamerFlag={this.props.noStreamerFlag}
-                                    />
-                                  </EntryWrap>
-                                ))}
+                                (this.state.messages.length == 0 &&
+                                  !ls.get("noStreamerFlag") && (
+                                    <EntryWrap>
+                                      <EntryInfo
+                                        noStreamerFlag={
+                                          this.props.noStreamerFlag
+                                        }
+                                      />
+                                    </EntryWrap>
+                                  ))}
                               {this.state.value.length > 0 && (
                                 <SendIconWrap
                                   onClick={(event) => this.handleSubmit(event)}
