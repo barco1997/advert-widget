@@ -1781,7 +1781,9 @@ export class Chat extends React.Component {
                               {!this.state.messages ||
                                 (this.state.messages.length == 0 && (
                                   <EntryWrap>
-                                    <EntryInfo />
+                                    <EntryInfo
+                                      noStreamerFlag={this.state.noStreamerFlag}
+                                    />
                                   </EntryWrap>
                                 ))}
                               {this.state.value.length > 0 && (
