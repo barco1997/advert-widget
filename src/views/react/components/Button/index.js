@@ -760,6 +760,7 @@ export class Button extends React.Component {
             notificationPermission={this.notificationPermission}
             askedUserData={this.props.askedUserData}
             noStreamerFlag={this.state.noStreamerFlag}
+            notificationMessageToggle={this.state.notificationMessageToggle}
             /*firebase={this.props.firebase}*/
           />
         )}

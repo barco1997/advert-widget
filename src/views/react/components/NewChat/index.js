@@ -1683,7 +1683,6 @@ export class Chat extends React.Component {
                                   }
                                   sendEmailDetails={this.props.sendEmailDetails}
                                   emailSentFlag={this.props.emailSentFlag}
-
                                 />
                               )}
                             </React.Fragment>
@@ -1739,7 +1738,12 @@ export class Chat extends React.Component {
                                 value={this.state.value}
                                 onChange={this.handleChange}
                                 blocked={this.state.awaitingConnection}
-                                disabled={this.state.awaitingConnection}
+                                disabled={
+                                  this.state.awaitingConnection ||
+                                  (this.props.noStreamerFlag &&
+                                    !this.props.emailSentFlag &&
+                                    Notification.permission !== "granted")
+                                }
                                 placeholder={
                                   this.state.ifTimer
                                     ? ""
