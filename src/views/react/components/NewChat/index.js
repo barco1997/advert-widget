@@ -1038,6 +1038,7 @@ export class Chat extends React.Component {
         ls.set("streamInProgress", false);
       });
       this.socket.on("received", (data) => {
+        ls.remove("noStreamerFlag");
         self.socket.emit("readMessage", ls.get("dialogId"));
         if (self.state.gameStarted) {
           self.stopGame();
@@ -1165,7 +1166,9 @@ export class Chat extends React.Component {
                       : "",
                   id: message._id,
                 }));
-
+              if (editedMessages.length >= 2) {
+                ls.remove("noStreamerFlag");
+              }
               self.loadInitialMessages(editedMessages);
             })
             .catch(function (error) {
@@ -1414,6 +1417,9 @@ export class Chat extends React.Component {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     window.addEventListener("unload", this.handleUnload);
     window.addEventListener("resize", this.handleResize);
+    if (!ls.get("dialogId")) {
+      ls.remove("noStreamerFlag");
+    }
     try {
       Flashphoner.init({
         flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
