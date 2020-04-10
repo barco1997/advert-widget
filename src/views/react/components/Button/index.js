@@ -8,7 +8,7 @@ import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
 
-import { media } from "../../../../utils/media";
+import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
@@ -18,7 +18,7 @@ import {
   setConversationIdValue,
   apiBaseUrl,
 } from "../../constants";
-
+let overflow = document.body.style.overflow;
 const io = require("socket.io-client");
 //const reqId = ls.get("conversationId");
 const storedToken = ls.get("token");
@@ -226,8 +226,14 @@ const disableScroll = () => {
   //if (ifMobile || window.innerHeight < 634) {
   const scrollY = document.documentElement.style.getPropertyValue("--scroll-y");
   const body = document.body;
-  body.style.position = "fixed";
-  body.style.top = `-${scrollY}`;
+
+  if (!mediaType.desktop) {
+    body.style.overflow = "hidden";
+  } else {
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}`;
+  }
+
   //}
 };
 
@@ -238,6 +244,7 @@ const enableScroll = () => {
   const scrollY = body.style.top;
   body.style.position = "";
   body.style.top = "";
+  body.style.overflow = overflow;
   window.scrollTo(0, parseInt(scrollY || "0") * -1);
   //}
 };

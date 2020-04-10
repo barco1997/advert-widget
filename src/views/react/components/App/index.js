@@ -6,7 +6,11 @@ import ls from "local-storage";
 import Button from "../Button";
 import { apiBaseUrl } from "../../constants";
 //import { messaging } from "./fcm-init";
-const userLang = navigator.language || navigator.userLanguage;
+const userLang =
+  document.getElementsByTagName("html")[0].getAttribute("lang") ||
+  document.getElementsByTagName("html")[0].getAttribute("xml:lang") ||
+  navigator.language ||
+  navigator.userLanguage;
 
 export class App extends React.Component {
   constructor(props, context) {
