@@ -1681,6 +1681,9 @@ export class Chat extends React.Component {
                                   notificationPermission={
                                     this.props.notificationPermission
                                   }
+                                  sendEmailDetails={this.props.sendEmailDetails}
+                                  emailSentFlag={this.props.emailSentFlag}
+
                                 />
                               )}
                             </React.Fragment>

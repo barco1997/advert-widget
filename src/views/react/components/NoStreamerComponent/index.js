@@ -37,7 +37,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
   }
@@ -107,7 +107,11 @@ export class NoStreamerComponent extends React.Component {
             </InfoBlockText>
           </InfoBlock>
           <ButtonWrapper>
-            <NotifyButtonAndEmail />
+            <NotifyButtonAndEmail
+              sendEmailDetails={this.props.sendEmailDetails}
+              notificationPermission={this.props.notificationPermission}
+              emailSentFlag={this.props.emailSentFlag}
+            />
           </ButtonWrapper>
         </MainBlock>
       </TextWrap>
@@ -116,7 +120,7 @@ export class NoStreamerComponent extends React.Component {
 }
 
 NoStreamerComponent.defaultProps = {
-  receivedDetails: false
+  receivedDetails: false,
 };
 
 export default NoStreamerComponent;
