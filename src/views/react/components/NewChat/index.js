@@ -1792,7 +1792,9 @@ export class Chat extends React.Component {
                                     <EntryWrap>
                                       <EntryInfo
                                         noStreamerFlag={
-                                          this.props.noStreamerFlag
+                                          this.props.noStreamerFlag &&
+                                          !this.props.emailSentFlag &&
+                                          Notification.permission !== "granted"
                                         }
                                       />
                                     </EntryWrap>
