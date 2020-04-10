@@ -794,7 +794,6 @@ export class Chat extends React.Component {
       emailRequested: "",
       phoneRequested: "",
       prepareToUnmountStream: false,
-      noStreamerFlag: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -832,9 +831,6 @@ export class Chat extends React.Component {
     this.startGame = this.startGame.bind(this);
     this.stopGame = this.stopGame.bind(this);
     this.handleReadyStreamUnmount = this.handleReadyStreamUnmount.bind(this);
-    this.handleChangeNoStreamerFlag = this.handleChangeNoStreamerFlag.bind(
-      this
-    );
   }
 
   startGame() {
@@ -1122,9 +1118,6 @@ export class Chat extends React.Component {
           });
         }
       });
-      this.socket.on("isButtonAvailableResponse", (result) => {
-        this.handleChangeNoStreamerFlag(result.isAvailable);
-      });
     }
   }
 
@@ -1409,10 +1402,6 @@ export class Chat extends React.Component {
     }
   }
 
-  handleChangeNoStreamerFlag(status) {
-    this.setState({ noStreamerFlag: status });
-  }
-
   handleAndroidKeyboard(value) {
     this.setState({
       androidOffset: value ? `-${200}px` : `${0}px`,
@@ -1424,9 +1413,6 @@ export class Chat extends React.Component {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     window.addEventListener("unload", this.handleUnload);
     window.addEventListener("resize", this.handleResize);
-
-    this.socket.emit("isButtonAvailable", this.props.buttonId);
-
     try {
       Flashphoner.init({
         flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
@@ -1677,7 +1663,7 @@ export class Chat extends React.Component {
                           {!this.state.messages ||
                           this.state.messages.length == 0 ? (
                             <React.Fragment>
-                              {!this.state.noStreamerFlag ? (
+                              {!this.props.noStreamerFlag ? (
                                 <GetDetailsView
                                   handleChange={this.handleChangeInput}
                                   name={this.state.nameRequested}
@@ -1796,7 +1782,7 @@ export class Chat extends React.Component {
                                 (this.state.messages.length == 0 && (
                                   <EntryWrap>
                                     <EntryInfo
-                                      noStreamerFlag={this.state.noStreamerFlag}
+                                      noStreamerFlag={this.props.noStreamerFlag}
                                     />
                                   </EntryWrap>
                                 ))}
