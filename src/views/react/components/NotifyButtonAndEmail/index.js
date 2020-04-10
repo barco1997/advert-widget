@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import BlurredButton from "../BlurredButton";
+import { staticUrl } from "../../constants";
 
 const Wrapper = styled.div`
   &&& {
@@ -104,6 +105,7 @@ export class NotifyButtonAndEmail extends React.Component {
       value: "",
     };
     this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e, field) {
     this.setState({
@@ -149,17 +151,18 @@ export class NotifyButtonAndEmail extends React.Component {
           {this.state.tosend === 2 && (
             <NotifyButtonWrapper>
               <Text>Уведомление на Email</Text>
-              <img
-                src="https://www.witheyezon.com/eyezonsite/static/images/tick.svg"
-                alt="logo"
-              />
+              <img src={`${staticUrl}/static/images/tick.svg`} alt="logo" />
             </NotifyButtonWrapper>
           )}
         </MiddleWrapper>
         {"Notification" in window && (
           <BlurredButton
             onClick={this.props.notificationPermission}
-            selected={Notification.permission === "granted"}
+            selected={
+              Notification.permission === "granted" ||
+              Notification.permission === "denied"
+            }
+            isDenied={Notification.permission === "denied"}
           >
             Включить уведомления
           </BlurredButton>

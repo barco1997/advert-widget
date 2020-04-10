@@ -57,7 +57,8 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${(props) => `${props.color} !important`};
+    background: ${(props) =>
+      `linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.12) 100%), ${props.color} !important`};
     height: 320px !important;
     width: 100% !important;
   }

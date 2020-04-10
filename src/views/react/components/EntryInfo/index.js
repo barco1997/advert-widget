@@ -21,16 +21,22 @@ const Text = styled.div`
     font-weight: normal !important;
     font-size: 9px !important;
     line-height: 160% !important;
-    color: #ababab !important;
+    color: ${(props) =>
+      props.noStreamerFlag ? "#FF204A !important" : "#ababab !important"};
   }
 `;
 
 export class EntryInfo extends React.Component {
   render() {
+    const { noStreamerFlag } = this.props;
     return (
       <Wrapper>
-        <img src={Image} alt="logo" />
-        <Text>Опишите полностью ваш вопрос в одном сообщении</Text>
+        {!noStreamerFlag && <img src={Image} alt="logo" />}
+        <Text noStreamerFlag={noStreamerFlag}>
+          {noStreamerFlag
+            ? "Выберите способ получения уведомления"
+            : "Опишите полностью ваш вопрос в одном сообщении"}
+        </Text>
       </Wrapper>
     );
   }

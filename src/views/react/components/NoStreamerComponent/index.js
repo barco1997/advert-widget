@@ -37,7 +37,8 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) =>
+      `linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.12) 100%), ${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
   }
@@ -97,7 +98,7 @@ export class NoStreamerComponent extends React.Component {
           <InfoBlock color={this.props.color || "#ff2d55"}>
             <InfoBlockHeader>
               {this.props.receivedDetails
-                ? "Мы сообщим,как появятся сотрудники!"
+                ? "Мы сообщим, как появятся сотрудники!"
                 : "Нет доступных продавцов"}
             </InfoBlockHeader>
             <InfoBlockText>
@@ -106,9 +107,15 @@ export class NoStreamerComponent extends React.Component {
                 : "Вы можете оставить свой запрос, включите уведомления, оставьте свой e-mail и как появятся стримеры мы ответим вам."}
             </InfoBlockText>
           </InfoBlock>
-          <ButtonWrapper>
-            <NotifyButtonAndEmail />
-          </ButtonWrapper>
+          {!this.props.receivedDetails && (
+            <ButtonWrapper>
+              <NotifyButtonAndEmail
+                sendEmailDetails={this.props.sendEmailDetails}
+                notificationPermission={this.props.notificationPermission}
+                emailSentFlag={this.props.emailSentFlag}
+              />
+            </ButtonWrapper>
+          )}
         </MainBlock>
       </TextWrap>
     );
@@ -116,7 +123,7 @@ export class NoStreamerComponent extends React.Component {
 }
 
 NoStreamerComponent.defaultProps = {
-  receivedDetails: false
+  receivedDetails: false,
 };
 
 export default NoStreamerComponent;

@@ -266,6 +266,7 @@ export class Button extends React.Component {
       emailSentFlag: false,
       displayMainRequest: false,
       currentTitle: null,
+      noStreamerFlag: false,
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -340,7 +341,7 @@ export class Button extends React.Component {
 
   componentDidMount() {
     let self = this;
-
+    this.socket.emit("isButtonAvailable", this.props.buttonId);
     if (this.props.eyezonGlobal)
       this.props.eyezonGlobal.function = (buttonId, title) =>
         this.handleClick(null, buttonId, title);
@@ -607,6 +608,9 @@ export class Button extends React.Component {
         }
       }
     });
+    this.socket.on("isButtonAvailableResponse", (result) => {
+      this.setState({ noStreamerFlag: result.isAvailable });
+    });
     //}
 
     if (this.props.buttons) {
@@ -762,6 +766,8 @@ export class Button extends React.Component {
             timerFlag={this.props.timerFlag}
             notificationPermission={this.notificationPermission}
             askedUserData={this.props.askedUserData}
+            noStreamerFlag={this.state.noStreamerFlag}
+            notificationMessageToggle={this.state.notificationMessageToggle}
             /*firebase={this.props.firebase}*/
           />
         )}
