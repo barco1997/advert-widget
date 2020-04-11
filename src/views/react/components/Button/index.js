@@ -7,7 +7,7 @@ import { Chat } from "../NewChat";
 import ls from "local-storage";
 import axios from "axios";
 import { CLIENT_ID, CLIENT_SECRET } from "./constants";
-
+import Firebase, { FirebaseContext, withFirebase } from "../Firebase";
 import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 import MinEmailRequest from "./minemailrequest";
@@ -441,6 +441,18 @@ export class Button extends React.Component {
         Notification.requestPermission(function (permission) {
           if (permission === "granted") {
             //ls.set("notificationPermission", true);
+            this.props.firebase.messaging
+              .requestPermission()
+              .then(async function () {
+                const token = await messaging.getToken();
+                console.log("TOKEN", token);
+              })
+              .catch(function (err) {
+                console.log("Unable to get permission to notify.", err);
+              });
+            navigator.serviceWorker.addEventListener("message", (message) =>
+              console.log(message)
+            );
           }
           self.setState({
             notificationMessageToggle: false,
@@ -696,6 +708,7 @@ export class Button extends React.Component {
 
   render() {
     //console.log("POSITION", this.props.position);
+    console.log("FIREBASE", this.props.firebase.messaging);
     return (
       <ButtonReqWrapper>
         <audio
@@ -776,4 +789,4 @@ export class Button extends React.Component {
   }
 }
 
-export default Button;
+export default withFirebase(Button);

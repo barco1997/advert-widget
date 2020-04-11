@@ -9,7 +9,7 @@ import {
   REACT_APP_STORAGE_BUCKET,
   REACT_APP_MESSAGING_SENDER_ID,
   REACT_APP_APP_ID,
-  REACT_APP_PUBLIC_VAPID_KEY
+  REACT_APP_PUBLIC_VAPID_KEY,
 } from "../../../../../prod_const";
 const config = {
   apiKey: REACT_APP_API_KEY,
@@ -18,7 +18,7 @@ const config = {
   projectId: REACT_APP_PROJECT_ID,
   storageBucket: REACT_APP_STORAGE_BUCKET,
   messagingSenderId: REACT_APP_MESSAGING_SENDER_ID,
-  appId: REACT_APP_APP_ID
+  appId: REACT_APP_APP_ID,
 };
 
 class Firebase {
@@ -32,10 +32,10 @@ class Firebase {
     );
   }
   messagingFunc() {
-    const d = new Date();
+    //const d = new Date();
     return this.messaging;
   }
-  putVoice(uid, file) {
+  /*putVoice(uid, file) {
     const d = new Date();
     return this.storage
       .ref()
@@ -43,7 +43,7 @@ class Firebase {
       .put(file, {
         contentType: "audio/mp3"
       });
-  }
+  }*/
 }
 
 export default Firebase;

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import html from "./index.html";
 import App from "./components/App";
-//import Firebase, { FirebaseContext } from "./components/Firebase";
+import Firebase, { FirebaseContext } from "./components/Firebase";
 import { load } from "./constants";
 import NotifyButton from "./components/NotifyButton";
 import LeaveEmail from "./components/LeaveEmail";
@@ -79,31 +79,30 @@ export function react(params, ifOpened, buttons) {
     );
   });
 
-  /*if ("serviceWorker" in navigator) {
+  if ("serviceWorker" in navigator) {
     navigator.serviceWorker
-      .register(
-         "./firebase-messaging-sw.js"
-      )
-      .then(function(registration) {
+      .register("./firebase-messaging-sw.js")
+      .then(function (registration) {
         console.log("Registration successful, scope is:", registration.scope);
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.log("Service worker registration failed, error:", err);
       });
-  }*/
-
+  }
+  //let Fire = new Firebase();
+  //console.log("TESTING", Fire);
   ReactDOM.render(
-    /*<FirebaseContext.Provider value={new Firebase()}>*/
-    <App
-      button={params.buttonOnTop}
-      businessId={params.businessId}
-      buttonId={params.initialButtonId}
-      ifOpened={ifOpened}
-      buttons={buttons}
-      eyezonGlobal={params.eyezonGlobal}
-      /*firebase={Firebase ? new Firebase() : null}*/
-    />,
-    /*</FirebaseContext.Provider>*/ document.getElementById("eyezonRoot")
+    <FirebaseContext.Provider value={Firebase ? new Firebase() : null}>
+      <App
+        button={params.buttonOnTop}
+        businessId={params.businessId}
+        buttonId={params.initialButtonId}
+        ifOpened={ifOpened}
+        buttons={buttons}
+        eyezonGlobal={params.eyezonGlobal}
+      />
+    </FirebaseContext.Provider>,
+    document.getElementById("eyezonRoot")
   );
 }
 
