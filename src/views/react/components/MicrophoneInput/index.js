@@ -276,7 +276,7 @@ class MicrophoneInput extends React.Component {
             isActive={isActive}
             color={this.props.color}
           >
-            {this.props.isHint && isShowHint && (
+            {this.props.isHint && isShowHint && !isActive && (
               <HintWrap onClick={(e) => e.stopPropagation()}>
                 Вы можете говорить с продавцом. Просто включите микрофон.
                 <CloseButton onClick={this.handleHint} />
