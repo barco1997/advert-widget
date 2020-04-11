@@ -1749,7 +1749,9 @@ export class Chat extends React.Component {
                                   this.state.awaitingConnection ||
                                   (this.props.noStreamerFlag &&
                                     !this.props.emailSentFlag &&
-                                    Notification.permission !== "granted")
+                                    (("Notification" in window &&
+                                      Notification.permission !== "granted") ||
+                                      !("Notification" in window)))
                                 }
                                 placeholder={
                                   this.state.ifTimer
@@ -1800,7 +1802,10 @@ export class Chat extends React.Component {
                                         noStreamerFlag={
                                           this.props.noStreamerFlag &&
                                           !this.props.emailSentFlag &&
-                                          Notification.permission !== "granted"
+                                          (("Notification" in window &&
+                                            Notification.permission !==
+                                              "granted") ||
+                                            !("Notification" in window))
                                         }
                                       />
                                     </EntryWrap>

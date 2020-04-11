@@ -159,10 +159,14 @@ export class NotifyButtonAndEmail extends React.Component {
           <BlurredButton
             onClick={this.props.notificationPermission}
             selected={
+              !("Notification" in window) ||
               Notification.permission === "granted" ||
               Notification.permission === "denied"
             }
-            isDenied={Notification.permission === "denied"}
+            isDenied={
+              !("Notification" in window) ||
+              Notification.permission === "denied"
+            }
           >
             Включить уведомления
           </BlurredButton>
