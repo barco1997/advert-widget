@@ -90,7 +90,7 @@ const Email = styled.input`
     font-weight: 500 !important;
     font-size: 14px !important;
     line-height: 160% !important;
-    color: #cacaca !important;
+    color: #000000 !important;
   }
 `;
 
