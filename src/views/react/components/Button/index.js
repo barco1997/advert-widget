@@ -609,7 +609,7 @@ export class Button extends React.Component {
       }
     });
     this.socket.on("isButtonAvailableResponse", (result) => {
-      this.setState({ noStreamerFlag: result.isAvailable });
+      this.setState({ noStreamerFlag: !result.isAvailable });
     });
     //}
 
