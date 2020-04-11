@@ -41,6 +41,9 @@ const InfoBlock = styled.div`
       `linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.12) 100%), ${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
+    ${media.phone`
+      height: 250px !important;
+    `};
   }
 `;
 
