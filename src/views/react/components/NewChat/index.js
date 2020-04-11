@@ -1668,7 +1668,9 @@ export class Chat extends React.Component {
                       >
                         <Fragment>
                           {!this.state.messages ||
-                          this.state.messages.length < 2 ? (
+                          (this.state.messages.length < 2 &&
+                            this.props.noStreamerFlag) ||
+                          this.state.messages.length == 0 ? (
                             <React.Fragment>
                               {!this.props.noStreamerFlag ? (
                                 <GetDetailsView
