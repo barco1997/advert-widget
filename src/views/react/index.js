@@ -8,6 +8,7 @@ import { load } from "./constants";
 import NotifyButton from "./components/NotifyButton";
 import LeaveEmail from "./components/LeaveEmail";
 import GetDetailsView from "./components/GetDetailsView";
+import * as firebaseServiceWorker from "./firebase-messaging-sw.js";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
 //import BlurredButton from "./components/BlurredButton";
@@ -80,8 +81,8 @@ export function react(params, ifOpened, buttons) {
   });
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("./firebase-messaging-sw.js")
+    firebaseServiceWorker
+      .register()
       .then(function (registration) {
         console.log("Registration successful, scope is:", registration.scope);
       })

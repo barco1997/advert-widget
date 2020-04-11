@@ -431,7 +431,20 @@ export class Button extends React.Component {
 
   notificationPermission() {
     let self = this;
+    let messaging = self.props.firebase.getMessaging();
     if (!iOS) {
+      messaging
+        .requestPermission()
+        .then(async function (result) {
+          const token = await messaging.getToken();
+          console.log("TOKEN", token);
+        })
+        .catch(function (err) {
+          console.log("Unable to get permission to notify.", err);
+        });
+      navigator.serviceWorker.addEventListener("message", (message) =>
+        console.log(message)
+      );
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
       } else if (Notification.permission === "default") {
@@ -441,18 +454,6 @@ export class Button extends React.Component {
         Notification.requestPermission(function (permission) {
           if (permission === "granted") {
             //ls.set("notificationPermission", true);
-            this.props.firebase.messaging
-              .requestPermission()
-              .then(async function () {
-                const token = await messaging.getToken();
-                console.log("TOKEN", token);
-              })
-              .catch(function (err) {
-                console.log("Unable to get permission to notify.", err);
-              });
-            navigator.serviceWorker.addEventListener("message", (message) =>
-              console.log(message)
-            );
           }
           self.setState({
             notificationMessageToggle: false,
@@ -708,7 +709,7 @@ export class Button extends React.Component {
 
   render() {
     //console.log("POSITION", this.props.position);
-    console.log("FIREBASE", this.props.firebase.messaging);
+    //console.log("FIREBASE", this.props.firebase.getMessaging());
     return (
       <ButtonReqWrapper>
         <audio

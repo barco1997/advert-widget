@@ -1,5 +1,5 @@
-import app from "firebase/app";
-import "firebase/storage";
+import * as firebase from "firebase/app";
+//import "firebase/storage";
 import "firebase/messaging";
 import {
   REACT_APP_API_KEY,
@@ -21,20 +21,31 @@ const config = {
   appId: REACT_APP_APP_ID,
 };
 
+const messagingConfig = {
+  apiKey: "AIzaSyDvFGZrHg0TrjXCq_4PpyaySa3pMDnMSLo",
+  authDomain: "eyezon-business.firebaseapp.com",
+  databaseURL: "https://eyezon-business.firebaseio.com",
+  projectId: "eyezon-business",
+  storageBucket: "eyezon-business.appspot.com",
+  messagingSenderId: "666370526556",
+  appId: "1:666370526556:web:b44c054c79a8d987af8599",
+  measurementId: "G-8B10VNSX7X",
+};
+const initializedFirebaseApp = firebase.initializeApp(messagingConfig);
+const messaging = initializedFirebaseApp.messaging();
+messaging.usePublicVapidKey(
+  // Project Settings => Cloud Messaging => Web Push certificates
+  REACT_APP_PUBLIC_VAPID_KEY
+);
+
 class Firebase {
   constructor() {
-    app.initializeApp(config);
-    this.storage = app.storage();
-    this.messaging = app.messaging();
-    this.messaging.usePublicVapidKey(
-      // Project Settings => Cloud Messaging => Web Push certificates
-      REACT_APP_PUBLIC_VAPID_KEY
-    );
+    this.messaging = messaging;
+    this.getMessaging = () => {
+      return this.messaging;
+    };
   }
-  messagingFunc() {
-    //const d = new Date();
-    return this.messaging;
-  }
+
   /*putVoice(uid, file) {
     const d = new Date();
     return this.storage
