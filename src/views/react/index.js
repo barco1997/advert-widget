@@ -8,7 +8,7 @@ import { load } from "./constants";
 import NotifyButton from "./components/NotifyButton";
 import LeaveEmail from "./components/LeaveEmail";
 import GetDetailsView from "./components/GetDetailsView";
-import * as firebaseServiceWorker from "./firebase-messaging-sw.js";
+//import * as firebaseServiceWorker from "./firebase-messaging-sw.js";
 //import CriticalInfo from "./components/CriticalInfo";
 //import FooterLogo from "./components/FooterLogo";
 //import BlurredButton from "./components/BlurredButton";
@@ -80,7 +80,7 @@ export function react(params, ifOpened, buttons) {
     );
   });
 
-  if ("serviceWorker" in navigator) {
+  /*if ("serviceWorker" in navigator) {
     firebaseServiceWorker
       .register()
       .then(function (registration) {
@@ -89,7 +89,7 @@ export function react(params, ifOpened, buttons) {
       .catch(function (err) {
         console.log("Service worker registration failed, error:", err);
       });
-  }
+  }*/
   //let Fire = new Firebase();
   //console.log("TESTING", Fire);
   ReactDOM.render(
