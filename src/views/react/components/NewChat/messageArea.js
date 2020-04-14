@@ -294,6 +294,7 @@ export class MessageArea extends React.Component {
           (this.state.awaitingConnection || this.state.timerExceeded) &&
           (this.state.timerExceeded || !lessThan2) && (
             <NotifyButton
+              color={this.props.color}
               sendEmailDetails={this.props.sendEmailDetails}
               notificationPermission={this.props.notificationPermission}
               emailSentFlag={this.props.emailSentFlag}

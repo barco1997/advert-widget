@@ -113,6 +113,7 @@ export class NoStreamerComponent extends React.Component {
           {!this.props.receivedDetails && (
             <ButtonWrapper>
               <NotifyButtonAndEmail
+                color={this.props.color}
                 sendEmailDetails={this.props.sendEmailDetails}
                 notificationPermission={this.props.notificationPermission}
                 emailSentFlag={this.props.emailSentFlag}

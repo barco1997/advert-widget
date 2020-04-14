@@ -79,7 +79,7 @@ const Button = styled.div`
     width: 48px !important;
     box-sizing: border-box !important;
     height: 40px !important;
-    background: #ff2d55 !important;
+    background: ${(props) => `${props.color} !important`};
     border-radius: 5px !important;
     align-items: center !important;
     justify-content: center !important;
@@ -164,7 +164,9 @@ export class NotifyButton extends React.Component {
             />
           )}
           {this.state.tosend === 1 && (
-            <Button onClick={this.handleClick}>OK</Button>
+            <Button color={this.props.color} onClick={this.handleClick}>
+              OK
+            </Button>
           )}
 
           {this.state.tosend === 2 && (
