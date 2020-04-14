@@ -1469,7 +1469,7 @@ export class Chat extends React.Component {
       !this.state.awaitingConnection &&
       !ls.get("micChecked")
     ) {
-      navigator.getUserMedia(
+      navigator.mediaDevices.getUserMedia(
         { audio: true },
         () => {
           self.setState({ isBlocked: false, isFirst: true });

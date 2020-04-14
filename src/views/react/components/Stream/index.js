@@ -124,7 +124,7 @@ export class Stream extends React.Component {
           self.props.iOS ||
           Flashphoner.getMediaProviders()[0] === "MSE"
         ) {
-          navigator.getUserMedia(
+          navigator.mediaDevices.getUserMedia(
             { audio: true },
             () => {
               Flashphoner.playFirstVideo(
@@ -216,7 +216,7 @@ export class Stream extends React.Component {
             //Flashphoner.releaseLocalMedia(this.localDisplay);
             //self.state.connection.disconnect();
             if (self.state.clientStream) {
-              navigator.getUserMedia(
+              navigator.mediaDevices.getUserMedia(
                 { audio: true },
                 () => {
                   Flashphoner.releaseLocalMedia(this.localDisplay);
