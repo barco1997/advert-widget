@@ -213,6 +213,11 @@ export class Button extends React.Component {
   componentDidMount() {
     let self = this;
     this.socket.emit("isButtonAvailable", this.props.buttonId);
+
+    window.addEventListener("resize", () => {
+      this.setState({ innerHeight: window.innerHeight });
+    });
+
     if (this.props.eyezonGlobal)
       this.props.eyezonGlobal.function = (buttonId, title) =>
         this.handleClick(null, buttonId, title);
