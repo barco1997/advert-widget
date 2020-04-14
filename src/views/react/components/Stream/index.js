@@ -226,7 +226,10 @@ export class Stream extends React.Component {
             //setStatus("#localStatus", stream.status());
             //onMediaPublished(stream);\
             console.log("SUCCESS", stream);
-            stream.unmuteAudio();
+            if (stream.isAudioMuted()) {
+              stream.unmuteAudio();
+            }
+
             if (self.props.audioStreamStatus) {
               stream.setMicrophoneGain(100);
             } else {
@@ -243,17 +246,7 @@ export class Stream extends React.Component {
             console.log("UNP");
             Flashphoner.releaseLocalMedia(this.localDisplay);
             self.state.connection.disconnect();
-            /*self.setState({
-              stream: null,
-              connection: null,
-              recording: false,
-              clientStream: null,
-              room: null,
-              initialRoom: null,
-            });*/
-
             self.props.handleReadyStreamUnmount();
-            //Flashphoner.releaseLocalMedia(this.player);
           });
       }
     );
@@ -265,7 +258,13 @@ export class Stream extends React.Component {
       this.props.audioStreamStatus !== prevProps.audioStreamStatus
     ) {
       if (this.state.clientStream) {
-        self.state.clientStream.setMicrophoneGain(100);
+        if (self.props.iOS) {
+          //self.state.clientStream.unmuteAudio();
+          self.state.clientStream.setMicrophoneGain(100);
+        } else {
+          //self.state.clientStream.unmuteAudio();
+          self.state.clientStream.setMicrophoneGain(100);
+        }
       }
     }
     if (
@@ -273,17 +272,16 @@ export class Stream extends React.Component {
       this.props.audioStreamStatus !== prevProps.audioStreamStatus
     ) {
       if (this.state.clientStream) {
+        //self.state.clientStream.muteAudio();
         self.state.clientStream.setMicrophoneGain(0);
       }
     }
-
     if (!this.props.visible && prevProps.visible) {
       if (this.props.unmountFunction) {
         this.props.unmountFunction();
       }
       self.setState({ recording: false });
-      //if (this.state.clientStream) {
-      //console.log("mute audio", this.state.clientStream);
+
       if (self.state.stream) {
         //console.log("mute video");
         self.state.stream.stop();
