@@ -303,16 +303,7 @@ export class Stream extends React.Component {
 
   componentDidMount() {
     let self = this;
-    try {
-      Flashphoner.init({
-        flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
-      });
-    } catch (e) {
-      console.log(
-        "Your browser doesn't support Flash or WebRTC technology needed for this example"
-      );
-      return;
-    }
+
     if (
       isSafari ||
       this.props.iOS ||

@@ -52,6 +52,16 @@ const rndAdmin = getRndInteger(1, 2);
 load(`${staticUrl}/static/flashphoner.js`)
   .then(function () {
     //console.log("Loaded flashphoner!");
+    try {
+      Flashphoner.init({
+        flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
+      });
+    } catch (e) {
+      console.log(
+        "Your browser doesn't support Flash or WebRTC technology needed for this example"
+      );
+      return;
+    }
     SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
     STREAM_STATUS = Flashphoner.constants.STREAM_STATUS;
     PRELOADER_URL = `${staticUrl}/static/preloader.mp4`;
@@ -749,6 +759,8 @@ const ChatWindowExpansion = styled.div`
   }
 `;
 
+const iOSrecord = false;
+
 export class Chat extends React.Component {
   constructor(props) {
     super(props);
@@ -789,7 +801,7 @@ export class Chat extends React.Component {
       isFirst: false,
       recorder: null,
       gameStarted: false,
-      audioStreamStatus: iOS ? true : false,
+      audioStreamStatus: iOS ? iOSrecord : false,
       nameRequested: "",
       emailRequested: "",
       phoneRequested: "",
@@ -1031,7 +1043,7 @@ export class Chat extends React.Component {
           streamToVideo: data.messageId,
           prepareToUnmountStream: true,
           messagesStream: [],
-          audioStreamStatus: iOS ? true : false,
+          audioStreamStatus: iOS ? iOSrecord : false,
         });
         /*this.live.pause();
         flvPlayer.destroy();*/
@@ -1857,7 +1869,7 @@ export class Chat extends React.Component {
                   unmountFunction={() => {
                     this.socket.emit("leaveStream", ls.get("dialogId"));
                     this.setState({
-                      audioStreamStatus: iOS ? true : false,
+                      audioStreamStatus: iOS ? iOSrecord : false,
                     });
                     //console.log("left stream");
                   }}
