@@ -118,24 +118,25 @@ export class Stream extends React.Component {
           //addMessage("chat", " room is empty");
         }
         /*if (self.props.audioStreamStatus) {*/
+
         if (
           isSafari ||
           self.props.iOS ||
           Flashphoner.getMediaProviders()[0] === "MSE"
         ) {
-          Flashphoner.playFirstVideo(
-            self.localDisplay,
-            true,
-            self.props.PRELOADER_URL
-          ).then(function () {
-            navigator.getUserMedia(
-              { audio: true },
-              () => {
+          navigator.getUserMedia(
+            { audio: true },
+            () => {
+              Flashphoner.playFirstVideo(
+                self.localDisplay,
+                true,
+                self.props.PRELOADER_URL
+              ).then(function () {
                 self.publishLocalMedia(room);
-              },
-              () => {}
-            );
-          });
+              });
+            },
+            () => {}
+          );
         } else {
           self.publishLocalMedia(room);
         }
