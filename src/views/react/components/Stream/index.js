@@ -3,6 +3,8 @@ import styled from "styled-components";
 import ls from "local-storage";
 //import axios from "axios";
 import { media } from "../../../../utils/media";
+import { staticUrl } from "../../constants";
+import { fromRenderProps } from "recompose";
 //import { setDisplayName } from "recompose";
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const VideoElement = styled.div`
@@ -74,59 +76,10 @@ export class Stream extends React.Component {
     };
 
     this.playParticipantStream = this.playParticipantStream.bind(this);
-    this.start = this.start.bind(this);
+
     this.startConference = this.startConference.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
     this.publishLocalMedia = this.publishLocalMedia.bind(this);
-  }
-
-  componentWillUnmount() {
-    //console.log("UNDOING");
-    /*let self = this;
-    if (this.props.unmountFunction) {
-      this.props.unmountFunction();
-    }
-    self.setState({ recording: false });
-    if (this.state.clientStream) {
-      //console.log("mute audio", this.state.clientStream);
-      if (self.state.stream) {
-        //console.log("mute video");
-        self.state.stream.stop();
-      }
-      if (self.state.clientStream) {
-        //console.log("mute audio");
-        self.state.clientStream.muteAudio();
-      }
-      if (self.state.room) {
-        //console.log("leave room");
-        self.state.room.leave();
-      }
-    }*/
-  }
-
-  start() {
-    let self = this;
-    //console.log("Create new session with url");
-    Flashphoner.createSession({
-      urlServer: "wss://server.witheyezon.com:8443",
-    })
-      .on(this.props.SESSION_STATUS.ESTABLISHED, function (session) {
-        //setStatus(session.status());
-        //session connected, start playback
-        if (self.props.mountFunction) {
-          //console.log("Trying to mount");
-          self.props.mountFunction();
-        }
-        self.playStream(session, self.props.dialogId);
-      })
-      .on(this.props.SESSION_STATUS.DISCONNECTED, function () {
-        //setStatus(SESSION_STATUS.DISCONNECTED);
-        //onStopped();
-      })
-      .on(this.props.SESSION_STATUS.FAILED, function () {
-        //setStatus(SESSION_STATUS.FAILED);
-        //onStopped();
-      });
   }
 
   startConference() {
@@ -386,6 +339,16 @@ export class Stream extends React.Component {
 
   componentDidMount() {
     let self = this;
+    try {
+      Flashphoner.init({
+        flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
+      });
+    } catch (e) {
+      console.log(
+        "Your browser doesn't support Flash or WebRTC technology needed for this example"
+      );
+      return;
+    }
     if (
       isSafari ||
       this.props.iOS ||

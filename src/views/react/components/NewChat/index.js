@@ -1342,7 +1342,7 @@ export class Chat extends React.Component {
             phone: this.state.phoneRequested,
             email: this.state.emailRequested,
           };
-
+          //console.log("DATA TO SEND", dataToSend);
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
       } else if (!this.state.awaitingConnection) {

@@ -6,11 +6,11 @@ import styled from "styled-components";
 import { Chat } from "../NewChat";
 import ls from "local-storage";
 import axios from "axios";
-import { CLIENT_ID, CLIENT_SECRET } from "./constants";
-import Firebase, { FirebaseContext, withFirebase } from "../Firebase";
+//import { CLIENT_ID, CLIENT_SECRET } from "./constants";
+//import Firebase, { FirebaseContext, withFirebase } from "../Firebase";
 import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
-import MinEmailRequest from "./minemailrequest";
+//import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
 import {
   staticUrl,
@@ -20,11 +20,11 @@ import {
 } from "../../constants";
 let overflow = document.body.style.overflow;
 const io = require("socket.io-client");
-//const reqId = ls.get("conversationId");
+
 const storedToken = ls.get("token");
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let currentUrl = window.location.href;
-//const bodyScroll = require("body-scroll-toggle");
+
 let ifMobile =
   navigator.userAgent.match(/Android/i) ||
   navigator.userAgent.match(/webOS/i) ||
@@ -94,133 +94,6 @@ const ApiOverlay = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.button`
-  &&& {
-    text-decoration: none !important;
-    box-shadow: none !important;
-    -webkit-font-smoothing: antialiased !important;
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    cursor: pointer !important;
-    outline: 0 !important;
-    /*overflow: hidden !important;*/
-    position: fixed !important;
-    z-index: 9998 !important;
-    background: #fff !important;
-    right: 2% !important;
-    bottom: 130px !important;
-    margin: 0 0 0 0 !important;
-
-    background: white !important;
-
-    border: solid 1px #dddddd !important;
-    border-radius: 28px !important;
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    width: ${(props) =>
-      props.toggle ? "278px  !important" : "42px  !important"}; /*58*/
-    min-width: 42px !important;
-    height: 51px !important; /*56*/
-
-    align-items: center !important;
-
-    transition: ${(props) =>
-      props.toggle
-        ? "width 120ms linear !important"
-        : "width 180ms linear !important"};
-    font-family: "Montserrat" !important;
-    &:focus {
-      outline: 0 !important;
-    }
-  }
-`;
-
-const NotificationWrapper = styled.div`
-  &&& {
-    position: absolute !important;
-    top: -7px !important;
-    right: -7px !important;
-    border-radius: 50% !important;
-    color: white !important;
-    background: ${(props) => `${props.color} !important`};
-    font-size: 10px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 22px !important;
-    height: 22px !important;
-  }
-`;
-
-const JsButtonImageWrapper = styled.div`
-  &&& {
-    width: 42px !important;
-    height: 51px !important;
-    border-radius: 28px !important;
-
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    min-width: 42px !important;
-    max-height: 51px !important;
-    cursor: pointer !important;
-  }
-`;
-
-const JsButtonImage = styled.img`
-  &&& {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    max-height: 40px !important;
-    cursor: pointer !important;
-  }
-`;
-const JsButtonText = styled.div`
-  &&& {
-    display: flex !important;
-    transition: ${(props) =>
-      props.toggle
-        ? "opacity 1s ease-in !important"
-        : "opacity 100ms linear !important"};
-
-    opacity: ${(props) => (props.toggle ? "1 !important" : "0 !important")};
-    height: 34px !important;
-
-    flex-direction: column !important;
-    width: 200px !important;
-    margin-right: 14px !important;
-    margin-left: 8px !important;
-  }
-`;
-
-const JsButtonHeader = styled.div`
-  &&& {
-    font-size: 16px !important;
-    font-weight: bold !important;
-  }
-`;
-const JsButtonInfo = styled.div`
-  &&& {
-    font-size: 8px !important;
-    opacity: 0.5 !important;
-  }
-`;
-
-const MinReqWrapper = styled.div`
-  &&& {
-    position: relative !important;
-    top: 0px !important;
-    left: 0px !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    display: block;
-    ${media.tablet`
-    display: none !important;
-  `};
-  }
-`;
-
 const disableScroll = () => {
   //document.body.classList.add("unscrollable");
   //if (ifMobile || window.innerHeight < 634) {
@@ -253,10 +126,9 @@ export class Button extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      toggle: false,
       displayMessage: false,
       displayChat: false,
-      initializeChat: ls.get("token") ? true : false,
+      initializeChat: false,
       businessId: this.props.businessId,
       multiButton: false,
       notificationMessageToggle: false,
@@ -272,8 +144,6 @@ export class Button extends React.Component {
     this.notifyMe = this.notifyMe.bind(this);
     this.notificationPermission = this.notificationPermission.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
-    this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.destroyMessage = this.destroyMessage.bind(this);
     this.destroyChat = this.destroyChat.bind(this);
     this.showChat = this.showChat.bind(this);
@@ -324,7 +194,8 @@ export class Button extends React.Component {
   handleRegistration() {
     //ls.set("conversationPermission", true);
     if (ls.get("userId")) {
-      this.showChat();
+      // *SHOWCHAT*
+      this.showChatHere();
     } else {
       const mongoObjectId =
         ((new Date().getTime() / 1000) | 0).toString(16) +
@@ -335,7 +206,7 @@ export class Button extends React.Component {
           .toLowerCase();
 
       ls.set("userId", mongoObjectId);
-      this.showChat();
+      this.showChatHere();
     }
   }
 
@@ -431,9 +302,9 @@ export class Button extends React.Component {
 
   notificationPermission() {
     let self = this;
-    let messaging = self.props.firebase.getMessaging();
+    //let messaging = self.props.firebase.getMessaging();
     if (!iOS) {
-      messaging
+      /*messaging
         .requestPermission()
         .then(async function (result) {
           const token = await messaging.getToken();
@@ -444,7 +315,7 @@ export class Button extends React.Component {
         });
       navigator.serviceWorker.addEventListener("message", (message) =>
         console.log(message)
-      );
+      );*/
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
       } else if (Notification.permission === "default") {
@@ -549,12 +420,6 @@ export class Button extends React.Component {
             ls.set("dialogId", "");
             self.showChatHere();
           }
-          /*if (response.data.count > 0) {
-            self.showChatHere();
-          } else {
-            ls.set("dialogId", "");
-            self.showChatHere();
-          }*/
         })
         .catch(function (error) {
           ls.set("dialogId", "");
@@ -651,18 +516,6 @@ export class Button extends React.Component {
     this.socket.open();
   }
 
-  handleMouseLeave() {
-    this.setState({
-      toggle: false,
-    });
-  }
-
-  handleMouseEnter() {
-    this.setState({
-      toggle: false,
-    });
-  }
-
   destroyMessage() {
     this.setState({ displayMessage: false });
   }
@@ -690,21 +543,18 @@ export class Button extends React.Component {
     this.setState({
       displayMessage: true,
       displayChat: false,
-      toggle: false,
     });
   }
 
   showChatHere() {
+    disableScroll();
     this.setState({ initializeChat: true }, () => {
       this.setState({
         displayChat: true,
         displayMessage: false,
-        toggle: false,
         apiLoading: false,
       });
     });
-    disableScroll();
-    //}
   }
 
   render() {
@@ -790,4 +640,4 @@ export class Button extends React.Component {
   }
 }
 
-export default withFirebase(Button);
+export default Button;
