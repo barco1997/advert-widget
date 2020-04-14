@@ -759,7 +759,7 @@ const ChatWindowExpansion = styled.div`
   }
 `;
 
-const iOSrecord = false;
+const iOSrecord = true;
 
 export class Chat extends React.Component {
   constructor(props) {

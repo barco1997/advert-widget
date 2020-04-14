@@ -128,7 +128,13 @@ export class Stream extends React.Component {
             true,
             self.props.PRELOADER_URL
           ).then(function () {
-            self.publishLocalMedia(room);
+            navigator.getUserMedia(
+              { audio: true },
+              () => {
+                self.publishLocalMedia(room);
+              },
+              () => {}
+            );
           });
         } else {
           self.publishLocalMedia(room);
@@ -226,14 +232,16 @@ export class Stream extends React.Component {
             //setStatus("#localStatus", stream.status());
             //onMediaPublished(stream);\
             console.log("SUCCESS", stream);
-            if (stream.isAudioMuted()) {
+            /*if (stream.isAudioMuted()) {
               stream.unmuteAudio();
-            }
+            }*/
 
             if (self.props.audioStreamStatus) {
-              stream.setMicrophoneGain(100);
+              //stream.setMicrophoneGain(100);
+              stream.unmuteAudio();
             } else {
-              stream.setMicrophoneGain(0);
+              //stream.setMicrophoneGain(0);
+              stream.muteAudio();
             }
             self.setState({
               clientStream: stream,
@@ -259,11 +267,11 @@ export class Stream extends React.Component {
     ) {
       if (this.state.clientStream) {
         if (self.props.iOS) {
-          //self.state.clientStream.unmuteAudio();
-          self.state.clientStream.setMicrophoneGain(100);
+          self.state.clientStream.unmuteAudio();
+          //self.state.clientStream.setMicrophoneGain(100);
         } else {
-          //self.state.clientStream.unmuteAudio();
-          self.state.clientStream.setMicrophoneGain(100);
+          self.state.clientStream.unmuteAudio();
+          //self.state.clientStream.setMicrophoneGain(100);
         }
       }
     }
@@ -272,8 +280,8 @@ export class Stream extends React.Component {
       this.props.audioStreamStatus !== prevProps.audioStreamStatus
     ) {
       if (this.state.clientStream) {
-        //self.state.clientStream.muteAudio();
-        self.state.clientStream.setMicrophoneGain(0);
+        self.state.clientStream.muteAudio();
+        //self.state.clientStream.setMicrophoneGain(0);
       }
     }
     if (!this.props.visible && prevProps.visible) {
