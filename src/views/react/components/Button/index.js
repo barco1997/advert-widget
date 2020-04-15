@@ -94,18 +94,20 @@ const ApiOverlay = styled.div`
   }
 `;
 
-const disableScroll = () => {
+const disableScroll = (callback) => {
   //document.body.classList.add("unscrollable");
   //if (ifMobile || window.innerHeight < 634) {
   const scrollY = document.documentElement.style.getPropertyValue("--scroll-y");
   const body = document.body;
-
   if (!mediaType.desktop) {
     body.style.overflow = "hidden";
   } else {
     body.style.position = "fixed";
     body.style.top = `-${scrollY}`;
   }
+  setTimeout(() => {
+    callback();
+  }, 300);
 
   //}
 };
@@ -146,7 +148,7 @@ export class Button extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.destroyMessage = this.destroyMessage.bind(this);
     this.destroyChat = this.destroyChat.bind(this);
-    this.showChat = this.showChat.bind(this);
+
     this.showChatHere = this.showChatHere.bind(this);
     this.showMessageHere = this.showMessageHere.bind(this);
     this.joinDialogue = this.joinDialogue.bind(this);
@@ -534,15 +536,6 @@ export class Button extends React.Component {
     enableScroll();
     //}
   }
-  showChat() {
-    disableScroll();
-    this.setState({
-      displayChat: true,
-      displayMessage: false,
-      initializeChat: true,
-      apiLoading: false,
-    });
-  }
 
   showMessageHere() {
     this.setState({
@@ -552,12 +545,13 @@ export class Button extends React.Component {
   }
 
   showChatHere() {
-    disableScroll();
-    this.setState({ initializeChat: true }, () => {
-      this.setState({
-        displayChat: true,
-        displayMessage: false,
-        apiLoading: false,
+    disableScroll(() => {
+      this.setState({ initializeChat: true }, () => {
+        this.setState({
+          displayChat: true,
+          displayMessage: false,
+          apiLoading: false,
+        });
       });
     });
   }
