@@ -66,6 +66,10 @@ const InfoBlock = styled.div`
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
+    ${media.phone`
+      height: ${(props) =>
+        props.isTall ? "370px !important" : "300px !important"};
+  `};
   }
 `;
 
@@ -120,7 +124,12 @@ export class GetDetailsView extends React.Component {
     return (
       <TextWrap>
         <MainBlock>
-          <InfoBlock color={this.props.color || "#ff2d55"}>
+          <InfoBlock
+            isTall={
+              this.state.isEmail || this.state.isPhone || this.state.isName
+            }
+            color={this.props.color || "#ff2d55"}
+          >
             <InfoBlockHeader>{this.props.greetingTitle}</InfoBlockHeader>
             <InfoBlockText>{this.props.greetingText}</InfoBlockText>
             <FieldWrapper>
