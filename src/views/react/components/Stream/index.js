@@ -5,6 +5,33 @@ import ls from "local-storage";
 import { media } from "../../../../utils/media";
 import { staticUrl } from "../../constants";
 import { fromRenderProps } from "recompose";
+import StatusButton from "../StatusButton";
+import StreamChat from "./streamchat";
+import MicrophoneInput from "../MicrophoneInput";
+const InputLineStream = styled.div`
+  &&& {
+    margin-top: 20px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+`;
+const TextFieldExtraS = styled.div`
+  &&& {
+    position: absolute !important;
+    bottom: 0px !important;
+    height: ${(props) =>
+      props.chatHeight
+        ? `calc(348px + ${props.chatHeight})`
+        : "388px"} !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    /*${media.android`
+    margin-top: 10px !important;
+    `};*/
+  }
+`;
 //import { setDisplayName } from "recompose";
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const VideoElement = styled.div`
@@ -57,10 +84,106 @@ const Gradient = styled.div`
   }
 `;
 
+const VideoWrapperS = styled.div`
+  &&& {
+    position: relative !important;
+    width: 496px !important;
+    height: 664px !important;
+    flex-direction: column !important;
+    border-radius: 10px !important;
+    /*overflow: hidden !important;*/
+    background: black !important;
+    & > iframe {
+      margin-left: -4px !important;
+      width: 496px !important;
+      height: 664px !important;
+    }
+    display: ${(props) =>
+      props.visible ? "flex !important" : "none !important"};
+
+    ${(props) =>
+      props.windowHeight < props.height &&
+      `
+      width: 100vw !important;
+  height: 100% !important;
+  `}
+    ${media.desktop`
+  
+  width: 100vw !important;
+  height: 100% !important;
+  
+  
+  
+  border-radius: 0px !important;
+  margin-left: 0px !important;
+  background: black !important;
+  & > iframe {
+    width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0px !important;
+  }
+  `};
+  }
+`;
+
 const LocalDisplay = styled.div`
   &&& {
     position: absolute !important;
     left: -9999px !important;
+  }
+`;
+
+const CloseWrapper = styled.div`
+  &&& {
+    position: absolute !important;
+    right: 7px !important;
+    top: 14px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+  }
+`;
+
+const CloseButton = styled.span`
+  &&& {
+    position: relative !important;
+    display: block !important;
+    height: 30px !important;
+    width: 30px !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    opacity: 1 !important;
+    margin-right: 15px !important;
+    &:hover {
+      background: rgba(255, 255, 255, 0.26) !important;
+    }
+    &:before,
+    &:after {
+      position: absolute !important;
+
+      content: " " !important;
+      height: 12px !important;
+      width: 2px !important;
+      border-radius: 1px !important;
+      background-color: #ffffff !important;
+    }
+    &:before {
+      transform: rotate(45deg) !important;
+    }
+    &:after {
+      transform: rotate(-45deg) !important;
+    }
+  }
+`;
+const StatusWrapper = styled.div`
+  &&& {
+    position: absolute !important;
+    left: 18px !important;
+    top: 14px !important;
   }
 `;
 export class Stream extends React.Component {
@@ -76,7 +199,7 @@ export class Stream extends React.Component {
     };
 
     this.playParticipantStream = this.playParticipantStream.bind(this);
-
+    this.audioToggle = this.audioToggle.bind(this);
     this.startConference = this.startConference.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
     this.publishLocalMedia = this.publishLocalMedia.bind(this);
@@ -119,27 +242,6 @@ export class Stream extends React.Component {
         }
         /*if (self.props.audioStreamStatus) {*/
 
-        if (
-          isSafari ||
-          self.props.iOS ||
-          Flashphoner.getMediaProviders()[0] === "MSE"
-        ) {
-          navigator.mediaDevices.getUserMedia(
-            { audio: true },
-            () => {
-              Flashphoner.playFirstVideo(
-                self.localDisplay,
-                true,
-                self.props.PRELOADER_URL
-              ).then(function () {
-                self.publishLocalMedia(room);
-              });
-            },
-            () => {}
-          );
-        } else {
-          self.publishLocalMedia(room);
-        }
         //} //here is the place
         self.setState({ initialRoom: room });
         //onJoined(room);
@@ -197,94 +299,57 @@ export class Stream extends React.Component {
       audio: true,
       video: false,
     };
-    this.setState(
-      {
-        recording: true,
-      },
-      () => {
-        //console.log("ROOM", room);
-        room
-          .publish({
-            display: this.localDisplay,
-            constraints: constraints,
-            record: false,
-            receiveVideo: false,
-            receiveAudio: false,
-          })
-          .on(this.props.STREAM_STATUS.FAILED, function (stream) {
-            console.log("FAILED");
-            //Flashphoner.releaseLocalMedia(this.localDisplay);
-            //self.state.connection.disconnect();
-            if (self.state.clientStream) {
-              navigator.mediaDevices.getUserMedia(
-                { audio: true },
-                () => {
-                  Flashphoner.releaseLocalMedia(this.localDisplay);
-                  self.state.connection.disconnect();
-                  self.props.handleReadyStreamUnmount();
-                },
-                () => {}
-              );
-            }
+    room
+      .publish({
+        display: this.localDisplay,
+        constraints: constraints,
+        record: false,
+        receiveVideo: false,
+        receiveAudio: false,
+      })
+      .on(this.props.STREAM_STATUS.FAILED, function (stream) {
+        //console.log("FAILED");
+        //Flashphoner.releaseLocalMedia(this.localDisplay);
+        //self.state.connection.disconnect();
+        if (self.state.clientStream) {
+          navigator.mediaDevices.getUserMedia(
+            { audio: true },
+            () => {
+              Flashphoner.releaseLocalMedia(this.localDisplay);
+              self.state.connection.disconnect();
+              self.props.handleReadyStreamUnmount();
+            },
+            () => {}
+          );
+        }
 
-            //self.props.handleReadyStreamUnmount();
-          })
-          .on(this.props.STREAM_STATUS.PUBLISHING, function (stream) {
-            //setStatus("#localStatus", stream.status());
-            //onMediaPublished(stream);\
-            console.log("SUCCESS", stream);
-            /*if (stream.isAudioMuted()) {
+        //self.props.handleReadyStreamUnmount();
+      })
+      .on(this.props.STREAM_STATUS.PUBLISHING, function (stream) {
+        //console.log("SUCCESS", stream);
+        /*if (stream.isAudioMuted()) {
               stream.unmuteAudio();
             }*/
 
-            if (self.props.audioStreamStatus) {
-              //stream.setMicrophoneGain(100);
-              stream.unmuteAudio();
-            } else {
-              //stream.setMicrophoneGain(0);
-              stream.muteAudio();
-            }
-            self.setState({
-              clientStream: stream,
-              room,
-            });
-          })
-          .on(this.props.STREAM_STATUS.UNPUBLISHED, function (stream) {
-            //setStatus("#localStatus", stream.status());
-            //onMediaStopped(room);
-            console.log("UNP");
-            Flashphoner.releaseLocalMedia(this.localDisplay);
-            self.state.connection.disconnect();
-            self.props.handleReadyStreamUnmount();
-          });
-      }
-    );
+        if (stream.isAudioMuted()) {
+          //stream.setMicrophoneGain(0);
+          stream.unmuteAudio();
+          //console.log("IOS, UNMUTING AUDIO");
+        }
+        self.setState({
+          clientStream: stream,
+          room,
+        });
+      })
+      .on(this.props.STREAM_STATUS.UNPUBLISHED, function (stream) {
+        //console.log("UNP");
+        Flashphoner.releaseLocalMedia(this.localDisplay);
+        self.state.connection.disconnect();
+        self.props.handleReadyStreamUnmount();
+      });
   }
   componentDidUpdate(prevProps) {
     let self = this;
-    if (
-      this.props.audioStreamStatus &&
-      this.props.audioStreamStatus !== prevProps.audioStreamStatus
-    ) {
-      if (this.state.clientStream) {
-        if (self.props.iOS) {
-          self.state.clientStream.unmuteAudio();
-          //self.state.clientStream.setMicrophoneGain(100);
-        } else {
-          self.state.clientStream.unmuteAudio();
-          //self.state.clientStream.setMicrophoneGain(100);
-        }
-      }
-    }
-    if (
-      !this.props.audioStreamStatus &&
-      this.props.audioStreamStatus !== prevProps.audioStreamStatus
-    ) {
-      if (this.state.clientStream) {
-        self.state.clientStream.muteAudio();
-        //self.state.clientStream.setMicrophoneGain(0);
-      }
-    }
     if (!this.props.visible && prevProps.visible) {
       if (this.props.unmountFunction) {
         this.props.unmountFunction();
@@ -308,6 +373,41 @@ export class Stream extends React.Component {
       }
       //}
     }
+  }
+
+  audioToggle() {
+    let self = this;
+    //console.log("IOS, TRYING TO TOGGLE AUDIO");
+    if (!this.state.clientStream && this.state.initialRoom) {
+      if (
+        isSafari ||
+        self.props.iOS ||
+        Flashphoner.getMediaProviders()[0] === "MSE"
+      ) {
+        //console.log("IOS, STARTING TO PUBLISH");
+        Flashphoner.playFirstVideo(
+          self.localDisplay,
+          true,
+          self.props.PRELOADER_URL
+        ).then(function () {
+          //console.log("IOS, SUCCESSFULLY PRELOADED");
+          self.publishLocalMedia(self.state.initialRoom);
+        });
+      } else {
+        self.publishLocalMedia(self.state.initialRoom);
+      }
+    } else {
+      if (this.state.clientStream) {
+        if (this.state.clientStream.isAudioMuted()) {
+          this.state.clientStream.unmuteAudio();
+          //console.log("IOS, AUDIO ON");
+        } else {
+          this.state.clientStream.muteAudio();
+          //console.log("IOS, AUDIO OFF");
+        }
+      }
+    }
+    this.props.audioToggle();
   }
 
   componentDidMount() {
@@ -335,20 +435,58 @@ export class Stream extends React.Component {
 
   render() {
     return (
-      <Wrapper>
-        <LocalDisplay
-          ref={(element) => {
-            this.localDisplay = element;
-          }}
-        />
-        <VideoElement
-          ref={(element) => {
-            this.player = element;
-          }}
-        >
-          <Gradient />
-        </VideoElement>
-      </Wrapper>
+      <VideoWrapperS
+        visible={this.props.visible}
+        height={this.props.height}
+        windowHeight={this.props.windowHeight}
+      >
+        <Wrapper>
+          <LocalDisplay
+            ref={(element) => {
+              this.localDisplay = element;
+            }}
+          />
+          <VideoElement
+            ref={(element) => {
+              this.player = element;
+            }}
+          >
+            <Gradient />
+          </VideoElement>
+        </Wrapper>
+        <CloseWrapper>
+          <CloseButton onClick={this.props.onClose} />
+        </CloseWrapper>
+        <StatusWrapper>
+          <StatusButton status="LIVE" color={this.props.color} />
+        </StatusWrapper>
+        <TextFieldExtraS chatHeight={this.props.chatHeight}>
+          <StreamChat
+            messages={this.props.messages}
+            isSafari={this.props.isSafari}
+          />
+          <InputLineStream>
+            <MicrophoneInput
+              rows="1"
+              stream
+              setStreamInput={this.props.setStreamInput}
+              type="text"
+              value={this.props.valueStream}
+              onChange={this.props.onChange}
+              placeholder="Сообщение..."
+              onKeyPress={this.props.onKeyPress}
+              height={this.props.chatHeight}
+              onKeyDown={this.props.onKeyDown}
+              handleSubmitS={this.props.handleSubmitS}
+              iOS={this.props.iOS}
+              audioStreamStatus={this.props.audioStreamStatus}
+              audioToggle={this.audioToggle}
+              isHint={true}
+              enabled={this.state.stream ? true : false}
+            />
+          </InputLineStream>
+        </TextFieldExtraS>
+      </VideoWrapperS>
     );
   }
 }

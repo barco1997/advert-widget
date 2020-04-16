@@ -13,7 +13,7 @@ import {
   socketUrl,
   apiBaseUrl,
 } from "../../constants";
-import StreamChat from "./streamchat";
+
 import Stream from "../Stream";
 import LeaveEmail from "../LeaveEmail";
 //import MicRecorder from "mic-recorder-to-mp3";
@@ -703,31 +703,6 @@ const JsChatMessageContainer = styled.div`
   }
 `;
 
-const TextFieldExtraS = styled.div`
-  &&& {
-    position: absolute !important;
-    bottom: 0px !important;
-    height: ${(props) =>
-      props.chatHeight
-        ? `calc(348px + ${props.chatHeight})`
-        : "388px"} !important;
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    /*${media.android`
-    margin-top: 10px !important;
-    `};*/
-  }
-`;
-const InputLineStream = styled.div`
-  &&& {
-    margin-top: 20px !important;
-    width: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-`;
-
 const CartTextFieldExtra = styled.div`
   &&& {
     display: flex !important;
@@ -759,7 +734,7 @@ const ChatWindowExpansion = styled.div`
   }
 `;
 
-const iOSrecord = true;
+const iOSrecord = false;
 
 export class Chat extends React.Component {
   constructor(props) {
@@ -1853,101 +1828,70 @@ export class Chat extends React.Component {
               }
               top={this.state.androidOffset}
             >
-              <VideoWrapperS
-                visible={
-                  /*this.state.streamFlag */ !this.state.prepareToUnmountStream
-                }
+              <Stream
+                /****Wrapper props */
                 height={634}
                 windowHeight={this.props.innerHeight}
-              >
-                <Stream
-                  mountFunction={() => {
-                    this.socket.emit("enterStream", ls.get("dialogId"));
+                /***** Stream props*/
 
-                    //console.log("enter stream");
-                  }}
-                  unmountFunction={() => {
-                    this.socket.emit("leaveStream", ls.get("dialogId"));
-                    this.setState({
-                      audioStreamStatus: iOS ? iOSrecord : false,
-                    });
-                    //console.log("left stream");
-                  }}
-                  dialogId={ls.get("dialogId")}
-                  visible={
-                    /*this.state.streamFlag */ !this.state
-                      .prepareToUnmountStream
+                mountFunction={() => {
+                  this.socket.emit("enterStream", ls.get("dialogId"));
+                }}
+                unmountFunction={() => {
+                  this.socket.emit("leaveStream", ls.get("dialogId"));
+                  this.setState({
+                    audioStreamStatus: iOS ? iOSrecord : false,
+                  });
+                }}
+                dialogId={ls.get("dialogId")}
+                visible={!this.state.prepareToUnmountStream}
+                SESSION_STATUS={SESSION_STATUS}
+                STREAM_STATUS={STREAM_STATUS}
+                PRELOADER_URL={PRELOADER_URL}
+                ROOM_EVENT={ROOM_EVENT}
+                iOS={iOS}
+                audioStreamStatus={this.state.audioStreamStatus}
+                handleReadyStreamUnmount={this.handleReadyStreamUnmount}
+                revertMic={() => this.setState({ audioStreamStatus: false })}
+                forceMic={(callbackFunc) =>
+                  this.setState({ audioStreamStatus: true }, () =>
+                    callbackFunc()
+                  )
+                }
+                /***** Close button*/
+                onClose={() => {
+                  //used to be onCLick
+                  this.setState({
+                    prepareToUnmountStream: true,
+                  });
+
+                  ls.set("streamInProgress", false);
+                }}
+                /**Various components, Status button */
+                color={this.props.color}
+                /*****Stream chat */
+                chatHeight={this.state.streamTextAreaHeight}
+                messages={this.state.messagesStream}
+                isSafari={isSafari}
+                setStreamInput={(item) => {
+                  this.streamInput = item;
+                }}
+                valueStream={this.state.valueStream}
+                onChange={this.handleChangeInStream}
+                onKeyPress={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    this.handleSubmitS();
                   }
-                  SESSION_STATUS={SESSION_STATUS}
-                  STREAM_STATUS={STREAM_STATUS}
-                  PRELOADER_URL={PRELOADER_URL}
-                  ROOM_EVENT={ROOM_EVENT}
-                  iOS={iOS}
-                  audioStreamStatus={this.state.audioStreamStatus}
-                  handleReadyStreamUnmount={this.handleReadyStreamUnmount}
-                  revertMic={() => this.setState({ audioStreamStatus: false })}
-                  forceMic={(callbackFunc) =>
-                    this.setState({ audioStreamStatus: true }, () =>
-                      callbackFunc()
-                    )
-                  }
-                />
-
-                <CloseWrapper>
-                  <CloseButton
-                    onClick={() => {
-                      this.setState({
-                        prepareToUnmountStream: true,
-                      });
-
-                      ls.set("streamInProgress", false);
-                    }}
-                  />
-                </CloseWrapper>
-                <StatusWrapper>
-                  <StatusButton status="LIVE" color={this.props.color} />
-                </StatusWrapper>
-
-                <TextFieldExtraS chatHeight={this.state.streamTextAreaHeight}>
-                  <StreamChat
-                    messages={this.state.messagesStream}
-                    isSafari={isSafari}
-                  />
-                  <InputLineStream>
-                    <MicrophoneInput
-                      rows="1"
-                      stream
-                      /*ref={item => {
-                      this.streamInput = item;
-                    }}*/
-                      setStreamInput={(item) => {
-                        this.streamInput = item;
-                      }}
-                      type="text"
-                      value={this.state.valueStream}
-                      onChange={this.handleChangeInStream}
-                      placeholder="Сообщение..."
-                      onKeyPress={(event) => {
-                        if (event.key === "Enter") {
-                          event.preventDefault();
-                          this.handleSubmitS();
-                        }
-                      }}
-                      height={this.state.streamTextAreaHeight}
-                      onKeyDown={() => this.textAreaAdjust(true)}
-                      handleSubmitS={this.handleSubmitS}
-                      iOS={iOS}
-                      audioStreamStatus={this.state.audioStreamStatus}
-                      audioToggle={() =>
-                        this.setState({
-                          audioStreamStatus: !this.state.audioStreamStatus,
-                        })
-                      }
-                      isHint={true}
-                    />
-                  </InputLineStream>
-                </TextFieldExtraS>
-              </VideoWrapperS>
+                }}
+                onKeyDown={() => this.textAreaAdjust(true)}
+                handleSubmitS={this.handleSubmitS}
+                audioToggle={() =>
+                  this.setState({
+                    audioStreamStatus: !this.state.audioStreamStatus,
+                  })
+                }
+              />
             </StreamWrapper>
           )}
           <VideoWrapper

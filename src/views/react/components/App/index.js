@@ -53,6 +53,7 @@ export class App extends React.Component {
   }
   componentDidMount() {
     //get amount of notifications
+    console.log("Button react component mounted successfully");
     document.querySelectorAll("button").forEach(function (item) {
       item.addEventListener("focus", function () {
         this.blur();

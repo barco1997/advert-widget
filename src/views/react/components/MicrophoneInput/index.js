@@ -227,22 +227,24 @@ class MicrophoneInput extends React.Component {
     this.handleHint = this.handleHint.bind(this);
   }
   handleMicro() {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(
-      () => {
-        this.setState({ isActive: !this.state.isActive, isShowHint: false });
-        this.props.audioToggle();
-      },
-      () => {
-        //console.log("record failed");
-        !mediaType.desktop
-          ? alert(
-              "Для использования микрофона во время прямой трансляции, разрешите доступ к микрофону в левом верхнем углу браузера и/или проверьте его наличие на вашем устройстве и перезагрузите страницу"
-            )
-          : alert(
-              "Для использования микрофона во время прямой трансляции, перезагрузите страницу и разрешите доступ к микрофону"
-            );
-      }
-    );
+    if (this.props.enabled) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(
+        () => {
+          this.setState({ isActive: !this.state.isActive, isShowHint: false });
+          this.props.audioToggle();
+        },
+        () => {
+          //console.log("record failed");
+          !mediaType.desktop
+            ? alert(
+                "Для использования микрофона во время прямой трансляции, разрешите доступ к микрофону в левом верхнем углу браузера и/или проверьте его наличие на вашем устройстве и перезагрузите страницу"
+              )
+            : alert(
+                "Для использования микрофона во время прямой трансляции, перезагрузите страницу и разрешите доступ к микрофону"
+              );
+        }
+      );
+    }
   }
 
   handleHint(e) {

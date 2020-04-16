@@ -29,7 +29,7 @@ function app(window) {
     for (var i = 0; i < queue.length; i++) {
       if (queue[i][0].toLowerCase() == "init") {
         configurations = extendObject(configurations, queue[i][1]);
-        //console.log("JS-Widget started", configurations);
+        console.log("JS-Widget started", configurations);
       } else apiHandler(queue[i][0], queue[i][1]);
     }
   }
@@ -64,6 +64,7 @@ function apiHandler(api, params) {
       axios
         .get(url2)
         .then(function (response) {
+          console.log("Subscriptions info:", response.data);
           if (
             response.data.some(
               (subscription) => subscription.status === "ACTIVE"
@@ -77,16 +78,19 @@ function apiHandler(api, params) {
                 };
               });
             }
+
             if (openChat) {
               updatedParams.initialButtonId = url.searchParams.get("buttonId");
+              console.log("Starting button with parameters:", updatedParams);
               react(updatedParams, true, buttons);
             } else {
+              console.log("Starting button with parameters:", updatedParams);
               react(updatedParams, false, buttons);
             }
           }
         })
         .catch(function (error) {
-          //console.log(error);
+          console.log(error);
         });
 
       break;
