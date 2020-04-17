@@ -32,6 +32,7 @@ import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
 import Game from "../Game";
 import GetDetailsView from "../GetDetailsView";
 import NoStreamerComponent from "../NoStreamerComponent";
+import Loader from "../Loader";
 
 const uuidv1 = require("uuid/v1");
 let currentUrl = window.location.href;
@@ -557,6 +558,14 @@ const EntryWrap = styled.div`
   }
 `;
 
+const Center = styled.div`
+  &&& {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+`;
+
 const ImageMic = styled.div`
   &&& {
     user-select: none !important;
@@ -781,6 +790,7 @@ export class Chat extends React.Component {
       emailRequested: "",
       phoneRequested: "",
       prepareToUnmountStream: false,
+      isMessagesLoading: true,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1117,6 +1127,7 @@ export class Chat extends React.Component {
     ) {
       if (ls.get("dialogId")) {
         if (this.state.firstTimeFlag) {
+          this.setState({ isMessagesLoading: true });
           axios
             .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
             .then(function (response) {
@@ -1254,6 +1265,7 @@ export class Chat extends React.Component {
       startedFlag: flag ? true : false,
       existingChats: [],
       awaitingConnection: flagOne ? true : false,
+      isMessagesLoading: false,
     });
   }
   handleSubmitS() {
@@ -1605,212 +1617,235 @@ export class Chat extends React.Component {
               visible={!this.state.streamFlag}
               height={this.props.innerHeight}
             >
-              {this.state.gameStarted ? (
-                <Game
-                  height={this.props.innerHeight}
-                  width={496}
-                  stopGame={this.stopGame}
-                  color={this.props.color}
-                  countdown={this.props.countdown}
-                />
+              {this.state.isMessagesLoading ? (
+                <Center>
+                  <Loader loadingFlag={this.state.isMessagesLoading} />
+                </Center>
               ) : (
                 <Fragment>
-                  <CloseWrapperA color={this.props.color}>
-                    <DisclaimerWrapperMobile>
-                      <Disclaimer />
-                    </DisclaimerWrapperMobile>
-                    <CloseButton
-                      onClick={() => {
-                        this.setState({
-                          streamFlag: false,
-                        });
-                        //this.socket.emit("leaveStream", ls.get("userId"));
-                        if (
-                          !this.props.displayMainRequest &&
-                          !this.props.emailSentFlag
-                        ) {
-                          this.props.showMainRequest();
-                        } else {
-                          //this.props.closeMainRequest();
-                          this.props.destroy();
-                        }
-                        /*this.live.pause();*/
-                        if (this.loadedVideo.getInternalPlayer()) {
-                          this.loadedVideo.getInternalPlayer().pause();
-                        }
-                      }}
-                    />
-                  </CloseWrapperA>
-                  {this.props.displayMainRequest ? (
-                    <LeaveEmail
-                      sendEmailDetails={this.props.sendEmailDetails}
-                      destroy={this.props.destroy}
-                      notificationPermission={this.props.notificationPermission}
+                  {this.state.gameStarted ? (
+                    <Game
+                      height={this.props.innerHeight}
+                      width={496}
+                      stopGame={this.stopGame}
                       color={this.props.color}
+                      countdown={this.props.countdown}
                     />
                   ) : (
                     <Fragment>
-                      <JsChatMessageContainer
-                        tHeight={this.state.textAreaHeight}
-                      >
+                      <CloseWrapperA color={this.props.color}>
+                        <DisclaimerWrapperMobile>
+                          <Disclaimer />
+                        </DisclaimerWrapperMobile>
+                        <CloseButton
+                          onClick={() => {
+                            this.setState({
+                              streamFlag: false,
+                            });
+                            //this.socket.emit("leaveStream", ls.get("userId"));
+                            if (
+                              !this.props.displayMainRequest &&
+                              !this.props.emailSentFlag
+                            ) {
+                              this.props.showMainRequest();
+                            } else {
+                              //this.props.closeMainRequest();
+                              this.props.destroy();
+                            }
+                            /*this.live.pause();*/
+                            if (this.loadedVideo.getInternalPlayer()) {
+                              this.loadedVideo.getInternalPlayer().pause();
+                            }
+                          }}
+                        />
+                      </CloseWrapperA>
+                      {this.props.displayMainRequest ? (
+                        <LeaveEmail
+                          sendEmailDetails={this.props.sendEmailDetails}
+                          destroy={this.props.destroy}
+                          notificationPermission={
+                            this.props.notificationPermission
+                          }
+                          color={this.props.color}
+                        />
+                      ) : (
                         <Fragment>
-                          {!this.state.messages ||
-                          (this.state.messages.length < 2 &&
-                            this.props.noStreamerFlag) ||
-                          this.state.messages.length == 0 ? (
-                            <React.Fragment>
-                              {!this.props.noStreamerFlag ? (
-                                <GetDetailsView
-                                  handleChange={this.handleChangeInput}
-                                  name={this.state.nameRequested}
-                                  phone={this.state.phoneRequested}
-                                  email={this.state.emailRequested}
-                                  greetingTitle={this.props.greetingTitle}
-                                  greetingText={this.props.greetingText}
-                                  requestedData={this.props.askedUserData}
-                                  color={this.props.color}
-                                />
+                          <JsChatMessageContainer
+                            tHeight={this.state.textAreaHeight}
+                          >
+                            <Fragment>
+                              {!this.state.messages ||
+                              (this.state.messages.length < 2 &&
+                                this.props.noStreamerFlag) ||
+                              this.state.messages.length == 0 ? (
+                                <React.Fragment>
+                                  {!this.props.noStreamerFlag ? (
+                                    <GetDetailsView
+                                      handleChange={this.handleChangeInput}
+                                      name={this.state.nameRequested}
+                                      phone={this.state.phoneRequested}
+                                      email={this.state.emailRequested}
+                                      greetingTitle={this.props.greetingTitle}
+                                      greetingText={this.props.greetingText}
+                                      requestedData={this.props.askedUserData}
+                                      color={this.props.color}
+                                    />
+                                  ) : (
+                                    <NoStreamerComponent
+                                      receivedDetails={ls.get("noStreamerFlag")}
+                                      color={this.props.color}
+                                      notificationPermission={
+                                        this.props.notificationPermission
+                                      }
+                                      sendEmailDetails={
+                                        this.props.sendEmailDetails
+                                      }
+                                      emailSentFlag={this.props.emailSentFlag}
+                                    />
+                                  )}
+                                </React.Fragment>
                               ) : (
-                                <NoStreamerComponent
-                                  receivedDetails={ls.get("noStreamerFlag")}
+                                <MessageArea
+                                  messages={this.state.messages}
+                                  awaitingConnection={
+                                    this.state.awaitingConnection
+                                  }
+                                  setFlv={this.handleStreamClick}
+                                  handlePhoto={this.handlePhoto}
+                                  handleVideo={this.handleVideo}
+                                  handleStreamToVideo={this.handleStreamToVideo}
+                                  strVideo={this.state.streamToVideo}
+                                  manipulateVideoId={
+                                    this.state.videoManipulateId
+                                  }
+                                  ifPauseIcon={this.state.ifPauseIcon}
+                                  existingChats={this.state.existingChats}
+                                  transactionLimit={this.state.transactionLimit}
+                                  sentHistory={this.state.sentHistory}
+                                  waitingText={this.props.waitingText}
+                                  waitingTitle={this.props.waitingTitle}
+                                  startGame={this.startGame}
                                   color={this.props.color}
+                                  miniGame={this.props.miniGame}
+                                  timerFlag={this.props.timerFlag}
+                                  sendEmailDetails={this.props.sendEmailDetails}
+                                  displayMainRequest={
+                                    this.props.displayMainRequest
+                                  }
                                   notificationPermission={
                                     this.props.notificationPermission
                                   }
-                                  sendEmailDetails={this.props.sendEmailDetails}
                                   emailSentFlag={this.props.emailSentFlag}
+                                  countdown={this.props.countdown}
                                 />
                               )}
-                            </React.Fragment>
-                          ) : (
-                            <MessageArea
-                              messages={this.state.messages}
-                              awaitingConnection={this.state.awaitingConnection}
-                              setFlv={this.handleStreamClick}
-                              handlePhoto={this.handlePhoto}
-                              handleVideo={this.handleVideo}
-                              handleStreamToVideo={this.handleStreamToVideo}
-                              strVideo={this.state.streamToVideo}
-                              manipulateVideoId={this.state.videoManipulateId}
-                              ifPauseIcon={this.state.ifPauseIcon}
-                              existingChats={this.state.existingChats}
-                              transactionLimit={this.state.transactionLimit}
-                              sentHistory={this.state.sentHistory}
-                              waitingText={this.props.waitingText}
-                              waitingTitle={this.props.waitingTitle}
-                              startGame={this.startGame}
-                              color={this.props.color}
-                              miniGame={this.props.miniGame}
-                              timerFlag={this.props.timerFlag}
-                              sendEmailDetails={this.props.sendEmailDetails}
-                              displayMainRequest={this.props.displayMainRequest}
-                              notificationPermission={
-                                this.props.notificationPermission
-                              }
-                              emailSentFlag={this.props.emailSentFlag}
-                              countdown={this.props.countdown}
-                            />
-                          )}
-                        </Fragment>
-                      </JsChatMessageContainer>
-                      <CustomForm>
-                        <div style={{ flexDirection: "column  !important" }}>
-                          <CartTextFieldExtra>
-                            <CartTextFieldRelative>
-                              <InputFieldA
-                                rows="1"
-                                ref={(item) => {
-                                  this.mainInput = item;
-                                }}
-                                onFocus={() => {
-                                  //this.handleAndroidKeyboard(true);
-                                }}
-                                onBlur={() => {
-                                  //this.handleAndroidKeyboard(false);
-                                }}
-                                height={this.state.textAreaHeight}
-                                onKeyDown={() => this.textAreaAdjust(false)}
-                                type="text"
-                                value={this.state.value}
-                                onChange={this.handleChange}
-                                blocked={this.state.awaitingConnection}
-                                disabled={
-                                  this.state.awaitingConnection ||
-                                  (this.props.noStreamerFlag &&
-                                    !this.props.emailSentFlag &&
-                                    (!("Notification" in window) ||
-                                      Notification.permission !== "granted"))
-                                }
-                                placeholder={
-                                  this.state.ifTimer
-                                    ? ""
-                                    : this.state.awaitingConnection
-                                    ? "Для продолжения диалога дождитесь ответа"
-                                    : "Спросите что-нибудь ;)"
-                                }
-                                onKeyPress={(event) => {
-                                  if (event.key === "Enter") {
-                                    event.preventDefault();
-                                    this.handleSubmit(event);
-                                  }
-                                }}
-                              />
-                              {this.state.ifTimer && (
-                                <AudioTimer>
-                                  <TimerCircle />
-                                  <Timer>
-                                    <StandaloneTimer
-                                      setDuration={this.setAudioDuration}
-                                    />
-                                  </Timer>
-                                </AudioTimer>
-                              )}
-                              {this.state.value.length < 1 &&
-                                this.state.messages &&
-                                this.state.messages.length > 1 && (
-                                  <MicWrap
-                                    onMouseDown={this.handleDown}
-                                    onTouchStart={this.handleDown}
-                                    onMouseUp={this.handleUp}
-                                    onTouchEnd={this.handleUp}
-                                    tabIndex="0"
-                                    isActive={this.state.ifTimer}
-                                    color={this.props.color}
-                                  >
-                                    <ImageMic
-                                      src={`${staticUrl}/static/images/mic.png`}
-                                    />
-                                  </MicWrap>
-                                )}
-                              {!this.state.messages ||
-                                (this.state.messages.length == 0 &&
-                                  !ls.get("noStreamerFlag") && (
-                                    <EntryWrap>
-                                      <EntryInfo
-                                        noStreamerFlag={
-                                          this.props.noStreamerFlag &&
-                                          !this.props.emailSentFlag &&
-                                          (!("Notification" in window) ||
-                                            Notification.permission !==
-                                              "granted")
-                                        }
-                                      />
-                                    </EntryWrap>
-                                  ))}
-                              {this.state.value.length > 0 && (
-                                <SendIconWrap
-                                  onClick={(event) => this.handleSubmit(event)}
-                                  color={this.props.color}
-                                >
-                                  <ImageSend
-                                    src={`${staticUrl}/static/images/Subtract.png`}
+                            </Fragment>
+                          </JsChatMessageContainer>
+                          <CustomForm>
+                            <div
+                              style={{ flexDirection: "column  !important" }}
+                            >
+                              <CartTextFieldExtra>
+                                <CartTextFieldRelative>
+                                  <InputFieldA
+                                    rows="1"
+                                    ref={(item) => {
+                                      this.mainInput = item;
+                                    }}
+                                    onFocus={() => {
+                                      //this.handleAndroidKeyboard(true);
+                                    }}
+                                    onBlur={() => {
+                                      //this.handleAndroidKeyboard(false);
+                                    }}
+                                    height={this.state.textAreaHeight}
+                                    onKeyDown={() => this.textAreaAdjust(false)}
+                                    type="text"
+                                    value={this.state.value}
+                                    onChange={this.handleChange}
+                                    blocked={this.state.awaitingConnection}
+                                    disabled={
+                                      this.state.awaitingConnection ||
+                                      (this.props.noStreamerFlag &&
+                                        !this.props.emailSentFlag &&
+                                        (!("Notification" in window) ||
+                                          Notification.permission !==
+                                            "granted"))
+                                    }
+                                    placeholder={
+                                      this.state.ifTimer
+                                        ? ""
+                                        : this.state.awaitingConnection
+                                        ? "Для продолжения диалога дождитесь ответа"
+                                        : "Спросите что-нибудь ;)"
+                                    }
+                                    onKeyPress={(event) => {
+                                      if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        this.handleSubmit(event);
+                                      }
+                                    }}
                                   />
-                                </SendIconWrap>
-                              )}
-                            </CartTextFieldRelative>
-                          </CartTextFieldExtra>
-                        </div>
-                      </CustomForm>
+                                  {this.state.ifTimer && (
+                                    <AudioTimer>
+                                      <TimerCircle />
+                                      <Timer>
+                                        <StandaloneTimer
+                                          setDuration={this.setAudioDuration}
+                                        />
+                                      </Timer>
+                                    </AudioTimer>
+                                  )}
+                                  {this.state.value.length < 1 &&
+                                    this.state.messages &&
+                                    this.state.messages.length > 1 && (
+                                      <MicWrap
+                                        onMouseDown={this.handleDown}
+                                        onTouchStart={this.handleDown}
+                                        onMouseUp={this.handleUp}
+                                        onTouchEnd={this.handleUp}
+                                        tabIndex="0"
+                                        isActive={this.state.ifTimer}
+                                        color={this.props.color}
+                                      >
+                                        <ImageMic
+                                          src={`${staticUrl}/static/images/mic.png`}
+                                        />
+                                      </MicWrap>
+                                    )}
+                                  {!this.state.messages ||
+                                    (this.state.messages.length == 0 &&
+                                      !ls.get("noStreamerFlag") && (
+                                        <EntryWrap>
+                                          <EntryInfo
+                                            noStreamerFlag={
+                                              this.props.noStreamerFlag &&
+                                              !this.props.emailSentFlag &&
+                                              (!("Notification" in window) ||
+                                                Notification.permission !==
+                                                  "granted")
+                                            }
+                                          />
+                                        </EntryWrap>
+                                      ))}
+                                  {this.state.value.length > 0 && (
+                                    <SendIconWrap
+                                      onClick={(event) =>
+                                        this.handleSubmit(event)
+                                      }
+                                      color={this.props.color}
+                                    >
+                                      <ImageSend
+                                        src={`${staticUrl}/static/images/Subtract.png`}
+                                      />
+                                    </SendIconWrap>
+                                  )}
+                                </CartTextFieldRelative>
+                              </CartTextFieldExtra>
+                            </div>
+                          </CustomForm>
+                        </Fragment>
+                      )}
                     </Fragment>
                   )}
                 </Fragment>
@@ -1820,6 +1855,7 @@ export class Chat extends React.Component {
               <Disclaimer />
             </DisclaimerWrapper>
           </ChatWindowExpansion>
+
           {this.state.streamFlag && (
             <StreamWrapper
               height={this.props.innerHeight}
