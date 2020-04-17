@@ -285,6 +285,14 @@ export class Stream extends React.Component {
               .getElementById(stream.id())
               .setAttribute("playsinline", true);
           }
+          if (stream.isAudioMuted()) {
+            stream.unmuteAudio();
+            stream.muteAudio();
+            stream.unmuteAudio();
+          } else {
+            stream.muteAudio();
+            stream.unmuteAudio();
+          }
           self.setState({
             stream,
           });

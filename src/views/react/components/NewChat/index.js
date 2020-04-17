@@ -790,7 +790,7 @@ export class Chat extends React.Component {
       emailRequested: "",
       phoneRequested: "",
       prepareToUnmountStream: false,
-      isMessagesLoading: true,
+      isMessagesLoading: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -1127,7 +1127,7 @@ export class Chat extends React.Component {
     ) {
       if (ls.get("dialogId")) {
         if (this.state.firstTimeFlag) {
-          this.setState({ isMessagesLoading: true });
+          //this.setState({ isMessagesLoading: true });
           axios
             .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
             .then(function (response) {
