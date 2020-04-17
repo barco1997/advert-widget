@@ -192,7 +192,7 @@ export class Stream extends React.Component {
     this.state = {
       stream: null,
       connection: null,
-      recording: false,
+
       clientStream: null,
       room: null,
       initialRoom: null,
@@ -308,25 +308,21 @@ export class Stream extends React.Component {
         receiveAudio: false,
       })
       .on(this.props.STREAM_STATUS.FAILED, function (stream) {
-        //console.log("FAILED");
+        console.log("FAILED");
         //Flashphoner.releaseLocalMedia(this.localDisplay);
         //self.state.connection.disconnect();
-        if (self.state.clientStream) {
-          navigator.mediaDevices.getUserMedia(
-            { audio: true },
-            () => {
-              Flashphoner.releaseLocalMedia(this.localDisplay);
-              self.state.connection.disconnect();
-              self.props.handleReadyStreamUnmount();
-            },
-            () => {}
-          );
-        }
 
+        if (self.state.clientStream) {
+          Flashphoner.releaseLocalMedia(this.localDisplay);
+          //if (!self.props.visible) {
+          self.state.connection.disconnect();
+          self.props.handleReadyStreamUnmount();
+          //}
+        }
         //self.props.handleReadyStreamUnmount();
       })
       .on(this.props.STREAM_STATUS.PUBLISHING, function (stream) {
-        //console.log("SUCCESS", stream);
+        console.log("SUCCESS", stream);
         /*if (stream.isAudioMuted()) {
               stream.unmuteAudio();
             }*/
@@ -342,10 +338,12 @@ export class Stream extends React.Component {
         });
       })
       .on(this.props.STREAM_STATUS.UNPUBLISHED, function (stream) {
-        //console.log("UNP");
+        console.log("UNP");
         Flashphoner.releaseLocalMedia(this.localDisplay);
+        //if (!self.props.visible) {
         self.state.connection.disconnect();
         self.props.handleReadyStreamUnmount();
+        //}
       });
   }
   componentDidUpdate(prevProps) {
@@ -354,7 +352,6 @@ export class Stream extends React.Component {
       if (this.props.unmountFunction) {
         this.props.unmountFunction();
       }
-      self.setState({ recording: false });
 
       if (self.state.stream) {
         //console.log("mute video");
@@ -397,13 +394,27 @@ export class Stream extends React.Component {
         self.publishLocalMedia(self.state.initialRoom);
       }
     } else {
-      if (this.state.clientStream) {
-        if (this.state.clientStream.isAudioMuted()) {
-          this.state.clientStream.unmuteAudio();
-          //console.log("IOS, AUDIO ON");
-        } else {
-          this.state.clientStream.muteAudio();
-          //console.log("IOS, AUDIO OFF");
+      if (self.props.iOS) {
+        if (
+          self.state.clientStream &&
+          !self.state.clientStream.isAudioMuted()
+        ) {
+          //console.log("mute audio");
+          self.state.clientStream.muteAudio();
+          Flashphoner.releaseLocalMedia(this.localDisplay);
+          self.setState({
+            clientStream: null,
+          });
+        }
+      } else {
+        if (this.state.clientStream) {
+          if (this.state.clientStream.isAudioMuted()) {
+            this.state.clientStream.unmuteAudio();
+            //console.log("IOS, AUDIO ON");
+          } else {
+            this.state.clientStream.muteAudio();
+            //console.log("IOS, AUDIO OFF");
+          }
         }
       }
     }
