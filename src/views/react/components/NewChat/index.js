@@ -560,9 +560,16 @@ const EntryWrap = styled.div`
 
 const Center = styled.div`
   &&& {
+    z-index: 20002 !important;
+    position: fixed !important;
+    top: 0px !important;
+    bottom: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+    opacity: 0.4 !important;
     display: flex !important;
-    align-items: center !important;
     justify-content: center !important;
+    align-items: center !important;
   }
 `;
 
@@ -1127,7 +1134,7 @@ export class Chat extends React.Component {
     ) {
       if (ls.get("dialogId")) {
         if (this.state.firstTimeFlag) {
-          //this.setState({ isMessagesLoading: true });
+          this.setState({ isMessagesLoading: true });
           axios
             .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
             .then(function (response) {
@@ -1171,6 +1178,7 @@ export class Chat extends React.Component {
             })
             .catch(function (error) {
               //console.log(error);
+              this.setState({ isMessagesLoading: false });
             });
         }
       }
