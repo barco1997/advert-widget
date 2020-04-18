@@ -264,59 +264,60 @@ export class Button extends React.Component {
 
   notifyMe(message, href, buttonId) {
     // Проверка поддержки браузером уведомлений
-
-    let options = {
-      icon: `${staticUrl}/static/images/favicon.png`,
-      data: href,
-    };
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
-    }
-    // Проверка разрешения на отправку уведомлений
-    else if (Notification.permission === "granted") {
-      // Если разрешено, то создаем уведомление
-      var notification = new Notification(message, options);
-
-      notification.onclick = function (event) {
-        var new_window = window.open("", "_blank"); //open empty window(tab)
-        if (event.target.data.includes("?open=true")) {
-          let str = event.target.data;
-          str = str.substring(0, str.indexOf("?open"));
-
-          new_window.location.href = str.concat(
-            "?open=true&buttonId=",
-            buttonId
-          );
-        } else {
-          new_window.location.href = event.target.data.concat(
-            "?open=true&buttonId=",
-            buttonId
-          );
-        } //set url of newly created window(tab) and focus
-        notification.close();
+    if (!iOS) {
+      let options = {
+        icon: `${staticUrl}/static/images/favicon.png`,
+        data: href,
       };
-    }
-    // В противном случае, запрашиваем разрешение
-    else if (Notification.permission !== "denied") {
-      Notification.requestPermission(function (permission) {
-        // Если пользователь разрешил, то создаем уведомление
-        if (permission === "granted") {
-          var notification = new Notification(message, options);
-          notification.onclick = function (event) {
-            var new_window = window.open("", "_blank"); //open empty window(tab)
-            if (event.target.data.includes("?open=true")) {
-              new_window.location.href = event.target.data;
-            } else {
-              new_window.location.href = event.target.data.concat(
-                "?open=true&buttonId=",
-                buttonId
-              );
-            }
-            //set url of newly created window(tab) and focus
-            notification.close();
-          };
-        }
-      });
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+      }
+      // Проверка разрешения на отправку уведомлений
+      else if (Notification.permission === "granted") {
+        // Если разрешено, то создаем уведомление
+        var notification = new Notification(message, options);
+
+        notification.onclick = function (event) {
+          var new_window = window.open("", "_blank"); //open empty window(tab)
+          if (event.target.data.includes("?open=true")) {
+            let str = event.target.data;
+            str = str.substring(0, str.indexOf("?open"));
+
+            new_window.location.href = str.concat(
+              "?open=true&buttonId=",
+              buttonId
+            );
+          } else {
+            new_window.location.href = event.target.data.concat(
+              "?open=true&buttonId=",
+              buttonId
+            );
+          } //set url of newly created window(tab) and focus
+          notification.close();
+        };
+      }
+      // В противном случае, запрашиваем разрешение
+      else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
+          // Если пользователь разрешил, то создаем уведомление
+          if (permission === "granted") {
+            var notification = new Notification(message, options);
+            notification.onclick = function (event) {
+              var new_window = window.open("", "_blank"); //open empty window(tab)
+              if (event.target.data.includes("?open=true")) {
+                new_window.location.href = event.target.data;
+              } else {
+                new_window.location.href = event.target.data.concat(
+                  "?open=true&buttonId=",
+                  buttonId
+                );
+              }
+              //set url of newly created window(tab) and focus
+              notification.close();
+            };
+          }
+        });
+      }
     }
   }
 
