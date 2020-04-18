@@ -156,6 +156,8 @@ export class Button extends React.Component {
     this.closeMainRequest = this.closeMainRequest.bind(this);
     this.showMainRequest = this.showMainRequest.bind(this);
     this.sendEmailDetails = this.sendEmailDetails.bind(this);
+    this.handleTabFocus = this.handleTabFocus.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
 
   closeRequest() {
@@ -212,13 +214,24 @@ export class Button extends React.Component {
     }
   }
 
+  handleTabFocus() {
+    if (this.state.initializeChat && this.state.displayChat) {
+      this.socket.emit("readMessage", ls.get("dialogId"));
+      //console.log("SUCCESSFULLY READ");
+    }
+  }
+
+  handleResize() {
+    this.setState({ innerHeight: window.innerHeight });
+  }
+
   componentDidMount() {
     let self = this;
     this.socket.emit("isButtonAvailable", this.props.buttonId);
 
-    window.addEventListener("resize", () => {
-      this.setState({ innerHeight: window.innerHeight });
-    });
+    window.addEventListener("resize", this.handleResize);
+
+    window.addEventListener("focus", this.handleTabFocus);
 
     if (this.props.eyezonGlobal)
       this.props.eyezonGlobal.function = (buttonId, title) =>
@@ -471,6 +484,8 @@ export class Button extends React.Component {
           !self.state.displayChat
         ) {
           this.notificationSound.play();
+        } else {
+          self.socket.emit("readMessage", ls.get("dialogId"));
         }
 
         self.props.incrementNotifications();
@@ -478,7 +493,6 @@ export class Button extends React.Component {
         /***Feature****** */
         if (self.state.initializeChat && self.state.displayChat) {
           self.props.decrementNotifications();
-          self.socket.emit("readMessage", ls.get("dialogId"));
         }
         /******* */
         if (
@@ -561,6 +575,11 @@ export class Button extends React.Component {
         });
       });
     });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("focus", this.handleTabFocus);
+    window.removeEventListener("resize", this.handleResize);
   }
 
   render() {

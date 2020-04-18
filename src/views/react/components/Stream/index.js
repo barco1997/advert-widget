@@ -316,7 +316,7 @@ export class Stream extends React.Component {
         receiveAudio: false,
       })
       .on(this.props.STREAM_STATUS.FAILED, function (stream) {
-        console.log("FAILED");
+        //console.log("FAILED");
         //Flashphoner.releaseLocalMedia(this.localDisplay);
         //self.state.connection.disconnect();
 
@@ -330,7 +330,7 @@ export class Stream extends React.Component {
         //self.props.handleReadyStreamUnmount();
       })
       .on(this.props.STREAM_STATUS.PUBLISHING, function (stream) {
-        console.log("SUCCESS", stream);
+        //console.log("SUCCESS", stream);
         /*if (stream.isAudioMuted()) {
               stream.unmuteAudio();
             }*/
@@ -346,7 +346,7 @@ export class Stream extends React.Component {
         });
       })
       .on(this.props.STREAM_STATUS.UNPUBLISHED, function (stream) {
-        console.log("UNP");
+        //console.log("UNP");
         Flashphoner.releaseLocalMedia(this.localDisplay);
 
         if (!self.props.visible) {
