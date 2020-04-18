@@ -348,10 +348,13 @@ export class Stream extends React.Component {
       .on(this.props.STREAM_STATUS.UNPUBLISHED, function (stream) {
         console.log("UNP");
         Flashphoner.releaseLocalMedia(this.localDisplay);
-        //if (!self.props.visible) {
-        self.state.connection.disconnect();
-        self.props.handleReadyStreamUnmount();
-        //}
+
+        if (!self.props.visible) {
+          self.state.connection.disconnect();
+          self.props.handleReadyStreamUnmount();
+        } else {
+          self.setState({ clientStream: null });
+        }
       });
   }
   componentDidUpdate(prevProps) {
@@ -409,10 +412,11 @@ export class Stream extends React.Component {
         ) {
           //console.log("mute audio");
           self.state.clientStream.muteAudio();
-          Flashphoner.releaseLocalMedia(this.localDisplay);
+          self.state.clientStream.stop();
+          /*Flashphoner.releaseLocalMedia(this.localDisplay);
           self.setState({
             clientStream: null,
-          });
+          });*/
         }
       } else {
         if (this.state.clientStream) {

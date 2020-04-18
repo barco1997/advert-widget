@@ -1043,7 +1043,7 @@ export class Chat extends React.Component {
       });
       this.socket.on("received", (data) => {
         ls.remove("noStreamerFlag");
-        self.socket.emit("readMessage", ls.get("dialogId"));
+
         if (self.state.gameStarted) {
           self.stopGame();
         }

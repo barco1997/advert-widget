@@ -465,13 +465,20 @@ export class Button extends React.Component {
     this.socket.on("received", (data) => {
       /**feature */
       if (data.user !== ls.get("userId")) {
-        this.notificationSound.play();
+        if (
+          document.hidden ||
+          !self.state.initializeChat ||
+          !self.state.displayChat
+        ) {
+          this.notificationSound.play();
+        }
 
         self.props.incrementNotifications();
 
         /***Feature****** */
         if (self.state.initializeChat && self.state.displayChat) {
           self.props.decrementNotifications();
+          self.socket.emit("readMessage", ls.get("dialogId"));
         }
         /******* */
         if (
