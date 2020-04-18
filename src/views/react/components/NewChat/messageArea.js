@@ -90,7 +90,7 @@ const Result = styled.div`
     font-weight: bold !important;
     font-size: 48px !important;
     line-height: 61px !important;
-
+    min-height: 61px !important;
     color: #000000 !important;
   }
 `;
@@ -117,9 +117,9 @@ const StartGameWrapper = styled.div`
 
 const ButtonWrap = styled.div`
   &&& {
-    margin-left: ${props => (props.noTimer ? "0px" : "20px")} !important;
+    margin-left: ${(props) => (props.noTimer ? "0px" : "20px")} !important;
     margin-bottom: 12px !important;
-    margin-top: ${props => (props.noTimer ? "10px" : "0px")} !important;
+    margin-top: ${(props) => (props.noTimer ? "10px" : "0px")} !important;
   }
 `;
 
@@ -132,7 +132,7 @@ export class MessageArea extends React.Component {
       timestamp: ls.get("awaitTmp") || null,
       streamIndexVal: [],
       timerExceeded: false,
-      success: false
+      success: false,
     };
     this.messageRef = [];
     this.setItems = this.setItems.bind(this);
@@ -142,7 +142,7 @@ export class MessageArea extends React.Component {
     let propsToCome = nextProps;
     if (nextProps.strVideo !== null) {
       let indexOfCurrentVideo1 = nextProps.messages.findIndex(
-        a => a.id === nextProps.strVideo
+        (a) => a.id === nextProps.strVideo
       );
       propsToCome.messages[indexOfCurrentVideo1].type = "video";
 
@@ -150,7 +150,7 @@ export class MessageArea extends React.Component {
     }
     if (nextProps.manipulateVideoId) {
       let indexOfCurrentVideo = nextProps.messages.findIndex(
-        message => message.id === nextProps.manipulateVideoId
+        (message) => message.id === nextProps.manipulateVideoId
       );
       propsToCome.messages[indexOfCurrentVideo].ifPauseIcon =
         nextProps.ifPauseIcon;
@@ -161,7 +161,7 @@ export class MessageArea extends React.Component {
       !this.state.timerExceeded
     ) {
       this.setState({
-        success: true
+        success: true,
       });
     }
 
@@ -171,7 +171,7 @@ export class MessageArea extends React.Component {
   setItems(props) {
     this.setState({
       messages: props.messages,
-      awaitingConnection: props.awaitingConnection
+      awaitingConnection: props.awaitingConnection,
     });
   }
 
@@ -190,7 +190,7 @@ export class MessageArea extends React.Component {
     if (!this.state.timestamp) {
       const tmp = moment().toISOString();
       this.setState({
-        timestamp: tmp
+        timestamp: tmp,
       });
       ls.set("awaitTmp", tmp);
     }
@@ -206,14 +206,14 @@ export class MessageArea extends React.Component {
       !this.state.timerExceeded && lessThan2 && !this.state.success;
     return (
       <MessageContainer
-        ref={c => {
+        ref={(c) => {
           this.messageList = c;
         }}
       >
         {this.state.messages[0] && (
           <Response
             key={this.state.messages[0].id || uuidv1()}
-            ref={element => {
+            ref={(element) => {
               this.messageRef[this.state.messages[0].id] = element;
             }}
             title={this.state.messages[0].text}
@@ -249,7 +249,7 @@ export class MessageArea extends React.Component {
                   limit={this.props.countdown / 1000}
                   exceedFunc={() => {
                     this.setState({
-                      timerExceeded: true
+                      timerExceeded: true,
                     });
                   }}
                   startSec={
@@ -306,7 +306,7 @@ export class MessageArea extends React.Component {
           .map((message, index) => (
             <Response
               key={message.id || uuidv1()}
-              ref={element => {
+              ref={(element) => {
                 this.messageRef[message.id] = element;
               }}
               title={message.text}
