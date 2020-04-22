@@ -5,6 +5,7 @@ import BasicButton from "../BasicButton";
 import WhiteButton from "../WhiteButton";
 import { media } from "../../../../utils/media";
 import BlurredButton from "../BlurredButton";
+import MessagesTemplate from "../MessagesTemplate";
 
 const TextWrap = styled.div`
   &&& {
@@ -64,11 +65,11 @@ const InfoBlock = styled.div`
     justify-content: flex-end !important;
     background: ${(props) =>
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
-    height: 370px !important;
+    height: 330px !important;
     width: 100% !important;
     ${media.phone`
       height: ${(props) =>
-        props.isTall ? "370px !important" : "300px !important"};
+        props.isTall ? "330px !important" : "300px !important"};
   `};
   }
 `;
@@ -178,6 +179,7 @@ export class GetDetailsView extends React.Component {
             </FieldWrapper>
           </InfoBlock>
         </MainBlock>
+        <MessagesTemplate color={this.props.color || "#ff2d55"} />
       </TextWrap>
     );
   }
