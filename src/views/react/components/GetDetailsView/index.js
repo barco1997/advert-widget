@@ -66,7 +66,7 @@ const InfoBlock = styled.div`
     justify-content: flex-end !important;
     background: ${(props) =>
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
-    height: 270px !important;
+    height: 370px !important;
     width: 100% !important;
     ${media.phone`
       height: ${(props) =>
@@ -92,6 +92,9 @@ const InfoBlockHeader = styled.div`
     /* Primary / white - background */
     margin: 0px 24px !important;
     color: #ffffff !important;
+    ${media.phone`
+      font-size: 18px !important;
+  `};
   }
 `;
 
@@ -110,6 +113,9 @@ const InfoBlockText = styled.div`
 
     color: #ffffff !important;
     margin: 8px 24px 16px 24px !important;
+    ${media.phone`
+      font-size: 12px !important;
+  `};
   }
 `;
 
