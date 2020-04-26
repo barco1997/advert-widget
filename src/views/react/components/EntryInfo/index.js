@@ -35,7 +35,7 @@ export class EntryInfo extends React.Component {
         <Text noStreamerFlag={noStreamerFlag}>
           {noStreamerFlag
             ? "Выберите способ получения уведомления"
-            : "Опишите полностью ваш вопрос в одном сообщении"}
+            : "Сформулируйте свой вопрос в одном сообщении!"}
         </Text>
       </Wrapper>
     );

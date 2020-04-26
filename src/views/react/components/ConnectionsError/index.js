@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { media } from "../../../../utils/media";
 
 // import Image from "./error.svg";
 
@@ -36,6 +37,9 @@ const ErrorHeader = styled.h3`
     margin-top: 5px !important;
     margin-bottom: 12px !important;
     padding: 0 !important;
+    ${media.phone`
+    font-size: 20px !important;
+     `};
   }
 `;
 
@@ -47,9 +51,13 @@ const ErrorDescription = styled.p`
     font-size: 14px !important;
     line-height: 28px !important;
     text-align: center !important;
+    line-height: 170% !important;
 
     margin: 0 !important;
     margin-bottom: 22px !important;
+    ${media.phone`
+    font-size: 12px !important;
+     `};
   }
 `;
 
@@ -61,7 +69,7 @@ const RefreshButton = styled.button`
       outline: none !important;
     }
 
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     color: #ffffff !important;
 
     padding: 12px 30px !important;

@@ -445,7 +445,7 @@ const ChatWrapper = styled.div`
 
 const InputFieldA = styled.textarea`
   &&& {
-    height: ${(props) => (props.height ? props.height : "63px")} !important;
+    height: ${(props) => (props.height ? props.height : "50px")} !important;
     color: ${(props) => (props.stream ? "#ffffff" : "black")} !important;
     flex: 1 !important;
 
@@ -483,6 +483,11 @@ const InputFieldA = styled.textarea`
     ${media.desktop`
       font-size: 16px !important;
       height: ${(props) => (props.height ? props.height : "63px")} !important;
+  `};
+    ${media.phone`
+      font-size: 12px !important;
+      padding: ${(props) =>
+        props.stream ? "13px 24px" : "15px 24px"} !important;
       
   `};
   }
@@ -533,8 +538,8 @@ const MicWrap = styled.div`
 const SendIconWrap = styled.div`
   &&& {
     position: absolute !important;
-    width: 36px !important;
-    height: 36px !important;
+    width: 27px !important;
+    height: 27px !important;
     top: calc(50% - 21px) !important;
     right: 18px !important;
     display: flex !important;
@@ -783,7 +788,7 @@ export class Chat extends React.Component {
       ifTimer: false,
       audioDuration: 0,
       shouldTimerStop: false,
-      textAreaHeight: "68px",
+      textAreaHeight: "50px",
       streamTextAreaHeight: "46px",
       isRecording: false,
       blobURL: "",

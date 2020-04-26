@@ -66,11 +66,14 @@ const InfoBlock = styled.div`
     justify-content: flex-end !important;
     background: ${(props) =>
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
-    height: 370px !important;
+    height: 330px !important;
     width: 100% !important;
+    ${media.tablet`
+    height: 370px !important;
+  `};
     ${media.phone`
       height: ${(props) =>
-        props.isTall ? "260px !important" : "260px !important"};
+        props.isTall ? "260px !important" : "230px !important"};
       
   `};
   }
@@ -81,7 +84,7 @@ const InfoBlockHeader = styled.div`
     font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: bold !important;
-    font-size: 18px !important;
+    font-size: 24px !important;
     line-height: 140% !important;
     /* identical to box height, or 34px */
 
@@ -104,7 +107,7 @@ const InfoBlockText = styled.div`
 
     font-style: normal !important;
     font-weight: normal !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
     line-height: 170% !important;
     max-width: 380px !important;
     /* or 24px */
@@ -112,9 +115,10 @@ const InfoBlockText = styled.div`
     /* Primary / white - background */
 
     color: #ffffff !important;
-    margin: 8px 24px 16px 24px !important;
+    margin: 16px 24px !important;
     ${media.phone`
       font-size: 12px !important;
+      margin: 8px 24px 16px 24px !important;
   `};
   }
 `;
@@ -123,9 +127,9 @@ export class GetDetailsView extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      isName: this.props.requestedData.includes("NAME"),
-      isEmail: this.props.requestedData.includes("EMAIL"),
-      isPhone: this.props.requestedData.includes("PHONE"),
+      isName: !this.props.requestedData.includes("NAME"),
+      isEmail: !this.props.requestedData.includes("EMAIL"),
+      isPhone: !this.props.requestedData.includes("PHONE"),
     };
   }
 
