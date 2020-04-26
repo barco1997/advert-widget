@@ -3,9 +3,9 @@ import styled from "styled-components";
 
 const Wrapper = styled.input`
   &&& {
-    max-width: ${props =>
+    max-width: ${(props) =>
       props.maxWidth ? props.maxWidth : "380px"} !important;
-    height: ${props => (props.height ? props.height : "40px")} !important;
+    height: ${(props) => (props.height ? props.height : "40px")} !important;
     width: 100% !important;
     font-family: "Montserrat" !important;
     font-size: 14px !important;
@@ -13,13 +13,13 @@ const Wrapper = styled.input`
     color: #000000 !important;
     padding-left: 12px !important;
     background: #ffffff !important;
-    border: ${props =>
+    border: ${(props) =>
       props.noOutline ? "0px" : "1px solid #E5E5E5"} !important;
 
     box-sizing: border-box !important;
-    border-radius: ${props =>
+    border-radius: ${(props) =>
       props.borderRadius ? props.borderRadius : "5px"} !important;
-    margin-bottom: ${props => (props.extraMargin ? "4px" : "0px")} !important;
+    margin-bottom: ${(props) => (props.extraMargin ? "4px" : "0px")} !important;
     &::-webkit-input-placeholder {
       color: rgba(0, 0, 0, 0.2) !important;
     }
@@ -58,7 +58,13 @@ export class FormField extends React.Component {
     return (
       <ExtraWrapper>
         <Wrapper
-          type={this.props.password ? "password" : "field"}
+          type={
+            this.props.password
+              ? "password"
+              : this.props.email
+              ? "email"
+              : "field"
+          }
           maxWidth={this.props.maxWidth}
           placeholder={this.props.placeholder}
           height={this.props.height}

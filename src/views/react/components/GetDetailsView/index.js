@@ -127,9 +127,9 @@ export class GetDetailsView extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      isName: !this.props.requestedData.includes("NAME"),
-      isEmail: !this.props.requestedData.includes("EMAIL"),
-      isPhone: !this.props.requestedData.includes("PHONE"),
+      isName: this.props.requestedData.includes("NAME"),
+      isEmail: this.props.requestedData.includes("EMAIL"),
+      isPhone: this.props.requestedData.includes("PHONE"),
     };
   }
 
@@ -150,6 +150,7 @@ export class GetDetailsView extends React.Component {
                 <PositionWrapper>
                   <FormField
                     placeholder="Адрес электронной почты"
+                    email={true}
                     value={this.props.email}
                     onChange={(event) =>
                       this.props.handleChange(

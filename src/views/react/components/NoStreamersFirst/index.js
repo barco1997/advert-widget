@@ -25,7 +25,7 @@ const TextWrap = styled.div`
 const PositionWrapper = styled.div`
   &&& {
     display: flex !important;
-    margin: ${props => props.margin || "0px"} !important;
+    margin: ${(props) => props.margin || "0px"} !important;
     width: 100% !important;
   }
 `;
@@ -62,7 +62,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
   }
@@ -108,13 +108,13 @@ export class NoStreamersFirst extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      email: ""
+      email: "",
     };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
     this.setState({
-      email: e.target.value
+      email: e.target.value,
     });
   }
   render() {
@@ -130,6 +130,7 @@ export class NoStreamersFirst extends React.Component {
             <PositionWrapper margin="8px 0px 10px 24px">
               <FormField
                 placeholder="Адрес электронной почты"
+                email={true}
                 value={this.state.email}
                 onChange={this.handleChange}
               />

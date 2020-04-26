@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import BlurredButton from "../BlurredButton";
+import { media } from "../../../../utils/media";
 import { staticUrl } from "../../constants";
 
 const Wrapper = styled.div`
@@ -40,6 +41,9 @@ const TextWrapper = styled.div`
     font-size: 14px !important;
     line-height: 160% !important;
     color: #000 !important;
+    ${media.phone`
+    font-size: 12px !important;
+     `};
   }
 `;
 
@@ -157,7 +161,7 @@ export class NotifyButton extends React.Component {
           )}
           {this.state.tosend === 1 && (
             <Email
-              type="text"
+              type="email"
               placeholder="Адрес электронной почты"
               value={this.state.value}
               onChange={(e) => this.handleChange(e, "value")}

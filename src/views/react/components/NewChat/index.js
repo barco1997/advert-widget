@@ -4,7 +4,7 @@ import axios from "axios";
 import ls from "local-storage";
 import ReactPlayer from "react-player";
 import { MessageArea } from "./messageArea";
-import { media } from "../../../../utils/media";
+import { media, mediaType } from "../../../../utils/media";
 import {
   setLiveArray,
   getRndInteger,
@@ -456,6 +456,7 @@ const InputFieldA = styled.textarea`
     border: 0px solid #eaeaea !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
+    height: ${(props) => (props.height ? props.height : "63px")} !important;
     border-radius: ${(props) => (props.stream ? "4px" : "0px")} !important;
     padding: ${(props) =>
       props.stream ? "13px 24px" : "24px 24px"} !important;
@@ -482,13 +483,13 @@ const InputFieldA = styled.textarea`
     }
     ${media.desktop`
       font-size: 16px !important;
-      height: ${(props) => (props.height ? props.height : "63px")} !important;
+
   `};
     ${media.phone`
       font-size: 12px !important;
       padding: ${(props) =>
-        props.stream ? "13px 24px" : "15px 24px"} !important;
-      
+        props.stream ? "13px 24px" : "15px 28px"} !important;
+        padding-right: 70px !important;
   `};
   }
 `;
@@ -538,8 +539,8 @@ const MicWrap = styled.div`
 const SendIconWrap = styled.div`
   &&& {
     position: absolute !important;
-    width: 27px !important;
-    height: 27px !important;
+    width: 42px !important;
+    height: 42px !important;
     top: calc(50% - 21px) !important;
     right: 18px !important;
     display: flex !important;
@@ -788,7 +789,7 @@ export class Chat extends React.Component {
       ifTimer: false,
       audioDuration: 0,
       shouldTimerStop: false,
-      textAreaHeight: "50px",
+      textAreaHeight: mediaType.phone ? "50px" : "68px",
       streamTextAreaHeight: "46px",
       isRecording: false,
       blobURL: "",

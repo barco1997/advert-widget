@@ -118,6 +118,10 @@ const Input = styled.textarea`
       height: ${(props) => (props.height ? props.height : "63px")} !important;
       
   `};
+    ${media.phone`
+      font-size: 12px !important;
+      
+  `};
   }
 `;
 const ImageSend = styled.div`
