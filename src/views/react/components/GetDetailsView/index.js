@@ -30,7 +30,7 @@ const PositionWrapper = styled.div`
     width: 100% !important;
 
     ${media.desktop`
-      margin-bottom: 16px !important;
+      margin-bottom: 8px !important;
     `};
   }
 `;
@@ -54,6 +54,7 @@ const MainBlock = styled.div`
 
     ${media.tablet`
     margin-top: 0px !important;
+    margin-bottom: 0px !important;
   `};
   }
 `;
@@ -65,11 +66,12 @@ const InfoBlock = styled.div`
     justify-content: flex-end !important;
     background: ${(props) =>
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
-    height: 330px !important;
+    height: 270px !important;
     width: 100% !important;
     ${media.phone`
       height: ${(props) =>
-        props.isTall ? "330px !important" : "300px !important"};
+        props.isTall ? "260px !important" : "260px !important"};
+      
   `};
   }
 `;
@@ -79,7 +81,7 @@ const InfoBlockHeader = styled.div`
     font-family: "Montserrat" !important;
     font-style: normal !important;
     font-weight: bold !important;
-    font-size: 24px !important;
+    font-size: 18px !important;
     line-height: 140% !important;
     /* identical to box height, or 34px */
 
@@ -99,7 +101,7 @@ const InfoBlockText = styled.div`
 
     font-style: normal !important;
     font-weight: normal !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
     line-height: 170% !important;
     max-width: 380px !important;
     /* or 24px */
@@ -107,7 +109,7 @@ const InfoBlockText = styled.div`
     /* Primary / white - background */
 
     color: #ffffff !important;
-    margin: 16px 24px !important;
+    margin: 8px 24px 16px 24px !important;
   }
 `;
 
