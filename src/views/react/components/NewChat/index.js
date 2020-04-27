@@ -812,6 +812,7 @@ export class Chat extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeInput = this.handleChangeInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.submitValue = this.submitValue.bind(this);
     this.handleSubmitS = this.handleSubmitS.bind(this);
     this.loadInitialMessages = this.loadInitialMessages.bind(this);
     this.handleStreamClick = this.handleStreamClick.bind(this);
@@ -1323,11 +1324,9 @@ export class Chat extends React.Component {
     }
   }
 
-  handleSubmit(event) {
+  submitValue(value) {
     let self = this;
-    const value = this.state.value;
     const rndUserLocal = ls.get("userIcon") ? ls.get("userIcon") : rndUser;
-
     if (value.length > 0) {
       ls.set("noStreamerFlag", this.props.noStreamerFlag);
       if (!this.state.startedFlag && !this.state.awaitingConnection) {
@@ -1348,7 +1347,7 @@ export class Chat extends React.Component {
           },
           () => this.textAreaAdjust(false)
         );
-        const newObj = /*JSON.stringify(*/ {
+        const newObj = {
           client: ls.get("userId"),
           title: this.props.currentTitle
             ? this.props.currentTitle
@@ -1358,7 +1357,7 @@ export class Chat extends React.Component {
           websiteUrl: getPathFromUrl(window.location.href),
           button: self.props.buttonId,
           description: value,
-        }; /*)*/
+        };
         ls.remove("awaitTmp");
         self.socket.emit("createDialog", newObj);
 
@@ -1382,21 +1381,6 @@ export class Chat extends React.Component {
           ls.get("initialUrl") &&
           ls.get("initialUrl") !== pageUrl
         ) {
-          /*let warning = {
-            messageText:
-              "Смена источника диалога: " +
-              (this.props.currentTitle
-                ? this.props.currentTitle
-                : document.getElementsByTagName("h1").length > 0
-                ? document.getElementsByTagName("h1")[0].textContent
-                : "Не удалось распознать источник"),
-            dialogId: ls.get("dialogId"),
-            userId: ls.get("userId"),
-            type: "DIALOG",
-          };
-         
-          
-          self.socket.emit("message", JSON.stringify(warning));*/
           currentValue =
             "Смена источника диалога на: " +
             (this.props.currentTitle
@@ -1426,27 +1410,21 @@ export class Chat extends React.Component {
           },
           () => this.textAreaAdjust(false)
         );
-        if (ls.get("streamInProgress")) {
-          let obj = {
-            messageText: currentValue,
-            dialogId: ls.get("dialogId"),
-            userId: ls.get("userId"),
-            type: "DIALOG",
-          };
 
-          self.socket.emit("message", JSON.stringify(obj));
-        } else {
-          let obj = {
-            messageText: currentValue,
-            dialogId: ls.get("dialogId"),
-            userId: ls.get("userId"),
-            type: "DIALOG",
-          };
+        let obj = {
+          messageText: currentValue,
+          dialogId: ls.get("dialogId"),
+          userId: ls.get("userId"),
+          type: "DIALOG",
+        };
 
-          self.socket.emit("message", JSON.stringify(obj));
-        }
+        self.socket.emit("message", JSON.stringify(obj));
       }
     }
+  }
+
+  handleSubmit(event) {
+    this.submitValue(this.state.value);
     event.preventDefault();
   }
   handleChangeOrientation() {
@@ -1761,6 +1739,7 @@ export class Chat extends React.Component {
                                       greetingText={this.props.greetingText}
                                       requestedData={this.props.askedUserData}
                                       color={this.props.color}
+                                      submitValue={this.submitValue}
                                     />
                                   ) : (
                                     <NoStreamerComponent

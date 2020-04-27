@@ -67,15 +67,25 @@ const Title = styled.h4`
   }
 `;
 
+const messageList = [
+  "Хочу увидеть вживую",
+  "У меня есть вопросы по данному товару",
+  "Хочу сравнить с другой моделью",
+];
+
 class MessagesTemplate extends React.Component {
   render() {
     return (
       <Shader>
-        <Title color={this.props.color}>Хочу увидеть вживую</Title>
-        <Title color={this.props.color}>
-          У меня есть вопросы по данному товару
-        </Title>
-        <Title color={this.props.color}>Хочу сравнить с другой моделью</Title>
+        {messageList.map((message, index) => (
+          <Title
+            key={index}
+            color={this.props.color}
+            onClick={() => this.props.submitValue(message)}
+          >
+            {message}
+          </Title>
+        ))}
       </Shader>
     );
   }

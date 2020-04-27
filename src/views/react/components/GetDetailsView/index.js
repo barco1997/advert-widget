@@ -192,7 +192,10 @@ export class GetDetailsView extends React.Component {
             </FieldWrapper>
           </InfoBlock>
         </MainBlock>
-        <MessagesTemplate color={this.props.color || "#ff2d55"} />
+        <MessagesTemplate
+          color={this.props.color || "#ff2d55"}
+          submitValue={this.props.submitValue}
+        />
       </TextWrap>
     );
   }
