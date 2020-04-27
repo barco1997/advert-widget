@@ -138,7 +138,7 @@ export class NotifyButtonAndEmail extends React.Component {
           )}
           {this.state.tosend === 1 && (
             <Email
-              type="text"
+              type="email"
               placeholder="Адрес электронной почты"
               value={this.state.value}
               onChange={(e) => this.handleChange(e, "value")}

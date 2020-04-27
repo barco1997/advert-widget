@@ -133,6 +133,7 @@ export class EmailRequest extends React.Component {
             <PositionWrapper margin="8px 0px 10px 24px">
               <FormField
                 placeholder="Адрес электронной почты"
+                email={true}
                 value={this.state.email}
                 onChange={event =>
                   this.handleChange("email", event.target.value)
