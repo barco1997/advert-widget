@@ -35,7 +35,8 @@ import NoStreamerComponent from "../NoStreamerComponent";
 import Loader from "../Loader";
 
 const uuidv1 = require("uuid/v1");
-let currentUrl = window.location.href;
+//let currentUrl = window.location.href;
+
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -75,7 +76,9 @@ load(`${staticUrl}/static/flashphoner.js`)
 const io = require("socket.io-client");
 
 const storedId = ls.get("userId");
-
+const getPathFromUrl = (url) => {
+  return url.split("?")[0];
+};
 const VideoWrapper = styled.div`
   &&& {
     width: 496px !important;
@@ -858,6 +861,9 @@ export class Chat extends React.Component {
       this.socket.emit("leaveStream", ls.get("dialogId"));
       ls.set("tabClosed", true);
     }
+    if (this.state.displayFlag && ls.get("dialogId")) {
+      this.socket.emit("clientLeaveDialog", ls.get("dialogId"));
+    }
   }
 
   setAudioDuration(val) {
@@ -1020,6 +1026,9 @@ export class Chat extends React.Component {
         self.props.joinDialogue();
         ls.set("adminIcon", rndAdmin);
         ls.set("userIcon", rndUser);
+
+        this.socket.emit("clientEnterDialog", id);
+
         const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
         axios
           .post(url, {
@@ -1174,11 +1183,15 @@ export class Chat extends React.Component {
               if (editedMessages.length >= 2) {
                 ls.remove("noStreamerFlag");
               }
+              //if (ls.get("dialogId")) {
+              self.socket.emit("clientEnterDialog", ls.get("dialogId"));
+              //}
+
               self.loadInitialMessages(editedMessages);
             })
             .catch(function (error) {
               //console.log(error);
-              this.setState({ isMessagesLoading: false });
+              self.setState({ isMessagesLoading: false });
             });
         }
       }
@@ -1336,12 +1349,15 @@ export class Chat extends React.Component {
             : document.getElementsByTagName("h1").length > 0
             ? document.getElementsByTagName("h1")[0].textContent
             : value,
-          websiteUrl: currentUrl,
+          websiteUrl: getPathFromUrl(window.location.href),
           button: self.props.buttonId,
           description: value,
         }; /*)*/
         ls.remove("awaitTmp");
         self.socket.emit("createDialog", newObj);
+
+        ls.set("initialUrl", getPathFromUrl(window.location.href));
+
         if (self.props.askedUserData !== "NONE") {
           const dataToSend = {
             id: ls.get("userId"),
@@ -1353,12 +1369,46 @@ export class Chat extends React.Component {
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
       } else if (!this.state.awaitingConnection) {
+        let pageUrl = getPathFromUrl(window.location.href);
+        let currentValue = value;
+        if (
+          ls.get("currentUrl") !== pageUrl &&
+          ls.get("initialUrl") &&
+          ls.get("initialUrl") !== pageUrl
+        ) {
+          /*let warning = {
+            messageText:
+              "Смена источника диалога: " +
+              (this.props.currentTitle
+                ? this.props.currentTitle
+                : document.getElementsByTagName("h1").length > 0
+                ? document.getElementsByTagName("h1")[0].textContent
+                : "Не удалось распознать источник"),
+            dialogId: ls.get("dialogId"),
+            userId: ls.get("userId"),
+            type: "DIALOG",
+          };
+         
+          
+          self.socket.emit("message", JSON.stringify(warning));*/
+          currentValue =
+            "Смена источника диалога на: " +
+            (this.props.currentTitle
+              ? this.props.currentTitle
+              : document.getElementsByTagName("h1").length > 0
+              ? document.getElementsByTagName("h1")[0].textContent
+              : "Не удалось распознать источник") +
+            "\n" +
+            "Сообщение: " +
+            currentValue;
+          ls.set("currentUrl", pageUrl);
+        }
         this.setState(
           {
             messages: [
               ...this.state.messages,
               {
-                text: value,
+                text: currentValue,
                 time: new Date(),
                 id: uuidv1(),
                 photo: `${staticUrl}/static/images/user${ls.get(
@@ -1372,7 +1422,7 @@ export class Chat extends React.Component {
         );
         if (ls.get("streamInProgress")) {
           let obj = {
-            messageText: value,
+            messageText: currentValue,
             dialogId: ls.get("dialogId"),
             userId: ls.get("userId"),
             type: "DIALOG",
@@ -1381,7 +1431,7 @@ export class Chat extends React.Component {
           self.socket.emit("message", JSON.stringify(obj));
         } else {
           let obj = {
-            messageText: value,
+            messageText: currentValue,
             dialogId: ls.get("dialogId"),
             userId: ls.get("userId"),
             type: "DIALOG",
@@ -1587,7 +1637,7 @@ export class Chat extends React.Component {
 
   render() {
     //console.log("PROPS", this.props.firebase.putVoice);
-    //console.log("COUNTDOWN", this.props.countdown);
+
     return (
       <ChatWrapper
         displayFlag={this.state.displayFlag}
@@ -1596,7 +1646,11 @@ export class Chat extends React.Component {
         <JsChatOverlay
           onClick={() => {
             if (!this.state.streamFlag) {
-              if (!this.props.displayMainRequest && !this.props.emailSentFlag) {
+              if (
+                !this.props.displayMainRequest &&
+                !this.props.emailSentFlag &&
+                this.state.messages.length > 0
+              ) {
                 this.props.showMainRequest();
               } else {
                 //this.props.closeMainRequest();
@@ -1645,30 +1699,33 @@ export class Chat extends React.Component {
                         <DisclaimerWrapperMobile>
                           <Disclaimer />
                         </DisclaimerWrapperMobile>
-                        <CloseButton
-                          onClick={() => {
-                            this.setState({
-                              streamFlag: false,
-                            });
-                            //this.socket.emit("leaveStream", ls.get("userId"));
-                            if (
-                              !this.props.displayMainRequest &&
-                              !this.props.emailSentFlag
-                            ) {
-                              this.props.showMainRequest();
-                            } else {
-                              //this.props.closeMainRequest();
-                              this.props.destroy();
-                            }
-                            /*this.live.pause();*/
-                            if (this.loadedVideo.getInternalPlayer()) {
-                              this.loadedVideo.getInternalPlayer().pause();
-                            }
-                          }}
-                        />
+                        {this.props.leaveOption && (
+                          <CloseButton
+                            onClick={() => {
+                              this.setState({
+                                streamFlag: false,
+                              });
+                              //this.socket.emit("leaveStream", ls.get("userId"));
+                              if (
+                                !this.props.displayMainRequest &&
+                                !this.props.emailSentFlag &&
+                                this.state.messages.length > 0
+                              ) {
+                                this.props.showMainRequest();
+                              } else {
+                                //this.props.closeMainRequest();
+                                this.props.destroy();
+                              }
+                              /*this.live.pause();*/
+                              if (this.loadedVideo.getInternalPlayer()) {
+                                this.loadedVideo.getInternalPlayer().pause();
+                              }
+                            }}
+                          />
+                        )}
                       </CloseWrapperA>
-                      {this.props.displayMainRequest &&
-                      this.state.messages.length > 0 ? (
+
+                      {this.props.displayMainRequest ? (
                         <LeaveEmail
                           sendEmailDetails={this.props.sendEmailDetails}
                           destroy={this.props.destroy}
@@ -1686,7 +1743,7 @@ export class Chat extends React.Component {
                               {!this.state.messages ||
                               (this.state.messages.length < 2 &&
                                 this.props.noStreamerFlag) ||
-                              this.state.messages.length == 0 ? (
+                              this.state.messages.length === 0 ? (
                                 <React.Fragment>
                                   {!this.props.noStreamerFlag ? (
                                     <GetDetailsView

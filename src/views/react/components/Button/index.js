@@ -141,6 +141,7 @@ export class Button extends React.Component {
       displayMainRequest: false,
       currentTitle: null,
       noStreamerFlag: false,
+      leaveOption: true,
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -420,7 +421,7 @@ export class Button extends React.Component {
             //console.log(error);
           });
       } else {
-        // console.log("PATH 2");
+        //console.log("PATH 2");
         self.handleRegistration();
       }
     } else {
@@ -432,12 +433,12 @@ export class Button extends React.Component {
             (dialog) => !dialog.isDeleted
           );
           if (response.data.count > 0 && active.length > 0) {
-            // console.log("PATH 3", response);
+            //console.log("PATH 3", response);
 
             ls.set("dialogId", active[0]._id);
             self.showChatHere();
           } else {
-            // console.log("PATH 4", response);
+            //console.log("PATH 4", response);
             ls.set("dialogId", "");
             self.showChatHere();
           }
@@ -555,6 +556,10 @@ export class Button extends React.Component {
       innerHeight: window.innerHeight,
       displayMainRequest: false,
     });
+    if (ls.get("dialogId")) {
+      this.socket.emit("clientLeaveDialog", ls.get("dialogId"));
+    }
+
     enableScroll();
     //}
   }
@@ -658,6 +663,7 @@ export class Button extends React.Component {
             askedUserData={this.props.askedUserData}
             noStreamerFlag={this.state.noStreamerFlag}
             notificationMessageToggle={this.state.notificationMessageToggle}
+            leaveOption={this.state.leaveOption}
             /*firebase={this.props.firebase}*/
           />
         )}

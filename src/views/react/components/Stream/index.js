@@ -287,12 +287,10 @@ export class Stream extends React.Component {
           }
           if (stream.isAudioMuted()) {
             stream.unmuteAudio();
+          } /*else {
             stream.muteAudio();
             stream.unmuteAudio();
-          } else {
-            stream.muteAudio();
-            stream.unmuteAudio();
-          }
+          }*/
           self.setState({
             stream,
           });
@@ -316,12 +314,12 @@ export class Stream extends React.Component {
         receiveAudio: false,
       })
       .on(this.props.STREAM_STATUS.FAILED, function (stream) {
-        //console.log("FAILED");
+        console.log("FAILED");
         //Flashphoner.releaseLocalMedia(this.localDisplay);
         //self.state.connection.disconnect();
 
         if (self.state.clientStream) {
-          Flashphoner.releaseLocalMedia(this.localDisplay);
+          Flashphoner.releaseLocalMedia(self.localDisplay);
           //if (!self.props.visible) {
           self.state.connection.disconnect();
           self.props.handleReadyStreamUnmount();
@@ -330,15 +328,15 @@ export class Stream extends React.Component {
         //self.props.handleReadyStreamUnmount();
       })
       .on(this.props.STREAM_STATUS.PUBLISHING, function (stream) {
-        //console.log("SUCCESS", stream);
+        console.log("SUCCESS", stream);
         /*if (stream.isAudioMuted()) {
               stream.unmuteAudio();
             }*/
 
         if (stream.isAudioMuted()) {
           //stream.setMicrophoneGain(0);
+          console.log("IOS, UNMUTING AUDIO");
           stream.unmuteAudio();
-          //console.log("IOS, UNMUTING AUDIO");
         }
         self.setState({
           clientStream: stream,
@@ -346,8 +344,8 @@ export class Stream extends React.Component {
         });
       })
       .on(this.props.STREAM_STATUS.UNPUBLISHED, function (stream) {
-        //console.log("UNP");
-        Flashphoner.releaseLocalMedia(this.localDisplay);
+        console.log("UNP");
+        Flashphoner.releaseLocalMedia(self.localDisplay);
 
         if (!self.props.visible) {
           self.state.connection.disconnect();
@@ -392,20 +390,20 @@ export class Stream extends React.Component {
         self.props.iOS ||
         Flashphoner.getMediaProviders()[0] === "MSE"
       ) {
-        //console.log("IOS, STARTING TO PUBLISH");
+        console.log("IOS, STARTING TO PUBLISH");
         Flashphoner.playFirstVideo(
           self.localDisplay,
           true,
           self.props.PRELOADER_URL
         ).then(function () {
-          //console.log("IOS, SUCCESSFULLY PRELOADED");
+          console.log("IOS, SUCCESSFULLY PRELOADED");
           self.publishLocalMedia(self.state.initialRoom);
         });
       } else {
         self.publishLocalMedia(self.state.initialRoom);
       }
     } else {
-      if (self.props.iOS) {
+      if (true || self.props.iOS) {
         if (
           self.state.clientStream &&
           !self.state.clientStream.isAudioMuted()

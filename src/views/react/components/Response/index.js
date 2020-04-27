@@ -98,7 +98,8 @@ const Title = styled.h4`
     display: flex !important;
     padding: 15px 15px 12px 12px !important;
     font-size: 14px !important;
-    word-break: break-all !important;
+    word-break: break-word !important;
+    white-space: pre-line !important;
     font-weight: normal !important;
     color: ${(props) => (props.ifRecipient ? "white" : "black")} !important;
     background: ${(props) =>

@@ -91,6 +91,23 @@ function apiHandler(api, params) {
         })
         .catch(function (error) {
           console.log(error);
+
+          params.targets
+            .map((target) => {
+              return {
+                buttonId: target.buttonId,
+                target: document.getElementById(target.targetId),
+              };
+            })
+            .map(
+              (button) =>
+                button.target &&
+                button.target.addEventListener("click", (event) =>
+                  alert(
+                    "Что-то пошло не так, попробуйте еще раз, перезагрузите страницу или воспользуйтесь другим браузером! Спасибо за понимание."
+                  )
+                )
+            );
         });
 
       break;

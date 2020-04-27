@@ -62,7 +62,7 @@ export class App extends React.Component {
     window.addEventListener("keydown", this.keydownFunc);
     let self = this;
     const buttonId = this.props.buttonId;
-    const userId = ls.get("userId");
+    //const userId = ls.get("userId");
 
     const url = `${apiBaseUrl}/button/${buttonId}`;
     const lang_url = `${apiBaseUrl}/language`;
