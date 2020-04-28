@@ -664,6 +664,7 @@ export class Button extends React.Component {
             noStreamerFlag={this.state.noStreamerFlag}
             notificationMessageToggle={this.state.notificationMessageToggle}
             leaveOption={this.state.leaveOption}
+            questionExamples={this.props.questionExamples}
             /*firebase={this.props.firebase}*/
           />
         )}

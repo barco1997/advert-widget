@@ -195,6 +195,7 @@ export class GetDetailsView extends React.Component {
         <MessagesTemplate
           color={this.props.color || "#ff2d55"}
           submitValue={this.props.submitValue}
+          questionExamples={this.props.questionExamples}
         />
       </TextWrap>
     );

@@ -1026,7 +1026,9 @@ export class Chat extends React.Component {
       this.socket.on("disconnect", () => {
         self.socket.open();
       });
-
+      this.socket.on("dialogDeleted", () => {
+        self.props.destroy();
+      });
       this.socket.on("dialogCreated", (id) => {
         ls.set("dialogId", id);
         self.socket.emit("enterDialog", id);
@@ -1740,6 +1742,9 @@ export class Chat extends React.Component {
                                       requestedData={this.props.askedUserData}
                                       color={this.props.color}
                                       submitValue={this.submitValue}
+                                      questionExamples={
+                                        this.props.questionExamples
+                                      }
                                     />
                                   ) : (
                                     <NoStreamerComponent

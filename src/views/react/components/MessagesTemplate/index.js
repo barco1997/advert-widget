@@ -77,7 +77,7 @@ class MessagesTemplate extends React.Component {
   render() {
     return (
       <Shader>
-        {messageList.map((message, index) => (
+        {this.props.questionExamples.map((message, index) => (
           <Title
             key={index}
             color={this.props.color}

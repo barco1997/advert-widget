@@ -31,6 +31,7 @@ export class App extends React.Component {
         "вы можете свернуть окно и продолжить пользоваться\n сайтом, вам придет уведомление.",
       waitingTitle:
         "Пока кто-то из нашей команды готовиться ответить на ваше сообщение, ",
+      questionExamples: [],
     };
     this.setNotifications = this.setNotifications.bind(this);
     this.incrementNotifications = this.incrementNotifications.bind(this);
@@ -102,6 +103,13 @@ export class App extends React.Component {
             localisedTextArray.find(
               (element) => element.field === "waitingTitle"
             ).value || "waitingTitle",
+          questionExamples: localisedTextArray.find(
+            (element) => element.field === "questionExamples"
+          )
+            ? localisedTextArray.find(
+                (element) => element.field === "questionExamples"
+              ).value
+            : [],
           color: response.data.chatColor,
           countdown: response.data.countdown,
           askedUserData: response.data.askedUserData,
@@ -181,6 +189,7 @@ export class App extends React.Component {
             timerFlag={this.state.countdown !== 0}
             position={this.state.position}
             askedUserData={this.state.askedUserData}
+            questionExamples={this.state.questionExamples}
             /*firebase={this.props.firebase}*/
           />
         )}
