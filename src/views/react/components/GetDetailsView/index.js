@@ -41,6 +41,7 @@ const FieldWrapper = styled.div`
 
     width: 100% !important;
     margin: 0px 0px 8px 18px !important;
+    min-height: 150px !important;
   }
 `;
 
@@ -73,7 +74,7 @@ const InfoBlock = styled.div`
   `};
     ${media.phone`
       height: ${(props) =>
-        props.isTall ? "260px !important" : "230px !important"};
+        props.isTall ? "280px !important" : "230px !important"};
       
   `};
   }
