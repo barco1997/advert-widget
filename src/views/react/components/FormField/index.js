@@ -34,6 +34,7 @@ const ExtraWrapper = styled.div`
     display: flex !important;
     position: relative !important;
     width: calc(100% - 48px) !important;
+    min-height: ${(props) => (props.height ? props.height : "40px")} !important;
   }
 `;
 const Helper = styled.div`
@@ -56,7 +57,7 @@ const Helper = styled.div`
 export class FormField extends React.Component {
   render() {
     return (
-      <ExtraWrapper>
+      <ExtraWrapper height={this.props.height}>
         <Wrapper
           type={
             this.props.password
