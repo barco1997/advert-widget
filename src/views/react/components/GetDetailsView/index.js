@@ -56,6 +56,7 @@ const MainBlock = styled.div`
     ${media.tablet`
     margin-top: 0px !important;
     margin-bottom: 0px !important;
+    min-height: 280px !important;
   `};
   }
 `;
@@ -74,8 +75,8 @@ const InfoBlock = styled.div`
   `};
     ${media.phone`
       height: ${(props) =>
-        props.isTall ? "280px !important" : "230px !important"};
-      
+        props.isTall ? "280px !important" : "280px !important"};
+      min-height: 230px !important;
   `};
   }
 `;
