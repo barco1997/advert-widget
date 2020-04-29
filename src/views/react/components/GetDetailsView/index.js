@@ -51,6 +51,7 @@ const MainBlock = styled.div`
     flex-direction: column !important;
     justify-content: flex-end !important;
     width: 100% !important;
+    height: 100% !important;
     margin-bottom: 10px !important;
 
     ${media.tablet`
@@ -69,6 +70,7 @@ const InfoBlock = styled.div`
     background: ${(props) =>
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
     height: 330px !important;
+    min-height: 330px !important;
     width: 100% !important;
     ${media.tablet`
     height: 370px !important;
