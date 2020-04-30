@@ -33,7 +33,8 @@ const Symbol = styled.div`
     color: white !important;
     font-family: "Montserrat" !important;
 
-    margin-bottom: 8px !important;
+    margin-bottom: 9px !important;
+    cursor: pointer !important;
   }
 `;
 
