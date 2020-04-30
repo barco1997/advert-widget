@@ -70,7 +70,7 @@ export class App extends React.Component {
     axios.get(lang_url).then(function (languages) {
       axios.get(url).then(function (response) {
         //let notificationCount = ls.get("notificationCount");
-        //console.log("RESP", response);
+        console.log("RESP", response);
         const languageId = userLang.toLowerCase().includes("en")
           ? languages.data.find((element) => element.value === "EN")._id
           : languages.data.find((element) => element.value === "RU")._id;

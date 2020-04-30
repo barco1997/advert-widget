@@ -33,6 +33,7 @@ import Game from "../Game";
 import GetDetailsView from "../GetDetailsView";
 import NoStreamerComponent from "../NoStreamerComponent";
 import Loader from "../Loader";
+import AdditionalActions from "../AdditionalActions";
 
 const uuidv1 = require("uuid/v1");
 //let currentUrl = window.location.href;
@@ -362,6 +363,7 @@ const CloseButton = styled.span`
     align-items: center !important;
     opacity: 1 !important;
     margin-right: 15px !important;
+    margin-left: 10px !important;
     &:hover {
       background: rgba(255, 255, 255, 0.26) !important;
     }
@@ -844,7 +846,13 @@ export class Chat extends React.Component {
     this.checkMedia = this.checkMedia.bind(this);
     this.startGame = this.startGame.bind(this);
     this.stopGame = this.stopGame.bind(this);
+    this.endDialogue = this.endDialogue.bind(this);
     this.handleReadyStreamUnmount = this.handleReadyStreamUnmount.bind(this);
+  }
+
+  endDialogue() {
+    this.socket.emit("deleteDialog", ls.get("dialogId"));
+    this.props.destroy();
   }
 
   startGame() {
@@ -1036,7 +1044,7 @@ export class Chat extends React.Component {
         ls.set("adminIcon", rndAdmin);
         ls.set("userIcon", rndUser);
 
-        this.socket.emit("clientEnterDialog", id);
+        self.socket.emit("clientEnterDialog", id);
 
         const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
         axios
@@ -1685,6 +1693,7 @@ export class Chat extends React.Component {
                         <DisclaimerWrapperMobile>
                           <Disclaimer />
                         </DisclaimerWrapperMobile>
+                        <AdditionalActions endDialogue={this.endDialogue} />
                         {this.props.leaveOption && (
                           <CloseButton
                             onClick={() => {

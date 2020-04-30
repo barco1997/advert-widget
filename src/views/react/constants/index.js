@@ -143,4 +143,5 @@ export const staticUrl =
 export const apiBaseUrl =
   "https://ourmainserver.witheyezon.com/api"; /*"https://eyezon.herokuapp.com/api"*/
 
-export const socketUrl = "https://ourmainserver.witheyezon.com";
+export const socketUrl =
+  "https://ourmainserver.witheyezon.com"; /*"https://eyezon.herokuapp.com"*/
