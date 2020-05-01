@@ -1503,19 +1503,21 @@ export class Chat extends React.Component {
 
   checkMedia() {
     let self = this;
+
     if (
       this.state.startedFlag &&
       !this.state.awaitingConnection &&
       !ls.get("micChecked")
     ) {
-      navigator.mediaDevices.getUserMedia(
-        { audio: true },
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(
         () => {
+          //console.log("mickChecked");
           self.setState({ isBlocked: false, isFirst: true });
           ls.set("micChecked", true);
           self.startMp3();
         },
         () => {
+          //console.log("MicNot");
           self.setState({ isBlocked: true });
         }
       );
@@ -1524,7 +1526,7 @@ export class Chat extends React.Component {
 
   startMp3() {
     let self = this;
-
+    //console.log("startmp3");
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       self.setState({ recorder: new MediaRecorder(stream) });
       // Set record to <audio> when recording will be finished
@@ -1551,7 +1553,7 @@ export class Chat extends React.Component {
     const d = new Date();
     let formData = new FormData();
     const url = `${apiBaseUrl}/user/${ls.get("userId")}/voice`;
-
+    //console.log("PREPARE");
     formData.append("voice", recordedBlob);
     const config = {
       headers: {
@@ -1559,6 +1561,7 @@ export class Chat extends React.Component {
       },
     };
     axios.post(url, formData, config).then((response) => {
+      //console.log("RESPONSE");
       self.setState({
         messages: [
           ...self.state.messages,

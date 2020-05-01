@@ -210,7 +210,7 @@ export class Stream extends React.Component {
     self.setState({
       connection: Flashphoner.roomApi
         .connect({
-          urlServer: "wss://server.witheyezon.com:8443",
+          urlServer: "wss://api.eyezon.app:8443",
           username: ls.get("userId"),
         })
         .on(this.props.SESSION_STATUS.FAILED, function (session) {

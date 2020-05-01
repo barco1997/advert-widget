@@ -141,7 +141,7 @@ export const staticUrl =
   "https://storage.googleapis.com/eyezonscript/eyezonsite";
 
 export const apiBaseUrl =
-  "https://ourmainserver.witheyezon.com/api"; /*"https://eyezon.herokuapp.com/api"*/
+  "https://server.eyezon.app/api"; /*"https://eyezon.herokuapp.com/api"*/
 
 export const socketUrl =
-  "https://ourmainserver.witheyezon.com"; /*"https://eyezon.herokuapp.com"*/
+  "https://server.eyezon.app"; /*"https://eyezon.herokuapp.com"*/
