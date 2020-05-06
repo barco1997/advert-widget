@@ -1117,7 +1117,7 @@ export class Chat extends React.Component {
                     : `${staticUrl}/static/images/admin${ls.get(
                         "adminIcon"
                       )}.png`,
-                user: data.user === ls.get("userId") ? "Вы" : "Админ",
+                user: data.user === ls.get("userId") ? "Вы" : "Консультант",
                 type: type,
                 flv: type === "stream" ? data.attachment.src : null,
                 streamId: type === "stream" ? data.attachment.src : null,
@@ -1180,7 +1180,8 @@ export class Chat extends React.Component {
                       : `${staticUrl}/static/images/admin${ls.get(
                           "adminIcon"
                         )}.png`,
-                  user: message.user === ls.get("userId") ? "Вы" : "Админ",
+                  user:
+                    message.user === ls.get("userId") ? "Вы" : "Консультант",
                   type: message.attachment
                     ? message.attachment.type.toLowerCase()
                     : "message",
@@ -1392,7 +1393,7 @@ export class Chat extends React.Component {
           ls.get("initialUrl") !== pageUrl
         ) {
           currentValue =
-            "Смена источника диалога на: " +
+            "Новая страница диалога: " +
             (this.props.currentTitle
               ? this.props.currentTitle
               : document.getElementsByTagName("h1").length > 0
