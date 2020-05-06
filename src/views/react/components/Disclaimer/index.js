@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { staticUrl } from "../../constants";
-import { fromRenderProps } from "recompose";
+
 //import Logo from "./logoeye.png";
 const Wrapper = styled.a`
   &&& {
