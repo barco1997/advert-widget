@@ -29,7 +29,7 @@ import StatusButton from "../StatusButton";
 //import { compose } from "recompose";
 import AudioRecorder from "audio-recorder-polyfill";
 import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
-import Game from "../Game";
+const LazyGame = React.lazy(() => import("../Game"));
 import GetDetailsView from "../GetDetailsView";
 import NoStreamerComponent from "../NoStreamerComponent";
 import Loader from "../Loader";
@@ -1683,7 +1683,7 @@ export class Chat extends React.Component {
               ) : (
                 <Fragment>
                   {this.state.gameStarted ? (
-                    <Game
+                    <LazyGame
                       height={this.props.innerHeight}
                       width={496}
                       stopGame={this.stopGame}

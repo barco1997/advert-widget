@@ -1,9 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 //import PropTypes from "prop-types";
 import styled from "styled-components";
 //import logo from "./image.png";
 //import Message from "../Message/index";
-import { Chat } from "../NewChat";
 import ls from "local-storage";
 import axios from "axios";
 //import { CLIENT_ID, CLIENT_SECRET } from "./constants";
@@ -12,6 +11,7 @@ import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 //import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
+const LazyChat = React.lazy(() => import('../NewChat'));
 import {
   staticUrl,
   socketUrl,
@@ -636,37 +636,45 @@ export class Button extends React.Component {
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
         )*/}
         {this.state.initializeChat && (
-          <Chat
-            destroy={this.destroyChat}
-            displayChat={this.state.displayChat}
-            businessId={this.state.businessId}
-            buttonId={this.props.buttonId}
-            initializeChat={this.state.initializeChat}
-            greetingText={this.props.greetingText}
-            waitingText={this.props.waitingText}
-            greetingTitle={this.props.greetingTitle}
-            waitingTitle={this.props.waitingTitle}
-            innerHeight={this.state.innerHeight}
-            joinDialogue={this.joinDialogue}
-            displayMainRequest={this.state.displayMainRequest}
-            closeMainRequest={this.closeMainRequest}
-            showMainRequest={this.showMainRequest}
-            emailSentFlag={this.state.emailSentFlag}
-            sendEmailDetails={this.sendEmailDetails}
-            currentTitle={this.state.currentTitle}
-            socket={this.socket}
-            color={this.props.color}
-            countdown={this.props.countdown}
-            miniGame={this.props.miniGame}
-            timerFlag={this.props.timerFlag}
-            notificationPermission={this.notificationPermission}
-            askedUserData={this.props.askedUserData}
-            noStreamerFlag={this.state.noStreamerFlag}
-            notificationMessageToggle={this.state.notificationMessageToggle}
-            leaveOption={this.state.leaveOption}
-            questionExamples={this.props.questionExamples}
-            /*firebase={this.props.firebase}*/
-          />
+            <Suspense
+                fallback={
+                  <ApiOverlay>
+                    <LoadingCircle loadingFlag />
+                  </ApiOverlay>
+                }
+            >
+              <LazyChat
+                  destroy={this.destroyChat}
+                  displayChat={this.state.displayChat}
+                  businessId={this.state.businessId}
+                  buttonId={this.props.buttonId}
+                  initializeChat={this.state.initializeChat}
+                  greetingText={this.props.greetingText}
+                  waitingText={this.props.waitingText}
+                  greetingTitle={this.props.greetingTitle}
+                  waitingTitle={this.props.waitingTitle}
+                  innerHeight={this.state.innerHeight}
+                  joinDialogue={this.joinDialogue}
+                  displayMainRequest={this.state.displayMainRequest}
+                  closeMainRequest={this.closeMainRequest}
+                  showMainRequest={this.showMainRequest}
+                  emailSentFlag={this.state.emailSentFlag}
+                  sendEmailDetails={this.sendEmailDetails}
+                  currentTitle={this.state.currentTitle}
+                  socket={this.socket}
+                  color={this.props.color}
+                  countdown={this.props.countdown}
+                  miniGame={this.props.miniGame}
+                  timerFlag={this.props.timerFlag}
+                  notificationPermission={this.notificationPermission}
+                  askedUserData={this.props.askedUserData}
+                  noStreamerFlag={this.state.noStreamerFlag}
+                  notificationMessageToggle={this.state.notificationMessageToggle}
+                  leaveOption={this.state.leaveOption}
+                  questionExamples={this.props.questionExamples}
+                  /*firebase={this.props.firebase}*/
+              />
+            </Suspense>
         )}
       </ButtonReqWrapper>
     );
