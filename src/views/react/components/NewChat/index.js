@@ -17,7 +17,7 @@ import {
 import Stream from "../Stream";
 import LeaveEmail from "../LeaveEmail";
 //import MicRecorder from "mic-recorder-to-mp3";
-import UnmountTracker from "../UnmountTracker";
+
 import StandaloneTimer from "../StandaloneTimer";
 import Disclaimer from "../Disclaimer";
 import EntryInfo from "../EntryInfo";
@@ -26,7 +26,7 @@ import MicrophoneInput, { pulse } from "../MicrophoneInput";
 //import { withFirebase } from "../Firebase";
 //import firebase from "firebase";
 import StatusButton from "../StatusButton";
-//import { compose } from "recompose";
+
 import AudioRecorder from "audio-recorder-polyfill";
 import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
 const LazyGame = React.lazy(() => import("../Game"));

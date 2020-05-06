@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from "react";
-import { format } from "date-fns";
 
+import moment from "moment";
 import { media } from "../../../../utils/media";
 
 const Item = styled.li`
@@ -67,7 +67,7 @@ const Date = styled.time`
     font-size: 12px !important;
     border-radius: 10px !important;
     padding: 1px 12px !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
   }
 `;
 
@@ -88,18 +88,18 @@ export class Response extends React.Component {
   setItems(type, src) {
     this.setState({
       typeVar: type,
-      src: src
+      src: src,
     });
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.ifPauseIcon) {
       this.setState({
-        pauseIcon: true
+        pauseIcon: true,
       });
     } else if (this.props.ifPauseIcon && !nextProps.ifPauseIcon) {
       this.setState({
-        pauseIcon: false
+        pauseIcon: false,
       });
     }
     if (this.state.typeVar === "stream" && nextProps.src) {
@@ -109,7 +109,7 @@ export class Response extends React.Component {
 
   setSrc(props) {
     this.setState({
-      src: props
+      src: props,
     });
   }
 
@@ -131,7 +131,7 @@ export class Response extends React.Component {
           <Title>{this.props.title}</Title>
 
           {this.props.description && (
-            <Summary>{format(this.props.description, "h:m")}</Summary>
+            <Summary>{moment(this.props.description).format("HH:mm")}</Summary>
           )}
         </ItemStart>
         <ItemEnd>

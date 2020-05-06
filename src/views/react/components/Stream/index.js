@@ -4,7 +4,7 @@ import ls from "local-storage";
 //import axios from "axios";
 import { media } from "../../../../utils/media";
 import { staticUrl } from "../../constants";
-import { fromRenderProps } from "recompose";
+
 import StatusButton from "../StatusButton";
 import StreamChat from "./streamchat";
 import MicrophoneInput from "../MicrophoneInput";
@@ -32,7 +32,7 @@ const TextFieldExtraS = styled.div`
     `};*/
   }
 `;
-//import { setDisplayName } from "recompose";
+
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 const VideoElement = styled.div`
   &&& {

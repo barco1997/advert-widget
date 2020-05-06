@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React from "react";
-import { format } from "date-fns";
+
+import moment from "moment";
 //import logo from "./logo.png";
 //import playV from "./playIcon.svg";
 //import pauseV from "./pauseIcon.svg";
@@ -12,7 +13,7 @@ import { media } from "../../../../utils/media";
 //import minus from "./minus.png";
 //import ControlButton from "./button";
 import { staticUrl } from "../../constants";
-import axios from "axios";
+//import axios from "axios";
 
 const Item = styled.li`
   &&& {
@@ -488,7 +489,7 @@ export class Response extends React.Component {
               )}
             </ResponseAdditional>
             <Date ifRecipient={this.props.ifRecipient}>
-              {format(this.props.date, "hh:mm")}
+              {moment(this.props.date).format("HH:mm")}
             </Date>
           </ItemStart>
         </Item>
