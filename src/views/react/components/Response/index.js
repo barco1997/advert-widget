@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-//import { format } from "date-fns";
+
 //import logo from "./logo.png";
 //import playV from "./playIcon.svg";
 //import pauseV from "./pauseIcon.svg";
@@ -13,7 +13,7 @@ import moment from "moment";
 //import minus from "./minus.png";
 //import ControlButton from "./button";
 import { staticUrl } from "../../constants";
-import axios from "axios";
+//import axios from "axios";
 
 const Item = styled.li`
   &&& {
