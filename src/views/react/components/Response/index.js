@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import React from "react";
 
-import moment from "moment";
 //import logo from "./logo.png";
 //import playV from "./playIcon.svg";
 //import pauseV from "./pauseIcon.svg";
 import LiveButton from "../LiveButton/index";
 import ReactAudioPlayer from "react-audio-player";
 import { media } from "../../../../utils/media";
+import moment from "moment";
 //import iconClose from "./iconClose.png";
 //import plus from "./plus.png";
 //import minus from "./minus.png";

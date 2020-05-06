@@ -1,11 +1,13 @@
 const path = require("path");
 const webpack = require("webpack");
 const dotenv = require("dotenv");
-
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 var copyWebpackPlugin = require("copy-webpack-plugin");
 const bundleOutputDir = "./dist";
 var SRC = path.resolve(__dirname, "./src/main.js");
 //const DIR_NAME = path.join(__dirname, "..");
+
 
 module.exports = env => {
     const isDevBuild = !(env && env.prod);
@@ -67,4 +69,5 @@ module.exports = env => {
             }
         }
     ];
+
 };
