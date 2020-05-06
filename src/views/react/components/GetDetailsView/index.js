@@ -147,53 +147,65 @@ export class GetDetailsView extends React.Component {
             }
             color={this.props.color || "#ff2d55"}
           >
-            <InfoBlockHeader>{this.props.greetingTitle}</InfoBlockHeader>
-            <InfoBlockText>{this.props.greetingText}</InfoBlockText>
-            <FieldWrapper>
-              {this.state.isEmail && (
-                <PositionWrapper>
-                  <FormField
-                    placeholder="Адрес электронной почты"
-                    email={true}
-                    value={this.props.email}
-                    onChange={(event) =>
-                      this.props.handleChange(
-                        "emailRequested",
-                        event.target.value
-                      )
-                    }
-                  />
-                </PositionWrapper>
-              )}
-              {this.state.isPhone && (
-                <PositionWrapper>
-                  <FormField
-                    placeholder="Номер телефона"
-                    value={this.props.phone}
-                    onChange={(event) =>
-                      this.props.handleChange(
-                        "phoneRequested",
-                        event.target.value
-                      )
-                    }
-                  />
-                </PositionWrapper>
-              )}
-              {this.state.isName && (
-                <PositionWrapper>
-                  <FormField
-                    placeholder="имя"
-                    value={this.props.name}
-                    onChange={(event) =>
-                      this.props.handleChange(
-                        "nameRequested",
-                        event.target.value
-                      )
-                    }
-                  />
-                </PositionWrapper>
-              )}
-            </FieldWrapper>
+            <InfoBlockHeader>
+              {this.state.isEmail && this.state.isPhone && this.state.isName
+                ? this.props.greetingTitle
+                : "Не пропустите ответ! Не пропустите ответ!"}
+            </InfoBlockHeader>
+            <InfoBlockText>
+              {this.state.isEmail && this.state.isPhone && this.state.isName
+                ? this.props.greetingText
+                : "Чтобы узнать, что вам ответили, включите уведомления или оставьте свой e-mail. "}
+            </InfoBlockText>
+            {(this.state.isEmail ||
+              this.state.isPhone ||
+              this.state.isName) && (
+              <FieldWrapper>
+                {this.state.isEmail && (
+                  <PositionWrapper>
+                    <FormField
+                      placeholder="Адрес электронной почты"
+                      email={true}
+                      value={this.props.email}
+                      onChange={(event) =>
+                        this.props.handleChange(
+                          "emailRequested",
+                          event.target.value
+                        )
+                      }
+                    />
+                  </PositionWrapper>
+                )}
+                {this.state.isPhone && (
+                  <PositionWrapper>
+                    <FormField
+                      placeholder="Номер телефона"
+                      value={this.props.phone}
+                      onChange={(event) =>
+                        this.props.handleChange(
+                          "phoneRequested",
+                          event.target.value
+                        )
+                      }
+                    />
+                  </PositionWrapper>
+                )}
+                {this.state.isName && (
+                  <PositionWrapper>
+                    <FormField
+                      placeholder="имя"
+                      value={this.props.name}
+                      onChange={(event) =>
+                        this.props.handleChange(
+                          "nameRequested",
+                          event.target.value
+                        )
+                      }
+                    />
+                  </PositionWrapper>
+                )}
+              </FieldWrapper>
+            )}
           </InfoBlock>
         </MainBlock>
         <MessagesTemplate
