@@ -848,6 +848,7 @@ export class Chat extends React.Component {
     this.stopGame = this.stopGame.bind(this);
     this.endDialogue = this.endDialogue.bind(this);
     this.handleReadyStreamUnmount = this.handleReadyStreamUnmount.bind(this);
+    this.handleMessages = this.handleMessages.bind(this);
   }
 
   endDialogue() {
@@ -1150,6 +1151,7 @@ export class Chat extends React.Component {
         }
       });
     }
+    this.handleMessages();
   }
 
   componentWillUpdate(nextProps) {
@@ -1158,60 +1160,61 @@ export class Chat extends React.Component {
       nextProps.displayChat &&
       nextProps.displayChat !== this.props.displayChat
     ) {
-      if (ls.get("dialogId")) {
-        if (this.state.firstTimeFlag) {
-          this.setState({ isMessagesLoading: true });
-          axios
-            .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
-            .then(function (response) {
-              const messages = response.data.data;
+      this.handleMessages();
+    }
+  }
 
-              const editedMessages = messages
-                .filter((msg) => !(msg.type && msg.type === "STREAM"))
-                .map((message) => ({
-                  text: message.messageText,
-                  time: message.createdAt,
+  handleMessages() {
+    let self = this;
+    if (ls.get("dialogId")) {
+      if (this.state.firstTimeFlag) {
+        this.setState({ isMessagesLoading: true });
+        axios
+          .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
+          .then(function (response) {
+            const messages = response.data.data;
+            const editedMessages = messages
+              .filter((msg) => !(msg.type && msg.type === "STREAM"))
+              .map((message) => ({
+                text: message.messageText,
+                time: message.createdAt,
 
-                  photo:
-                    message.user === ls.get("userId")
-                      ? `${staticUrl}/static/images/user${ls.get(
-                          "userIcon"
-                        )}.png`
-                      : `${staticUrl}/static/images/admin${ls.get(
-                          "adminIcon"
-                        )}.png`,
-                  user:
-                    message.user === ls.get("userId") ? "Вы" : "Консультант",
-                  type: message.attachment
-                    ? message.attachment.type.toLowerCase()
-                    : "message",
-                  src: message.attachment ? message.attachment.src : null,
-                  thumb:
-                    message.attachment &&
-                    (message.attachment.type === "VIDEO" ||
-                      message.attachment.type === "STREAM")
-                      ? message.attachment.thumbnail
-                      : null,
-                  flv:
-                    message.attachment && message.attachment.type === "STREAM"
-                      ? message.attachment.src
-                      : "",
-                  id: message._id,
-                }));
-              if (editedMessages.length >= 2) {
-                ls.remove("noStreamerFlag");
-              }
-              //if (ls.get("dialogId")) {
-              self.socket.emit("clientEnterDialog", ls.get("dialogId"));
-              //}
+                photo:
+                  message.user === ls.get("userId")
+                    ? `${staticUrl}/static/images/user${ls.get("userIcon")}.png`
+                    : `${staticUrl}/static/images/admin${ls.get(
+                        "adminIcon"
+                      )}.png`,
+                user: message.user === ls.get("userId") ? "Вы" : "Консультант",
+                type: message.attachment
+                  ? message.attachment.type.toLowerCase()
+                  : "message",
+                src: message.attachment ? message.attachment.src : null,
+                thumb:
+                  message.attachment &&
+                  (message.attachment.type === "VIDEO" ||
+                    message.attachment.type === "STREAM")
+                    ? message.attachment.thumbnail
+                    : null,
+                flv:
+                  message.attachment && message.attachment.type === "STREAM"
+                    ? message.attachment.src
+                    : "",
+                id: message._id,
+              }));
+            if (editedMessages.length >= 2) {
+              ls.remove("noStreamerFlag");
+            }
+            //if (ls.get("dialogId")) {
+            self.socket.emit("clientEnterDialog", ls.get("dialogId"));
+            //}
 
-              self.loadInitialMessages(editedMessages);
-            })
-            .catch(function (error) {
-              //console.log(error);
-              self.setState({ isMessagesLoading: false });
-            });
-        }
+            self.loadInitialMessages(editedMessages);
+          })
+          .catch(function (error) {
+            //console.log(error);
+            self.setState({ isMessagesLoading: false });
+          });
       }
     }
   }
@@ -1635,7 +1638,6 @@ export class Chat extends React.Component {
 
   render() {
     //console.log("PROPS", this.props.firebase.putVoice);
-
     return (
       <ChatWrapper
         displayFlag={this.state.displayFlag}
