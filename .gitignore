@@ -55,7 +55,11 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+
 
 
 dist/
+main/
+big/
+webview/
+test/

@@ -11,6 +11,7 @@ export function react(params, ifOpened, buttons) {
   let temporary = document.createElement("div");
   temporary.innerHTML = html;
   body = document.getElementsByTagName("body")[0];
+
   while (temporary.children.length > 0) {
     elements.push(temporary.children[0]);
     body.appendChild(temporary.children[0]);

@@ -141,7 +141,7 @@ export class Button extends React.Component {
       displayMainRequest: false,
       currentTitle: null,
       noStreamerFlag: false,
-      leaveOption: true,
+      leaveOption: process.env.LEAVE_OPTION === "true",
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -604,7 +604,7 @@ export class Button extends React.Component {
 
   render() {
     //console.log("POSITION", this.props.position);
-    //console.log("FIREBASE", this.props.firebase.getMessaging());
+    //console.log("LEAVE", process.env.LEAVE_OPTION);
     return (
       <ButtonReqWrapper>
         <audio

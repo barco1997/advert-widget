@@ -363,7 +363,7 @@ const CloseButton = styled.span`
     align-items: center !important;
     opacity: 1 !important;
     margin-right: 15px !important;
-    margin-left: 10px !important;
+    margin-left: ${(props) => (props.noMarginLeft ? "0px" : "10px")} !important;
     &:hover {
       background: rgba(255, 255, 255, 0.26) !important;
     }
@@ -1721,6 +1721,7 @@ export class Chat extends React.Component {
                         <AdditionalActions endDialogue={this.endDialogue} />
                         {this.props.leaveOption && (
                           <CloseButton
+                            noMarginLeft
                             onClick={() => {
                               this.setState({
                                 streamFlag: false,
