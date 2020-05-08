@@ -1019,7 +1019,7 @@ export class Chat extends React.Component {
 
   componentWillMount() {
     let self = this;
-
+    ls.set("allowChatSocketClosure", false);
     if (ls.get("userId")) {
       //this.socket = this.props.socket;
       this.socket = io(socketUrl, {

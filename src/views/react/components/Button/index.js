@@ -478,7 +478,9 @@ export class Button extends React.Component {
       this.joinDialogue();
     });
     this.socket.on("disconnect", () => {
-      this.socket.open();
+      if (!ls.get("allowButtonSocketClosure")) {
+        this.socket.open();
+      }
     });
     this.socket.on("received", (data) => {
       /**feature */
@@ -527,6 +529,7 @@ export class Button extends React.Component {
 
   componentWillMount() {
     let self = this;
+    ls.set("allowButtonSocketClosure", false);
     if (ls.get("userId")) {
       this.initializeSocket();
     }
@@ -593,8 +596,10 @@ export class Button extends React.Component {
   }
 
   componentWillUnmount() {
+    ls.set("allowButtonSocketClosure", true);
     window.removeEventListener("focus", this.handleTabFocus);
     window.removeEventListener("resize", this.handleResize);
+    if (this.socket) this.socket.close();
   }
 
   render() {
