@@ -1048,16 +1048,7 @@ export class Chat extends React.Component {
         ls.set("userIcon", rndUser);
 
         self.socket.emit("clientEnterDialog", id);
-        if (self.props.askedUserData !== "NONE") {
-          const dataToSend = {
-            id: ls.get("userId"),
-            name: this.state.nameRequested,
-            phone: this.state.phoneRequested,
-            email: this.state.emailRequested,
-          };
-          //console.log("DATA TO SEND", dataToSend);
-          self.socket.emit("fillClientData", JSON.stringify(dataToSend));
-        }
+
         const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
         axios
           .post(url, {
@@ -1406,6 +1397,16 @@ export class Chat extends React.Component {
           description: value,
         };
         ls.remove("awaitTmp");
+        if (self.props.askedUserData !== "NONE") {
+          const dataToSend = {
+            id: ls.get("userId"),
+            name: this.state.nameRequested,
+            phone: this.state.phoneRequested,
+            email: this.state.emailRequested,
+          };
+          //console.log("DATA TO SEND", dataToSend);
+          self.socket.emit("fillClientData", JSON.stringify(dataToSend));
+        }
         self.socket.emit("createDialog", newObj);
 
         ls.set("initialUrl", getPathFromUrl(window.location.href));
