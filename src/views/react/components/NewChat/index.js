@@ -827,9 +827,7 @@ export class Chat extends React.Component {
     this.handleChangeInStream = this.handleChangeInStream.bind(this);
     this.handleChangeOrientation = this.handleChangeOrientation.bind(this);
     this.orientationChanged = this.orientationChanged.bind(this);
-    this.handleChangeOrientationWrapper = this.handleChangeOrientationWrapper.bind(
-      this
-    );
+
     this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleCart = this.handleCart.bind(this);
@@ -849,6 +847,7 @@ export class Chat extends React.Component {
     this.endDialogue = this.endDialogue.bind(this);
     this.handleReadyStreamUnmount = this.handleReadyStreamUnmount.bind(this);
     this.handleMessages = this.handleMessages.bind(this);
+    this.dataRecordListener = this.dataRecordListener.bind(this);
   }
 
   endDialogue() {
@@ -1046,7 +1045,16 @@ export class Chat extends React.Component {
         ls.set("userIcon", rndUser);
 
         self.socket.emit("clientEnterDialog", id);
-
+        if (self.props.askedUserData !== "NONE") {
+          const dataToSend = {
+            id: ls.get("userId"),
+            name: this.state.nameRequested,
+            phone: this.state.phoneRequested,
+            email: this.state.emailRequested,
+          };
+          //console.log("DATA TO SEND", dataToSend);
+          self.socket.emit("fillClientData", JSON.stringify(dataToSend));
+        }
         const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
         axios
           .post(url, {
@@ -1263,17 +1271,39 @@ export class Chat extends React.Component {
   }
 
   handleVideo(src, videoManipulateId) {
+    let self = this;
+    let finalSrc = src;
     if (this.live) {
       /*this.live.pause();*/
     }
     let ifPsI = this.state.ifPauseIcon;
-    this.setState({
-      videoSrc: src,
-      photoSrc: null,
-      streamFlag: false,
-      videoManipulateId: videoManipulateId,
-      ifPauseIcon: !ifPsI,
-    });
+
+    var video = document.createElement("video");
+
+    video.onload = function () {
+      //console.log("success, it exsist");
+      self.setState({
+        videoSrc: src,
+        photoSrc: null,
+        streamFlag: false,
+        videoManipulateId: videoManipulateId,
+        ifPauseIcon: !ifPsI,
+      });
+    };
+
+    video.onerror = function () {
+      //console.log("error, ", finalSrc);
+      // don't show video element
+      self.setState({
+        videoSrc: finalSrc.replace(".mp4", ".webm"),
+        photoSrc: null,
+        streamFlag: false,
+        videoManipulateId: videoManipulateId,
+        ifPauseIcon: !ifPsI,
+      });
+    };
+
+    video.src = src;
   }
 
   handleStreamToVideo() {
@@ -1376,17 +1406,6 @@ export class Chat extends React.Component {
         self.socket.emit("createDialog", newObj);
 
         ls.set("initialUrl", getPathFromUrl(window.location.href));
-
-        if (self.props.askedUserData !== "NONE") {
-          const dataToSend = {
-            id: ls.get("userId"),
-            name: this.state.nameRequested,
-            phone: this.state.phoneRequested,
-            email: this.state.emailRequested,
-          };
-          //console.log("DATA TO SEND", dataToSend);
-          self.socket.emit("fillClientData", JSON.stringify(dataToSend));
-        }
       } else if (!this.state.awaitingConnection) {
         let pageUrl = getPathFromUrl(window.location.href);
         let currentValue = value;
@@ -1450,16 +1469,6 @@ export class Chat extends React.Component {
       self.forceUpdate();
     });
   }
-  handleChangeOrientationWrapper() {
-    let self = this; // Store `this` component outside the callback
-    if ("onorientationchange" in window) {
-      window.addEventListener(
-        "orientationchange",
-        self.handleChangeOrientation,
-        false
-      );
-    }
-  }
 
   handleAndroidKeyboard(value) {
     this.setState({
@@ -1467,8 +1476,6 @@ export class Chat extends React.Component {
     });
   }
   componentDidMount() {
-    //this.handleChangeOrientationWrapper();
-
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     window.addEventListener("unload", this.handleUnload);
     window.addEventListener("resize", this.handleResize);
@@ -1528,18 +1535,23 @@ export class Chat extends React.Component {
     }
   }
 
+  dataRecordListener(e) {
+    const blobURL = URL.createObjectURL(e.data);
+    this.setState({ blobURL, isRecording: false });
+    ls.set("blobUrl", blobURL);
+    this.onStop(e.data);
+  }
+
   startMp3() {
     let self = this;
     //console.log("startmp3");
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       self.setState({ recorder: new MediaRecorder(stream) });
       // Set record to <audio> when recording will be finished
-      self.state.recorder.addEventListener("dataavailable", (e) => {
-        const blobURL = URL.createObjectURL(e.data);
-        self.setState({ blobURL, isRecording: false });
-        ls.set("blobUrl", blobURL);
-        self.onStop(e.data);
-      });
+      self.state.recorder.addEventListener(
+        "dataavailable",
+        self.dataRecordListener
+      );
       // Start recording
       self.state.recorder.start();
     });
@@ -1553,7 +1565,10 @@ export class Chat extends React.Component {
 
   onStop(recordedBlob) {
     let self = this;
-
+    self.state.recorder.removeEventListener(
+      "dataavailable",
+      self.dataRecordListener
+    );
     const d = new Date();
     let formData = new FormData();
     const url = `${apiBaseUrl}/user/${ls.get("userId")}/voice`;
@@ -1848,7 +1863,8 @@ export class Chat extends React.Component {
                                         ? ""
                                         : this.state.awaitingConnection
                                         ? "Для продолжения диалога дождитесь ответа"
-                                        : "Спросите что-нибудь ;)"
+                                        : this.props.requestFieldText ||
+                                          "Спросите что-нибудь ;)"
                                     }
                                     onKeyPress={(event) => {
                                       if (event.key === "Enter") {

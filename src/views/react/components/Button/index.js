@@ -11,7 +11,7 @@ import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 //import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
-const LazyChat = React.lazy(() => import('../NewChat'));
+const LazyChat = React.lazy(() => import("../NewChat"));
 import {
   staticUrl,
   socketUrl,
@@ -159,6 +159,7 @@ export class Button extends React.Component {
     this.sendEmailDetails = this.sendEmailDetails.bind(this);
     this.handleTabFocus = this.handleTabFocus.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.initializeSocket = this.initializeSocket.bind(this);
   }
 
   closeRequest() {
@@ -211,6 +212,7 @@ export class Button extends React.Component {
           .toLowerCase();
 
       ls.set("userId", mongoObjectId);
+      this.initializeSocket();
       this.showChatHere();
     }
   }
@@ -228,7 +230,9 @@ export class Button extends React.Component {
 
   componentDidMount() {
     let self = this;
-    this.socket.emit("isButtonAvailable", this.props.buttonId);
+    if (ls.get("userId") && this.socket) {
+      this.socket.emit("isButtonAvailable", this.props.buttonId);
+    }
 
     window.addEventListener("resize", this.handleResize);
 
@@ -460,12 +464,11 @@ export class Button extends React.Component {
       });
   }
 
-  componentWillMount() {
+  initializeSocket() {
     //
 
     let self = this;
 
-    //if (ls.get("userId")) {
     this.socket = io(socketUrl, {
       /*query: "token=" + ls.get("token"),*/
       transports: ["websocket"],
@@ -519,7 +522,13 @@ export class Button extends React.Component {
     this.socket.on("isButtonAvailableResponse", (result) => {
       this.setState({ noStreamerFlag: !result.isAvailable });
     });
-    //}
+    this.socket.open();
+  }
+
+  componentWillMount() {
+    if (ls.get("userId")) {
+      this.initializeSocket();
+    }
 
     if (this.props.buttons) {
       this.props.buttons.map(
@@ -543,7 +552,6 @@ export class Button extends React.Component {
     if (this.props.ifOpened) {
       this.handleClick(null, this.props.buttonId);
     }
-    this.socket.open();
   }
 
   destroyMessage() {
@@ -636,45 +644,46 @@ export class Button extends React.Component {
           <Message destroy={this.destroyMessage} showChat={this.showChat} />
         )*/}
         {this.state.initializeChat && (
-            <Suspense
-                fallback={
-                  <ApiOverlay>
-                    <LoadingCircle loadingFlag />
-                  </ApiOverlay>
-                }
-            >
-              <LazyChat
-                  destroy={this.destroyChat}
-                  displayChat={this.state.displayChat}
-                  businessId={this.state.businessId}
-                  buttonId={this.props.buttonId}
-                  initializeChat={this.state.initializeChat}
-                  greetingText={this.props.greetingText}
-                  waitingText={this.props.waitingText}
-                  greetingTitle={this.props.greetingTitle}
-                  waitingTitle={this.props.waitingTitle}
-                  innerHeight={this.state.innerHeight}
-                  joinDialogue={this.joinDialogue}
-                  displayMainRequest={this.state.displayMainRequest}
-                  closeMainRequest={this.closeMainRequest}
-                  showMainRequest={this.showMainRequest}
-                  emailSentFlag={this.state.emailSentFlag}
-                  sendEmailDetails={this.sendEmailDetails}
-                  currentTitle={this.state.currentTitle}
-                  socket={this.socket}
-                  color={this.props.color}
-                  countdown={this.props.countdown}
-                  miniGame={this.props.miniGame}
-                  timerFlag={this.props.timerFlag}
-                  notificationPermission={this.notificationPermission}
-                  askedUserData={this.props.askedUserData}
-                  noStreamerFlag={this.state.noStreamerFlag}
-                  notificationMessageToggle={this.state.notificationMessageToggle}
-                  leaveOption={this.state.leaveOption}
-                  questionExamples={this.props.questionExamples}
-                  /*firebase={this.props.firebase}*/
-              />
-            </Suspense>
+          <Suspense
+            fallback={
+              <ApiOverlay>
+                <LoadingCircle loadingFlag />
+              </ApiOverlay>
+            }
+          >
+            <LazyChat
+              destroy={this.destroyChat}
+              displayChat={this.state.displayChat}
+              businessId={this.state.businessId}
+              buttonId={this.props.buttonId}
+              initializeChat={this.state.initializeChat}
+              greetingText={this.props.greetingText}
+              waitingText={this.props.waitingText}
+              greetingTitle={this.props.greetingTitle}
+              waitingTitle={this.props.waitingTitle}
+              innerHeight={this.state.innerHeight}
+              joinDialogue={this.joinDialogue}
+              displayMainRequest={this.state.displayMainRequest}
+              closeMainRequest={this.closeMainRequest}
+              showMainRequest={this.showMainRequest}
+              emailSentFlag={this.state.emailSentFlag}
+              sendEmailDetails={this.sendEmailDetails}
+              currentTitle={this.state.currentTitle}
+              socket={this.socket}
+              color={this.props.color}
+              countdown={this.props.countdown}
+              miniGame={this.props.miniGame}
+              timerFlag={this.props.timerFlag}
+              notificationPermission={this.notificationPermission}
+              askedUserData={this.props.askedUserData}
+              noStreamerFlag={this.state.noStreamerFlag}
+              notificationMessageToggle={this.state.notificationMessageToggle}
+              leaveOption={this.state.leaveOption}
+              questionExamples={this.props.questionExamples}
+              requestFieldText={this.props.requestFieldText}
+              /*firebase={this.props.firebase}*/
+            />
+          </Suspense>
         )}
       </ButtonReqWrapper>
     );
