@@ -526,6 +526,7 @@ export class Button extends React.Component {
   }
 
   componentWillMount() {
+    let self = this;
     if (ls.get("userId")) {
       this.initializeSocket();
     }

@@ -957,6 +957,7 @@ export class Chat extends React.Component {
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
     window.removeEventListener("unload", this.handleUnload);
     ls.set("streamInProgress", false);
+    ls.set("allowChatSocketClosure", true);
     if (this.socket) this.socket.close();
   }
 
@@ -1032,7 +1033,9 @@ export class Chat extends React.Component {
         }
       });
       this.socket.on("disconnect", () => {
-        self.socket.open();
+        if (!ls.get("allowChatSocketClosure")) {
+          self.socket.open();
+        }
       });
       this.socket.on("dialogDeleted", () => {
         self.props.destroy();
