@@ -30,7 +30,7 @@ module.exports = (env) => {
 
   const bundleOutputDir = fileEnv.BUNDLE_OUTPUT_DIR;
 
-  //console.log(result.parsed);
+  console.log(bundleOutputDir);
   return [
     {
       entry: {
