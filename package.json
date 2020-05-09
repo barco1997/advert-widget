@@ -6,6 +6,7 @@
     "build-mobile": "./node_modules/.bin/webpack --config webpack.config.js --env.ENVIRONMENT=mobile",
     "build-test": "./node_modules/.bin/webpack --config webpack.config.js --env.ENVIRONMENT=test",
     "build-big": "./node_modules/.bin/webpack --config webpack.config.js --env.ENVIRONMENT=big",
+    "build-default": "./node_modules/.bin/webpack --config webpack.config.js --env.ENVIRONMENT=default",
     "start": "./node_modules/.bin/webpack-dev-server --env.ENVIRONMENT=development --open"
   },
   "babel": {

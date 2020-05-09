@@ -825,7 +825,7 @@ export class Chat extends React.Component {
     this.notifyMe = this.notifyMe.bind(this);
     /*this.notificationPermission = this.notificationPermission.bind(this);*/
     this.handleChangeInStream = this.handleChangeInStream.bind(this);
-    this.handleChangeOrientation = this.handleChangeOrientation.bind(this);
+
     this.orientationChanged = this.orientationChanged.bind(this);
 
     this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
@@ -1273,9 +1273,9 @@ export class Chat extends React.Component {
     let ifPsI = this.state.ifPauseIcon;
 
     var video = document.createElement("video");
-
-    video.onload = function () {
-      //console.log("success, it exsist");
+    console.log("Reached something", src);
+    video.oncanplay = function () {
+      console.log("success, it exsist");
       self.setState({
         videoSrc: src,
         photoSrc: null,
@@ -1286,7 +1286,7 @@ export class Chat extends React.Component {
     };
 
     video.onerror = function () {
-      //console.log("error, ", finalSrc);
+      console.log("error, ", finalSrc);
       // don't show video element
       self.setState({
         videoSrc: finalSrc.replace(".mp4", ".webm"),
@@ -1463,15 +1463,6 @@ export class Chat extends React.Component {
   handleSubmit(event) {
     this.submitValue(this.state.value);
     event.preventDefault();
-  }
-  handleChangeOrientation() {
-    let self = this;
-    this.orientationChanged().then(function () {
-      /*self.setState({
-        innerHeight: window.innerHeight
-      });*/
-      self.forceUpdate();
-    });
   }
 
   handleAndroidKeyboard(value) {
