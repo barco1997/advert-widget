@@ -69,15 +69,15 @@ const InfoBlock = styled.div`
     justify-content: flex-end !important;
     background: ${(props) =>
       `linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.12) 100%), ${props.color} !important`};
-    height: 330px !important;
+    height: 100% !important;
     min-height: 330px !important;
     width: 100% !important;
     ${media.tablet`
-    height: 370px !important;
+    height: 100% !important;
   `};
     ${media.phone`
       height: ${(props) =>
-        props.isTall ? "280px !important" : "280px !important"};
+        props.isTall ? "340px !important" : "340px !important"};
       min-height: 230px !important;
   `};
   }
