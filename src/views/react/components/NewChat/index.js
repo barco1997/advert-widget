@@ -363,7 +363,7 @@ const CloseButton = styled.span`
     align-items: center !important;
     opacity: 1 !important;
     margin-right: 15px !important;
-    margin-left: 10px !important;
+    margin-left: ${(props) => (props.noMarginLeft ? "0px" : "10px")} !important;
     &:hover {
       background: rgba(255, 255, 255, 0.26) !important;
     }
@@ -825,11 +825,9 @@ export class Chat extends React.Component {
     this.notifyMe = this.notifyMe.bind(this);
     /*this.notificationPermission = this.notificationPermission.bind(this);*/
     this.handleChangeInStream = this.handleChangeInStream.bind(this);
-    this.handleChangeOrientation = this.handleChangeOrientation.bind(this);
+
     this.orientationChanged = this.orientationChanged.bind(this);
-    this.handleChangeOrientationWrapper = this.handleChangeOrientationWrapper.bind(
-      this
-    );
+
     this.handleAndroidKeyboard = this.handleAndroidKeyboard.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleCart = this.handleCart.bind(this);
@@ -849,6 +847,7 @@ export class Chat extends React.Component {
     this.endDialogue = this.endDialogue.bind(this);
     this.handleReadyStreamUnmount = this.handleReadyStreamUnmount.bind(this);
     this.handleMessages = this.handleMessages.bind(this);
+    this.dataRecordListener = this.dataRecordListener.bind(this);
   }
 
   endDialogue() {
@@ -958,6 +957,7 @@ export class Chat extends React.Component {
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
     window.removeEventListener("unload", this.handleUnload);
     ls.set("streamInProgress", false);
+    ls.set("allowChatSocketClosure", true);
     if (this.socket) this.socket.close();
   }
 
@@ -1019,7 +1019,7 @@ export class Chat extends React.Component {
 
   componentWillMount() {
     let self = this;
-
+    ls.set("allowChatSocketClosure", false);
     if (ls.get("userId")) {
       //this.socket = this.props.socket;
       this.socket = io(socketUrl, {
@@ -1033,7 +1033,9 @@ export class Chat extends React.Component {
         }
       });
       this.socket.on("disconnect", () => {
-        self.socket.open();
+        if (!ls.get("allowChatSocketClosure")) {
+          self.socket.open();
+        }
       });
       this.socket.on("dialogDeleted", () => {
         self.props.destroy();
@@ -1263,17 +1265,39 @@ export class Chat extends React.Component {
   }
 
   handleVideo(src, videoManipulateId) {
+    let self = this;
+    let finalSrc = src;
     if (this.live) {
       /*this.live.pause();*/
     }
     let ifPsI = this.state.ifPauseIcon;
-    this.setState({
-      videoSrc: src,
-      photoSrc: null,
-      streamFlag: false,
-      videoManipulateId: videoManipulateId,
-      ifPauseIcon: !ifPsI,
-    });
+
+    var video = document.createElement("video");
+    console.log("Reached something", src);
+    video.oncanplay = function () {
+      console.log("success, it exsist");
+      self.setState({
+        videoSrc: src,
+        photoSrc: null,
+        streamFlag: false,
+        videoManipulateId: videoManipulateId,
+        ifPauseIcon: !ifPsI,
+      });
+    };
+
+    video.onerror = function () {
+      console.log("error, ", finalSrc);
+      // don't show video element
+      self.setState({
+        videoSrc: finalSrc.replace(".mp4", ".webm"),
+        photoSrc: null,
+        streamFlag: false,
+        videoManipulateId: videoManipulateId,
+        ifPauseIcon: !ifPsI,
+      });
+    };
+
+    video.src = src;
   }
 
   handleStreamToVideo() {
@@ -1373,10 +1397,6 @@ export class Chat extends React.Component {
           description: value,
         };
         ls.remove("awaitTmp");
-        self.socket.emit("createDialog", newObj);
-
-        ls.set("initialUrl", getPathFromUrl(window.location.href));
-
         if (self.props.askedUserData !== "NONE") {
           const dataToSend = {
             id: ls.get("userId"),
@@ -1387,6 +1407,9 @@ export class Chat extends React.Component {
           //console.log("DATA TO SEND", dataToSend);
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
+        self.socket.emit("createDialog", newObj);
+
+        ls.set("initialUrl", getPathFromUrl(window.location.href));
       } else if (!this.state.awaitingConnection) {
         let pageUrl = getPathFromUrl(window.location.href);
         let currentValue = value;
@@ -1441,25 +1464,6 @@ export class Chat extends React.Component {
     this.submitValue(this.state.value);
     event.preventDefault();
   }
-  handleChangeOrientation() {
-    let self = this;
-    this.orientationChanged().then(function () {
-      /*self.setState({
-        innerHeight: window.innerHeight
-      });*/
-      self.forceUpdate();
-    });
-  }
-  handleChangeOrientationWrapper() {
-    let self = this; // Store `this` component outside the callback
-    if ("onorientationchange" in window) {
-      window.addEventListener(
-        "orientationchange",
-        self.handleChangeOrientation,
-        false
-      );
-    }
-  }
 
   handleAndroidKeyboard(value) {
     this.setState({
@@ -1467,8 +1471,6 @@ export class Chat extends React.Component {
     });
   }
   componentDidMount() {
-    //this.handleChangeOrientationWrapper();
-
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     window.addEventListener("unload", this.handleUnload);
     window.addEventListener("resize", this.handleResize);
@@ -1528,18 +1530,23 @@ export class Chat extends React.Component {
     }
   }
 
+  dataRecordListener(e) {
+    const blobURL = URL.createObjectURL(e.data);
+    this.setState({ blobURL, isRecording: false });
+    ls.set("blobUrl", blobURL);
+    this.onStop(e.data);
+  }
+
   startMp3() {
     let self = this;
     //console.log("startmp3");
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       self.setState({ recorder: new MediaRecorder(stream) });
       // Set record to <audio> when recording will be finished
-      self.state.recorder.addEventListener("dataavailable", (e) => {
-        const blobURL = URL.createObjectURL(e.data);
-        self.setState({ blobURL, isRecording: false });
-        ls.set("blobUrl", blobURL);
-        self.onStop(e.data);
-      });
+      self.state.recorder.addEventListener(
+        "dataavailable",
+        self.dataRecordListener
+      );
       // Start recording
       self.state.recorder.start();
     });
@@ -1553,7 +1560,10 @@ export class Chat extends React.Component {
 
   onStop(recordedBlob) {
     let self = this;
-
+    self.state.recorder.removeEventListener(
+      "dataavailable",
+      self.dataRecordListener
+    );
     const d = new Date();
     let formData = new FormData();
     const url = `${apiBaseUrl}/user/${ls.get("userId")}/voice`;
@@ -1702,6 +1712,7 @@ export class Chat extends React.Component {
                         <AdditionalActions endDialogue={this.endDialogue} />
                         {this.props.leaveOption && (
                           <CloseButton
+                            noMarginLeft
                             onClick={() => {
                               this.setState({
                                 streamFlag: false,
@@ -1848,7 +1859,8 @@ export class Chat extends React.Component {
                                         ? ""
                                         : this.state.awaitingConnection
                                         ? "Для продолжения диалога дождитесь ответа"
-                                        : "Спросите что-нибудь ;)"
+                                        : this.props.requestFieldText ||
+                                          "Спросите что-нибудь ;)"
                                     }
                                     onKeyPress={(event) => {
                                       if (event.key === "Enter") {

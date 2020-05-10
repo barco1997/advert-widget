@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import React from "react";
 
-
 import { media } from "../../../../utils/media";
 
 const Wrapper = styled.button`
@@ -21,6 +20,7 @@ const Wrapper = styled.button`
     justify-content: center !important;
     align-items: center !important;
     position: relative !important;
+    margin-right: 15px !important;
     &:hover {
       background: rgba(255, 255, 255, 0.26) !important;
     }
