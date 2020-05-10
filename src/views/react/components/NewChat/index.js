@@ -623,9 +623,9 @@ const ImageSend = styled.div`
 
 const Image = styled.div`
   &&& {
-    background: url(${(props) => props.src}) !important;
+    background: url(${(props) => props.src}) no-repeat center top fixed !important;
     background-repeat: no-repeat !important;
-    background-size: cover !important;
+    background-size: 100% !important;
     width: 496px !important;
     height: 664px !important;
     position: relative !important;
