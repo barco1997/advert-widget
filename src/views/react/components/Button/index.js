@@ -512,7 +512,7 @@ export class Button extends React.Component {
             displayEmailRequest: true,
           });
         }
-        if (!iOS) {
+        if (!iOS && this.state.leaveOption) {
           this.notifyMe(
             "New message at Eyezon button",
             currentUrl,
