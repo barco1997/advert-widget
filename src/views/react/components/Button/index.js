@@ -603,7 +603,7 @@ export class Button extends React.Component {
   }
 
   render() {
-    //console.log("POSITION", this.props.position);
+    console.log("Props", this.props);
     //console.log("LEAVE", process.env.LEAVE_OPTION);
     return (
       <ButtonReqWrapper>

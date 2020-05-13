@@ -148,12 +148,12 @@ export class GetDetailsView extends React.Component {
             color={this.props.color || "#ff2d55"}
           >
             <InfoBlockHeader>
-              {this.state.isEmail && this.state.isPhone && this.state.isName
+              {this.props.greetingTitle
                 ? this.props.greetingTitle
-                : "Не пропустите ответ! Не пропустите ответ!"}
+                : "Не пропустите ответ!"}
             </InfoBlockHeader>
             <InfoBlockText>
-              {this.state.isEmail && this.state.isPhone && this.state.isName
+              {this.props.greetingText
                 ? this.props.greetingText
                 : "Чтобы узнать, что вам ответили, включите уведомления или оставьте свой e-mail. "}
             </InfoBlockText>

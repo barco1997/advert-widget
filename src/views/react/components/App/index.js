@@ -53,6 +53,7 @@ export class App extends React.Component {
     window.removeEventListener("keydown", this.keydownFunc);
   }
   componentDidMount() {
+    let self = this;
     //get amount of notifications
     console.log("Button react component mounted successfully");
     document.querySelectorAll("button").forEach(function (item) {
@@ -61,7 +62,7 @@ export class App extends React.Component {
       });
     });
     window.addEventListener("keydown", this.keydownFunc);
-    let self = this;
+    //let self = this;
     const buttonId = this.props.buttonId;
     //const userId = ls.get("userId");
 
@@ -70,7 +71,8 @@ export class App extends React.Component {
     axios.get(lang_url).then(function (languages) {
       axios.get(url).then(function (response) {
         //let notificationCount = ls.get("notificationCount");
-        console.log("RESP", response);
+        //console.log("RESP", response);
+        //console.log("LANG", languages);
         const languageId = userLang.toLowerCase().includes("en")
           ? languages.data.find((element) => element.value === "EN")._id
           : languages.data.find((element) => element.value === "RU")._id;
@@ -78,45 +80,51 @@ export class App extends React.Component {
         const localisedTextArray = response.data.languageSpecificFields.filter(
           (element) => element.language === languageId
         );
-        self.setState({
-          readyToRender: true,
-          requestFieldText:
-            localisedTextArray.find(
-              (element) => element.field === "requestFieldText"
-            ).value || "requestFieldText",
-          mainText:
-            localisedTextArray.find((element) => element.field === "mainText")
-              .value || "mainText",
-          greetingText:
-            localisedTextArray.find(
-              (element) => element.field === "greetingText"
-            ).value || "greetingText",
-          greetingTitle:
-            localisedTextArray.find(
-              (element) => element.field === "greetingTitle"
-            ).value || "greetingTitle",
-          waitingText:
-            localisedTextArray.find(
-              (element) => element.field === "waitingText"
-            ).value || "waitingText",
-          waitingTitle:
-            localisedTextArray.find(
-              (element) => element.field === "waitingTitle"
-            ).value || "waitingTitle",
-          questionExamples: localisedTextArray.find(
-            (element) => element.field === "questionExamples"
-          )
-            ? localisedTextArray.find(
-                (element) => element.field === "questionExamples"
-              ).value
-            : [],
-          color: response.data.chatColor,
-          countdown: response.data.countdown,
-          askedUserData: response.data.askedUserData,
-          miniGame: response.data.miniGame,
-          position:
-            response.data.position /*.toLowerCase().replace(/_/gi, "-")*/,
-        });
+
+        self.setState(
+          {
+            readyToRender: true,
+            requestFieldText:
+              localisedTextArray.find(
+                (element) => element.field === "requestFieldText"
+              ).value || "requestFieldText",
+            mainText:
+              localisedTextArray.find((element) => element.field === "mainText")
+                .value || "mainText",
+            greetingText:
+              localisedTextArray.find(
+                (element) => element.field === "greetingText"
+              ).value || "greetingText",
+            greetingTitle:
+              localisedTextArray.find(
+                (element) => element.field === "greetingTitle"
+              ).value || "greetingTitle",
+            waitingText:
+              localisedTextArray.find(
+                (element) => element.field === "waitingText"
+              ).value || "waitingText",
+            waitingTitle:
+              localisedTextArray.find(
+                (element) => element.field === "waitingTitle"
+              ).value || "waitingTitle",
+            questionExamples: localisedTextArray.find(
+              (element) => element.field === "questionExamples"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "questionExamples"
+                ).value
+              : [],
+            color: response.data.chatColor,
+            countdown: response.data.countdown,
+            askedUserData: response.data.askedUserData,
+            miniGame: response.data.miniGame,
+            position:
+              response.data.position /*.toLowerCase().replace(/_/gi, "-")*/,
+          },
+          () => {
+            /*console.log("State", self.state);*/
+          }
+        );
       });
     });
     /*var messaging = this.props.firebase.messagingFunc();
