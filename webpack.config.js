@@ -44,7 +44,7 @@ module.exports = (env) => {
         publicPath: isDevBuild ? undefined : fileEnv.PUBLIC_PATH,
         chunkFilename: "[name].bundle.js",
         path: path.resolve(bundleOutputDir),
-        jsonpFunction: 'webpackJsonpEyezon'
+        jsonpFunction: "webpackJsonpEyezon",
       },
       plugins: [
         ...(isDevBuild
