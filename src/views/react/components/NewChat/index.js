@@ -1274,7 +1274,7 @@ export class Chat extends React.Component {
 
     var video = document.createElement("video");
     console.log("Reached something", src);
-    video.oncanplay = function () {
+    video.onloadedmetadata = function () {
       console.log("success, it exsist");
       self.setState({
         videoSrc: src,

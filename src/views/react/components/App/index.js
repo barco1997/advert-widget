@@ -107,13 +107,15 @@ export class App extends React.Component {
               localisedTextArray.find(
                 (element) => element.field === "waitingTitle"
               ).value || "waitingTitle",
-            questionExamples: localisedTextArray.find(
-              (element) => element.field === "questionExamples"
-            )
-              ? localisedTextArray.find(
-                  (element) => element.field === "questionExamples"
-                ).value
-              : [],
+            questionExamples:
+              response.data.questionExamples &&
+              localisedTextArray.find(
+                (element) => element.field === "requestTemplate"
+              )
+                ? localisedTextArray.find(
+                    (element) => element.field === "requestTemplate"
+                  ).value
+                : [],
             color: response.data.chatColor,
             countdown: response.data.countdown,
             askedUserData: response.data.askedUserData,

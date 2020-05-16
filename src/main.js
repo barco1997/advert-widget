@@ -71,12 +71,14 @@ function apiHandler(api, params) {
             )
           ) {
             if (params.targets && params.targets.length > 0) {
-              buttons = params.targets.map((target) => {
-                return {
-                  buttonId: target.buttonId,
-                  target: document.getElementById(target.targetId),
-                };
-              });
+              buttons = params.targets
+                .map((target) => {
+                  return {
+                    buttonId: target.buttonId,
+                    target: document.getElementById(target.targetId),
+                  };
+                })
+                .filter((button) => button.target);
             }
 
             if (openChat) {
