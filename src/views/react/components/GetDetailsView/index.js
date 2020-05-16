@@ -41,7 +41,8 @@ const FieldWrapper = styled.div`
 
     width: 100% !important;
     margin: 0px 0px 8px 18px !important;
-    min-height: 150px !important;
+    min-height: ${(props) =>
+      props.isTall ? "150px !important" : "50px !important"};
   }
 `;
 
@@ -143,7 +144,7 @@ export class GetDetailsView extends React.Component {
         <MainBlock>
           <InfoBlock
             isTall={
-              this.state.isEmail || this.state.isPhone || this.state.isName
+              this.state.isEmail && this.state.isPhone && this.state.isName
             }
             color={this.props.color || "#ff2d55"}
           >
@@ -160,7 +161,11 @@ export class GetDetailsView extends React.Component {
             {(this.state.isEmail ||
               this.state.isPhone ||
               this.state.isName) && (
-              <FieldWrapper>
+              <FieldWrapper
+                isTall={
+                  this.state.isEmail && this.state.isPhone && this.state.isName
+                }
+              >
                 {this.state.isEmail && (
                   <PositionWrapper>
                     <FormField
