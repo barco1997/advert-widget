@@ -439,7 +439,7 @@ export class Response extends React.Component {
                 <ExtraStream color={this.props.color}>
                   {this.props.description && (
                     <SummaryTopStream>
-                      {this.props.description} начал прямую трансляцию
+                      Прямая трансляцию началась
                     </SummaryTopStream>
                   )}
 
