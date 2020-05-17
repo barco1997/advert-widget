@@ -189,6 +189,17 @@ export class Button extends React.Component {
         email,
       })
     );
+    this.socket.emit(
+      "changeDialogNotifications",
+      JSON.stringify({
+        dialogId: ls.get("userId"),
+        notifications: {
+          push:
+            "Notification" in window && Notification.permission === "granted",
+          email: true,
+        },
+      })
+    );
     this.setState({
       emailSentFlag: true,
       displayMainRequest: false,
@@ -351,6 +362,16 @@ export class Button extends React.Component {
         Notification.requestPermission(function (permission) {
           if (permission === "granted") {
             //ls.set("notificationPermission", true);
+            self.socket.emit(
+              "changeDialogNotifications",
+              JSON.stringify({
+                dialogId: ls.get("userId"),
+                notifications: {
+                  push: true,
+                  email: self.state.emailSentFlag,
+                },
+              })
+            );
           }
           self.setState({
             notificationMessageToggle: false,
