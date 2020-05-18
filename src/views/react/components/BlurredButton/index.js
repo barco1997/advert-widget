@@ -41,17 +41,17 @@ const Text = styled.div`
 const Span = styled.span`
   &&& {
     position: relative !important;
-    width: 15px !important;
-    height: 15px !important;
+    width: 12px !important;
+    height: 12px !important;
     opacity: 0.7 !important;
     cursor: pointer !important;
 
     &:after {
       position: absolute !important;
       top: 0px !important;
-      left: 5px !important;
+      left: 2px !important;
       content: " " !important;
-      height: 17px !important;
+      height: 14px !important;
       width: 2px !important;
       background-color: #ff204a !important;
       transform: rotate(-45deg) !important;
@@ -59,9 +59,9 @@ const Span = styled.span`
     &:before {
       position: absolute !important;
       top: 0px !important;
-      left: 5px !important;
+      left: 2px !important;
       content: " " !important;
-      height: 17px !important;
+      height: 14px !important;
       width: 2px !important;
       background-color: #ff204a !important;
       transform: rotate(45deg) !important;
