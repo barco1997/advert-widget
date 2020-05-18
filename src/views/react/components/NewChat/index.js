@@ -34,6 +34,7 @@ import GetDetailsView from "../GetDetailsView";
 import NoStreamerComponent from "../NoStreamerComponent";
 import Loader from "../Loader";
 import AdditionalActions from "../AdditionalActions";
+import BrowserAlert from "../BrowserAlert";
 
 const uuidv1 = require("uuid/v1");
 //let currentUrl = window.location.href;
@@ -1649,436 +1650,451 @@ export class Chat extends React.Component {
 
   render() {
     return (
-      <ChatWrapper
-        displayFlag={this.state.displayFlag}
-        top={this.state.androidOffset}
-      >
-        <JsChatOverlay
-          onClick={() => {
-            if (!this.state.streamFlag) {
-              if (
-                !this.props.displayMainRequest &&
-                !this.props.emailSentFlag &&
-                this.state.messages.length > 0
-              ) {
-                this.props.showMainRequest();
-              } else {
-                //this.props.closeMainRequest();
-                this.props.destroy();
+      <>
+        {this.props.showWarning && (
+          <BrowserAlert close={this.props.handleCloseWarning} />
+        )}
+        <ChatWrapper
+          displayFlag={this.state.displayFlag}
+          top={this.state.androidOffset}
+        >
+          <JsChatOverlay
+            onClick={() => {
+              if (!this.state.streamFlag) {
+                if (
+                  !this.props.displayMainRequest &&
+                  !this.props.emailSentFlag &&
+                  this.state.messages.length > 0
+                ) {
+                  this.props.showMainRequest();
+                } else {
+                  //this.props.closeMainRequest();
+                  this.props.destroy();
+                }
+                /*this.live.pause();*/
+                if (this.loadedVideo.getInternalPlayer()) {
+                  this.loadedVideo.getInternalPlayer().pause();
+                }
               }
-              /*this.live.pause();*/
-              if (this.loadedVideo.getInternalPlayer()) {
-                this.loadedVideo.getInternalPlayer().pause();
-              }
-            }
-            this.setState({
-              prepareToUnmountStream:
-                this.state.streamFlag && !this.state.prepareToUnmountStream
-                  ? true
-                  : false,
-            });
-          }}
-        />
+              this.setState({
+                prepareToUnmountStream:
+                  this.state.streamFlag && !this.state.prepareToUnmountStream
+                    ? true
+                    : false,
+              });
+            }}
+          />
 
-        <WindowWrapper height={634} windowHeight={this.props.innerHeight}>
-          <ChatWindowExpansion
-            height={this.props.innerHeight}
-            visible={!this.state.streamFlag}
-          >
-            <JsChatWindow
-              visible={!this.state.streamFlag}
+          <WindowWrapper height={634} windowHeight={this.props.innerHeight}>
+            <ChatWindowExpansion
               height={this.props.innerHeight}
+              visible={!this.state.streamFlag}
             >
-              {this.state.isMessagesLoading ? (
-                <Center>
-                  <Loader loadingFlag={this.state.isMessagesLoading} />
-                </Center>
-              ) : (
-                <Fragment>
-                  {this.state.gameStarted ? (
-                    <LazyGame
-                      height={this.props.innerHeight}
-                      width={496}
-                      stopGame={this.stopGame}
-                      color={this.props.color}
-                      countdown={this.props.countdown}
-                    />
-                  ) : (
-                    <Fragment>
-                      <CloseWrapperA color={this.props.color}>
-                        <DisclaimerWrapperMobile>
-                          <Disclaimer />
-                        </DisclaimerWrapperMobile>
-                        {this.props.leaveOption && (
-                          <AdditionalActions endDialogue={this.endDialogue} />
-                        )}
-                        {this.props.leaveOption && (
-                          <CloseButton
-                            noMarginLeft
-                            onClick={() => {
-                              this.setState({
-                                streamFlag: false,
-                              });
-                              //this.socket.emit("leaveStream", ls.get("userId"));
-                              console.log(
-                                this.props.displayMainRequest,
-                                this.props.emailSentFlag,
-                                this.state.messages.length > 0
-                              );
-                              if (
-                                !this.props.displayMainRequest &&
-                                !this.props.emailSentFlag &&
-                                this.state.messages.length > 0
-                              ) {
-                                this.props.showMainRequest();
-                              } else {
-                                //this.props.closeMainRequest();
-                                this.props.destroy();
-                              }
-                              /*this.live.pause();*/
-                              if (this.loadedVideo.getInternalPlayer()) {
-                                this.loadedVideo.getInternalPlayer().pause();
-                              }
-                            }}
-                          />
-                        )}
-                      </CloseWrapperA>
+              <JsChatWindow
+                visible={!this.state.streamFlag}
+                height={this.props.innerHeight}
+              >
+                {this.state.isMessagesLoading ? (
+                  <Center>
+                    <Loader loadingFlag={this.state.isMessagesLoading} />
+                  </Center>
+                ) : (
+                  <Fragment>
+                    {this.state.gameStarted ? (
+                      <LazyGame
+                        height={this.props.innerHeight}
+                        width={496}
+                        stopGame={this.stopGame}
+                        color={this.props.color}
+                        countdown={this.props.countdown}
+                      />
+                    ) : (
+                      <Fragment>
+                        <CloseWrapperA color={this.props.color}>
+                          <DisclaimerWrapperMobile>
+                            <Disclaimer />
+                          </DisclaimerWrapperMobile>
+                          {this.props.leaveOption && (
+                            <AdditionalActions endDialogue={this.endDialogue} />
+                          )}
+                          {this.props.leaveOption && (
+                            <CloseButton
+                              noMarginLeft
+                              onClick={() => {
+                                this.setState({
+                                  streamFlag: false,
+                                });
+                                //this.socket.emit("leaveStream", ls.get("userId"));
+                                console.log(
+                                  this.props.displayMainRequest,
+                                  this.props.emailSentFlag,
+                                  this.state.messages.length > 0
+                                );
+                                if (
+                                  !this.props.displayMainRequest &&
+                                  !this.props.emailSentFlag &&
+                                  this.state.messages.length > 0
+                                ) {
+                                  this.props.showMainRequest();
+                                } else {
+                                  //this.props.closeMainRequest();
+                                  this.props.destroy();
+                                }
+                                /*this.live.pause();*/
+                                if (this.loadedVideo.getInternalPlayer()) {
+                                  this.loadedVideo.getInternalPlayer().pause();
+                                }
+                              }}
+                            />
+                          )}
+                        </CloseWrapperA>
 
-                      {this.props.displayMainRequest ? (
-                        <LeaveEmail
-                          sendEmailDetails={this.props.sendEmailDetails}
-                          destroy={this.props.destroy}
-                          notificationPermission={
-                            this.props.notificationPermission
-                          }
-                          color={this.props.color}
-                        />
-                      ) : (
-                        <Fragment>
-                          <JsChatMessageContainer
-                            tHeight={this.state.textAreaHeight}
-                          >
-                            <Fragment>
-                              {!this.state.messages ||
-                              (this.state.messages.length < 2 &&
-                                this.props.noStreamerFlag) ||
-                              this.state.messages.length === 0 ? (
-                                <React.Fragment>
-                                  {!this.props.noStreamerFlag ? (
-                                    <GetDetailsView
-                                      handleChange={this.handleChangeInput}
-                                      name={this.state.nameRequested}
-                                      phone={this.state.phoneRequested}
-                                      email={this.state.emailRequested}
-                                      greetingTitle={this.props.greetingTitle}
-                                      greetingText={this.props.greetingText}
-                                      requestedData={this.props.askedUserData}
-                                      color={this.props.color}
-                                      submitValue={this.submitValue}
-                                      questionExamples={
-                                        this.props.questionExamples
-                                      }
-                                    />
-                                  ) : (
-                                    <NoStreamerComponent
-                                      receivedDetails={ls.get("noStreamerFlag")}
-                                      color={this.props.color}
-                                      notificationPermission={
-                                        this.props.notificationPermission
-                                      }
-                                      sendEmailDetails={
-                                        this.props.sendEmailDetails
-                                      }
-                                      emailSentFlag={this.props.emailSentFlag}
-                                    />
-                                  )}
-                                </React.Fragment>
-                              ) : (
-                                <MessageArea
-                                  messages={this.state.messages}
-                                  awaitingConnection={
-                                    this.state.awaitingConnection
-                                  }
-                                  setFlv={this.handleStreamClick}
-                                  handlePhoto={this.handlePhoto}
-                                  handleVideo={this.handleVideo}
-                                  handleStreamToVideo={this.handleStreamToVideo}
-                                  strVideo={this.state.streamToVideo}
-                                  manipulateVideoId={
-                                    this.state.videoManipulateId
-                                  }
-                                  ifPauseIcon={this.state.ifPauseIcon}
-                                  existingChats={this.state.existingChats}
-                                  transactionLimit={this.state.transactionLimit}
-                                  sentHistory={this.state.sentHistory}
-                                  waitingText={this.props.waitingText}
-                                  waitingTitle={this.props.waitingTitle}
-                                  startGame={this.startGame}
-                                  color={this.props.color}
-                                  miniGame={this.props.miniGame}
-                                  timerFlag={this.props.timerFlag}
-                                  sendEmailDetails={this.props.sendEmailDetails}
-                                  displayMainRequest={
-                                    this.props.displayMainRequest
-                                  }
-                                  notificationPermission={
-                                    this.props.notificationPermission
-                                  }
-                                  emailSentFlag={this.props.emailSentFlag}
-                                  countdown={this.props.countdown}
-                                />
-                              )}
-                            </Fragment>
-                          </JsChatMessageContainer>
-                          <CustomForm>
-                            <div
-                              style={{ flexDirection: "column  !important" }}
+                        {this.props.displayMainRequest ? (
+                          <LeaveEmail
+                            sendEmailDetails={this.props.sendEmailDetails}
+                            destroy={this.props.destroy}
+                            notificationPermission={
+                              this.props.notificationPermission
+                            }
+                            color={this.props.color}
+                          />
+                        ) : (
+                          <Fragment>
+                            <JsChatMessageContainer
+                              tHeight={this.state.textAreaHeight}
                             >
-                              <CartTextFieldExtra>
-                                <CartTextFieldRelative>
-                                  <InputFieldA
-                                    rows="1"
-                                    ref={(item) => {
-                                      this.mainInput = item;
-                                    }}
-                                    onFocus={() => {
-                                      //this.handleAndroidKeyboard(true);
-                                    }}
-                                    onBlur={() => {
-                                      //this.handleAndroidKeyboard(false);
-                                    }}
-                                    height={this.state.textAreaHeight}
-                                    onKeyDown={() => this.textAreaAdjust(false)}
-                                    type="text"
-                                    value={this.state.value}
-                                    onChange={this.handleChange}
-                                    blocked={this.state.awaitingConnection}
-                                    disabled={
-                                      this.state.awaitingConnection ||
-                                      (this.props.noStreamerFlag &&
-                                        !this.props.emailSentFlag &&
-                                        (!("Notification" in window) ||
-                                          Notification.permission !==
-                                            "granted"))
+                              <Fragment>
+                                {!this.state.messages ||
+                                (this.state.messages.length < 2 &&
+                                  this.props.noStreamerFlag) ||
+                                this.state.messages.length === 0 ? (
+                                  <React.Fragment>
+                                    {!this.props.noStreamerFlag ? (
+                                      <GetDetailsView
+                                        handleChange={this.handleChangeInput}
+                                        name={this.state.nameRequested}
+                                        phone={this.state.phoneRequested}
+                                        email={this.state.emailRequested}
+                                        greetingTitle={this.props.greetingTitle}
+                                        greetingText={this.props.greetingText}
+                                        requestedData={this.props.askedUserData}
+                                        color={this.props.color}
+                                        submitValue={this.submitValue}
+                                        questionExamples={
+                                          this.props.questionExamples
+                                        }
+                                      />
+                                    ) : (
+                                      <NoStreamerComponent
+                                        receivedDetails={ls.get(
+                                          "noStreamerFlag"
+                                        )}
+                                        color={this.props.color}
+                                        notificationPermission={
+                                          this.props.notificationPermission
+                                        }
+                                        sendEmailDetails={
+                                          this.props.sendEmailDetails
+                                        }
+                                        emailSentFlag={this.props.emailSentFlag}
+                                      />
+                                    )}
+                                  </React.Fragment>
+                                ) : (
+                                  <MessageArea
+                                    messages={this.state.messages}
+                                    awaitingConnection={
+                                      this.state.awaitingConnection
                                     }
-                                    placeholder={
-                                      this.state.ifTimer
-                                        ? ""
-                                        : this.state.awaitingConnection
-                                        ? "Для продолжения диалога дождитесь ответа"
-                                        : this.props.requestFieldText ||
-                                          "Спросите что-нибудь ;)"
+                                    setFlv={this.handleStreamClick}
+                                    handlePhoto={this.handlePhoto}
+                                    handleVideo={this.handleVideo}
+                                    handleStreamToVideo={
+                                      this.handleStreamToVideo
                                     }
-                                    onKeyPress={(event) => {
-                                      if (event.key === "Enter") {
-                                        event.preventDefault();
-                                        this.handleSubmit(event);
-                                      }
-                                    }}
+                                    strVideo={this.state.streamToVideo}
+                                    manipulateVideoId={
+                                      this.state.videoManipulateId
+                                    }
+                                    ifPauseIcon={this.state.ifPauseIcon}
+                                    existingChats={this.state.existingChats}
+                                    transactionLimit={
+                                      this.state.transactionLimit
+                                    }
+                                    sentHistory={this.state.sentHistory}
+                                    waitingText={this.props.waitingText}
+                                    waitingTitle={this.props.waitingTitle}
+                                    startGame={this.startGame}
+                                    color={this.props.color}
+                                    miniGame={this.props.miniGame}
+                                    timerFlag={this.props.timerFlag}
+                                    sendEmailDetails={
+                                      this.props.sendEmailDetails
+                                    }
+                                    displayMainRequest={
+                                      this.props.displayMainRequest
+                                    }
+                                    notificationPermission={
+                                      this.props.notificationPermission
+                                    }
+                                    emailSentFlag={this.props.emailSentFlag}
+                                    countdown={this.props.countdown}
                                   />
-                                  {this.state.ifTimer && (
-                                    <AudioTimer>
-                                      <TimerCircle />
-                                      <Timer>
-                                        <StandaloneTimer
-                                          setDuration={this.setAudioDuration}
-                                        />
-                                      </Timer>
-                                    </AudioTimer>
-                                  )}
-                                  {this.state.value.length < 1 &&
-                                    this.state.messages &&
-                                    this.state.messages.length > 1 && (
-                                      <MicWrap
-                                        onMouseDown={this.handleDown}
-                                        onTouchStart={this.handleDown}
-                                        onMouseUp={this.handleUp}
-                                        onTouchEnd={this.handleUp}
-                                        tabIndex="0"
-                                        isActive={this.state.ifTimer}
+                                )}
+                              </Fragment>
+                            </JsChatMessageContainer>
+                            <CustomForm>
+                              <div
+                                style={{ flexDirection: "column  !important" }}
+                              >
+                                <CartTextFieldExtra>
+                                  <CartTextFieldRelative>
+                                    <InputFieldA
+                                      rows="1"
+                                      ref={(item) => {
+                                        this.mainInput = item;
+                                      }}
+                                      onFocus={() => {
+                                        //this.handleAndroidKeyboard(true);
+                                      }}
+                                      onBlur={() => {
+                                        //this.handleAndroidKeyboard(false);
+                                      }}
+                                      height={this.state.textAreaHeight}
+                                      onKeyDown={() =>
+                                        this.textAreaAdjust(false)
+                                      }
+                                      type="text"
+                                      value={this.state.value}
+                                      onChange={this.handleChange}
+                                      blocked={this.state.awaitingConnection}
+                                      disabled={
+                                        this.state.awaitingConnection ||
+                                        (this.props.noStreamerFlag &&
+                                          !this.props.emailSentFlag &&
+                                          (!("Notification" in window) ||
+                                            Notification.permission !==
+                                              "granted"))
+                                      }
+                                      placeholder={
+                                        this.state.ifTimer
+                                          ? ""
+                                          : this.state.awaitingConnection
+                                          ? "Для продолжения диалога дождитесь ответа"
+                                          : this.props.requestFieldText ||
+                                            "Спросите что-нибудь ;)"
+                                      }
+                                      onKeyPress={(event) => {
+                                        if (event.key === "Enter") {
+                                          event.preventDefault();
+                                          this.handleSubmit(event);
+                                        }
+                                      }}
+                                    />
+                                    {this.state.ifTimer && (
+                                      <AudioTimer>
+                                        <TimerCircle />
+                                        <Timer>
+                                          <StandaloneTimer
+                                            setDuration={this.setAudioDuration}
+                                          />
+                                        </Timer>
+                                      </AudioTimer>
+                                    )}
+                                    {this.state.value.length < 1 &&
+                                      this.state.messages &&
+                                      this.state.messages.length > 1 && (
+                                        <MicWrap
+                                          onMouseDown={this.handleDown}
+                                          onTouchStart={this.handleDown}
+                                          onMouseUp={this.handleUp}
+                                          onTouchEnd={this.handleUp}
+                                          tabIndex="0"
+                                          isActive={this.state.ifTimer}
+                                          color={this.props.color}
+                                        >
+                                          <ImageMic
+                                            src={`${staticUrl}/static/images/mic.png`}
+                                          />
+                                        </MicWrap>
+                                      )}
+                                    {!this.state.messages ||
+                                      (this.state.messages.length == 0 &&
+                                        !ls.get("noStreamerFlag") && (
+                                          <EntryWrap>
+                                            <EntryInfo
+                                              noStreamerFlag={
+                                                this.props.noStreamerFlag &&
+                                                !this.props.emailSentFlag &&
+                                                (!("Notification" in window) ||
+                                                  Notification.permission !==
+                                                    "granted")
+                                              }
+                                            />
+                                          </EntryWrap>
+                                        ))}
+                                    {this.state.value.length > 0 && (
+                                      <SendIconWrap
+                                        onClick={(event) =>
+                                          this.handleSubmit(event)
+                                        }
                                         color={this.props.color}
                                       >
-                                        <ImageMic
-                                          src={`${staticUrl}/static/images/mic.png`}
+                                        <ImageSend
+                                          src={`${staticUrl}/static/images/Subtract.png`}
                                         />
-                                      </MicWrap>
+                                      </SendIconWrap>
                                     )}
-                                  {!this.state.messages ||
-                                    (this.state.messages.length == 0 &&
-                                      !ls.get("noStreamerFlag") && (
-                                        <EntryWrap>
-                                          <EntryInfo
-                                            noStreamerFlag={
-                                              this.props.noStreamerFlag &&
-                                              !this.props.emailSentFlag &&
-                                              (!("Notification" in window) ||
-                                                Notification.permission !==
-                                                  "granted")
-                                            }
-                                          />
-                                        </EntryWrap>
-                                      ))}
-                                  {this.state.value.length > 0 && (
-                                    <SendIconWrap
-                                      onClick={(event) =>
-                                        this.handleSubmit(event)
-                                      }
-                                      color={this.props.color}
-                                    >
-                                      <ImageSend
-                                        src={`${staticUrl}/static/images/Subtract.png`}
-                                      />
-                                    </SendIconWrap>
-                                  )}
-                                </CartTextFieldRelative>
-                              </CartTextFieldExtra>
-                            </div>
-                          </CustomForm>
-                        </Fragment>
-                      )}
-                    </Fragment>
-                  )}
-                </Fragment>
-              )}
-            </JsChatWindow>
-            <DisclaimerWrapper>
-              <Disclaimer />
-            </DisclaimerWrapper>
-          </ChatWindowExpansion>
+                                  </CartTextFieldRelative>
+                                </CartTextFieldExtra>
+                              </div>
+                            </CustomForm>
+                          </Fragment>
+                        )}
+                      </Fragment>
+                    )}
+                  </Fragment>
+                )}
+              </JsChatWindow>
+              <DisclaimerWrapper>
+                <Disclaimer />
+              </DisclaimerWrapper>
+            </ChatWindowExpansion>
 
-          {this.state.streamFlag && (
-            <StreamWrapper
-              height={this.props.innerHeight}
-              visible={
-                /*this.state.streamFlag */ !this.state.prepareToUnmountStream
-              }
-              top={this.state.androidOffset}
-            >
-              <Stream
-                /****Wrapper props */
-                height={634}
-                windowHeight={this.props.innerHeight}
-                /***** Stream props*/
-
-                mountFunction={() => {
-                  this.socket.emit("enterStream", ls.get("dialogId"));
-                }}
-                unmountFunction={() => {
-                  this.socket.emit("leaveStream", ls.get("dialogId"));
-                  this.setState({
-                    audioStreamStatus: iOS ? iOSrecord : false,
-                  });
-                }}
-                dialogId={ls.get("dialogId")}
-                visible={!this.state.prepareToUnmountStream}
-                SESSION_STATUS={SESSION_STATUS}
-                STREAM_STATUS={STREAM_STATUS}
-                PRELOADER_URL={PRELOADER_URL}
-                ROOM_EVENT={ROOM_EVENT}
-                iOS={iOS}
-                audioStreamStatus={this.state.audioStreamStatus}
-                handleReadyStreamUnmount={this.handleReadyStreamUnmount}
-                revertMic={() => this.setState({ audioStreamStatus: false })}
-                forceMic={(callbackFunc) =>
-                  this.setState({ audioStreamStatus: true }, () =>
-                    callbackFunc()
-                  )
+            {this.state.streamFlag && (
+              <StreamWrapper
+                height={this.props.innerHeight}
+                visible={
+                  /*this.state.streamFlag */ !this.state.prepareToUnmountStream
                 }
-                /***** Close button*/
-                onClose={() => {
-                  //used to be onCLick
-                  this.setState({
-                    prepareToUnmountStream: true,
-                  });
+                top={this.state.androidOffset}
+              >
+                <Stream
+                  /****Wrapper props */
+                  height={634}
+                  windowHeight={this.props.innerHeight}
+                  /***** Stream props*/
 
-                  ls.set("streamInProgress", false);
-                }}
-                /**Various components, Status button */
-                color={this.props.color}
-                /*****Stream chat */
-                chatHeight={this.state.streamTextAreaHeight}
-                messages={this.state.messagesStream}
-                isSafari={isSafari}
-                setStreamInput={(item) => {
-                  this.streamInput = item;
-                }}
-                valueStream={this.state.valueStream}
-                onChange={this.handleChangeInStream}
-                onKeyPress={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    this.handleSubmitS();
+                  mountFunction={() => {
+                    this.socket.emit("enterStream", ls.get("dialogId"));
+                  }}
+                  unmountFunction={() => {
+                    this.socket.emit("leaveStream", ls.get("dialogId"));
+                    this.setState({
+                      audioStreamStatus: iOS ? iOSrecord : false,
+                    });
+                  }}
+                  dialogId={ls.get("dialogId")}
+                  visible={!this.state.prepareToUnmountStream}
+                  SESSION_STATUS={SESSION_STATUS}
+                  STREAM_STATUS={STREAM_STATUS}
+                  PRELOADER_URL={PRELOADER_URL}
+                  ROOM_EVENT={ROOM_EVENT}
+                  iOS={iOS}
+                  audioStreamStatus={this.state.audioStreamStatus}
+                  handleReadyStreamUnmount={this.handleReadyStreamUnmount}
+                  revertMic={() => this.setState({ audioStreamStatus: false })}
+                  forceMic={(callbackFunc) =>
+                    this.setState({ audioStreamStatus: true }, () =>
+                      callbackFunc()
+                    )
                   }
+                  /***** Close button*/
+                  onClose={() => {
+                    //used to be onCLick
+                    this.setState({
+                      prepareToUnmountStream: true,
+                    });
+
+                    ls.set("streamInProgress", false);
+                  }}
+                  /**Various components, Status button */
+                  color={this.props.color}
+                  /*****Stream chat */
+                  chatHeight={this.state.streamTextAreaHeight}
+                  messages={this.state.messagesStream}
+                  isSafari={isSafari}
+                  setStreamInput={(item) => {
+                    this.streamInput = item;
+                  }}
+                  valueStream={this.state.valueStream}
+                  onChange={this.handleChangeInStream}
+                  onKeyPress={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      this.handleSubmitS();
+                    }
+                  }}
+                  onKeyDown={() => this.textAreaAdjust(true)}
+                  handleSubmitS={this.handleSubmitS}
+                  audioToggle={() =>
+                    this.setState({
+                      audioStreamStatus: !this.state.audioStreamStatus,
+                    })
+                  }
+                />
+              </StreamWrapper>
+            )}
+            <VideoWrapper
+              visible={this.state.videoSrc && !this.state.streamFlag}
+              height={634}
+              windowHeight={this.props.innerHeight}
+            >
+              <ReactPlayer
+                url={this.state.videoSrc}
+                playing={this.state.ifPauseIcon}
+                width="100%"
+                height="100%"
+                controls
+                ref={(video) => {
+                  this.loadedVideo = video;
                 }}
-                onKeyDown={() => this.textAreaAdjust(true)}
-                handleSubmitS={this.handleSubmitS}
-                audioToggle={() =>
+                onPause={() => {
                   this.setState({
-                    audioStreamStatus: !this.state.audioStreamStatus,
-                  })
-                }
-              />
-            </StreamWrapper>
-          )}
-          <VideoWrapper
-            visible={this.state.videoSrc && !this.state.streamFlag}
-            height={634}
-            windowHeight={this.props.innerHeight}
-          >
-            <ReactPlayer
-              url={this.state.videoSrc}
-              playing={this.state.ifPauseIcon}
-              width="100%"
-              height="100%"
-              controls
-              ref={(video) => {
-                this.loadedVideo = video;
-              }}
-              onPause={() => {
-                this.setState({
-                  ifPauseIcon: false,
-                });
-              }}
-              onPlay={() => {
-                this.setState({
-                  ifPauseIcon: true,
-                });
-                /*this.live.pause();*/
-              }}
-            />
-            <CloseWrapper>
-              <CloseButton
-                onClick={() => {
-                  this.setState({
-                    videoSrc: null,
                     ifPauseIcon: false,
                   });
-                  if (this.loadedVideo.getInternalPlayer()) {
-                    this.loadedVideo.getInternalPlayer().pause();
-                  }
+                }}
+                onPlay={() => {
+                  this.setState({
+                    ifPauseIcon: true,
+                  });
+                  /*this.live.pause();*/
                 }}
               />
-            </CloseWrapper>
-          </VideoWrapper>
-          <PhotoWrapper
-            visible={this.state.photoSrc}
-            height={634}
-            windowHeight={this.props.innerHeight}
-          >
-            <Image src={this.state.photoSrc}>
               <CloseWrapper>
                 <CloseButton
                   onClick={() => {
                     this.setState({
-                      photoSrc: null,
+                      videoSrc: null,
+                      ifPauseIcon: false,
                     });
+                    if (this.loadedVideo.getInternalPlayer()) {
+                      this.loadedVideo.getInternalPlayer().pause();
+                    }
                   }}
                 />
               </CloseWrapper>
-            </Image>
-          </PhotoWrapper>
-        </WindowWrapper>
-      </ChatWrapper>
+            </VideoWrapper>
+            <PhotoWrapper
+              visible={this.state.photoSrc}
+              height={634}
+              windowHeight={this.props.innerHeight}
+            >
+              <Image src={this.state.photoSrc}>
+                <CloseWrapper>
+                  <CloseButton
+                    onClick={() => {
+                      this.setState({
+                        photoSrc: null,
+                      });
+                    }}
+                  />
+                </CloseWrapper>
+              </Image>
+            </PhotoWrapper>
+          </WindowWrapper>
+        </ChatWrapper>
+      </>
     );
   }
 }

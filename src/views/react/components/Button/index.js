@@ -11,7 +11,7 @@ import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 //import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
-import BrowserAlert from "../BrowserAlert";
+
 const LazyChat = React.lazy(() => import("../NewChat"));
 import {
   staticUrl,
@@ -670,9 +670,7 @@ export class Button extends React.Component {
             <LoadingCircle loadingFlag />
           </ApiOverlay>
         )}
-        {this.state.showWarning && (
-          <BrowserAlert close={() => this.setState({ showWarning: false })} />
-        )}
+
         {this.props.button && (
           <StartButton
             onClick={(event) => this.handleClick(event, this.props.buttonId)}
@@ -723,6 +721,8 @@ export class Button extends React.Component {
               leaveOption={this.state.leaveOption}
               questionExamples={this.props.questionExamples}
               requestFieldText={this.props.requestFieldText}
+              showWarning={this.state.showWarning}
+              handleCloseWarning={() => this.setState({ showWarning: false })}
               /*firebase={this.props.firebase}*/
             />
           </Suspense>

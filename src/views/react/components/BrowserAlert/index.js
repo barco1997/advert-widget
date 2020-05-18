@@ -5,7 +5,7 @@ import { media, mediaType } from "../../../../utils/media";
 
 const JsChatOverlay = styled.div`
   &&& {
-    z-index: 10002 !important;
+    z-index: 10020 !important;
     position: fixed !important;
     top: 0px !important;
     bottom: 0px !important;
@@ -23,7 +23,7 @@ const Wrap = styled.div`
     height: 100vh !important;
     position: fixed !important;
     left: 0 !important;
-    z-index: 10000 !important;
+    z-index: 10019 !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -33,7 +33,7 @@ const Wrap = styled.div`
 
 const WindowWrapper = styled.div`
   &&& {
-    z-index: 10003 !important;
+    z-index: 10021 !important;
     /*flex-direction: column !important;*/
 
     background: #ffffff !important;
