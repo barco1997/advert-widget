@@ -1720,6 +1720,11 @@ export class Chat extends React.Component {
                                 streamFlag: false,
                               });
                               //this.socket.emit("leaveStream", ls.get("userId"));
+                              console.log(
+                                this.props.displayMainRequest,
+                                this.props.emailSentFlag,
+                                this.state.messages.length > 0
+                              );
                               if (
                                 !this.props.displayMainRequest &&
                                 !this.props.emailSentFlag &&

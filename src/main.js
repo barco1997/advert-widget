@@ -3,6 +3,7 @@ import "./views/global/style.css";
 import { react /*, reactTest*/ } from "./views/react";
 import "./fonts/fonts.css";
 import axios from "axios";
+import ls from "local-storage";
 import { apiBaseUrl } from "./views/react/constants";
 const supportedAPI = [
   "init",
@@ -82,7 +83,11 @@ function apiHandler(api, params) {
             }
 
             if (openChat) {
+              const userId = url.searchParams.get("userId");
               updatedParams.initialButtonId = url.searchParams.get("buttonId");
+              if (userId) {
+                ls.set("userId", userId);
+              }
               console.log("Starting button with parameters:", updatedParams);
               react(updatedParams, true, buttons);
             } else {
