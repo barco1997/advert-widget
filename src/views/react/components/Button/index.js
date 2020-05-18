@@ -197,23 +197,19 @@ export class Button extends React.Component {
         email,
       })
     );
-    console.log(
-      "TEST PUSH",
-      "Notification" in window && Notification.permission === "granted"
-    );
+
     if (email) {
       //@TODO add the proper validation
-      this.socket.emit(
-        "changeDialogNotifications",
-        JSON.stringify({
-          dialogId: ls.get("userId"),
-          notifications: {
-            push:
-              "Notification" in window && Notification.permission === "granted",
-            email: true,
-          },
-        })
-      );
+      let obj = JSON.stringify({
+        dialogId: ls.get("dialogId"),
+        notifications: {
+          push:
+            "Notification" in window && Notification.permission === "granted",
+          email: true,
+        },
+      });
+
+      this.socket.emit("changeDialogNotifications", obj);
     }
     this.setState({
       emailSentFlag: email ? true : false,
@@ -381,7 +377,7 @@ export class Button extends React.Component {
             self.socket.emit(
               "changeDialogNotifications",
               JSON.stringify({
-                dialogId: ls.get("userId"),
+                dialogId: ls.get("dialogId"),
                 notifications: {
                   push: true,
                   email: self.state.emailSentFlag,
@@ -641,7 +637,7 @@ export class Button extends React.Component {
 
   render() {
     //console.log("Props", this.props);
-    //console.log("LEAVE", process.env.LEAVE_OPTION);
+
     return (
       <ButtonReqWrapper>
         <audio
