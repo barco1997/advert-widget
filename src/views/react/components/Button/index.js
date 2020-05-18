@@ -189,16 +189,13 @@ export class Button extends React.Component {
         email,
       })
     );
-    console.log(
-      "TEST PUSH",
-      "Notification" in window && Notification.permission === "granted"
-    );
+
     if (email) {
       //@TODO add the proper validation
       this.socket.emit(
         "changeDialogNotifications",
         JSON.stringify({
-          dialogId: ls.get("userId"),
+          dialogId: ls.get("dialogId"),
           notifications: {
             push:
               "Notification" in window && Notification.permission === "granted",
@@ -373,7 +370,7 @@ export class Button extends React.Component {
             self.socket.emit(
               "changeDialogNotifications",
               JSON.stringify({
-                dialogId: ls.get("userId"),
+                dialogId: ls.get("dialogId"),
                 notifications: {
                   push: true,
                   email: self.state.emailSentFlag,
