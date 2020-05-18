@@ -180,7 +180,7 @@ export class Button extends React.Component {
     });
   }
 
-  sendEmailDetails(email, name) {
+  sendEmailDetails(email, name, leaveFlag) {
     this.socket.emit(
       "fillClientData",
       JSON.stringify({
@@ -189,20 +189,27 @@ export class Button extends React.Component {
         email,
       })
     );
-    this.socket.emit(
-      "changeDialogNotifications",
-      JSON.stringify({
-        dialogId: ls.get("userId"),
-        notifications: {
-          push:
-            "Notification" in window && Notification.permission === "granted",
-          email: true,
-        },
-      })
+    console.log(
+      "TEST PUSH",
+      "Notification" in window && Notification.permission === "granted"
     );
+    if (email) {
+      //@TODO add the proper validation
+      this.socket.emit(
+        "changeDialogNotifications",
+        JSON.stringify({
+          dialogId: ls.get("userId"),
+          notifications: {
+            push:
+              "Notification" in window && Notification.permission === "granted",
+            email: true,
+          },
+        })
+      );
+    }
     this.setState({
-      emailSentFlag: true,
-      displayMainRequest: false,
+      emailSentFlag: email ? true : false,
+      displayMainRequest: !leaveFlag,
       displayEmailRequest: false,
       displayChat: true,
     });
@@ -268,6 +275,7 @@ export class Button extends React.Component {
       axios
         .get(url2)
         .then(function (response) {
+          console.log("SENT EMAIL FLAG", response);
           self.setState({
             emailSentFlag: true,
           });
