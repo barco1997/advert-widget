@@ -11,6 +11,7 @@ import { media, mediaType } from "../../../../utils/media";
 import LoadingCircle from "../Loader";
 //import MinEmailRequest from "./minemailrequest";
 import StartButton from "../StartButton";
+import BrowserAlert from "../BrowserAlert";
 const LazyChat = React.lazy(() => import("../NewChat"));
 import {
   staticUrl,
@@ -33,6 +34,12 @@ let ifMobile =
   navigator.userAgent.match(/iPod/i) ||
   navigator.userAgent.match(/BlackBerry/i) ||
   navigator.userAgent.match(/Windows Phone/i);
+
+let ifOldBrowser =
+  navigator.userAgent.match(/YaBrowser/i) ||
+  navigator.userAgent.match(/Edge/i) ||
+  navigator.userAgent.match(/MSIE /i) ||
+  navigator.userAgent.match(/Trident\//i);
 
 if (storedToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
@@ -142,6 +149,7 @@ export class Button extends React.Component {
       currentTitle: null,
       noStreamerFlag: false,
       leaveOption: process.env.LEAVE_OPTION === "true",
+      showWarning: ifOldBrowser,
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -662,6 +670,9 @@ export class Button extends React.Component {
           <ApiOverlay>
             <LoadingCircle loadingFlag />
           </ApiOverlay>
+        )}
+        {this.state.showWarning && (
+          <BrowserAlert close={() => this.setState({ showWarning: false })} />
         )}
         {this.props.button && (
           <StartButton
