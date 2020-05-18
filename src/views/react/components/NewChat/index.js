@@ -416,6 +416,7 @@ const CloseWrapperA = styled.div`
     right: 0px !important;*/
     width: 100% !important;
     height: 64px !important;
+    min-height: 64px !important;
     background: ${(props) => `${props.color} !important`};
     display: flex !important;
     align-items: center !important;
@@ -661,19 +662,19 @@ const JsChatWindow = styled.div`
     width: ${(props) => (props.visible ? "496px" : "0")} !important;
       /**** End     ****/
     
-    height: 664px !important;
+    min-height: 664px !important;
     position: relative !important;
     box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.25) !important;
     border-radius: 6px !important;
     ${(props) =>
       props.height < 634 &&
       `
-      height: ${props.height ? `${props.height}px` : "100%"} !important;
+      min-height: ${props.height ? `${props.height}px` : "100%"} !important;
       width: 100vw !important;
       border-radius: 0px !important;
   `}
     ${media.desktop`
-      height: ${(props) =>
+      min-height: ${(props) =>
         props.height ? `${props.height}px` : "100%"} !important;
       width: 100vw !important;
       border-radius: 0px !important;
