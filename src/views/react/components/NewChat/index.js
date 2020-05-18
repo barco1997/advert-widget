@@ -1647,7 +1647,6 @@ export class Chat extends React.Component {
   }
 
   render() {
-    //console.log("PROPS", this.props.firebase.putVoice);
     return (
       <ChatWrapper
         displayFlag={this.state.displayFlag}
