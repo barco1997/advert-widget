@@ -1756,6 +1756,7 @@ export class Chat extends React.Component {
                             notificationPermission={
                               this.props.notificationPermission
                             }
+                            allowNotifications={this.props.allowNotifications}
                             color={this.props.color}
                           />
                         ) : (
@@ -1792,6 +1793,9 @@ export class Chat extends React.Component {
                                         color={this.props.color}
                                         notificationPermission={
                                           this.props.notificationPermission
+                                        }
+                                        allowNotifications={
+                                          this.props.allowNotifications
                                         }
                                         sendEmailDetails={
                                           this.props.sendEmailDetails
@@ -1836,6 +1840,9 @@ export class Chat extends React.Component {
                                     }
                                     notificationPermission={
                                       this.props.notificationPermission
+                                    }
+                                    allowNotifications={
+                                      this.props.allowNotifications
                                     }
                                     emailSentFlag={this.props.emailSentFlag}
                                     countdown={this.props.countdown}

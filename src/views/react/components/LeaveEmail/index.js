@@ -259,7 +259,7 @@ export class LeaveEmail extends React.Component {
               </NotifyButtonWrapper>
             )}
           </EmailWrapper>
-          {"Notification" in window && (
+          {"Notification" in window && this.props.allowNotifications && (
             <BlurredButton
               onClick={this.props.notificationPermission}
               selected={

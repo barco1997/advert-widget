@@ -149,6 +149,7 @@ export class Button extends React.Component {
       currentTitle: null,
       noStreamerFlag: false,
       leaveOption: process.env.LEAVE_OPTION === "true",
+      allowNotifications: process.env.ALLOW_NOTIFICATIONS === "true",
       showWarning: ifOldBrowser,
     };
     this.handleRegistration = this.handleRegistration.bind(this);
@@ -545,7 +546,7 @@ export class Button extends React.Component {
             displayEmailRequest: true,
           });
         }
-        if (!iOS && this.state.leaveOption) {
+        if (!iOS && this.state.allowNotifications) {
           this.notifyMe(
             "New message at Eyezon button",
             currentUrl,
@@ -636,8 +637,6 @@ export class Button extends React.Component {
   }
 
   render() {
-    //console.log("Props", this.props);
-
     return (
       <ButtonReqWrapper>
         <audio
@@ -719,6 +718,7 @@ export class Button extends React.Component {
               noStreamerFlag={this.state.noStreamerFlag}
               notificationMessageToggle={this.state.notificationMessageToggle}
               leaveOption={this.state.leaveOption}
+              allowNotifications={this.state.allowNotifications}
               questionExamples={this.props.questionExamples}
               requestFieldText={this.props.requestFieldText}
               showWarning={this.state.showWarning}

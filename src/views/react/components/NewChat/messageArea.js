@@ -297,6 +297,7 @@ export class MessageArea extends React.Component {
               color={this.props.color}
               sendEmailDetails={this.props.sendEmailDetails}
               notificationPermission={this.props.notificationPermission}
+              allowNotifications={this.props.allowNotifications}
               emailSentFlag={this.props.emailSentFlag}
             />
           )}
