@@ -53,7 +53,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     height: 320px !important;
     width: 100% !important;
   }
@@ -113,7 +113,18 @@ export class NoStreamersView extends React.Component {
           </InfoBlock>
         </MainBlock>
         <ButtonBlock>
-          <BlurredButton selected={true} onClick={() => this.handleClick}>
+          <BlurredButton
+            selected={
+              !("Notification" in window) ||
+              Notification.permission === "granted" ||
+              Notification.permission === "denied"
+            }
+            isDenied={
+              !("Notification" in window) ||
+              Notification.permission === "denied"
+            }
+            onClick={() => this.handleClick}
+          >
             Включить уведомления
           </BlurredButton>
         </ButtonBlock>

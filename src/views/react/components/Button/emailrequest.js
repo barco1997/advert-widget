@@ -25,7 +25,7 @@ const TextWrap = styled.div`
 const PositionWrapper = styled.div`
   &&& {
     display: flex !important;
-    margin: ${props => props.margin || "0px"} !important;
+    margin: ${(props) => props.margin || "0px"} !important;
     width: 100% !important;
   }
 `;
@@ -62,7 +62,7 @@ const InfoBlock = styled.div`
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    background: ${props => `${props.color} !important`};
+    background: ${(props) => `${props.color} !important`};
     height: 370px !important;
     width: 100% !important;
   }
@@ -109,13 +109,13 @@ export class EmailRequest extends React.Component {
     super(props, context);
     this.state = {
       email: "",
-      name: ""
+      name: "",
     };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(field, value) {
     this.setState({
-      [field]: value
+      [field]: value,
     });
   }
   render() {
@@ -135,7 +135,7 @@ export class EmailRequest extends React.Component {
                 placeholder="Адрес электронной почты"
                 email={true}
                 value={this.state.email}
-                onChange={event =>
+                onChange={(event) =>
                   this.handleChange("email", event.target.value)
                 }
               />
@@ -145,7 +145,7 @@ export class EmailRequest extends React.Component {
               <FormField
                 placeholder="Ваше имя"
                 value={this.state.name}
-                onChange={event =>
+                onChange={(event) =>
                   this.handleChange("name", event.target.value)
                 }
               />
@@ -157,6 +157,15 @@ export class EmailRequest extends React.Component {
             <BlurredButton
               onClick={() =>
                 this.props.sendEmailDetails(this.state.email, this.state.name)
+              }
+              selected={
+                !("Notification" in window) ||
+                Notification.permission === "granted" ||
+                Notification.permission === "denied"
+              }
+              isDenied={
+                !("Notification" in window) ||
+                Notification.permission === "denied"
               }
             >
               Включить уведомления
