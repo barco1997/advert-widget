@@ -53,13 +53,20 @@ window.MediaRecorder = AudioRecorder;
 
 const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
-load(`${staticUrl}/static/flashphoner.js`)
+
+const WEB_RTC_ONLY = window.eyezonWebRtcOnly === true;
+
+load(WEB_RTC_ONLY ? `${staticUrl}/static/flashphoner-webrtc-only.js` : `${staticUrl}/static/flashphoner.js`)
   .then(function () {
     //console.log("Loaded flashphoner!");
     try {
-      Flashphoner.init({
-        flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
-      });
+      if (WEB_RTC_ONLY) {
+        Flashphoner.init();
+      } else {
+        Flashphoner.init({
+          flashMediaProviderSwfLocation: `${staticUrl}/static/media-provider.swf`,
+        });
+      }
     } catch (e) {
       console.log(
         "Your browser doesn't support Flash or WebRTC technology needed for this example"
