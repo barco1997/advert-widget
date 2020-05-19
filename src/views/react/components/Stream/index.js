@@ -489,7 +489,6 @@ export class Stream extends React.Component {
           <InputLineStream>
             <MicrophoneInput
               rows="1"
-              stream
               setStreamInput={this.props.setStreamInput}
               type="text"
               value={this.props.valueStream}
@@ -503,7 +502,9 @@ export class Stream extends React.Component {
               audioStreamStatus={this.props.audioStreamStatus}
               audioToggle={this.audioToggle}
               isHint={true}
+              color={this.props.color}
               enabled={this.state.stream ? true : false}
+              stream={true}
             />
           </InputLineStream>
         </TextFieldExtraS>

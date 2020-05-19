@@ -5,6 +5,18 @@ import { staticUrl } from "../../constants";
 //import Image from "./micro.svg";
 //import muteMicro from "./muteMicro.svg";
 
+function hexToRGB(hex, alpha) {
+  var r = parseInt(hex.slice(1, 3), 16),
+    g = parseInt(hex.slice(3, 5), 16),
+    b = parseInt(hex.slice(5, 7), 16);
+
+  if (alpha) {
+    return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+  } else {
+    return "rgb(" + r + ", " + g + ", " + b + ")";
+  }
+}
+
 const MicroWrap = styled.div`
   &&& {
     display: flex !important;
@@ -59,22 +71,24 @@ const coolBoxKeyframes = keyframes`
     }   
 `;
 
-export const pulse = keyframes`
-    0% {
-		transform: scale(0.95);
-		box-shadow: 0 0 0 0 rgba(214, 0, 0, 0.7);
-	}
+const pulse = (props) => {
+  return keyframes`
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 ${hexToRGB(props.color, 0.7)};
+  }
 
-	70% {
-		transform: scale(1);
-		box-shadow: 0 0 0 10px rgba(214, 0, 0, 0);
-	}
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px ${hexToRGB(props.color, 0.7)};
+  }
 
-	100% {
-		transform: scale(0.95);
-		box-shadow: 0 0 0 0 rgba(214, 0, 0, 0);
-	} 
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 ${hexToRGB(props.color, 0.7)};
+  } 
 `;
+};
 
 const Input = styled.textarea`
   &&& {
@@ -213,7 +227,7 @@ const MicroButton = styled.div`
     ${(props) =>
       props.isActive &&
       css`
-        animation: ${pulse} 1s infinite !important;
+        animation: ${(props) => pulse} 1s infinite !important;
       `}
       user-select: none  !important;
   }
@@ -288,9 +302,18 @@ class MicrophoneInput extends React.Component {
                 <CloseButton onClick={this.handleHint} />
               </HintWrap>
             )}
+            {/* need improving 
+           @todo:
+            - render svg as react component 
+            - remove svgType2 from server
+           */}
             <img
               src={
-                isActive
+                !this.props.stream
+                  ? isActive
+                    ? `${staticUrl}/static/images/muteMicro.svg`
+                    : `${staticUrl}/static/images/micro.svg`
+                  : !isActive
                   ? `${staticUrl}/static/images/muteMicro.svg`
                   : `${staticUrl}/static/images/micro.svg`
               }
