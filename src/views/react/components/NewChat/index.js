@@ -1400,13 +1400,13 @@ export class Chat extends React.Component {
         if (self.props.askedUserData !== "NONE") {
           let dataToSend = {
             id: ls.get("userId"),
-            /*name: this.state.nameRequested,
-            phone: this.state.phoneRequested,
+            name: this.state.nameRequested || "Клиент",
+            /*phone: this.state.phoneRequested,
             email: this.state.emailRequested,*/
           };
-          if (this.state.nameRequested) {
+          /*if (this.state.nameRequested) {
             dataToSend = { ...dataToSend, name: this.state.nameRequested };
-          }
+          }*/
           if (this.state.phoneRequested) {
             dataToSend = { ...dataToSend, phone: this.state.phoneRequested };
           }
