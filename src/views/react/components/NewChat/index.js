@@ -35,6 +35,7 @@ import NoStreamerComponent from "../NoStreamerComponent";
 import Loader from "../Loader";
 import AdditionalActions from "../AdditionalActions";
 import BrowserAlert from "../BrowserAlert";
+import FlappyEye from "../NewGame";
 
 const uuidv1 = require("uuid/v1");
 //let currentUrl = window.location.href;
@@ -55,7 +56,6 @@ const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
 
 const WEB_RTC_ONLY = window.eyezonWebRtcOnly === true;
-console.log("WEB", WEB_RTC_ONLY);
 load(
   WEB_RTC_ONLY
     ? `${staticUrl}/static/flashphoner-webrtc-only.js`
@@ -1712,8 +1712,10 @@ export class Chat extends React.Component {
                 ) : (
                   <Fragment>
                     {this.state.gameStarted ? (
-                      <LazyGame
-                        height={this.props.innerHeight}
+                      <FlappyEye
+                        height={
+                          mediaType.desktop ? this.props.innerHeight : 664
+                        }
                         width={496}
                         stopGame={this.stopGame}
                         color={this.props.color}
