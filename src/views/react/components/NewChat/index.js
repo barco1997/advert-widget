@@ -55,8 +55,12 @@ const rndUser = getRndInteger(1, 8);
 const rndAdmin = getRndInteger(1, 2);
 
 const WEB_RTC_ONLY = window.eyezonWebRtcOnly === true;
-
-load(WEB_RTC_ONLY ? `${staticUrl}/static/flashphoner-webrtc-only.js` : `${staticUrl}/static/flashphoner.js`)
+console.log("WEB", WEB_RTC_ONLY);
+load(
+  WEB_RTC_ONLY
+    ? `${staticUrl}/static/flashphoner-webrtc-only.js`
+    : `${staticUrl}/static/flashphoner.js`
+)
   .then(function () {
     //console.log("Loaded flashphoner!");
     try {
