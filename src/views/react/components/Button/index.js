@@ -262,7 +262,7 @@ export class Button extends React.Component {
     window.addEventListener("focus", this.handleTabFocus);
 
     if (this.props.eyezonGlobal)
-      this.props.eyezonGlobal.function = (buttonId, title) =>
+      this.props.eyezonGlobal.function = (title, buttonId) =>
         this.handleClick(null, buttonId, title);
     if (ls.get("userId")) {
       const url = `${apiBaseUrl}/button/${this.props.buttonId}/unread/${ls.get(
@@ -404,7 +404,7 @@ export class Button extends React.Component {
   }
 
   handleClick(e, buttonId, title) {
-    //console.log("EVENT", e);
+    //console.log("EVENT BUTTON", buttonId);
     this.closeRequest();
     if (title) {
       this.setState({
@@ -487,7 +487,7 @@ export class Button extends React.Component {
           //console.log(error);
         });
     }
-    const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
+    const url = `${apiBaseUrl}/button/${buttonId}/event`;
     axios
       .post(url, {
         eventType: "CLICK",
