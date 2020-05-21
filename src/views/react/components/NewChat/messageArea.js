@@ -220,7 +220,6 @@ export class MessageArea extends React.Component {
             description={this.state.messages[0].user || "Вы"}
             ifRecipient={(this.state.messages[0].user || "Вы") === "Вы"}
             date={this.state.messages[0].time}
-            icon={this.state.messages[0].photo}
             flv={this.state.messages[0].flv}
             functionA={this.state.messages[0].flv ? this.props.setFlv : null}
             src={this.state.messages[0].src}
@@ -314,7 +313,6 @@ export class MessageArea extends React.Component {
               description={message.user || "Вы"}
               ifRecipient={(message.user || "Вы") === "Вы"}
               date={message.time}
-              icon={message.photo}
               flv={message.flv}
               functionA={message.flv ? this.props.setFlv : null}
               src={message.src}

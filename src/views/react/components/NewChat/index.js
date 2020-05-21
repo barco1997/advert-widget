@@ -938,7 +938,6 @@ export class Chat extends React.Component {
             text: value,
             time: new Date(),
             id: uuidv1(),
-            photo: `${staticUrl}/static/images/user${rndUserLocal}.png`,
           },
         ],
         value: "",
@@ -1127,12 +1126,7 @@ export class Chat extends React.Component {
               {
                 text: data.messageText,
                 time: new Date(),
-                photo:
-                  data.user === ls.get("userId")
-                    ? `${staticUrl}/static/images/user${ls.get("userIcon")}.png`
-                    : `${staticUrl}/static/images/admin${ls.get(
-                        "adminIcon"
-                      )}.png`,
+
                 user: data.user === ls.get("userId") ? "Вы" : "Консультант",
                 type: type,
                 flv: type === "stream" ? data.attachment.src : null,
@@ -1157,7 +1151,7 @@ export class Chat extends React.Component {
               {
                 text: data.content,
                 time: new Date(),
-                photo: `${staticUrl}/static/images/logo.png`,
+
                 user: "Streamer",
                 id: uuidv1(),
               },
@@ -1194,12 +1188,6 @@ export class Chat extends React.Component {
                 text: message.messageText,
                 time: message.createdAt,
 
-                photo:
-                  message.user === ls.get("userId")
-                    ? `${staticUrl}/static/images/user${ls.get("userIcon")}.png`
-                    : `${staticUrl}/static/images/admin${ls.get(
-                        "adminIcon"
-                      )}.png`,
                 user: message.user === ls.get("userId") ? "Вы" : "Консультант",
                 type: message.attachment
                   ? message.attachment.type.toLowerCase()
@@ -1389,7 +1377,6 @@ export class Chat extends React.Component {
                 text: value,
                 time: new Date(),
                 id: uuidv1(),
-                photo: `${staticUrl}/static/images/user${rndUserLocal}.png`,
               },
             ],
             value: "",
@@ -1417,7 +1404,7 @@ export class Chat extends React.Component {
             phone: this.state.phoneRequested,
             email: this.state.emailRequested,
           };
-          //console.log("DATA TO SEND", dataToSend);
+          console.log("DATA TO SEND", dataToSend);
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
         self.socket.emit("createDialog", newObj);
@@ -1451,9 +1438,6 @@ export class Chat extends React.Component {
                 text: currentValue,
                 time: new Date(),
                 id: uuidv1(),
-                photo: `${staticUrl}/static/images/user${ls.get(
-                  "userIcon"
-                )}.png`,
               },
             ],
             value: "",
@@ -1595,7 +1579,7 @@ export class Chat extends React.Component {
           {
             time: new Date(),
             id: uuidv1(),
-            photo: `${staticUrl}/static/images/user${ls.get("userIcon")}.png`,
+
             type: "audio",
             src: response.data,
           },

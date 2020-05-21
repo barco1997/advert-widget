@@ -33,28 +33,6 @@ const Item = styled.li`
   }
 `;
 
-const Icon = styled.div`
-  &&& {
-    display: none !important;
-    width: 40px !important;
-    height: 40px !important;
-
-    margin-right: 20px !important;
-    background: white !important;
-
-    & > img {
-      width: 100% !important;
-      height: 100% !important;
-    }
-    ${media.desktop`
-      display: none !important;
-      width: 35px !important;
-      height: 35px !important;
-      margin-right: 15px !important;
-    `};
-  }
-`;
-
 const ItemStart = styled.div`
   &&& {
     display: flex !important;
@@ -385,12 +363,6 @@ export class Response extends React.Component {
     return (
       <div style={{ display: "block !important" }}>
         <Item>
-          <Icon>
-            <img
-              src={this.props.icon || `${staticUrl}/static/images/logo.png`}
-              alt="item type"
-            />
-          </Icon>
           <ItemStart ifRecipient={this.props.ifRecipient}>
             {this.props.description && this.state.typeVar === "audio" && (
               <SummaryTop>{this.props.description} поделился аудио</SummaryTop>
@@ -497,104 +469,4 @@ export class Response extends React.Component {
     );
   }
 }
-{
-  /**/
-}
 export default Response;
-/*<PlayIcon src={this.state.playIcon ? playV : pauseV} />*/
-/*const RepointsWindow = styled.div`
-  &&& {
-    z-index: 16000 !important;
-    position: absolute !important;
-    bottom: -10px !important;
-    left: 0 !important;
-    display: flex !important;
-    color: white !important;
-    border-radius: 100px !important;
-
-    height: 28px !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
-    background: white !important;
-
-    background: ${props => (props.color ? props.color : "white !important")};
-    width: ${props => (props.toggle ? "190px !important" : "28px !important")};
-    transition: ${props =>
-      props.toggle ? "width 120ms linear !important" : "none !important"};
-
-    overflow: hidden !important;
-  }
-`;
-
-const ControlIcon = styled.img`
-  &&& {
-    height: 12px !important;
-    width: 12px !important;
-    object-fit: cover !important;
-    padding: 8px !important;
-    text-decoration: none !important;
-    -webkit-font-smoothing: antialiased !important;
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    cursor: pointer !important;
-    outline: 0 !important;
-    &:focus {
-      outline: 0 !important;
-    }
-  }
-`;
-
-const RepointsAmountWrapper = styled.div`
-  &&& {
-    margin-left: 8px !important;
-    height: 28px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-`;
-
-const SignWrapper = styled.div`
-  &&& {
-    height: 28px !important;
-    width: 28px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    cursor: pointer !important;
-  }
-`;
-
-const Minus = styled.img`
-  &&& {
-    height: 1.75px !important;
-    width: 11.8px !important;
-  }
-`;
-
-const Plus = styled.img`
-  &&& {
-    height: 11.8px !important;
-    width: 11.67px !important;
-  }
-`;
-
-const NumberWrapper = styled.div`
-  &&& {
-    width: 44px !important;
-    margin-top: 4px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    font-size: 19px !important;
-    color: #666666 !important;
-  }
-`;
-
-const RepointButtonWrapper = styled.div`
-  &&& {
-    margin-right: 3.8px !important;
-  }
-`;*/
