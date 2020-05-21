@@ -280,7 +280,7 @@ export class Button extends React.Component {
       axios
         .get(url2)
         .then(function (response) {
-          console.log("SENT EMAIL FLAG", response);
+          //console.log("SENT EMAIL FLAG", response);
           self.setState({
             emailSentFlag: true,
           });

@@ -1274,9 +1274,9 @@ export class Chat extends React.Component {
     let ifPsI = this.state.ifPauseIcon;
 
     var video = document.createElement("video");
-    console.log("Reached something", src);
+    //console.log("Reached something", src);
     video.onloadedmetadata = function () {
-      console.log("success, it exsist");
+      //console.log("success, it exsist");
       self.setState({
         videoSrc: src,
         photoSrc: null,
@@ -1287,7 +1287,7 @@ export class Chat extends React.Component {
     };
 
     video.onerror = function () {
-      console.log("error, ", finalSrc);
+      //console.log("error, ", finalSrc);
       // don't show video element
       self.setState({
         videoSrc: finalSrc.replace(".mp4", ".webm"),
@@ -1404,7 +1404,7 @@ export class Chat extends React.Component {
             phone: this.state.phoneRequested,
             email: this.state.emailRequested,
           };
-          console.log("DATA TO SEND", dataToSend);
+          //console.log("DATA TO SEND", dataToSend);
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
         self.socket.emit("createDialog", newObj);
@@ -1722,11 +1722,7 @@ export class Chat extends React.Component {
                                   streamFlag: false,
                                 });
                                 //this.socket.emit("leaveStream", ls.get("userId"));
-                                console.log(
-                                  this.props.displayMainRequest,
-                                  this.props.emailSentFlag,
-                                  this.state.messages.length > 0
-                                );
+
                                 if (
                                   !this.props.displayMainRequest &&
                                   !this.props.emailSentFlag &&
