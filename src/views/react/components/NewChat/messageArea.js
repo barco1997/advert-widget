@@ -289,7 +289,7 @@ export class MessageArea extends React.Component {
         )}
         {this.props.timerFlag &&
           !this.state.awaitingConnection &&
-          this.state.success && <Result>Успели!</Result>}
+          this.state.success && <Result>Запрос&nbsp;принят</Result>}
         {this.props.timerFlag &&
           (this.state.awaitingConnection || this.state.timerExceeded) &&
           (this.state.timerExceeded || !lessThan2) && (
