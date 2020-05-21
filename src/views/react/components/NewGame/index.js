@@ -43,7 +43,6 @@ const Wrapper = styled.div`
     height: ${(props) =>
       props.height ? `${props.height}px` : "100%"} !important;
     width: ${(props) => (props.width ? `${props.width}px` : "100%")} !important;
-    border: 1px solid red !important;
   }
 `;
 const HeaderRow = styled.div`
@@ -261,11 +260,7 @@ export class FlappyEye extends React.Component {
         gravity: 0,
         gameOver: true,
       });
-      console.log(
-        "current height",
-        this.state.currentHeight,
-        this.props.height
-      );
+
       return;
     }
     let birdX = this.state.initialLogoX;
@@ -456,8 +451,6 @@ export class FlappyEye extends React.Component {
           horizontal={this.state.initialLogoX}
           vertical={this.state.currentHeight}
         >
-          {console.log(this.state.initialLogoX, this.state.currentHeight)}
-
           <Logo color={this.props.color}>
             <White />
           </Logo>

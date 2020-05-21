@@ -29,13 +29,13 @@ import StatusButton from "../StatusButton";
 
 import AudioRecorder from "audio-recorder-polyfill";
 import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
-const LazyGame = React.lazy(() => import("../Game"));
+const LazyGame = React.lazy(() => import("../NewGame"));
 import GetDetailsView from "../GetDetailsView";
 import NoStreamerComponent from "../NoStreamerComponent";
 import Loader from "../Loader";
 import AdditionalActions from "../AdditionalActions";
 import BrowserAlert from "../BrowserAlert";
-import FlappyEye from "../NewGame";
+//import FlappyEye from "../NewGame";
 
 const uuidv1 = require("uuid/v1");
 //let currentUrl = window.location.href;
@@ -1712,11 +1712,11 @@ export class Chat extends React.Component {
                 ) : (
                   <Fragment>
                     {this.state.gameStarted ? (
-                      <FlappyEye
+                      <LazyGame
                         height={
                           mediaType.desktop ? this.props.innerHeight : 664
                         }
-                        width={496}
+                        width={mediaType.desktop ? window.innerWidth : 496}
                         stopGame={this.stopGame}
                         color={this.props.color}
                         countdown={this.props.countdown}
