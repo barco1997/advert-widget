@@ -1398,12 +1398,21 @@ export class Chat extends React.Component {
         };
         ls.remove("awaitTmp");
         if (self.props.askedUserData !== "NONE") {
-          const dataToSend = {
+          let dataToSend = {
             id: ls.get("userId"),
-            name: this.state.nameRequested,
+            /*name: this.state.nameRequested,
             phone: this.state.phoneRequested,
-            email: this.state.emailRequested,
+            email: this.state.emailRequested,*/
           };
+          if (this.state.nameRequested) {
+            dataToSend = { ...dataToSend, name: this.state.nameRequested };
+          }
+          if (this.state.phoneRequested) {
+            dataToSend = { ...dataToSend, phone: this.state.phoneRequested };
+          }
+          if (this.state.emailRequested) {
+            dataToSend = { ...dataToSend, email: this.state.emailRequested };
+          }
           //console.log("DATA TO SEND", dataToSend);
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
