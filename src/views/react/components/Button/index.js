@@ -189,13 +189,13 @@ export class Button extends React.Component {
     });
   }
 
-  sendEmailDetails(email, name, leaveFlag) {
+  sendEmailDetails(name, leaveFlag, notificationEmail) {
     this.socket.emit(
       "fillClientData",
       JSON.stringify({
         id: ls.get("userId"),
         name,
-        email,
+        notificationEmail,
       })
     );
 

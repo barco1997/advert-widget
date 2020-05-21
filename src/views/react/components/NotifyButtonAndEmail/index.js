@@ -116,7 +116,7 @@ export class NotifyButtonAndEmail extends React.Component {
     const { value } = this.state;
     const re = /\S+@\S+\.\S+/;
     if (re.test(value) && this.state.tosend === 1) {
-      this.props.sendEmailDetails(value, "Клиент", true);
+      this.props.sendEmailDetails("Клиент", true, value);
       this.setState({
         tosend: this.state.tosend + 1,
       });

@@ -207,7 +207,7 @@ export class LeaveEmail extends React.Component {
     const { value } = this.state;
     const re = /\S+@\S+\.\S+/;
     if (re.test(value) && this.state.tosend === 1) {
-      this.props.sendEmailDetails(value, "Клиент", false);
+      this.props.sendEmailDetails("Клиент", false, value);
       this.setState({
         tosend: this.state.tosend + 1,
       });
