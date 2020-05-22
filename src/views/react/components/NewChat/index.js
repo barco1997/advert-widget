@@ -1803,6 +1803,18 @@ export class Chat extends React.Component {
                                           this.props.sendEmailDetails
                                         }
                                         emailSentFlag={this.props.emailSentFlag}
+                                        beforeSendRequest={
+                                          this.props.beforeSendRequest
+                                        }
+                                        beforeSendRequestTitle={
+                                          this.props.beforeSendRequestTitle
+                                        }
+                                        afterSendRequest={
+                                          this.props.afterSendRequest
+                                        }
+                                        afterSendRequestTitle={
+                                          this.props.afterSendRequestTitle
+                                        }
                                       />
                                     )}
                                   </React.Fragment>
@@ -1848,6 +1860,7 @@ export class Chat extends React.Component {
                                     }
                                     emailSentFlag={this.props.emailSentFlag}
                                     countdown={this.props.countdown}
+                                    textAfterTimer={this.props.textAfterTimer}
                                   />
                                 )}
                               </Fragment>

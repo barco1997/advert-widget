@@ -101,13 +101,17 @@ export class NoStreamerComponent extends React.Component {
           <InfoBlock color={this.props.color || "#ff2d55"}>
             <InfoBlockHeader>
               {this.props.receivedDetails
-                ? "Мы сообщим, как появятся сотрудники!"
-                : "Нет доступных продавцов"}
+                ? this.props.afterSendRequestTitle ||
+                  "Мы сообщим, как появятся сотрудники!"
+                : this.props.beforeSendRequestTitle ||
+                  "Нет доступных продавцов"}
             </InfoBlockHeader>
             <InfoBlockText>
               {this.props.receivedDetails
-                ? "Мы сразу уведомим вас об ответе выбранным вами способом. А пока вы можете продолжить пользоваться сайтом."
-                : "Вы можете оставить свой запрос, включите уведомления, оставьте свой e-mail и как появятся стримеры мы ответим вам."}
+                ? this.props.afterSendRequest ||
+                  "Мы сразу уведомим вас об ответе выбранным вами способом. А пока вы можете продолжить пользоваться сайтом."
+                : this.props.beforeSendRequest ||
+                  "Вы можете оставить свой запрос, включите уведомления, оставьте свой e-mail и как появятся стримеры мы ответим вам."}
             </InfoBlockText>
           </InfoBlock>
           {!this.props.receivedDetails && (

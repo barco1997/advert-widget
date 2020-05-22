@@ -298,6 +298,7 @@ export class MessageArea extends React.Component {
               notificationPermission={this.props.notificationPermission}
               allowNotifications={this.props.allowNotifications}
               emailSentFlag={this.props.emailSentFlag}
+              textAfterTimer={this.props.textAfterTimer}
             />
           )}
 

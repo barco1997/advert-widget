@@ -84,6 +84,46 @@ export class App extends React.Component {
         self.setState(
           {
             readyToRender: true,
+            /*******      Here checking if field exist, because it might not      */
+            beforeSendRequest: localisedTextArray.find(
+              (element) => element.field === "beforeSendRequest"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "beforeSendRequest"
+                ).value
+              : "",
+            beforeSendRequestTitle: localisedTextArray.find(
+              (element) => element.field === "beforeSendRequestTitle"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "beforeSendRequestTitle"
+                ).value
+              : "",
+            afterSendRequest: localisedTextArray.find(
+              (element) => element.field === "afterSendRequest"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "afterSendRequest"
+                ).value
+              : "",
+            afterSendRequestTitle: localisedTextArray.find(
+              (element) => element.field === "afterSendRequestTitle"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "afterSendRequestTitle"
+                ).value
+              : "",
+
+            textAfterTimer: localisedTextArray.find(
+              (element) => element.field === "textAfterTimer"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "textAfterTimer"
+                ).value
+              : "",
+
+            /*******      Here fields MUST exist on backend     */
+
             requestFieldText:
               localisedTextArray.find(
                 (element) => element.field === "requestFieldText"
@@ -107,6 +147,7 @@ export class App extends React.Component {
               localisedTextArray.find(
                 (element) => element.field === "waitingTitle"
               ).value || "waitingTitle",
+            /*******      Special case for question examole array, tha flag has to be set true to use it     */
             questionExamples:
               response.data.questionExamples &&
               localisedTextArray.find(
@@ -124,7 +165,7 @@ export class App extends React.Component {
               response.data.position /*.toLowerCase().replace(/_/gi, "-")*/,
           },
           () => {
-            /*console.log("State", self.state);*/
+            //console.log("State", self.state);
           }
         );
       });
@@ -177,6 +218,11 @@ export class App extends React.Component {
       <React.Fragment>
         {this.state.readyToRender && (
           <Button
+            textAfterTimer={this.state.textAfterTimer}
+            beforeSendRequest={this.state.beforeSendRequest}
+            beforeSendRequestTitle={this.state.beforeSendRequestTitle}
+            afterSendRequest={this.state.afterSendRequest}
+            afterSendRequestTitle={this.state.afterSendRequestTitle}
             businessId={this.props.businessId}
             buttonId={this.props.buttonId}
             ifOpened={this.props.ifOpened}

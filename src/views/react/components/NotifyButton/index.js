@@ -152,7 +152,9 @@ export class NotifyButton extends React.Component {
   render() {
     return (
       <Wrapper>
-        <TextWrapper>{this.props.text}</TextWrapper>
+        <TextWrapper>
+          {this.props.textAfterTimer || this.props.text}
+        </TextWrapper>
         <MiddleWrapper>
           {this.state.tosend === 0 && (
             <NotifyButtonWrapper onClick={this.handleClick}>

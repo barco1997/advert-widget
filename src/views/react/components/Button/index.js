@@ -723,7 +723,11 @@ export class Button extends React.Component {
               requestFieldText={this.props.requestFieldText}
               showWarning={this.state.showWarning}
               handleCloseWarning={() => this.setState({ showWarning: false })}
-              /*firebase={this.props.firebase}*/
+              beforeSendRequest={this.props.beforeSendRequest}
+              beforeSendRequestTitle={this.props.beforeSendRequestTitle}
+              afterSendRequest={this.props.afterSendRequest}
+              afterSendRequestTitle={this.props.afterSendRequestTitle}
+              textAfterTimer={this.props.textAfterTimer}
             />
           </Suspense>
         )}
