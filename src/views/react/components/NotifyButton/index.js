@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     display: flex !important;
     flex-direction: column !important;
     margin-top: 8px !important;
+    min-height: 205px !important;
   }
 `;
 const NotifyButtonWrapper = styled.div`
@@ -34,6 +35,8 @@ const TextWrapper = styled.div`
     box-sizing: border-box !important;
     background: #f2f2f2 !important;
     border-radius: 5px 5px 5px 0px !important;
+
+    min-height: 80px !important;
 
     font-family: "Montserrat" !important;
     font-style: normal !important;
