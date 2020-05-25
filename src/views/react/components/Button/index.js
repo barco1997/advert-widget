@@ -18,6 +18,8 @@ import {
   socketUrl,
   setConversationIdValue,
   apiBaseUrl,
+  appendDialogMapping,
+  getDialogId,
 } from "../../constants";
 let overflow = document.body.style.overflow;
 const io = require("socket.io-client");
@@ -151,6 +153,7 @@ export class Button extends React.Component {
       leaveOption: process.env.LEAVE_OPTION === "true",
       allowNotifications: process.env.ALLOW_NOTIFICATIONS === "true",
       showWarning: ifOldBrowser,
+      buttonId: this.props.buttonId,
     };
     this.handleRegistration = this.handleRegistration.bind(this);
     this.notifyMe = this.notifyMe.bind(this);
@@ -202,7 +205,7 @@ export class Button extends React.Component {
     if (email) {
       //@TODO add the proper validation
       let obj = JSON.stringify({
-        dialogId: ls.get("dialogId"),
+        dialogId: getDialogId(this.state.buttonId),
         notifications: {
           push:
             "Notification" in window && Notification.permission === "granted",
@@ -242,7 +245,7 @@ export class Button extends React.Component {
 
   handleTabFocus() {
     if (this.state.initializeChat && this.state.displayChat) {
-      this.socket.emit("readMessage", ls.get("dialogId"));
+      this.socket.emit("readMessage", getDialogId(this.state.buttonId));
       //console.log("SUCCESSFULLY READ");
     }
   }
@@ -378,7 +381,7 @@ export class Button extends React.Component {
             self.socket.emit(
               "changeDialogNotifications",
               JSON.stringify({
-                dialogId: ls.get("dialogId"),
+                dialogId: getDialogId(self.state.buttonId),
                 notifications: {
                   push: true,
                   email: self.state.emailSentFlag,
@@ -398,8 +401,8 @@ export class Button extends React.Component {
     if (ls.get("userId")) {
       this.socket.emit("enterSocket", ls.get("userId"));
     }
-    if (ls.get("dialogId")) {
-      this.socket.emit("enterDialog", ls.get("dialogId"));
+    if (getDialogId(this.state.buttonId)) {
+      this.socket.emit("enterDialog", getDialogId(this.state.buttonId));
     }
   }
 
@@ -419,8 +422,8 @@ export class Button extends React.Component {
     /*if (!iOS) {
       this.notificationPermission();
     }*/
-    if (ls.get("dialogId")) {
-      this.socket.emit("readMessage", ls.get("dialogId"));
+    if (getDialogId(buttonId)) {
+      this.socket.emit("readMessage", getDialogId(buttonId));
     }
 
     let self = this;
@@ -430,7 +433,7 @@ export class Button extends React.Component {
       apiLoading: true,
     });
 
-    if (!ls.get("dialogId")) {
+    if (!getDialogId(buttonId)) {
       if (ls.get("userId")) {
         //console.log("PATH 1");
         axios
@@ -438,7 +441,7 @@ export class Button extends React.Component {
           .then(function (response) {
             //console.log("TESTING NOW 1", response);
             const active = response.data.data.filter(
-              (dialog) => !dialog.isDeleted
+              (dialog) => !dialog.isDeleted && dialog.button === buttonId
             );
             if (response.data.count > 0 && active.length > 0) {
               //let notifPerm = ls.get("conversationPermission");
@@ -449,7 +452,10 @@ export class Button extends React.Component {
                   response.data.dialogs[0].port._id
                 );
               }*/
-              ls.set("dialogId", active[0]._id);
+              console.log("DIALOGS", active);
+              //ls.set("dialogId", active[0]._id); //@changeDialog
+              appendDialogMapping(buttonId, active[0]._id);
+
               self.showChatHere();
             } else {
               self.handleRegistration();
@@ -468,21 +474,25 @@ export class Button extends React.Component {
         .then(function (response) {
           //console.log("TESTING NOW 2", response);
           const active = response.data.data.filter(
-            (dialog) => !dialog.isDeleted
+            (dialog) => !dialog.isDeleted && dialog.button === buttonId
           );
           if (response.data.count > 0 && active.length > 0) {
             //console.log("PATH 3", response);
 
-            ls.set("dialogId", active[0]._id);
+            //ls.set("dialogId", active[0]._id); //@changeDialog
+            console.log("DIALOGS", active);
+            appendDialogMapping(buttonId, active[0]._id);
             self.showChatHere();
           } else {
             //console.log("PATH 4", response);
-            ls.set("dialogId", "");
+            //ls.set("dialogId", ""); //@changeDialog
+            appendDialogMapping(buttonId, "");
             self.showChatHere();
           }
         })
         .catch(function (error) {
-          ls.set("dialogId", "");
+          //ls.set("dialogId", ""); //@changeDialog
+          appendDialogMapping(buttonId, "");
           self.showChatHere();
           //console.log(error);
         });
@@ -517,6 +527,7 @@ export class Button extends React.Component {
       }
     });
     this.socket.on("received", (data) => {
+      console.log("RECEIVED", data);
       /**feature */
       if (data.user !== ls.get("userId")) {
         if (
@@ -526,7 +537,7 @@ export class Button extends React.Component {
         ) {
           this.notificationSound.play();
         } else {
-          self.socket.emit("readMessage", ls.get("dialogId"));
+          self.socket.emit("readMessage", getDialogId(self.state.buttonId));
         }
 
         self.props.incrementNotifications();
@@ -602,8 +613,8 @@ export class Button extends React.Component {
       innerHeight: window.innerHeight,
       displayMainRequest: false,
     });
-    if (ls.get("dialogId")) {
-      this.socket.emit("clientLeaveDialog", ls.get("dialogId"));
+    if (getDialogId(this.state.buttonId)) {
+      this.socket.emit("clientLeaveDialog", getDialogId(this.state.buttonId));
     }
 
     enableScroll();
@@ -672,7 +683,7 @@ export class Button extends React.Component {
 
         {this.props.button && (
           <StartButton
-            onClick={(event) => this.handleClick(event, this.props.buttonId)}
+            onClick={(event) => this.handleClick(event, this.state.buttonId)}
             color={this.props.color}
             status={this.props.notifications > 0 ? "answer" : "rest"}
             positions={this.props.position}
@@ -694,7 +705,7 @@ export class Button extends React.Component {
               destroy={this.destroyChat}
               displayChat={this.state.displayChat}
               businessId={this.state.businessId}
-              buttonId={this.props.buttonId}
+              buttonId={this.state.buttonId}
               initializeChat={this.state.initializeChat}
               greetingText={this.props.greetingText}
               waitingText={this.props.waitingText}

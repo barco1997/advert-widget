@@ -12,6 +12,11 @@ import {
   staticUrl,
   socketUrl,
   apiBaseUrl,
+  appendDialogMapping,
+  appendTsMapping,
+  getDialogId,
+  getTs,
+  removeTs,
 } from "../../constants";
 
 import Stream from "../Stream";
@@ -864,7 +869,7 @@ export class Chat extends React.Component {
   }
 
   endDialogue() {
-    this.socket.emit("deleteDialog", ls.get("dialogId"));
+    this.socket.emit("deleteDialog", getDialogId(this.props.buttonId));
     this.props.destroy();
   }
 
@@ -886,11 +891,11 @@ export class Chat extends React.Component {
 
   handleUnload(e) {
     if (this.state.streamFlag) {
-      this.socket.emit("leaveStream", ls.get("dialogId"));
+      this.socket.emit("leaveStream", getDialogId(this.props.buttonId));
       ls.set("tabClosed", true);
     }
-    if (this.state.displayFlag && ls.get("dialogId")) {
-      this.socket.emit("clientLeaveDialog", ls.get("dialogId"));
+    if (this.state.displayFlag && getDialogId(this.props.buttonId)) {
+      this.socket.emit("clientLeaveDialog", getDialogId(this.props.buttonId));
     }
   }
 
@@ -945,7 +950,7 @@ export class Chat extends React.Component {
       if (ls.get("streamInProgress")) {
         let obj = {
           messageText: value,
-          dialogId: ls.get("dialogId"),
+          dialogId: getDialogId(self.props.buttonId),
           userId: ls.get("userId"),
           type: "DIALOG",
         };
@@ -954,7 +959,7 @@ export class Chat extends React.Component {
       } else {
         let obj = {
           messageText: value,
-          dialogId: ls.get("dialogId"),
+          dialogId: getDialogId(self.props.buttonId),
           userId: ls.get("userId"),
           type: "DIALOG",
         };
@@ -1040,8 +1045,8 @@ export class Chat extends React.Component {
       });
       this.socket.on("connect", () => {
         self.socket.emit("enterSocket", ls.get("userId"));
-        if (ls.get("dialogId")) {
-          self.socket.emit("enterDialog", ls.get("dialogId"));
+        if (getDialogId(self.props.buttonId)) {
+          self.socket.emit("enterDialog", getDialogId(self.props.buttonId));
         }
       });
       this.socket.on("disconnect", () => {
@@ -1053,7 +1058,8 @@ export class Chat extends React.Component {
         self.props.destroy();
       });
       this.socket.on("dialogCreated", (id) => {
-        ls.set("dialogId", id);
+        //ls.set("dialogId", id); //@changeDialog
+        appendDialogMapping(self.props.buttonId, id);
         self.socket.emit("enterDialog", id);
         self.props.joinDialogue();
         ls.set("adminIcon", rndAdmin);
@@ -1089,8 +1095,9 @@ export class Chat extends React.Component {
           self.stopGame();
         }
         if (data.userId !== storedId) {
-          if (!ls.get("dialogId")) {
-            ls.set("dialogId", data._id);
+          if (!getDialogId(self.props.buttonId)) {
+            //ls.set("dialogId", data._id); @changeDialog
+            appendDialogMapping(self.props.buttonId, data._id);
           }
 
           let type;
@@ -1175,51 +1182,76 @@ export class Chat extends React.Component {
 
   handleMessages() {
     let self = this;
-    if (ls.get("dialogId")) {
-      if (this.state.firstTimeFlag) {
-        this.setState({ isMessagesLoading: true });
-        axios
-          .post(`${apiBaseUrl}/dialog/${ls.get("dialogId")}/messages`, {})
-          .then(function (response) {
-            const messages = response.data.data;
-            const editedMessages = messages
-              .filter((msg) => !(msg.type && msg.type === "STREAM"))
-              .map((message) => ({
-                text: message.messageText,
-                time: message.createdAt,
+    if (getDialogId(self.props.buttonId)) {
+      axios
+        .get(`${apiBaseUrl}/dialog/${getDialogId(self.props.buttonId)}`)
+        .then(function (response) {
+          if (response.data.button === self.props.buttonId) {
+            if (self.state.firstTimeFlag) {
+              self.setState({ isMessagesLoading: true });
+              axios
+                .post(
+                  `${apiBaseUrl}/dialog/${getDialogId(
+                    self.props.buttonId
+                  )}/messages`,
+                  {}
+                )
+                .then(function (response) {
+                  const messages = response.data.data;
+                  const editedMessages = messages
+                    .filter((msg) => !(msg.type && msg.type === "STREAM"))
+                    .map((message) => ({
+                      text: message.messageText,
+                      time: message.createdAt,
 
-                user: message.user === ls.get("userId") ? "Вы" : "Консультант",
-                type: message.attachment
-                  ? message.attachment.type.toLowerCase()
-                  : "message",
-                src: message.attachment ? message.attachment.src : null,
-                thumb:
-                  message.attachment &&
-                  (message.attachment.type === "VIDEO" ||
-                    message.attachment.type === "STREAM")
-                    ? message.attachment.thumbnail
-                    : null,
-                flv:
-                  message.attachment && message.attachment.type === "STREAM"
-                    ? message.attachment.src
-                    : "",
-                id: message._id,
-              }));
-            if (editedMessages.length >= 2) {
-              ls.remove("noStreamerFlag");
+                      user:
+                        message.user === ls.get("userId")
+                          ? "Вы"
+                          : "Консультант",
+                      type: message.attachment
+                        ? message.attachment.type.toLowerCase()
+                        : "message",
+                      src: message.attachment ? message.attachment.src : null,
+                      thumb:
+                        message.attachment &&
+                        (message.attachment.type === "VIDEO" ||
+                          message.attachment.type === "STREAM")
+                          ? message.attachment.thumbnail
+                          : null,
+                      flv:
+                        message.attachment &&
+                        message.attachment.type === "STREAM"
+                          ? message.attachment.src
+                          : "",
+                      id: message._id,
+                    }));
+                  if (editedMessages.length >= 2) {
+                    ls.remove("noStreamerFlag");
+                  }
+                  //if (getDialogId(self.props.buttonId)) {
+                  self.socket.emit(
+                    "clientEnterDialog",
+                    getDialogId(self.props.buttonId)
+                  );
+                  //}
+
+                  self.loadInitialMessages(editedMessages);
+                })
+                .catch(function (error) {
+                  //console.log(error);
+                  self.setState({ isMessagesLoading: false });
+                });
             }
-            //if (ls.get("dialogId")) {
-            self.socket.emit("clientEnterDialog", ls.get("dialogId"));
-            //}
-
-            self.loadInitialMessages(editedMessages);
-          })
-          .catch(function (error) {
-            //console.log(error);
-            self.setState({ isMessagesLoading: false });
-          });
-      }
+          }
+        })
+        .catch(function (error) {
+          //console.log(error);
+          self.setState({ isMessagesLoading: false });
+        });
     }
+    //if (getDialogId(self.props.buttonId)) {
+
+    //}
   }
 
   handleChange(event) {
@@ -1353,7 +1385,7 @@ export class Chat extends React.Component {
 
         let obj = {
           messageText: value,
-          dialogId: ls.get("dialogId"),
+          dialogId: getDialogId(self.props.buttonId),
           userId: ls.get("userId"),
           type: "STREAM",
         };
@@ -1397,6 +1429,7 @@ export class Chat extends React.Component {
           description: value,
         };
         ls.remove("awaitTmp");
+        removeTs(self.props.buttonId);
         if (self.props.askedUserData !== "NONE") {
           let dataToSend = {
             id: ls.get("userId"),
@@ -1417,9 +1450,10 @@ export class Chat extends React.Component {
           self.socket.emit("fillClientData", JSON.stringify(dataToSend));
         }
         self.socket.emit("createDialog", newObj);
-
+        //console.log("CASE 1", newObj);
         ls.set("initialUrl", getPathFromUrl(window.location.href));
       } else if (!this.state.awaitingConnection) {
+        //console.log("CASE 2");
         let pageUrl = getPathFromUrl(window.location.href);
         let currentValue = value;
         if (
@@ -1456,7 +1490,7 @@ export class Chat extends React.Component {
 
         let obj = {
           messageText: currentValue,
-          dialogId: ls.get("dialogId"),
+          dialogId: getDialogId(self.props.buttonId),
           userId: ls.get("userId"),
           type: "DIALOG",
         };
@@ -1480,7 +1514,7 @@ export class Chat extends React.Component {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     window.addEventListener("unload", this.handleUnload);
     window.addEventListener("resize", this.handleResize);
-    if (!ls.get("dialogId")) {
+    if (!getDialogId(this.props.buttonId)) {
       ls.remove("noStreamerFlag");
     }
     try {
@@ -1596,7 +1630,7 @@ export class Chat extends React.Component {
       });
 
       let obj = {
-        dialogId: ls.get("dialogId"),
+        dialogId: getDialogId(self.props.buttonId),
         userId: ls.get("userId"),
         attachmentType: "AUDIO",
         attachmentUrl: response.data,
@@ -1820,6 +1854,7 @@ export class Chat extends React.Component {
                                   </React.Fragment>
                                 ) : (
                                   <MessageArea
+                                    buttonId={this.props.buttonId}
                                     messages={this.state.messages}
                                     awaitingConnection={
                                       this.state.awaitingConnection
@@ -1998,15 +2033,21 @@ export class Chat extends React.Component {
                   /***** Stream props*/
 
                   mountFunction={() => {
-                    this.socket.emit("enterStream", ls.get("dialogId"));
+                    this.socket.emit(
+                      "enterStream",
+                      getDialogId(this.props.buttonId)
+                    );
                   }}
                   unmountFunction={() => {
-                    this.socket.emit("leaveStream", ls.get("dialogId"));
+                    this.socket.emit(
+                      "leaveStream",
+                      getDialogId(this.props.buttonId)
+                    );
                     this.setState({
                       audioStreamStatus: iOS ? iOSrecord : false,
                     });
                   }}
-                  dialogId={ls.get("dialogId")}
+                  dialogId={getDialogId(this.props.buttonId)}
                   visible={!this.state.prepareToUnmountStream}
                   SESSION_STATUS={SESSION_STATUS}
                   STREAM_STATUS={STREAM_STATUS}

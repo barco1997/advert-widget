@@ -10,6 +10,7 @@ import moment from "moment";
 import ls from "local-storage";
 import { media } from "../../../../utils/media";
 import OpaqueButton from "../OpaqueButton";
+import { getTs, appendTsMapping } from "../../constants";
 const uuidv1 = require("uuid/v1");
 
 const MessageContainer = styled.div`
@@ -129,7 +130,7 @@ export class MessageArea extends React.Component {
     this.state = {
       messages: this.props.messages || [],
       awaitingConnection: this.props.awaitingConnection,
-      timestamp: ls.get("awaitTmp") || null,
+      timestamp: getTs(this.props.buttonId) || null,
       streamIndexVal: [],
       timerExceeded: false,
       success: false,
@@ -192,7 +193,8 @@ export class MessageArea extends React.Component {
       this.setState({
         timestamp: tmp,
       });
-      ls.set("awaitTmp", tmp);
+      //ls.set("awaitTmp", tmp);
+      appendTsMapping(this.props.buttonId, tmp);
     }
     this.scrollToBottom();
   }

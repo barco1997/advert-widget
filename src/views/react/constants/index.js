@@ -5,7 +5,7 @@ export const setConversationArray = (businessId, conversationId) => {
   let index = null;
   if (current) {
     index = current.findIndex((element) => element.businessId === businessId);
-    console.log("index: ", index);
+    //console.log("index: ", index);
     if (index !== -1) {
       //console.log("1");
       current[index].conversationId = conversationId;
@@ -41,12 +41,12 @@ export const setLiveArray = (businessId, liveId) => {
   let index = null;
   if (current) {
     index = current.findIndex((element) => element.businessId === businessId);
-    console.log("index: ", index);
+    //console.log("index: ", index);
     if (index !== -1) {
       //console.log("1");
       current[index].liveId = liveId;
     } else {
-      console.log("Error with live setting");
+      //console.log("Error with live setting");
       /*current = [
           ...current,
           { businessId: businessId, liveId: liveId }
@@ -54,7 +54,7 @@ export const setLiveArray = (businessId, liveId) => {
     }
   } else {
     //console.log("3");
-    console.log("Error with live setting");
+    //console.log("Error with live setting");
     //current = [{ businessId: businessId, conversationId: conversationId }];
   }
 
@@ -81,7 +81,7 @@ export const setSentHistory = (businessId, message, status) => {
   let index = null;
   if (current) {
     index = current.findIndex((element) => element.businessId === businessId);
-    console.log("index: ", index);
+    //console.log("index: ", index);
     if (index !== -1) {
       //console.log("1");
       current[index].history = { message: message, status: status };
@@ -113,6 +113,107 @@ export const getSentHistory = (businessId) => {
     const element = array.find((element) => element.businessId === businessId);
     if (element) {
       return element.history;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+export const appendDialogMapping = (buttonId, dialogId) => {
+  let current = ls.get("dialogMapping");
+  let index = null;
+  if (current) {
+    index = current.findIndex((element) => element.buttonId === buttonId);
+    //console.log("index: ", index);
+    if (index !== -1) {
+      //console.log("1");
+      current[index].dialogId = dialogId;
+    } else {
+      //console.log("Error with live setting");
+      current = [
+        ...current,
+        {
+          buttonId,
+          dialogId,
+        },
+      ];
+    }
+  } else {
+    //console.log("3");
+    //console.log("Error with live setting");
+    current = [{ buttonId, dialogId }];
+  }
+
+  ls.set("dialogMapping", current);
+};
+
+export const appendTsMapping = (buttonId, ts) => {
+  let current = ls.get("tsMapping");
+  let index = null;
+  if (current) {
+    index = current.findIndex((element) => element.buttonId === buttonId);
+    //console.log("index: ", index);
+    if (index !== -1) {
+      //console.log("1");
+      current[index].ts = ts;
+    } else {
+      //console.log("Error with live setting");
+      current = [
+        ...current,
+        {
+          buttonId,
+          ts,
+        },
+      ];
+    }
+  } else {
+    //console.log("3");
+    //console.log("Error with live setting");
+    current = [{ buttonId, ts }];
+  }
+
+  ls.set("tsMapping", current);
+};
+
+export const removeTs = (buttonId) => {
+  let current = ls.get("tsMapping");
+  let index = null;
+  if (current) {
+    index = current.findIndex((element) => element.buttonId === buttonId);
+    //console.log("index: ", index);
+    if (index !== -1) {
+      //console.log("1");
+      current.splice(index, 1);
+    }
+  }
+
+  ls.set("tsMapping", current);
+};
+
+export const getDialogId = (buttonId) => {
+  const array = ls.get("dialogMapping");
+
+  if (array) {
+    const element = array.find((element) => element.buttonId === buttonId);
+    if (element) {
+      return element.dialogId;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+export const getTs = (buttonId) => {
+  const array = ls.get("tsMapping");
+
+  if (array) {
+    const element = array.find((element) => element.buttonId === buttonId);
+    if (element) {
+      return element.ts;
     } else {
       return null;
     }
