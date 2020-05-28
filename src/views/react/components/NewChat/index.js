@@ -895,6 +895,7 @@ export class Chat extends React.Component {
       ls.set("tabClosed", true);
     }
     if (this.state.displayFlag && getDialogId(this.props.buttonId)) {
+      //console.log("clientLeaveDialog socket", getDialogId(this.props.buttonId));
       this.socket.emit("clientLeaveDialog", getDialogId(this.props.buttonId));
     }
   }
@@ -1422,7 +1423,10 @@ export class Chat extends React.Component {
           title: this.props.currentTitle
             ? this.props.currentTitle
             : document.getElementsByTagName("h1").length > 0
-            ? document.getElementsByTagName("h1")[0].textContent
+            ? document
+                .getElementsByTagName("h1")[0]
+                .textContent.replace(/(\r\n|\n|\r)/gm, " ")
+                .trim()
             : value,
           websiteUrl: getPathFromUrl(window.location.href),
           button: self.props.buttonId,
