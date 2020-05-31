@@ -202,7 +202,7 @@ export class Button extends React.Component {
       })
     );
 
-    if (email) {
+    if (notificationEmail) {
       //@TODO add the proper validation
       let obj = JSON.stringify({
         dialogId: getDialogId(this.state.buttonId),
@@ -216,7 +216,7 @@ export class Button extends React.Component {
       this.socket.emit("changeDialogNotifications", obj);
     }
     this.setState({
-      emailSentFlag: email ? true : false,
+      emailSentFlag: notificationEmail ? true : false,
       displayMainRequest: !leaveFlag,
       displayEmailRequest: false,
       displayChat: true,
