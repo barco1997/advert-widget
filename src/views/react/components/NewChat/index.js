@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
-import styled, { css } from "styled-components";
-import axios from "axios";
-import ls from "local-storage";
-import ReactPlayer from "react-player";
-import { MessageArea } from "./messageArea";
-import { media, mediaType } from "../../../../utils/media";
+import React, { Fragment } from 'react';
+import styled, { css } from 'styled-components';
+import axios from 'axios';
+import ls from 'local-storage';
+import ReactPlayer from 'react-player';
+import { MessageArea } from './messageArea';
+import { media, mediaType } from '../../../../utils/media';
 import {
   setLiveArray,
   getRndInteger,
@@ -17,36 +17,36 @@ import {
   getDialogId,
   getTs,
   removeTs,
-} from "../../constants";
+} from '../../constants';
 
-import Stream from "../Stream";
-import LeaveEmail from "../LeaveEmail";
+import Stream from '../Stream';
+import LeaveEmail from '../LeaveEmail';
 //import MicRecorder from "mic-recorder-to-mp3";
 
-import StandaloneTimer from "../StandaloneTimer";
-import Disclaimer from "../Disclaimer";
-import EntryInfo from "../EntryInfo";
+import StandaloneTimer from '../StandaloneTimer';
+import Disclaimer from '../Disclaimer';
+import EntryInfo from '../EntryInfo';
 //import { ReactMic } from "react-mic";
-import MicrophoneInput, { pulse } from "../MicrophoneInput";
+import MicrophoneInput, { pulse } from '../MicrophoneInput';
 //import { withFirebase } from "../Firebase";
 //import firebase from "firebase";
-import StatusButton from "../StatusButton";
+import StatusButton from '../StatusButton';
 
-import AudioRecorder from "audio-recorder-polyfill";
-import mpegEncoder from "audio-recorder-polyfill/mpeg-encoder";
-const LazyGame = React.lazy(() => import("../NewGame"));
-import GetDetailsView from "../GetDetailsView";
-import NoStreamerComponent from "../NoStreamerComponent";
-import Loader from "../Loader";
-import AdditionalActions from "../AdditionalActions";
-import BrowserAlert from "../BrowserAlert";
+import AudioRecorder from 'audio-recorder-polyfill';
+import mpegEncoder from 'audio-recorder-polyfill/mpeg-encoder';
+const LazyGame = React.lazy(() => import('../NewGame'));
+import GetDetailsView from '../GetDetailsView';
+import NoStreamerComponent from '../NoStreamerComponent';
+import Loader from '../Loader';
+import AdditionalActions from '../AdditionalActions';
+import BrowserAlert from '../BrowserAlert';
 //import FlappyEye from "../NewGame";
 
-const uuidv1 = require("uuid/v1");
+const uuidv1 = require('uuid/v1');
 //let currentUrl = window.location.href;
 
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-let isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+let isAndroid = navigator.userAgent.toLowerCase().indexOf('android') > -1;
 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 let SESSION_STATUS;
 let STREAM_STATUS;
@@ -54,7 +54,7 @@ let PRELOADER_URL;
 let ROOM_EVENT;
 
 AudioRecorder.encoder = mpegEncoder;
-AudioRecorder.prototype.mimeType = "audio/mpeg";
+AudioRecorder.prototype.mimeType = 'audio/mpeg';
 window.MediaRecorder = AudioRecorder;
 
 const rndUser = getRndInteger(1, 8);
@@ -88,14 +88,14 @@ load(
     ROOM_EVENT = Flashphoner.roomApi.events;
   })
   .catch(function (err) {
-    console.error("Something went wrong!", err);
+    console.error('Something went wrong!', err);
   });
 
-const io = require("socket.io-client");
+const io = require('socket.io-client');
 
-const storedId = ls.get("userId");
+const storedId = ls.get('userId');
 const getPathFromUrl = (url) => {
-  return url.split("?")[0];
+  return url.split('?')[0];
 };
 const VideoWrapper = styled.div`
   &&& {
@@ -110,7 +110,7 @@ const VideoWrapper = styled.div`
       height: 100% !important;
     }
     display: ${(props) =>
-      props.visible ? "block !important" : "none !important"};
+      props.visible ? 'block !important' : 'none !important'};
 
     ${(props) =>
       props.windowHeight < props.height &&
@@ -192,7 +192,7 @@ const VideoWrapperS = styled.div`
       height: 664px !important;
     }
     display: ${(props) =>
-      props.visible ? "flex !important" : "none !important"};
+      props.visible ? 'flex !important' : 'none !important'};
 
     ${(props) =>
       props.windowHeight < props.height &&
@@ -222,7 +222,7 @@ const VideoWrapperS = styled.div`
 const StreamWrapper = styled.div`
   &&& {
     display: ${(props) =>
-      props.visible ? "flex !important" : "none !important"};
+      props.visible ? 'flex !important' : 'none !important'};
     width: 496px !important;
     height: 664px !important;
     flex-direction: column !important;
@@ -230,21 +230,21 @@ const StreamWrapper = styled.div`
     ${(props) =>
       props.height < 634 &&
       `
-      top: ${props.top ? props.top : "0"} !important;
+      top: ${props.top ? props.top : '0'} !important;
       left: 0 !important;
       background: white !important;
       position: fixed !important;
       width: 100vw !important;
-      height: ${props.height ? `${props.height}px` : "auto"} !important;
+      height: ${props.height ? `${props.height}px` : 'auto'} !important;
   `}
     ${media.desktop`
-      top: ${(props) => (props.top ? props.top : "0")} !important;
+      top: ${(props) => (props.top ? props.top : '0')} !important;
       left: 0 !important;
       background: white !important;
       position: fixed !important;
       width: 100vw !important;
       height: ${(props) =>
-        props.height ? `${props.height}px` : "auto"} !important;
+        props.height ? `${props.height}px` : 'auto'} !important;
     `};
   }
 `;
@@ -257,7 +257,7 @@ const PhotoWrapper = styled.div`
     border-radius: 10px !important;
     overflow: hidden !important;
     display: ${(props) =>
-      props.visible ? "block !important" : "none !important"};
+      props.visible ? 'block !important' : 'none !important'};
 
     ${(props) =>
       props.windowHeight < props.height &&
@@ -353,7 +353,7 @@ const TimerCircle = styled.div`
 
 const Timer = styled.div`
   &&& {
-    font-family: "Montserrat" !important;
+    font-family: 'Montserrat' !important;
     font-style: normal !important;
     font-weight: 600 !important;
     font-size: 14px !important;
@@ -380,7 +380,7 @@ const CloseButton = styled.span`
     align-items: center !important;
     opacity: 1 !important;
     margin-right: 15px !important;
-    margin-left: ${(props) => (props.noMarginLeft ? "0px" : "10px")} !important;
+    margin-left: ${(props) => (props.noMarginLeft ? '0px' : '10px')} !important;
     &:hover {
       background: rgba(255, 255, 255, 0.26) !important;
     }
@@ -388,7 +388,7 @@ const CloseButton = styled.span`
     &:after {
       position: absolute !important;
 
-      content: " " !important;
+      content: ' ' !important;
       height: 12px !important;
       width: 2px !important;
       border-radius: 1px !important;
@@ -453,10 +453,10 @@ const ChatWrapper = styled.div`
     height: 100vh !important;
     position: fixed !important;
     left: 0 !important;
-    top: ${(props) => (props.top ? props.top : "0")} !important;
+    top: ${(props) => (props.top ? props.top : '0')} !important;
     z-index: 10000 !important;
     display: ${(props) =>
-      props.displayFlag ? "flex !important" : "none !important"};
+      props.displayFlag ? 'flex !important' : 'none !important'};
     justify-content: center !important;
     align-items: center !important;
     font-family: "Montserrat" !important;
@@ -468,40 +468,40 @@ const ChatWrapper = styled.div`
 
 const InputFieldA = styled.textarea`
   &&& {
-    height: ${(props) => (props.height ? props.height : "50px")} !important;
-    color: ${(props) => (props.stream ? "#ffffff" : "black")} !important;
+    height: ${(props) => (props.height ? props.height : '50px')} !important;
+    color: ${(props) => (props.stream ? '#ffffff' : 'black')} !important;
     flex: 1 !important;
 
-    opacity: ${(props) => (props.blocked ? "0.7" : "1")} !important;
+    opacity: ${(props) => (props.blocked ? '0.7' : '1')} !important;
     max-width: 100% !important;
     background: ${(props) =>
-      props.stream ? "rgba(255, 255, 255, 0.32)" : "#ffffff"} !important;
+      props.stream ? 'rgba(255, 255, 255, 0.32)' : '#ffffff'} !important;
     border: 0px solid #eaeaea !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
-    height: ${(props) => (props.height ? props.height : "63px")} !important;
-    border-radius: ${(props) => (props.stream ? "4px" : "0px")} !important;
+    height: ${(props) => (props.height ? props.height : '63px')} !important;
+    border-radius: ${(props) => (props.stream ? '4px' : '0px')} !important;
     padding: ${(props) =>
-      props.stream ? "13px 24px" : "24px 24px"} !important;
-    padding-right: ${(props) => (props.stream ? "24px" : "70px")} !important;
-    font-family: "Montserrat" !important;
+      props.stream ? '13px 24px' : '24px 24px'} !important;
+    padding-right: ${(props) => (props.stream ? '24px' : '70px')} !important;
+    font-family: 'Montserrat' !important;
     font-weight: normal !important;
     font-size: 16px !important;
     line-height: 20px !important;
     outline: 0 !important;
     resize: none !important;
     border-top: ${(props) =>
-      props.stream ? "none" : "1px solid #eaeaea"} !important;
+      props.stream ? 'none' : '1px solid #eaeaea'} !important;
     margin: 0px !important;
     width: ${(props) =>
-      props.stream ? "calc(100% - 89px)" : "100%"} !important;
-    margin-left: ${(props) => (props.stream ? "24px" : "0px")} !important;
-    margin-right: ${(props) => (props.stream ? "15px" : "0px")} !important;
+      props.stream ? 'calc(100% - 89px)' : '100%'} !important;
+    margin-left: ${(props) => (props.stream ? '24px' : '0px')} !important;
+    margin-right: ${(props) => (props.stream ? '15px' : '0px')} !important;
     word-break: break-all !important;
     vertical-align: middle !important;
     &::placeholder {
       color: ${(props) =>
-        props.stream ? "rgba(255, 255, 255, 0.6)" : "#cacaca"} !important;
+        props.stream ? 'rgba(255, 255, 255, 0.6)' : '#cacaca'} !important;
       font-weight: normal !important;
     }
     ${media.desktop`
@@ -511,7 +511,7 @@ const InputFieldA = styled.textarea`
     ${media.phone`
       font-size: 12px !important;
       padding: ${(props) =>
-        props.stream ? "13px 24px" : "15px 28px"} !important;
+        props.stream ? '13px 24px' : '15px 28px'} !important;
         padding-right: 70px !important;
   `};
   }
@@ -543,7 +543,7 @@ const MicWrap = styled.div`
     align-items: center !important;
     justify-content: center !important;
     background: ${(props) =>
-      props.isActive ? `${props.color} !important` : "#f2f2f2 !important"};
+      props.isActive ? `${props.color} !important` : '#f2f2f2 !important'};
     border-radius: 50% !important;
     cursor: pointer !important;
 
@@ -651,6 +651,11 @@ const Image = styled.div`
     ${media.desktop`
       border-radius: 0px !important;
   `};
+    ${media.phone`
+    background: black url(${(props) =>
+      props.src}) no-repeat left center !important;
+      background-size: 100% !important;
+  `};
   }
 `;
 
@@ -668,7 +673,7 @@ const JsChatWindow = styled.div`
   &&& {
    display: flex !important;
      /*display: ${(props) =>
-       props.visible ? "flex !important" : "none !important"};
+       props.visible ? 'flex !important' : 'none !important'};
        width: 542px !important;*/
     justify-content: flex-start !important;
     align-items: center !important;
@@ -676,7 +681,7 @@ const JsChatWindow = styled.div`
     background: #fff !important;
       /**** Feature ****/
     overflow: hidden !important;
-    width: ${(props) => (props.visible ? "496px" : "0")} !important;
+    width: ${(props) => (props.visible ? '496px' : '0')} !important;
       /**** End     ****/
     
     min-height: 664px !important;
@@ -686,13 +691,13 @@ const JsChatWindow = styled.div`
     ${(props) =>
       props.height < 634 &&
       `
-      min-height: ${props.height ? `${props.height}px` : "100%"} !important;
+      min-height: ${props.height ? `${props.height}px` : '100%'} !important;
       width: 100vw !important;
       border-radius: 0px !important;
   `}
     ${media.desktop`
       min-height: ${(props) =>
-        props.height ? `${props.height}px` : "100%"} !important;
+        props.height ? `${props.height}px` : '100%'} !important;
       width: 100vw !important;
       border-radius: 0px !important;
   & > :first-child {
@@ -731,7 +736,7 @@ const JsChatMessageContainer = styled.div`
     max-height: ${(props) =>
       props.tHeight
         ? `calc(100% - ${props.tHeight} - 82px)`
-        : "calc(100% - 145px)"} !important;
+        : 'calc(100% - 145px)'} !important;
     flex: 1 !important;
     position: relative !important;
     ${media.desktop`
@@ -769,12 +774,12 @@ const ChatWindowExpansion = styled.div`
     align-items: center !important;
     height: 692px !important;
     /**** Feature ****/
-    display: ${(props) => (props.visible ? "flex" : "none")} !important;
-    width: ${(props) => (props.visible ? "496px" : "0")} !important;
+    display: ${(props) => (props.visible ? 'flex' : 'none')} !important;
+    width: ${(props) => (props.visible ? '496px' : '0')} !important;
     /**** End     ****/
     ${media.desktop`
       height: ${(props) =>
-        props.height ? `${props.height}px` : "100vh"} !important;
+        props.height ? `${props.height}px` : '100vh'} !important;
     `}
   }
 `;
@@ -785,7 +790,7 @@ export class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "",
+      value: '',
       messages: [],
       messagesStream: [],
       incomingMessage: false,
@@ -794,7 +799,7 @@ export class Chat extends React.Component {
       displayFlag: this.props.displayChat,
       firstTimeFlag: true,
       streamFlag: false,
-      streamLink: "",
+      streamLink: '',
       photoSrc: null,
       videoSrc: null,
       streamToVideo: null,
@@ -803,28 +808,28 @@ export class Chat extends React.Component {
       ifPauseIcon: false,
       existingChats: [],
       streamId: null,
-      lastValue: "",
+      lastValue: '',
       flvPlayer: null,
       transactionLimit: 50,
       sentHistory: null,
-      valueStream: "",
+      valueStream: '',
       androidOffset: 0,
       ifTimer: false,
       audioDuration: 0,
       shouldTimerStop: false,
-      textAreaHeight: mediaType.phone ? "50px" : "68px",
-      streamTextAreaHeight: "46px",
+      textAreaHeight: mediaType.phone ? '50px' : '68px',
+      streamTextAreaHeight: '46px',
       isRecording: false,
-      blobURL: "",
+      blobURL: '',
       isBlocked: false,
       micChecked: false,
       isFirst: false,
       recorder: null,
       gameStarted: false,
       audioStreamStatus: iOS ? iOSrecord : false,
-      nameRequested: "",
-      emailRequested: "",
-      phoneRequested: "",
+      nameRequested: '',
+      emailRequested: '',
+      phoneRequested: '',
       prepareToUnmountStream: false,
       isMessagesLoading: false,
     };
@@ -869,7 +874,7 @@ export class Chat extends React.Component {
   }
 
   endDialogue() {
-    this.socket.emit("deleteDialog", getDialogId(this.props.buttonId));
+    this.socket.emit('deleteDialog', getDialogId(this.props.buttonId));
     this.props.destroy();
   }
 
@@ -885,18 +890,18 @@ export class Chat extends React.Component {
     if (this.state.streamFlag) {
       e.preventDefault();
       return (e.returnValue =
-        "Вы уверены, что хотите закрыть вкладку во время прямой трансляции?");
+        'Вы уверены, что хотите закрыть вкладку во время прямой трансляции?');
     }
   }
 
   handleUnload(e) {
     if (this.state.streamFlag) {
-      this.socket.emit("leaveStream", getDialogId(this.props.buttonId));
-      ls.set("tabClosed", true);
+      this.socket.emit('leaveStream', getDialogId(this.props.buttonId));
+      ls.set('tabClosed', true);
     }
     if (this.state.displayFlag && getDialogId(this.props.buttonId)) {
       //console.log("clientLeaveDialog socket", getDialogId(this.props.buttonId));
-      this.socket.emit("clientLeaveDialog", getDialogId(this.props.buttonId));
+      this.socket.emit('clientLeaveDialog', getDialogId(this.props.buttonId));
     }
   }
 
@@ -930,12 +935,12 @@ export class Chat extends React.Component {
     /*********************************************************************************** */
     let self = this;
     const value =
-      document.getElementsByTagName("h1").length > 0
-        ? document.getElementsByTagName("h1")[0].textContent
-        : document.getElementsByClassName("p-product__char-txt").length > 0
-        ? document.getElementsByClassName("p-product__char-txt")[0].textContent
-        : "empty";
-    const rndUserLocal = ls.get("userIcon") ? ls.get("userIcon") : rndUser;
+      document.getElementsByTagName('h1').length > 0
+        ? document.getElementsByTagName('h1')[0].textContent
+        : document.getElementsByClassName('p-product__char-txt').length > 0
+        ? document.getElementsByClassName('p-product__char-txt')[0].textContent
+        : 'empty';
+    const rndUserLocal = ls.get('userIcon') ? ls.get('userIcon') : rndUser;
     if (this.state.startedFlag && !this.state.awaitingConnection) {
       this.setState({
         messages: [
@@ -946,36 +951,36 @@ export class Chat extends React.Component {
             id: uuidv1(),
           },
         ],
-        value: "",
+        value: '',
       });
-      if (ls.get("streamInProgress")) {
+      if (ls.get('streamInProgress')) {
         let obj = {
           messageText: value,
           dialogId: getDialogId(self.props.buttonId),
-          userId: ls.get("userId"),
-          type: "DIALOG",
+          userId: ls.get('userId'),
+          type: 'DIALOG',
         };
 
-        self.socket.emit("message", JSON.stringify(obj));
+        self.socket.emit('message', JSON.stringify(obj));
       } else {
         let obj = {
           messageText: value,
           dialogId: getDialogId(self.props.buttonId),
-          userId: ls.get("userId"),
-          type: "DIALOG",
+          userId: ls.get('userId'),
+          type: 'DIALOG',
         };
 
-        self.socket.emit("message", JSON.stringify(obj));
+        self.socket.emit('message', JSON.stringify(obj));
       }
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.handleResize);
-    window.removeEventListener("beforeunload", this.handleBeforeUnload);
-    window.removeEventListener("unload", this.handleUnload);
-    ls.set("streamInProgress", false);
-    ls.set("allowChatSocketClosure", true);
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    window.removeEventListener('unload', this.handleUnload);
+    ls.set('streamInProgress', false);
+    ls.set('allowChatSocketClosure', true);
     if (this.socket) this.socket.close();
   }
 
@@ -985,26 +990,26 @@ export class Chat extends React.Component {
       icon: `${staticUrl}/static/images/favicon.png`,
       data: href,
     };
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
+    if (!('Notification' in window)) {
+      alert('This browser does not support desktop notification');
     }
     // Проверка разрешения на отправку уведомлений
-    else if (Notification.permission === "granted") {
+    else if (Notification.permission === 'granted') {
       // Если разрешено, то создаем уведомление
       var notification = new Notification(message, options);
       notification.onclick = function (event) {
-        var new_window = window.open("", "_blank"); //open empty window(tab)
-        if (event.target.data.includes("?open=true")) {
+        var new_window = window.open('', '_blank'); //open empty window(tab)
+        if (event.target.data.includes('?open=true')) {
           let str = event.target.data;
-          str = str.substring(0, str.indexOf("?open"));
+          str = str.substring(0, str.indexOf('?open'));
 
           new_window.location.href = str.concat(
-            "?open=true&buttonId=",
+            '?open=true&buttonId=',
             buttonId
           );
         } else {
           new_window.location.href = event.target.data.concat(
-            "?open=true&buttonId=",
+            '?open=true&buttonId=',
             buttonId
           );
         } //set url of newly created window(tab) and focus
@@ -1012,18 +1017,18 @@ export class Chat extends React.Component {
       };
     }
     // В противном случае, запрашиваем разрешение
-    else if (Notification.permission !== "denied") {
+    else if (Notification.permission !== 'denied') {
       Notification.requestPermission(function (permission) {
         // Если пользователь разрешил, то создаем уведомление
-        if (permission === "granted") {
+        if (permission === 'granted') {
           var notification = new Notification(message, options);
           notification.onclick = function (event) {
-            var new_window = window.open("", "_blank"); //open empty window(tab)
-            if (event.target.data.includes("?open=true")) {
+            var new_window = window.open('', '_blank'); //open empty window(tab)
+            if (event.target.data.includes('?open=true')) {
               new_window.location.href = event.target.data;
             } else {
               new_window.location.href = event.target.data.concat(
-                "?open=true&buttonId=",
+                '?open=true&buttonId=',
                 buttonId
               );
             }
@@ -1037,48 +1042,48 @@ export class Chat extends React.Component {
 
   componentWillMount() {
     let self = this;
-    ls.set("allowChatSocketClosure", false);
-    if (ls.get("userId")) {
+    ls.set('allowChatSocketClosure', false);
+    if (ls.get('userId')) {
       //this.socket = this.props.socket;
       this.socket = io(socketUrl, {
-        transports: ["websocket"],
+        transports: ['websocket'],
         upgrade: false,
       });
-      this.socket.on("connect", () => {
-        self.socket.emit("enterSocket", ls.get("userId"));
+      this.socket.on('connect', () => {
+        self.socket.emit('enterSocket', ls.get('userId'));
         if (getDialogId(self.props.buttonId)) {
-          self.socket.emit("enterDialog", getDialogId(self.props.buttonId));
+          self.socket.emit('enterDialog', getDialogId(self.props.buttonId));
         }
       });
-      this.socket.on("disconnect", () => {
-        if (!ls.get("allowChatSocketClosure")) {
+      this.socket.on('disconnect', () => {
+        if (!ls.get('allowChatSocketClosure')) {
           self.socket.open();
         }
       });
-      this.socket.on("dialogDeleted", () => {
+      this.socket.on('dialogDeleted', () => {
         self.props.destroy();
       });
-      this.socket.on("dialogCreated", (id) => {
+      this.socket.on('dialogCreated', (id) => {
         //ls.set("dialogId", id); //@changeDialog
         appendDialogMapping(self.props.buttonId, id);
-        self.socket.emit("enterDialog", id);
+        self.socket.emit('enterDialog', id);
         self.props.joinDialogue();
-        ls.set("adminIcon", rndAdmin);
-        ls.set("userIcon", rndUser);
+        ls.set('adminIcon', rndAdmin);
+        ls.set('userIcon', rndUser);
 
-        self.socket.emit("clientEnterDialog", id);
+        self.socket.emit('clientEnterDialog', id);
 
         const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
         axios
           .post(url, {
-            eventType: "SENDED_REQUESTS",
+            eventType: 'SENDED_REQUESTS',
           })
           .then(function (response) {})
           .catch(function (error) {
             //console.log(error);
           });
       });
-      this.socket.on("streamToVideo", (data) => {
+      this.socket.on('streamToVideo', (data) => {
         this.setState({
           streamToVideo: data.messageId,
           prepareToUnmountStream: true,
@@ -1087,10 +1092,10 @@ export class Chat extends React.Component {
         });
         /*this.live.pause();
         flvPlayer.destroy();*/
-        ls.set("streamInProgress", false);
+        ls.set('streamInProgress', false);
       });
-      this.socket.on("received", (data) => {
-        ls.remove("noStreamerFlag");
+      this.socket.on('received', (data) => {
+        ls.remove('noStreamerFlag');
 
         if (self.state.gameStarted) {
           self.stopGame();
@@ -1104,25 +1109,25 @@ export class Chat extends React.Component {
           let type;
           let source;
           let thumbnail;
-          if (data.attachment && data.attachment.type === "AUDIO") {
-            type = "audio";
+          if (data.attachment && data.attachment.type === 'AUDIO') {
+            type = 'audio';
             source = data.attachment.src;
           }
 
-          if (data.attachment && data.attachment.type === "VIDEO") {
-            type = "video";
+          if (data.attachment && data.attachment.type === 'VIDEO') {
+            type = 'video';
             source = data.attachment.src;
             thumbnail = data.attachment.thumbnail;
           }
 
-          if (data.attachment && data.attachment.type === "PHOTO") {
-            type = "photo";
+          if (data.attachment && data.attachment.type === 'PHOTO') {
+            type = 'photo';
             source = data.attachment.src;
           }
 
-          if (data.attachment && data.attachment.type === "STREAM") {
-            type = "stream";
-            ls.set("streamDamnId", data._id);
+          if (data.attachment && data.attachment.type === 'STREAM') {
+            type = 'stream';
+            ls.set('streamDamnId', data._id);
             setLiveArray(self.props.buttonId, data._id);
             source = data.attachment.src;
             thumbnail = data.attachment.thumbnail;
@@ -1135,10 +1140,10 @@ export class Chat extends React.Component {
                 text: data.messageText,
                 time: new Date(),
 
-                user: data.user === ls.get("userId") ? "Вы" : "Консультант",
+                user: data.user === ls.get('userId') ? 'Вы' : 'Консультант',
                 type: type,
-                flv: type === "stream" ? data.attachment.src : null,
-                streamId: type === "stream" ? data.attachment.src : null,
+                flv: type === 'stream' ? data.attachment.src : null,
+                streamId: type === 'stream' ? data.attachment.src : null,
 
                 src: source,
                 thumb: thumbnail,
@@ -1151,8 +1156,8 @@ export class Chat extends React.Component {
         }
       });
 
-      this.socket.on("streamEvent", (data) => {
-        if (data.type === "MESSAGE") {
+      this.socket.on('streamEvent', (data) => {
+        if (data.type === 'MESSAGE') {
           this.setState({
             messagesStream: [
               ...this.state.messagesStream,
@@ -1160,7 +1165,7 @@ export class Chat extends React.Component {
                 text: data.content,
                 time: new Date(),
 
-                user: "Streamer",
+                user: 'Streamer',
                 id: uuidv1(),
               },
             ],
@@ -1200,38 +1205,38 @@ export class Chat extends React.Component {
                 .then(function (response) {
                   const messages = response.data.data;
                   const editedMessages = messages
-                    .filter((msg) => !(msg.type && msg.type === "STREAM"))
+                    .filter((msg) => !(msg.type && msg.type === 'STREAM'))
                     .map((message) => ({
                       text: message.messageText,
                       time: message.createdAt,
 
                       user:
-                        message.user === ls.get("userId")
-                          ? "Вы"
-                          : "Консультант",
+                        message.user === ls.get('userId')
+                          ? 'Вы'
+                          : 'Консультант',
                       type: message.attachment
                         ? message.attachment.type.toLowerCase()
-                        : "message",
+                        : 'message',
                       src: message.attachment ? message.attachment.src : null,
                       thumb:
                         message.attachment &&
-                        (message.attachment.type === "VIDEO" ||
-                          message.attachment.type === "STREAM")
+                        (message.attachment.type === 'VIDEO' ||
+                          message.attachment.type === 'STREAM')
                           ? message.attachment.thumbnail
                           : null,
                       flv:
                         message.attachment &&
-                        message.attachment.type === "STREAM"
+                        message.attachment.type === 'STREAM'
                           ? message.attachment.src
-                          : "",
+                          : '',
                       id: message._id,
                     }));
                   if (editedMessages.length >= 2) {
-                    ls.remove("noStreamerFlag");
+                    ls.remove('noStreamerFlag');
                   }
                   //if (getDialogId(self.props.buttonId)) {
                   self.socket.emit(
-                    "clientEnterDialog",
+                    'clientEnterDialog',
                     getDialogId(self.props.buttonId)
                   );
                   //}
@@ -1275,7 +1280,7 @@ export class Chat extends React.Component {
     const url = `${apiBaseUrl}/button/${this.props.buttonId}/event`;
     axios
       .post(url, {
-        eventType: "STREAMS_COUNT",
+        eventType: 'STREAMS_COUNT',
       })
       .then(function (response) {})
       .catch(function (error) {
@@ -1306,7 +1311,7 @@ export class Chat extends React.Component {
     }
     let ifPsI = this.state.ifPauseIcon;
 
-    var video = document.createElement("video");
+    var video = document.createElement('video');
     //console.log("Reached something", src);
     video.onloadedmetadata = function () {
       //console.log("success, it exsist");
@@ -1323,7 +1328,7 @@ export class Chat extends React.Component {
       //console.log("error, ", finalSrc);
       // don't show video element
       self.setState({
-        videoSrc: finalSrc.replace(".mp4", ".webm"),
+        videoSrc: finalSrc.replace('.mp4', '.webm'),
         photoSrc: null,
         streamFlag: false,
         videoManipulateId: videoManipulateId,
@@ -1379,7 +1384,7 @@ export class Chat extends React.Component {
               ...this.state.messagesStream,
               { text: value, time: new Date(), id: uuidv1() },
             ],
-            valueStream: "",
+            valueStream: '',
           },
           () => this.textAreaAdjust(true)
         );
@@ -1387,20 +1392,20 @@ export class Chat extends React.Component {
         let obj = {
           messageText: value,
           dialogId: getDialogId(self.props.buttonId),
-          userId: ls.get("userId"),
-          type: "STREAM",
+          userId: ls.get('userId'),
+          type: 'STREAM',
         };
 
-        self.socket.emit("messageOnStream", JSON.stringify(obj));
+        self.socket.emit('messageOnStream', JSON.stringify(obj));
       }
     }
   }
 
   submitValue(value) {
     let self = this;
-    const rndUserLocal = ls.get("userIcon") ? ls.get("userIcon") : rndUser;
+    const rndUserLocal = ls.get('userIcon') ? ls.get('userIcon') : rndUser;
     if (value.length > 0) {
-      ls.set("noStreamerFlag", this.props.noStreamerFlag);
+      ls.set('noStreamerFlag', this.props.noStreamerFlag);
       if (!this.state.startedFlag && !this.state.awaitingConnection) {
         this.setState(
           {
@@ -1412,32 +1417,32 @@ export class Chat extends React.Component {
                 id: uuidv1(),
               },
             ],
-            value: "",
+            value: '',
             awaitingConnection: true,
             lastValue: value,
           },
           () => this.textAreaAdjust(false)
         );
         const newObj = {
-          client: ls.get("userId"),
+          client: ls.get('userId'),
           title: this.props.currentTitle
             ? this.props.currentTitle
-            : document.getElementsByTagName("h1").length > 0
+            : document.getElementsByTagName('h1').length > 0
             ? document
-                .getElementsByTagName("h1")[0]
-                .textContent.replace(/(\r\n|\n|\r)/gm, " ")
+                .getElementsByTagName('h1')[0]
+                .textContent.replace(/(\r\n|\n|\r)/gm, ' ')
                 .trim()
             : value,
           websiteUrl: getPathFromUrl(window.location.href),
           button: self.props.buttonId,
           description: value,
         };
-        ls.remove("awaitTmp");
+        ls.remove('awaitTmp');
         removeTs(self.props.buttonId);
-        if (self.props.askedUserData !== "NONE") {
+        if (self.props.askedUserData !== 'NONE') {
           let dataToSend = {
-            id: ls.get("userId"),
-            name: this.state.nameRequested || "Клиент",
+            id: ls.get('userId'),
+            name: this.state.nameRequested || 'Клиент',
             /*phone: this.state.phoneRequested,
             email: this.state.emailRequested,*/
           };
@@ -1451,31 +1456,31 @@ export class Chat extends React.Component {
             dataToSend = { ...dataToSend, email: this.state.emailRequested };
           }
           //console.log("DATA TO SEND", dataToSend);
-          self.socket.emit("fillClientData", JSON.stringify(dataToSend));
+          self.socket.emit('fillClientData', JSON.stringify(dataToSend));
         }
-        self.socket.emit("createDialog", newObj);
+        self.socket.emit('createDialog', newObj);
         //console.log("CASE 1", newObj);
-        ls.set("initialUrl", getPathFromUrl(window.location.href));
+        ls.set('initialUrl', getPathFromUrl(window.location.href));
       } else if (!this.state.awaitingConnection) {
         //console.log("CASE 2");
         let pageUrl = getPathFromUrl(window.location.href);
         let currentValue = value;
         if (
-          ls.get("currentUrl") !== pageUrl &&
-          ls.get("initialUrl") &&
-          ls.get("initialUrl") !== pageUrl
+          ls.get('currentUrl') !== pageUrl &&
+          ls.get('initialUrl') &&
+          ls.get('initialUrl') !== pageUrl
         ) {
           currentValue =
-            "Новая страница диалога: " +
+            'Новая страница диалога: ' +
             (this.props.currentTitle
               ? this.props.currentTitle
-              : document.getElementsByTagName("h1").length > 0
-              ? document.getElementsByTagName("h1")[0].textContent
-              : "Не удалось распознать источник") +
-            "\n" +
-            "Сообщение: " +
+              : document.getElementsByTagName('h1').length > 0
+              ? document.getElementsByTagName('h1')[0].textContent
+              : 'Не удалось распознать источник') +
+            '\n' +
+            'Сообщение: ' +
             currentValue;
-          ls.set("currentUrl", pageUrl);
+          ls.set('currentUrl', pageUrl);
         }
         this.setState(
           {
@@ -1487,7 +1492,7 @@ export class Chat extends React.Component {
                 id: uuidv1(),
               },
             ],
-            value: "",
+            value: '',
           },
           () => this.textAreaAdjust(false)
         );
@@ -1495,11 +1500,11 @@ export class Chat extends React.Component {
         let obj = {
           messageText: currentValue,
           dialogId: getDialogId(self.props.buttonId),
-          userId: ls.get("userId"),
-          type: "DIALOG",
+          userId: ls.get('userId'),
+          type: 'DIALOG',
         };
 
-        self.socket.emit("message", JSON.stringify(obj));
+        self.socket.emit('message', JSON.stringify(obj));
       }
     }
   }
@@ -1515,11 +1520,11 @@ export class Chat extends React.Component {
     });
   }
   componentDidMount() {
-    window.addEventListener("beforeunload", this.handleBeforeUnload);
-    window.addEventListener("unload", this.handleUnload);
-    window.addEventListener("resize", this.handleResize);
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+    window.addEventListener('unload', this.handleUnload);
+    window.addEventListener('resize', this.handleResize);
     if (!getDialogId(this.props.buttonId)) {
-      ls.remove("noStreamerFlag");
+      ls.remove('noStreamerFlag');
     }
     try {
       Flashphoner.init({
@@ -1542,7 +1547,7 @@ export class Chat extends React.Component {
 
   handleDown() {
     if (this.state.startedFlag && !this.state.awaitingConnection) {
-      if (ls.get("micChecked")) {
+      if (ls.get('micChecked')) {
         this.setState({ ifTimer: true });
         this.startMp3();
       } else {
@@ -1557,13 +1562,13 @@ export class Chat extends React.Component {
     if (
       this.state.startedFlag &&
       !this.state.awaitingConnection &&
-      !ls.get("micChecked")
+      !ls.get('micChecked')
     ) {
       navigator.mediaDevices.getUserMedia({ audio: true }).then(
         () => {
           //console.log("mickChecked");
           self.setState({ isBlocked: false, isFirst: true });
-          ls.set("micChecked", true);
+          ls.set('micChecked', true);
           self.startMp3();
         },
         () => {
@@ -1577,7 +1582,7 @@ export class Chat extends React.Component {
   dataRecordListener(e) {
     const blobURL = URL.createObjectURL(e.data);
     this.setState({ blobURL, isRecording: false });
-    ls.set("blobUrl", blobURL);
+    ls.set('blobUrl', blobURL);
     this.onStop(e.data);
   }
 
@@ -1588,7 +1593,7 @@ export class Chat extends React.Component {
       self.setState({ recorder: new MediaRecorder(stream) });
       // Set record to <audio> when recording will be finished
       self.state.recorder.addEventListener(
-        "dataavailable",
+        'dataavailable',
         self.dataRecordListener
       );
       // Start recording
@@ -1605,17 +1610,17 @@ export class Chat extends React.Component {
   onStop(recordedBlob) {
     let self = this;
     self.state.recorder.removeEventListener(
-      "dataavailable",
+      'dataavailable',
       self.dataRecordListener
     );
     const d = new Date();
     let formData = new FormData();
-    const url = `${apiBaseUrl}/user/${ls.get("userId")}/voice`;
+    const url = `${apiBaseUrl}/user/${ls.get('userId')}/voice`;
     //console.log("PREPARE");
-    formData.append("voice", recordedBlob);
+    formData.append('voice', recordedBlob);
     const config = {
       headers: {
-        "content-type": "multipart/form-data",
+        'content-type': 'multipart/form-data',
       },
     };
     axios.post(url, formData, config).then((response) => {
@@ -1627,7 +1632,7 @@ export class Chat extends React.Component {
             time: new Date(),
             id: uuidv1(),
 
-            type: "audio",
+            type: 'audio',
             src: response.data,
           },
         ],
@@ -1635,12 +1640,12 @@ export class Chat extends React.Component {
 
       let obj = {
         dialogId: getDialogId(self.props.buttonId),
-        userId: ls.get("userId"),
-        attachmentType: "AUDIO",
+        userId: ls.get('userId'),
+        attachmentType: 'AUDIO',
         attachmentUrl: response.data,
       };
 
-      self.socket.emit("message", JSON.stringify(obj));
+      self.socket.emit('message', JSON.stringify(obj));
     });
   }
 
@@ -1648,22 +1653,22 @@ export class Chat extends React.Component {
     if (!streamFlag) {
       this.setState(
         {
-          textAreaHeight: "auto",
+          textAreaHeight: 'auto',
         },
         () => {
           this.setState({
-            textAreaHeight: this.mainInput.scrollHeight + "px",
+            textAreaHeight: this.mainInput.scrollHeight + 'px',
           });
         }
       );
     } else {
       this.setState(
         {
-          streamTextAreaHeight: "auto",
+          streamTextAreaHeight: 'auto',
         },
         () => {
           this.setState({
-            streamTextAreaHeight: this.streamInput.scrollHeight + "px",
+            streamTextAreaHeight: this.streamInput.scrollHeight + 'px',
           });
         }
       );
@@ -1828,7 +1833,7 @@ export class Chat extends React.Component {
                                     ) : (
                                       <NoStreamerComponent
                                         receivedDetails={ls.get(
-                                          "noStreamerFlag"
+                                          'noStreamerFlag'
                                         )}
                                         color={this.props.color}
                                         notificationPermission={
@@ -1906,12 +1911,12 @@ export class Chat extends React.Component {
                             </JsChatMessageContainer>
                             <CustomForm>
                               <div
-                                style={{ flexDirection: "column  !important" }}
+                                style={{ flexDirection: 'column  !important' }}
                               >
                                 <CartTextFieldExtra>
                                   <CartTextFieldRelative>
                                     <InputFieldA
-                                      rows="1"
+                                      rows='1'
                                       ref={(item) => {
                                         this.mainInput = item;
                                       }}
@@ -1925,7 +1930,7 @@ export class Chat extends React.Component {
                                       onKeyDown={() =>
                                         this.textAreaAdjust(false)
                                       }
-                                      type="text"
+                                      type='text'
                                       value={this.state.value}
                                       onChange={this.handleChange}
                                       blocked={this.state.awaitingConnection}
@@ -1933,20 +1938,20 @@ export class Chat extends React.Component {
                                         this.state.awaitingConnection ||
                                         (this.props.noStreamerFlag &&
                                           !this.props.emailSentFlag &&
-                                          (!("Notification" in window) ||
+                                          (!('Notification' in window) ||
                                             Notification.permission !==
-                                              "granted"))
+                                              'granted'))
                                       }
                                       placeholder={
                                         this.state.ifTimer
-                                          ? ""
+                                          ? ''
                                           : this.state.awaitingConnection
-                                          ? "Для продолжения диалога дождитесь ответа"
+                                          ? 'Для продолжения диалога дождитесь ответа'
                                           : this.props.requestFieldText ||
-                                            "Спросите что-нибудь ;)"
+                                            'Спросите что-нибудь ;)'
                                       }
                                       onKeyPress={(event) => {
-                                        if (event.key === "Enter") {
+                                        if (event.key === 'Enter') {
                                           event.preventDefault();
                                           this.handleSubmit(event);
                                         }
@@ -1970,7 +1975,7 @@ export class Chat extends React.Component {
                                           onTouchStart={this.handleDown}
                                           onMouseUp={this.handleUp}
                                           onTouchEnd={this.handleUp}
-                                          tabIndex="0"
+                                          tabIndex='0'
                                           isActive={this.state.ifTimer}
                                           color={this.props.color}
                                         >
@@ -1981,15 +1986,15 @@ export class Chat extends React.Component {
                                       )}
                                     {!this.state.messages ||
                                       (this.state.messages.length == 0 &&
-                                        !ls.get("noStreamerFlag") && (
+                                        !ls.get('noStreamerFlag') && (
                                           <EntryWrap>
                                             <EntryInfo
                                               noStreamerFlag={
                                                 this.props.noStreamerFlag &&
                                                 !this.props.emailSentFlag &&
-                                                (!("Notification" in window) ||
+                                                (!('Notification' in window) ||
                                                   Notification.permission !==
-                                                    "granted")
+                                                    'granted')
                                               }
                                             />
                                           </EntryWrap>
@@ -2038,13 +2043,13 @@ export class Chat extends React.Component {
 
                   mountFunction={() => {
                     this.socket.emit(
-                      "enterStream",
+                      'enterStream',
                       getDialogId(this.props.buttonId)
                     );
                   }}
                   unmountFunction={() => {
                     this.socket.emit(
-                      "leaveStream",
+                      'leaveStream',
                       getDialogId(this.props.buttonId)
                     );
                     this.setState({
@@ -2073,7 +2078,7 @@ export class Chat extends React.Component {
                       prepareToUnmountStream: true,
                     });
 
-                    ls.set("streamInProgress", false);
+                    ls.set('streamInProgress', false);
                   }}
                   /**Various components, Status button */
                   color={this.props.color}
@@ -2087,7 +2092,7 @@ export class Chat extends React.Component {
                   valueStream={this.state.valueStream}
                   onChange={this.handleChangeInStream}
                   onKeyPress={(event) => {
-                    if (event.key === "Enter") {
+                    if (event.key === 'Enter') {
                       event.preventDefault();
                       this.handleSubmitS();
                     }
@@ -2110,8 +2115,8 @@ export class Chat extends React.Component {
               <ReactPlayer
                 url={this.state.videoSrc}
                 playing={this.state.ifPauseIcon}
-                width="100%"
-                height="100%"
+                width='100%'
+                height='100%'
                 controls
                 ref={(video) => {
                   this.loadedVideo = video;
