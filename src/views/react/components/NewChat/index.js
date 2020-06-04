@@ -1758,7 +1758,7 @@ export class Chat extends React.Component {
                           <DisclaimerWrapperMobile>
                             <Disclaimer />
                           </DisclaimerWrapperMobile>
-                          {this.props.leaveOption && (
+                          {false && this.props.leaveOption && (
                             <AdditionalActions endDialogue={this.endDialogue} />
                           )}
                           {this.props.leaveOption && (
