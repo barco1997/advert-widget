@@ -122,31 +122,48 @@ export class App extends React.Component {
                 ).value
               : "",
 
-            /*******      Here fields MUST exist on backend     */
-
-            requestFieldText:
-              localisedTextArray.find(
-                (element) => element.field === "requestFieldText"
-              ).value || "requestFieldText",
-            mainText:
-              localisedTextArray.find((element) => element.field === "mainText")
-                .value || "mainText",
-            greetingText:
-              localisedTextArray.find(
-                (element) => element.field === "greetingText"
-              ).value || "greetingText",
-            greetingTitle:
-              localisedTextArray.find(
-                (element) => element.field === "greetingTitle"
-              ).value || "greetingTitle",
-            waitingText:
-              localisedTextArray.find(
-                (element) => element.field === "waitingText"
-              ).value || "waitingText",
-            waitingTitle:
-              localisedTextArray.find(
-                (element) => element.field === "waitingTitle"
-              ).value || "waitingTitle",
+            requestFieldText: localisedTextArray.find(
+              (element) => element.field === "requestFieldText"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "requestFieldText"
+                ).value
+              : "",
+            mainText: localisedTextArray.find(
+              (element) => element.field === "mainText"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "mainText"
+                ).value
+              : "",
+            greetingText: localisedTextArray.find(
+              (element) => element.field === "greetingText"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "greetingText"
+                ).value
+              : "",
+            greetingTitle: localisedTextArray.find(
+              (element) => element.field === "greetingTitle"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "greetingTitle"
+                ).value
+              : "",
+            waitingText: localisedTextArray.find(
+              (element) => element.field === "waitingText"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "waitingText"
+                ).value
+              : "",
+            waitingTitle: localisedTextArray.find(
+              (element) => element.field === "waitingTitle"
+            )
+              ? localisedTextArray.find(
+                  (element) => element.field === "waitingTitle"
+                ).value
+              : "",
             /*******      Special case for question examole array, tha flag has to be set true to use it     */
             questionExamples:
               response.data.questionExamples &&
